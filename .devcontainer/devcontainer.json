@@ -1,0 +1,16 @@
+{
+	"name": "technion046195",
+	"context": "..",
+	"dockerFile": "../Dockerfile",
+	"image": "omeryair/technion046195:v0.1",
+	"runArgs": ["--rm",  "--name=technion_course", "--net=host"],
+	// "forwardPorts": [],
+	"workspaceMount": "source=${localWorkspaceFolder},target=/project/app,type=bind,consistency=cached",
+	"workspaceFolder": "/project/app",
+	"settings": { 
+		"terminal.integrated.shell.linux": null
+	},
+	"extensions": [
+		"esbenp.prettier-vscode"
+	],
+}

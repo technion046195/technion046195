@@ -1,0 +1,19 @@
+[push]
+	default = simple
+[core]
+    attributesfile = ~/.gitattributes
+[filter "nbstrip_full"]
+    clean = "jq --indent 1 \
+                ' .cells = [(.cells[] | . = if .cell_type==\"code\" then {\"cell_type\": .cell_type, \
+                                                                          \"source\": .source, \
+                                                                          \"metadata\": {}, \
+                                                                          \"execution_count\": null, \
+                                                                          \"outputs\": .outputs}  \
+                                                                    else {\"cell_type\": .cell_type, \
+                                                                          \"source\": .source, \
+                                                                          \"metadata\": {}} \
+                                                                    end)] \
+                | .metadata = {\"kernalspec\": .metadata.kernelspec} \
+                '"
+    smudge = cat
+    required = true

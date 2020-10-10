@@ -1,0 +1,36 @@
+{
+    "[json]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "[html]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "[javascript]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "[css]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "files.exclude": {
+        "**/.git": true,
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true
+    },
+    "cSpell.words": [
+        "Jupyter"
+    ],
+    "markdown.styles": [
+        "src/styles/style.css"
+    ],
+    "markdown.preview.fontSize": 18,
+}

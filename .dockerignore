@@ -1,0 +1,4 @@
+*
+!package.json
+!requirements.txt
+!docker-entrypoint.sh
