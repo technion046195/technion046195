@@ -1,4 +1,13 @@
-# Course 046196 - Introduction to Machine Learning
+<p align="center">
+  <a href="https://technion046195.netlify.app/">
+    <img alt="Logo" src="content/assets/technion046195_logo.png" width="100" />
+  </a>
+</p>
+<h1 align="center">
+  Course 046196 - Introduction to Machine Learning
+</h1>
+
+The website can be found at <https://technion046195.netlify.app/>
 
 This repository contains:
 
@@ -11,6 +20,8 @@ This repository contains:
 The course's website is powered by the [Gatsby platform](http://gatsbyjs.com/), and is served using [netlify](https://www.netlify.com/). In addition the site and the Jupyter server can be ran locally using a [docker](https://www.docker.com/) container. The details about running the site locally can be found bellow.
 
 The content of the web site (lectures, tutorials, additional data) is written in [markdown](https://en.wikipedia.org/wiki/Markdown) and is concentrated in the content folder.
+
+The deployment status of the site can be found here: [![Netlify Status](https://api.netlify.com/api/v1/badges/98ffd985-f712-420b-9c05-2fd440fd134f/deploy-status)](https://app.netlify.com/sites/technion046195/deploys)
 
 The diagrams in this course are generated using [draw.io](https://app.diagrams.net/). The file containing all the diagrams can be found in *content/assets/diagrams.drawio*
 
@@ -74,4 +85,3 @@ Free images:
 - [Unsplash](https://unsplash.com/)
 - [Pixabay](https://pixabay.com/)
 - [Pexels](https://www.pexels.com/)
-
