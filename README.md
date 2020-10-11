@@ -57,6 +57,23 @@ The website should then be avilable at <http://localhost:8000>. The jupyter serv
 
 At this point changes which are made to the markdown file in the content folder should immediately appear on the site each save of the file. The markdown files can be edit using any arbitrary text editor or be dedicated editors (see resources section).
 
+## Editing markdown files
+
+### [Typora](https://typora.io/)
+
+Typora is a dedicated editor for markdown files an formats the markdown text as you type it (including equations). Typora does not support viewing right-to-left(RTL) documents out of the box, but this can be fixed by adding an custom RTL theme.
+
+### Adding RTL theme
+
+On such RTL theme can be found at <https://github.com/peleg68/github-rtl>. To add it to Typora you need to download the *github-rtl.css* file and the *github-rtl* folder to Typora's theme's folder. The theme folder can be found by goint to *File->Preference->Appearence->OpenTheme Folder*.
+
+After adding the theme it can be selected from the Themes menu.
+
+### [VSCode](https://code.visualstudio.com/)
+
+VSCode in a great open-source code editor maintained by Microsoft. It offers live markdown preview out of the box but without support for equations. Equation support can be added by installing 
+
+
 ### Committing notebooks
 
 In order to remove some unnecessary temporary data from the Jupyter notebooks (which clutters the commits) use the following method to add an automatic clean up command to the git add process (this will only have effect in this repository). This need to be done once:
