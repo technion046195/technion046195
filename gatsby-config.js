@@ -15,7 +15,7 @@ module.exports = {
         short_name: `technion046195`,
         start_url: `/`,
         background_color: `#ffffff`,
-        theme_color: `#663399`,
+        theme_color: ` #006992`,
         display: `minimal-ui`,
         icon: `content/assets/technion046195_logo.png`
       },

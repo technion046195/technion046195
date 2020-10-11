@@ -153,6 +153,13 @@ p {
   min-height: calc(100vh - 120px);
   margin: 0 auto;
   max-width: 900px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.katex-display {
+  overflow: scroll;
+  /* width:fit-content;  */
 }
 
 .footer {
@@ -195,8 +202,8 @@ h1, #notebook-container .rendered_html h1 {
 
 @media not print {
   #title {
-    width: 100vw;
-    padding: 50px 0px;
+    width: calc(100vw - 32px);
+    padding: 50px 16px;
     margin-right: calc(-50vw + 50%);
     background: #006992;
     overflow-x: visible;
