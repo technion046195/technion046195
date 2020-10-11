@@ -14,15 +14,15 @@ type: tutorial
 
 מרבית הבעיות והשיטות בתחום של מערכות לומדות עוסקות בבעיה של התאמת מודל מתמטי כך שיתאר בצורה מיטבית תופעה או תהליך מסויים על סמך אוסף נתון של תצפיות / מדידות. בהרצא הראשונה נציג את התחום באופן מפורט יותר, אך לעת אתה הגדרה זו תספק אותנו.
 
-לצורך המחשה נסתכל על הדוגמא הבאה. נניח ונתונים לנו מספר מדידות של נקודות שיושבות על מעגל בעל מרכז ורדיוס לא ידועים. בנוסף נניח ותהליך המדידה עצמו רועש ואנו מקבלים גירסאות מורעשות של הנקודות כפי שמודגם בשרטוט הבא:
+לצורך המחשה נסתכל על הדוגמא הבאה. נניח ונתונים לנו מספר מדידות של נקודות שיושבות על מעגל בעל מרכז ורדיוס לא ידועים. בנוסף נניח ותהליך המדידה עצמו רועש ואנו מקבלים גירסאות מורעשות של הנקודות כפי שמודגם בשרטוט הבא: fdsfsdf
 
-![circle_dataset](./assets/circle_dataset.png)
+![](./assets/circle_dataset.png)
 
 מקובל להשתמש בשם בשם **ground truth**, או בקיצור **GT**, כדי להתייחס למודל המקורי (הלא ידוע).
 
 כעת נניח ואנו מעוניינים לשחזר את הפרמטרים של המעגל המקורי על פי הדגימות שבידינו.  הבעיה של התאמת בעיה כדוגמאת זו, של מעגל לאוסף נקודות, מופיעה באלגוריתמי eye-tracking אשר מנסים לעקוב אחרי המיקום של האישון על מנת להבין מהו הכיוון שאליו אדם מביט.
 
-![eye_tracking](./assets/eye_tracking.png)
+![](./assets/eye_tracking.png)
 
 נציין שהבעיה הזו לא מאד מייצגת ונחשבת ליחסית פשוטה בהשוואה לבעיות הטיפוסיות שאותם מנסים לפתור בתחום של מערכות לומדות , אך עם זאת היא תשמש כדוגמא טובה לעקרונות שבהם נעסוק בתרגול הנוכחי.
 
@@ -78,25 +78,26 @@ type: tutorial
 
 נרשום תחילה את המרחק של נקודה בודדת $\boldsymbol{x}$ ממעגל בעל מרכז ב $\boldsymbol{c}$ ורדיוס $r$. מרחק זה שווה להפרש בין המרחק בין $\boldsymbol{x}$ ל $\boldsymbol{c}$ והרדיוס, כפי שמופיע בשרטוט הבא:
 
-<center>
-
-![dist_from_circle](./assets/dist_from_circle.svg)
-
-</center>
+![](./assets/dist_from_circle.png)
 
 נסמן את הריבוע של מרחק זה ב $e$:
+
 $$
 e=(\|\boldsymbol{x}-\boldsymbol{c}\|_2-r)^2
 $$
+
 אם כן בעבור $n$ נקודות, $\{\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)},\ldots,\boldsymbol{x}^{(n)}\}$, המרחק הריבועי הממוצע (MSE) של הנקודות מהמעגל הינו:
+
 $$
 \frac{1}{n}\sum_{i=1}^n e_i=\frac{1}{n}\sum_{i=1}^n (\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2-r)^2
 $$
 
 מצאנו אם כן למעשה מדד טיב אשר מאפשר לנו לתת "ציון" לכל מעגל כתלות ב $\boldsymbol{c}$ ו $r$. נסמן את הפונקציה הזו כ:
+
 $$
 f(\boldsymbol{c},r)=\frac{1}{n}\sum_{i=1}^n (\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2-r)^2
 $$
+
 כעת, אם ברצונינו למצוא עלינו למצוא את המעגל ה**אופטימאלי**, עלינו למצוא את הפרמטרים $\boldsymbol{c}$ ו $r$ אשר מניבים את הערך הנמוך ביותר של $f$. מקובל לסמן את הפרמטרים האופטימאליים בעזרת $*$ באופן הבא: $\boldsymbol{c}^*$ ו$r^*$.
 
 בעיות מסוג זה הם בדיוק סוגי הבעיות שתורת האופטימיזציה באה לפתור. לבנתיים נשים בצד את הפונקציה הזו ונחזור אליה לקראת סוף התרגול.
@@ -104,8 +105,9 @@ $$
 ### המקרה הפשוט
 
 בעיות אופטימיזציה עוסקות במציאת הארגומנט $\theta$ שבעבורו פונקציה נתונה $f(\theta)$ מחזירה את הערך המינימאלי או המקסימאלי שלה. לרוב מקובל לנסח בעיות אופטימיזציה כבעיות **minimization** (מזעור), כאשר ניתן כמובן לרשום כל בעיית **maximization** כבעיית minimization של $\tilde{f}(\theta)=-f(\theta)$. כמו כן, את פונקציה  $f(\theta)$ שאותה מנסים למזער (למקסם) נהוג לכנות ה**objective** או פונקציית המטרה. באופן פורמלי, בעיות אופטימיזציה נרשמות באופן הבא:
+
 $$
-\theta^*=\underset{\theta}{\arg\min}\quad f\left(\theta\right) \\
+\theta^*=\underset{\theta}{\arg\min}\quad f\left(\theta\right)
 $$
 
 ### פונקציות מרובות משתנים
@@ -113,12 +115,13 @@ $$
  בעיות אופטימיזציה כמובן לא מוגבלות רק לפונקציות של משתנה יחיד וכמו בדוגמא של המעגל, ניתן להסתכל גם על הבעיה של מציאת סט הערכים האופטימאליים $\theta_1^*,\theta_2^*,\ldots,\theta_d^*$ שממזערים פונקציה של מספר משתנים $f(\theta_1,\theta_2,\ldots,\theta_d)$:
 
 $$
-\theta_1^*,\theta_2^*,\ldots,\theta_d^*=\underset{\theta_1,\theta_2,\ldots,\theta_d}{\arg\min}\quad f\left(\theta_1,\theta_2,\ldots,\theta_d\right) \\
+\theta_1^*,\theta_2^*,\ldots,\theta_d^*=\underset{\theta_1,\theta_2,\ldots,\theta_d}{\arg\min}\quad f\left(\theta_1,\theta_2,\ldots,\theta_d\right)
 $$
 
 במקרים רבים נוח יותר לאגד את כל הארגומנטים של $f$ לוקטור אחד $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_d)^\top$ ולרשום את בעיית האופטימזציה כ:
+
 $$
-\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\quad f\left(\boldsymbol{\theta}\right) \\
+\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\quad f\left(\boldsymbol{\theta}\right)
 $$
 
 ### שיטות לפתרון בעיות אופטימיזציה
@@ -137,11 +140,14 @@ $$
 
 - אילוצי אי-שוויון מהצורה $g(\boldsymbol{\theta})\geq0$.<br/>
   לדוגמא, האילוץ שכל הערכים של $\boldsymbol{\theta}$ יהיו קטנים מ$1$, יופיע בתור:
+
   $$
   g_i(\boldsymbol{\theta})=1-\theta_i\geq0\qquad i=1,\ldots,d
   $$
+
 - אילוצי שוויון מהצורה $h(\boldsymbol{\theta})=0$.<br/>
   לדוגמא האילוץ שהנורמה של $\boldsymbol{\theta}$ תהיה שווה ל1, יופיע בתור:
+
   $$
   h(\boldsymbol{\theta})=\|\boldsymbol{\theta}\|_2-1=0
   $$
@@ -149,11 +155,13 @@ $$
 אם כן הצורה הכללית ביותר של בעיית אופטימיזציה הינה:
 
 $$
-\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\quad f(\boldsymbol{\theta}) \\
 \begin{aligned}
+\boldsymbol{\theta}^*=&\underset{\boldsymbol{\theta}}{\arg\min}\quad f(\boldsymbol{\theta}) \\
+&\begin{aligned}
 \text{subject to}\quad
 & g_i(\boldsymbol{\theta})\leq 0,\qquad i=1,\ldots,m \\
 & h_j(\boldsymbol{\theta})=0,\qquad j=1,\ldots,p
+\end{aligned}
 \end{aligned}
 $$
 
@@ -178,9 +186,11 @@ $$
 הבעיה הנתונה הינה בעיית אופטימיזציה עם אילוץ אי-שיוון אחד. נרשום אותה באופן פורמלי:
 
 $$
-\underset{\boldsymbol{\theta}=(\theta_1,\theta_2)^\top}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
-\text{subject to}\quad
+\begin{aligned}
+&\underset{\boldsymbol{\theta}=(\theta_1,\theta_2)^\top}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
+&\text{subject to}\quad
 1-(\theta_1^2+\theta_2^2)\leq 0
+\end{aligned}
 $$
 
 ##### החלפת פונקציית המטרה
@@ -188,8 +198,10 @@ $$
 ראשית נשים לב כי ניתן לפשט את הבעיה על ידי השימוש בעובדה ש$e^x$ היא פונקציה מונוטונית עולה ולכן נוכל לבצע את ההחלפה הבאה מבלי לשנות את תוצאת בעיית האופטימיזציה:
 
 $$
-\underset{\theta_1,\theta_2}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
-=\underset{\theta_1,\theta_2}{\arg\min}\quad 3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34
+\begin{aligned}
+&\underset{\theta_1,\theta_2}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
+=&\underset{\theta_1,\theta_2}{\arg\min}\quad 3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34
+\end{aligned}
 $$
 
 באופן דומה נוכל גם להיפתר מהתוספת של הקבוע ($+34$) וגם לחלק את פונקציית המטרה 3, ולקבל את בעיית האופטימיזציה הבאה:
@@ -210,17 +222,21 @@ $$
 ##### החיפוש בתוך מעגל היחידה
 
 נתחיל במציאת המינימום בחלקו הפנימי של העיגול. תחילה נתעלםמהאילוץ נחפש את כל נקודות המינימום (לוקאליות או גלובליות) של הבעיה. אחר כך נפסול את אלו שלא מקיימות את האילוץ. בעיית האופטימיזציה ללא האילוץ הינה:
+
 $$
-\underset{\theta_1,\theta_2}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2 \\
+\underset{\theta_1,\theta_2}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2
 $$
 
 בעיה זו ניתנת לפתרון בקלות על ידי גזירה והשוואה ול0:
+
 $$
-\begin{cases}
+\begin{aligned}
+&\left\{\begin{aligned}
 \frac{d}{d\theta_1}\theta_1^2+\theta_2^2-6\theta_1-8\theta_2=0 \\
 \frac{d}{d\theta_2}\theta_1^2+\theta_2^2-6\theta_1-8\theta_2=0 \\
-\end{cases} \\
-\Leftrightarrow (\theta_1,\theta_2)=(3,4)
+\end{aligned}\right.\\
+\Leftrightarrow&(\theta_1,\theta_2)=(3,4)
+\end{aligned}
 $$
 
 נקודה זו אומנם חשודה כנקודת קיצון אך היא לא מקיימת את האילוץ ולכן היא אינה יכול להיות פתרון לבעיה. נוכל להסיק אם כן שאין נקודות מינימום בתוך המעגל ולכן נקודת המינימום תהיה חייבת להימצא על השפה.
@@ -228,10 +244,13 @@ $$
 ##### החיפוש על מעגל היחידה
 
 על השפה אילוץ האי-השוויון הופך לשוויון:
+
 $$
-\underset{{\theta}=(\theta_1,\theta_2)^\top}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2 \\
-\text{subject to}\quad
+\begin{aligned}
+&\underset{{\theta}=(\theta_1,\theta_2)^\top}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2 \\
+&\text{subject to}\quad
 1-(\theta_1^2+\theta_2^2)=0
+\end{aligned}
 $$
 
 בתרגול הבא נלמד שיטה מסודרת לפתרון בעיות אופטימיזציה עם אילוצי שוויון כגון זו, אך לבנתיים נתאר כאן פתרון חליפי אשר משתמש בניסוח מחד של הבעיה (השיטה שמוצגת כאן לא רלוונטית להבנת החומר מופיעה פה רק לשם השלמות).
@@ -239,26 +258,36 @@ $$
 הדרך בה נימצא את המינימום על המעגל הינה על ידי החלפת הבעיה הנתונה בבעיית אופטימיזציה של משתנה יחיד ללא אילוצים. אנו נשתמש באילוץ (התנאי שהנקודה תמצא על מעגל היחידה) על מנת לבטא את $\theta_2$ בעזרת $\theta_1$ ורישום מחדש של פונקציית המטרה כפונקציה של $\theta_1$ בלבד.
 
 מתוך האילוץ נקבל ש:
+
 $$
-1-(\theta_1^2+\theta_2^2)=0 \\
-\Leftrightarrow \theta_2=\pm\sqrt{1-\theta_1^2}
+\begin{aligned}
+&1-(\theta_1^2+\theta_2^2)=0 \\
+\Leftrightarrow&\theta_2=\pm\sqrt{1-\theta_1^2}
+\end{aligned}
 $$
+
 כאשר עלינו לבדוק את שני המקרים כאשר $\theta_2$ חיובי (החלק העליון של מעגל היחידה) וכשאר הוא שלילי (החלק התחתון). לאחר ההחלפה נקבל את שני בעיות האופטימיזציה הבאות (המקרה החיובי והשלילי):
+
 $$
-\underset{\theta_1}{\arg\min}\quad \theta_1^2+(1-\theta_1^2)-6\theta_1\pm8\sqrt{1-\theta_1^2}\\
-=\underset{\theta_1}{\arg\min}\quad 1-6\theta_1\pm8\sqrt{1-\theta_1^2}\\
-=\underset{\theta_1}{\arg\min}\quad -3\theta_1\pm4\sqrt{1-\theta_1^2}
+\begin{aligned}
+&\underset{\theta_1}{\arg\min}\quad \theta_1^2+(1-\theta_1^2)-6\theta_1\pm8\sqrt{1-\theta_1^2}\\
+=&\underset{\theta_1}{\arg\min}\quad 1-6\theta_1\pm8\sqrt{1-\theta_1^2}\\
+=&\underset{\theta_1}{\arg\min}\quad -3\theta_1\pm4\sqrt{1-\theta_1^2}
+\end{aligned}
 $$
 
 נפתור את את הבעיות האלה על יד גזירה והשוואה ל0:
+
 $$
-\frac{d}{d\theta_1} -3\theta_1\pm4\sqrt{1-\theta_1^2}=0 \\
-\Leftrightarrow -3\pm4\frac{\theta_1}{\sqrt{1-\theta_1^2}}=0 \\
-\Leftrightarrow \pm\tfrac{4}{3}\theta_1=\sqrt{1-\theta_1^2} \\
-\Rightarrow \tfrac{16}{9}\theta_1^2=1-\theta_1^2 \\
-\Leftrightarrow \theta_1^2=\tfrac{9}{25} \\
-\Leftrightarrow \theta_1=\pm\tfrac{3}{5} \\
-\Leftrightarrow (\theta_1,\theta_2)=(\pm\tfrac{3}{5},\pm\tfrac{4}{5}) \\
+\begin{aligned}
+&\frac{d}{d\theta_1} -3\theta_1\pm4\sqrt{1-\theta_1^2}=0 \\
+\Leftrightarrow&-3\pm4\frac{\theta_1}{\sqrt{1-\theta_1^2}}=0 \\
+\Leftrightarrow&\pm\tfrac{4}{3}\theta_1=\sqrt{1-\theta_1^2} \\
+\Rightarrow&\tfrac{16}{9}\theta_1^2=1-\theta_1^2 \\
+\Leftrightarrow&\theta_1^2=\tfrac{9}{25} \\
+\Leftrightarrow&\theta_1=\pm\tfrac{3}{5} \\
+\Leftrightarrow&(\theta_1,\theta_2)=(\pm\tfrac{3}{5},\pm\tfrac{4}{5})
+\end{aligned}
 $$
 
 על ידי בדיקה של הערכים שמניבים ארבעת הנקודות האלה מוצאים כי המינימום הגלובלי של פונקציית המטרה מתקבל במקרה של $(\theta_1,\theta_2)=(\tfrac{3}{5},\tfrac{4}{5})$.
@@ -268,6 +297,7 @@ $$
 במהלך הקורס אנו נתקל פעמים רבות בצורך לחשב נגזרות המערבות וקטורים ומטריצות. נזכיר / נסביר בקצרה של כיצד נזגרת אלו מחושבות. נתחיל במקרה המוכר של הגרדיאנט, בו אנו מבצעים גזירה של פונקציה סקלרית לפי וקטור. לאחר מכאן נראה כיצד הגדרה זו מורחבת גם למקרים נוספים בהם הפונקציה לא בהכרח סקלרית והגזירה היא לא בהכרח לפי וקטור.
 
 בעבור פונקציה $f(\boldsymbol{x})$ אשר מקבלת וקטור $\boldsymbol{x}$ באורך $d$ ומחזירה סקלר, פעולת הגרדיאנט מוגדרת באופן הבא:
+
 $$
 \nabla_{\boldsymbol{x}} f(\boldsymbol{x})
 =\frac{d}{d\boldsymbol{x}} f(\boldsymbol{x})
@@ -277,6 +307,7 @@ $$
 $$
 
 לדוגמא:
+
 $$
 \frac{d}{d\boldsymbol{x}}(\boldsymbol{a}^\top\boldsymbol{x})
 =\frac{d}{d\boldsymbol{x}}(\sum_{i=1}^d a_ix_i)
@@ -312,10 +343,10 @@ $$
 
 חשבו את הנגזרות הבאות:
 
-1. $$\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2^2$$.
-2. $$\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2$$. הנחיה: השתמש בכלל השרשרת
-3. $$\frac{d}{d\boldsymbol{x}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})$$.
-4. $$\frac{d}{d\boldsymbol{A}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})$$.
+1. $\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2^2$.
+2. $\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2$. הנחיה: השתמש בכלל השרשרת
+3. $\frac{d}{d\boldsymbol{x}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})$.
+4. $\frac{d}{d\boldsymbol{A}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})$.
 
 ### פתרון 1.2
 
@@ -337,6 +368,7 @@ $$
 #### סעיף 2
 
 נסמן $h(\boldsymbol{x})=\|\boldsymbol{x}\|_2^2$ ונשים לב ש $\|\boldsymbol{x}\|_2=\sqrt{h(\boldsymbol{x})}$. כמו כן נשתמש בעובדה שאת הנגזרת של $h(\boldsymbol{x})$ כבר חישבנו בסעיף הקודם:
+
 $$
 \frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2
 =\frac{d}{d\boldsymbol{x}}\sqrt{h(\boldsymbol{x})}
@@ -347,49 +379,57 @@ $$
 #### סעיף 3
 
 נגזור על פי הגדרה:
+
 $$
+\begin{aligned}
 \frac{d}{d\boldsymbol{x}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})
-=\frac{d}{d\boldsymbol{x}}(\sum_{i,j} a_{i,j}x_ix_j)
+&=\frac{d}{d\boldsymbol{x}}(\sum_{i,j} a_{i,j}x_ix_j)
 =\begin{bmatrix}
 \frac{d}{dx_1}(\sum_{i,j} a_{i,j}x_ix_j) \\ \frac{d}{dx_2}(\sum_{i,j} a_{i,j}x_ix_j) \\ \vdots \\ \frac{d}{dx_d}()\sum_{i,j} a_{i,j}x_ix_j
 \end{bmatrix}
 =\begin{bmatrix}
 \sum_i a_{i,1}x_i+\sum_j a_{1,j}x_j \\ \sum_i a_{i,2}x_i+\sum_j a_{2,j}x_j \\ \vdots \\ \sum_i a_{i,d}x_i+\sum_j a_{d,j}x_j
 \end{bmatrix} \\
-=\begin{bmatrix}
+&=\begin{bmatrix}
 \boldsymbol{A}_{:,1}^\top\boldsymbol{x}+\boldsymbol{A}_{1,:}\boldsymbol{x} \\ \boldsymbol{A}_{:,2}^\top\boldsymbol{x}+\boldsymbol{A}_{2,:}\boldsymbol{x} \\ \vdots \\ \boldsymbol{A}_{:,d}^\top\boldsymbol{x}+\boldsymbol{A}_{d,:}\boldsymbol{x}
 \end{bmatrix}
 =\boldsymbol{A}^\top\boldsymbol{x}+\boldsymbol{A}\boldsymbol{x}
 =(\boldsymbol{A}^\top+\boldsymbol{A})\boldsymbol{x}
+\end{aligned}
 $$
 
 #### סעיף 4
 
 נגזור על פי הגדרה:
+
 $$
+\begin{aligned}
 \frac{d}{d\boldsymbol{A}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})
-=\frac{d}{d\boldsymbol{A}}(\sum_{i,j} a_{i,j}x_ix_j)
-=\begin{bmatrix}
+&=\frac{d}{d\boldsymbol{A}}(\sum_{i,j} a_{i,j}x_ix_j)\\
+&=\begin{bmatrix}
 \frac{d}{da_{1,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{1,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{1,m}}(\sum_{i,j} a_{i,j}x_ix_j) \\
 \frac{d}{da_{2,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{2,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{2,m}}(\sum_{i,j} a_{i,j}x_ix_j) \\
 \vdots && \vdots && \ddots && \vdots \\
 \frac{d}{da_{n,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{n,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{n,m}}(\sum_{i,j} a_{i,j}x_ix_j)
 \end{bmatrix} \\
-=\begin{bmatrix}
+&=\begin{bmatrix}
 x_1x_1 && x_1x_2 && \cdots && x_1x_m \\
 x_2x_1 && x_2x_2 && \cdots && x_2x_m \\
 \vdots && \vdots && \ddots && \vdots \\
 x_nx_1 && x_nx_2 && \cdots && x_nx_m
 \end{bmatrix}
 =\boldsymbol{x}\boldsymbol{x}^\top
+\end{aligned}
 $$
 
 ## תרגיל 1.3 - בחזרה לבעיית המעגל
 
 נחזור לפונקציית ה"ציון" של מידת ההתאמה של מעגל לנקודות מהדוגמא בתחילת התרגול.
+
 $$
 f(\boldsymbol{c},r)=\frac{1}{n}\sum_{i=1}^n (\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2-r)^2
 $$
+
 חשבו את הנגזרות של פונקציה זו: $\nabla_{\boldsymbol{c}}f$ ו $\frac{d}{dr}f$.
 (לצורך החישוב של $\nabla_{\boldsymbol{c}}f$ השתמשו בשיטה דומה לזו שהופיע בסעיף 2 של השאלה הקודמת)
 
@@ -403,18 +443,20 @@ $$
 $$
 
 על פי ההנחיה, לצורך הגזירה לפי $\boldsymbol{c}$ נסמן את פונקציית העזר $h(\boldsymbol{x},\boldsymbol{c})=\|\boldsymbol{x}-\boldsymbol{c}\|_2^2$ בעזרתה נוכל לרשום את $f$ כ:
+
 $$
 f(\boldsymbol{c},r)=\frac{1}{n}\sum_{i=1}^n (\sqrt{h(\boldsymbol{x^{(i)}},\boldsymbol{c})}-r)^2
 $$
 
 נחשב תחילה את הנגזרת של  $h(\boldsymbol{x},\boldsymbol{c})$:
+
 $$
 \begin{aligned}
 \frac{d}{d\boldsymbol{c}}h(\boldsymbol{x},\boldsymbol{c})
 &=\frac{d}{d\boldsymbol{c}}\|\boldsymbol{x}-\boldsymbol{c}\|_2^2 \\
 &=\frac{d}{d\boldsymbol{c}}(\boldsymbol{x}-\boldsymbol{c})^\top(\boldsymbol{x}-\boldsymbol{c}) \\
 &=\frac{d}{d\boldsymbol{c}}(\|\boldsymbol{x}\|_2^2-2\boldsymbol{c}^\top\boldsymbol{x}+\|\boldsymbol{c}\|_2^2) \\
-&=2(\boldsymbol{c}-\boldsymbol{x}) \\
+&=2(\boldsymbol{c}-\boldsymbol{x})
 \end{aligned}
 $$
 
@@ -443,6 +485,7 @@ $$
 
 - מאתחלים את $\boldsymbol{\theta}^{(0)}$ בנקודה אקראית כל שהיא
 - חוזרים על צעד העדכון הבא עד להתכנסות:
+
   $$
   \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}f(\boldsymbol{\theta}^{(t)})
   $$
@@ -468,6 +511,6 @@ $$
 
 למטה משורטט תהליך ההתכנסות של אלגוריתם הגרדיאנט בעבור $\eta=0.01$ ו 500 צעדים כאשר מתחילים את התהליך ממעגל היחידה:
 
-![circle_fitting_iterations](./assets/circle_fitting_iterations.png)
+![](./assets/circle_fitting_iterations.png)
 
 </div>

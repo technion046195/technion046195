@@ -2,4 +2,5 @@
 public/
 node_modules/
 package-lock.json
+docx/
 .ipynb_checkpoints
