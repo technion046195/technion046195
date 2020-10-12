@@ -28,8 +28,6 @@ module.exports = {
         path: `${__dirname}/content`
       },
     },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-transformer-remark`,
       options: {
@@ -41,7 +39,7 @@ module.exports = {
             }
           },
           `gatsby-remark-external-links`,
-          `gatsby-remark-images`,
+          `gatsby-remark-static-images`,
           `gatsby-remark-responsive-iframe`,
           `gatsby-remark-prismjs`,
           `gatsby-remark-copy-linked-files`,
@@ -50,3 +48,10 @@ module.exports = {
     }
   ],
 }
+
+          // {
+          //   resolve: `gatsby-remark-images`,
+          //   maxWidth: 900,
+          //   linkImagesToOriginal: false,
+          //   quality: 90,
+          // }

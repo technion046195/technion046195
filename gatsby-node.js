@@ -66,8 +66,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         console.log(`!!!! Missing slug: ${slug}`)
       } else {
         let type = slugsData[slug].type;
-        console.log(slug)
-        console.log(lastByType[type])
         if (lastByType[type] != null) {
           slugsData[lastByType[type]].next = slug;
           slugsData[slug].prev = lastByType[type];
@@ -76,7 +74,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       }
     })
   })
-  console.log(slugsData)
 
   Object.keys(slugsData).forEach(slug => {
     createPage({

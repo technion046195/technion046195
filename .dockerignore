@@ -2,3 +2,4 @@
 !package.json
 !pip_requirements.txt
 !docker-entrypoint.sh
+!src/styles/style.css

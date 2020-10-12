@@ -14,6 +14,8 @@ RUN apt-get update && \
         python3-pip \
         pylint \
         pandoc \
+        texlive-xetex \
+        texlive-lang-arabic \
         locales \
         jq \
         && \
@@ -27,10 +29,16 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8  
 
+## Install Pandoc
+## ==============
+RUN curl -L https://github.com/jgm/pandoc/releases/download/2.10.1/pandoc-2.10.1-1-amd64.deb --output /tmp/pandoc-2.10.1-1-amd64.deb && \
+    dpkg -i /tmp/pandoc-2.10.1-1-amd64.deb && \
+    rm /tmp/pandoc-2.10.1-1-amd64.deb 
+
 ## Install Node.js + npm
 ## =====================
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 10.22.0
+ENV NODE_VERSION 12.19.0
 RUN mkdir -p $NVM_DIR && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash && \
     . $NVM_DIR/nvm.sh && \
@@ -40,23 +48,8 @@ ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN npm install -g gatsby-cli@^2.12.77
 
-# ## Create a non-root user
-# ## ======================
-# ARG USERNAME=user
-# ARG USER_UID=1000
-# ARG USER_GID=$USER_UID
-# RUN groupadd --gid $USER_GID $USERNAME \
-#     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-#     && apt-get update \
-#     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-#     && chmod 0440 /etc/sudoers.d/$USERNAME
-# USER $USERNAME
-
 ## Setup project folder
 ## ====================
-# RUN sudo mkdir /project && \
-#     sudo chmod 777 /project && \
-#     mkdir -p /project/app
 RUN mkdir -p /project/app
 WORKDIR /project/app
 
@@ -77,14 +70,13 @@ ENV MPLBACKEND=Agg
 ## Import matplotlib the first time to build the font cache.
 RUN python3 -c "import matplotlib.pyplot"
 
-# ## Install Oh-My-Zsh
-# ## =================
-# RUN sudo chsh -s $(which zsh) user
-# RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
-#     git clone https://github.com/zsh-users/zsh-syntax-highlighting $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
-#     git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
-#     sed -i "s/^plugins=(\(.*\))$/plugins=(\1 zsh-autosuggestions zsh-syntax-highlighting)/" /home/user/.zshrc
-# # RUN sed -i -e "s/ZSH_THEME=.*/ZSH_THEME=garyblessington/" ~/.zshrc 
+## Setup Jupyter extensions
+## ------------------------
+RUN jupyter contrib nbextension install --system && \
+    jupyter nbextensions_configurator enable && \
+    jupyter nbextension enable spellchecker/main
+
+COPY ./src/styles/style.css /root/.jupyter/cutom/custom.css
 
 RUN echo 'echo "It seems like the project folder was not mounted into the container. Please run the container using the following command:\n"' > /project/app/docker-entrypoint.sh && \
     echo 'echo "    $ docker run -it --rm -v "$PWD:/project/app" --net=host omeryair/technion_course:v0.1"' >> /project/app/docker-entrypoint.sh

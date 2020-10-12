@@ -31,8 +31,47 @@ a {
   text-decoration: none;
 }
 
-p {
+.main-content {
   text-align: justify;
+}
+
+.imgbox {
+  border-color: red;
+  width:60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.imgbox img {
+  width: 100%
+}
+
+/* Header footer and main */
+/* ====================== */
+.main-content {
+  min-height: calc(100vh - 120px);
+  margin: 0 auto;
+  max-width: 900px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.main-contant .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.footer {
+  background: rgb(108, 117, 125);
+  color: #f8f9fa;
+  text-align: center;
+  position: relative;
+  height: 62px;
+  padding-top: 20px;
+}
+
+.footer a {
+  color: #f8f9fa;
 }
 
 /* Navbar (taken from bootstrap) */
@@ -147,34 +186,6 @@ p {
   }
 }
 
-/* Header footer and main */
-/* ====================== */
-.main-content {
-  min-height: calc(100vh - 120px);
-  margin: 0 auto;
-  max-width: 900px;
-  padding-right: 15px;
-  padding-left: 15px;
-}
-
-.katex-display {
-  overflow: scroll;
-  /* width:fit-content;  */
-}
-
-.footer {
-  background: rgb(108, 117, 125);
-  color: #f8f9fa;
-  text-align: center;
-  position: relative;
-  height: 62px;
-  padding-top: 20px;
-}
-
-.footer a {
-  color: #f8f9fa;
-}
-
 /* Toc */
 /* === */
 .content-item {
@@ -257,8 +268,16 @@ blockquote {
   padding: 10px 20px 1px 20px;
 }
 
+/* Notebooks */
+/* ========= */
+#notebook-container .rendered_html .output_png,
+#notebook-container .rendered_html .output_gif
+ {
+  text-align: center;
+}
+
 /* Tables (taken from Pandas/Jupyter) */
-/* =========================== */
+/* ================================== */
 .content-page .table-container {
   direction: ltr;
   overflow-x: auto;
