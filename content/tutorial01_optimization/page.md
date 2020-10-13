@@ -1,4 +1,5 @@
 ---
+
 template: page
 type: tutorial
 ---
@@ -130,7 +131,7 @@ $$
 \theta_1^*,\theta_2^*,\ldots,\theta_d^*=\underset{\theta_1,\theta_2,\ldots,\theta_d}{\arg\min}\quad f\left(\theta_1,\theta_2,\ldots,\theta_d\right)
 $$
 
-במקרים רבים נוח יותר לאגד את כל הארגומנטים של $f$ לוקטור אחד $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_d)^\top$ ולרשום את בעיית האופטימזציה כ:
+במקרים רבים נוח יותר לאגד את כל הארגומנטים של $f$ לוקטור אחד $\boldsymbol{\theta}=[\theta_1,\theta_2,\ldots,\theta_d]^\top$ ולרשום את בעיית האופטימזציה כ:
 
 $$
 \boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\quad f\left(\boldsymbol{\theta}\right)
@@ -199,9 +200,9 @@ $$
 
 $$
 \begin{aligned}
-&\underset{\boldsymbol{\theta}=(\theta_1,\theta_2)^\top}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
+&\underset{\boldsymbol{\theta}=[\theta_1,\theta_2]^\top}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
 &\text{subject to}\quad
-1-(\theta_1^2+\theta_2^2)\leq 0
+1-(\theta_1^2+\theta_2^2)\geq 0
 \end{aligned}
 $$
 
@@ -259,7 +260,7 @@ $$
 
 $$
 \begin{aligned}
-&\underset{{\theta}=(\theta_1,\theta_2)^\top}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2 \\
+&\underset{{\theta}=[\theta_1,\theta_2]^\top}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2 \\
 &\text{subject to}\quad
 1-(\theta_1^2+\theta_2^2)=0
 \end{aligned}
@@ -451,7 +452,7 @@ $$
 
 $$
 \frac{d}{dr}f(\boldsymbol{c},r)
-=\frac{2}{n}\sum_{i=1}^n (r-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2)r
+=\frac{2}{n}\sum_{i=1}^n (r-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2)
 $$
 
 על פי ההנחיה, לצורך הגזירה לפי $\boldsymbol{c}$ נסמן את פונקציית העזר $h(\boldsymbol{x},\boldsymbol{c})=\|\boldsymbol{x}-\boldsymbol{c}\|_2^2$ בעזרתה נוכל לרשום את $f$ כ:
@@ -514,7 +515,7 @@ $$
 
 $$
 \begin{aligned}
-r^{(t+1)}&=r^{(t)}-\frac{2\eta}{n}\sum_{i=1}^n (r^{(t)}-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}\|_2)r^{(t)}\\
+r^{(t+1)}&=r^{(t)}-\frac{2\eta}{n}\sum_{i=1}^n (r^{(t)}-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}\|_2)\\
 \boldsymbol{c}^{(t+1)}&=\boldsymbol{c}^{(t)}-\frac{2\eta}{n}\sum_{i=1}^n (r^{(t)}-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}\|_2)\frac{\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}}{\|\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}\|_2}
 \end{aligned}
 $$
