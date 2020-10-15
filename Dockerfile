@@ -76,7 +76,7 @@ RUN jupyter contrib nbextension install --system && \
     jupyter nbextensions_configurator enable && \
     jupyter nbextension enable spellchecker/main
 
-COPY ./src/styles/style.css /root/.jupyter/cutom/custom.css
+COPY ./src/styles/style.css /root/.jupyter/custom/custom.css
 
 RUN echo 'echo "It seems like the project folder was not mounted into the container. Please run the container using the following command:\n"' > /project/app/docker-entrypoint.sh && \
     echo 'echo "    $ docker run -it --rm -v "$PWD:/project/app" --net=host omeryair/technion_course:v0.1"' >> /project/app/docker-entrypoint.sh
