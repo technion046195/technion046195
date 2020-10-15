@@ -4,7 +4,6 @@ import { graphql } from "gatsby"
 import Layout from "../components/layout"
 
 const Attributions = ({ data }) => {
-  console.log(data)
   return (
     <Layout type="attrib" pageTitle='Attributions'>
       <div dangerouslySetInnerHTML={{ __html: data.attrib.html }}/>

@@ -7,7 +7,7 @@ type: attrib
 # Attributions
 
 </div>
-<div class="ltrDiv">
+<div style="direction:ltr;unicode-bidi:bidi-override">
 
 ## Images
 

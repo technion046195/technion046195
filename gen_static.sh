@@ -4,7 +4,7 @@ set -e
 
 PAGE=$1
 
-docker run -it --rm -v "$PWD:/project/app" --net=host -w "/project/app/content/$PAGE" omeryair/technion046195:v0.1 \
+docker run -it --rm -v "$PWD:/project/app" --net=host omeryair/technion046195:v0.1 \
     pandoc "/project/app/content/$PAGE/page.md" \
         --resource-path="/project/app/content/$PAGE" \
         -f markdown \
@@ -18,10 +18,10 @@ docker run -it --rm -v "$PWD:/project/app" --net=host -w "/project/app/content/$
         -o "./static/$PAGE.pdf"
 echo "Generated static/$PAGE.pdf"
 
-docker run -it --rm -v "$PWD:/project/app" --net=host -w "/project/app/content/$PAGE" omeryair/technion046195:v0.1 \
+docker run -it --rm -v "$PWD:/project/app" --net=host omeryair/technion046195:v0.1 \
     pandoc "/project/app/content/$PAGE/page.md" \
         --resource-path="/project/app/content/$PAGE" \
-        -f markdown+tex_math_dollars
-        -t docx
+        -f markdown+tex_math_dollars \
+        -t docx \
         -o "./static/$PAGE.docx"
 echo "Generated static/$PAGE.docx"

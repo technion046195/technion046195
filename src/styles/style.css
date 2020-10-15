@@ -8,7 +8,7 @@
 
 /* LTR override */
 /* ============ */
-.ltrDiv, .katex , .katex-display {
+.katex , .katex-display {
   direction: ltr;
   unicode-bidi: bidi-override;
 }
@@ -33,17 +33,37 @@ a {
 
 .main-content {
   text-align: justify;
+  font-size: 1.1rem;
 }
 
 .imgbox {
-  border-color: red;
-  width:60%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+@media print {
+  .imgbox {
+    width: 60%;
+  }
 }
 
 .imgbox img {
-  width: 100%
+  max-width: 100%;
+}
+
+.imgbox:not(.no-shadow) img {
+  border-radius: 10px;
+  /* filter: drop-shadow(5px 5px 5px #222); */
+  box-shadow: 5px 5px 15px #888888;
+}
+
+blockquote {
+  padding: 10px 20px 1px 20px;
+  border-right: 10px solid #b3b3b3;
 }
 
 /* Header footer and main */
@@ -56,7 +76,7 @@ a {
   padding-left: 15px;
 }
 
-.main-contant .katex-display {
+.main-content .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -73,6 +93,13 @@ a {
 .footer a {
   color: #f8f9fa;
 }
+
+@media print {
+  .footer {
+    display: none;
+  }
+}
+
 
 /* Navbar (taken from bootstrap) */
 /* ============================= */
@@ -263,11 +290,6 @@ h5 {
   color: #355681;
 }
 
-blockquote {
-  border-left: 10px solid #b3b3b3;
-  padding: 10px 20px 1px 20px;
-}
-
 /* Notebooks */
 /* ========= */
 #notebook-container .rendered_html .output_png,
@@ -278,12 +300,69 @@ blockquote {
 
 /* Tables (taken from Pandas/Jupyter) */
 /* ================================== */
-.content-page .table-container {
-  direction: ltr;
+.content-page .table-container,
+#notebook-container .rendered_html .table-container {
   overflow-x: auto;
 }
 
-.content-page table {
+.content-page table,
+#notebook-container .rendered_html table {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.85rem;
+  table-layout : fixed;
+}
+
+.content-page thead,
+#notebook-container .rendered_html thead {
+  background-color: #aaaaaa;
+  border-bottom: 1px solid black;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.content-page thead th,
+#notebook-container .rendered_html thead th {
+  font-weight: bold;
+  vertical-align: bottom;
+}
+
+.content-page table th,
+.content-page table td,
+#notebook-container .rendered_html table th,
+#notebook-container .rendered_html table td {
+  padding: 1em 0.5em;
+}
+
+.content-page table th:not(:last-child):not(:first-child),
+.content-page table td:not(:last-child):not(:first-child),
+#notebook-container .rendered_html table th:not(:last-child):not(:first-child),
+#notebook-container .rendered_html table td:not(:last-child):not(:first-child) {
+  border-left: 2px solid #bbbbbb;
+  border-right: 2px solid #bbbbbb;
+}
+
+@media print {
+  .content-page table tr:not(:last-child) td,
+  #notebook-container .rendered_html table tr:not(:last-child) td {
+    border-bottom: 2px solid #bbbbbb;
+  }
+}
+
+.content-page tbody tr:nth-child(odd),
+#notebook-container .rendered_html tr:nth-child(odd) {
+  background: #e0e0e0;
+}
+
+.content-page tbody tr:hover,
+#notebook-container .rendered_html tr:hover {
+  background: #6192d39b;
+}
+
+/* .content-page table,
+#notebook-container .rendered_html table {
   margin-left: auto !important;
   margin-right: auto !important;
   border: none;
@@ -295,14 +374,16 @@ blockquote {
   table-layout: fixed;
 }
 
-.content-page thead {
+.content-page thead,
+#notebook-container .rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
 
 .content-page table th,
-.content-page table td {
-  text-align: left;
+.content-page table td,
+#notebook-container .rendered_html table th,
+#notebook-container .rendered_html table td {
   vertical-align: top;
   padding: 1em 0.5em;
   line-height: normal;
@@ -311,7 +392,8 @@ blockquote {
   border: none;
 }
 
-.content-page thead th {
+.content-page thead th,
+#notebook-container .rendered_html thead th {
   font-weight: bold;
   vertical-align: bottom;
   background: linear-gradient(#333 0%, #444 100%);
@@ -320,15 +402,18 @@ blockquote {
   height: 40px;
 }
 
-.content-page tbody th {
+.content-page tbody th,
+#notebook-container .rendered_html tbody th {
   font-weight: bold;
   vertical-align: bottom;
 }
 
-.content-page tbody tr:nth-child(odd) {
+.content-page tbody tr:nth-child(odd),
+#notebook-container .rendered_html tr:nth-child(odd) {
   background: #e0e0e0;
 }
 
-.content-page tbody tr:hover {
+.content-page tbody tr:hover,
+#notebook-container .rendered_html tr:hover {
   background: #6192d39b;
-}
+} */
