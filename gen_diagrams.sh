@@ -14,4 +14,5 @@ for diag in "${!diagrams[@]}"; do
     fi
     IFS=' ' read -r -a args <<< "${diagrams[$diag]}"
     draw-io -x -f png -o "./content/$diag" "${args[@]}" ./content/assets/diagrams.drawio
+    mogrify -strip "./content/$diag"
 done
