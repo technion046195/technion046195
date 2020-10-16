@@ -21,7 +21,7 @@ The course's website is powered by the [Gatsby platform](http://gatsbyjs.com/), 
 
 The content of the web site (lectures, tutorials, additional data) is written in [markdown](https://en.wikipedia.org/wiki/Markdown) and is concentrated in the content folder.
 
-The deployment status of the site can be found here: <a href="https://app.netlify.com/sites/technion046195/deploys"><img src="https://api.netlify.com/api/v1/badges/98ffd985-f712-420b-9c05-2fd440fd134f/deploy-status"  target="_blank"/></a>
+The deployment status of the site can be found here: <a href="https://app.netlify.com/sites/technion046195/deploys" target="_blank"><img src="https://api.netlify.com/api/v1/badges/98ffd985-f712-420b-9c05-2fd440fd134f/deploy-status"/></a>
 
 The diagrams in this course are generated using [draw.io](https://app.diagrams.net/). The file containing all the diagrams can be found in *content/assets/diagrams.drawio*
 
