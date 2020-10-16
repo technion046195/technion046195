@@ -5,7 +5,7 @@ set -e
 echo "-> Running prebuild script"
 
 if [ ! -d "./static/docs" ]; then
-    mkdir "./static/docs"
+    mkdir -p "./static/docs"
 fi
 
 pages=(tutorial01_optimization tutorial02_probability)
