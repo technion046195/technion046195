@@ -20,6 +20,7 @@ body {
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
   color: #000000;
   background: #FFFFFF;
+  overflow-x: hidden;
 }
 
 img {
@@ -29,6 +30,12 @@ img {
 a {
   color: #007bff;
   text-decoration: none;
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: #888888;
 }
 
 .main-content {
@@ -66,10 +73,20 @@ blockquote {
   border-right: 10px solid #b3b3b3;
 }
 
+.moodle-section {
+  text-align: justify;
+  direction:rtl;
+  unicode-bidi:bidi-override;
+  max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
+  font-size: 1.1rem;
+}
+
 /* Header footer and main */
 /* ====================== */
 .main-content {
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 7rem);
   margin: 0 auto;
   max-width: 900px;
   padding-right: 15px;
@@ -86,8 +103,12 @@ blockquote {
   color: #f8f9fa;
   text-align: center;
   position: relative;
-  height: 62px;
-  padding-top: 20px;
+  /* height: 62px;
+  padding-top: 20px; */
+  font-size: 1em;
+  line-height: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .footer a {
@@ -215,11 +236,20 @@ blockquote {
 
 /* Toc */
 /* === */
-.content-item {
-  font-weight: 600;
-  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.4);
-  font-size: 1.4em;
-  line-height: 1.5em;
+/* .table-of-content div {
+  border:1px solid;
+} */
+
+.table-of-content > div{
+  padding-right: 2rem;
+  display: grid;
+  grid-template-columns: calc(100% - 10rem) 8rem;
+}
+
+.table-of-content > div > div:nth-child(even){
+  padding-top: 1em;
+  color: #888888;
+  text-align: left;
 }
 
 /* Headers */
@@ -300,12 +330,12 @@ h5 {
 
 /* Tables (taken from Pandas/Jupyter) */
 /* ================================== */
-.content-page .table-container,
+.site-content .table-container,
 #notebook-container .rendered_html .table-container {
   overflow-x: auto;
 }
 
-.content-page table,
+.site-content table,
 #notebook-container .rendered_html table {
   margin-left: auto !important;
   margin-right: auto !important;
@@ -315,7 +345,7 @@ h5 {
   table-layout : fixed;
 }
 
-.content-page thead,
+.site-content thead,
 #notebook-container .rendered_html thead {
   background-color: #aaaaaa;
   border-bottom: 1px solid black;
@@ -323,21 +353,21 @@ h5 {
   vertical-align: bottom;
 }
 
-.content-page thead th,
+.site-content thead th,
 #notebook-container .rendered_html thead th {
   font-weight: bold;
   vertical-align: bottom;
 }
 
-.content-page table th,
-.content-page table td,
+.site-content table th,
+.site-content table td,
 #notebook-container .rendered_html table th,
 #notebook-container .rendered_html table td {
   padding: 1em 0.5em;
 }
 
-.content-page table th:not(:last-child):not(:first-child),
-.content-page table td:not(:last-child):not(:first-child),
+.site-content table th:not(:last-child):not(:first-child),
+.site-content table td:not(:last-child):not(:first-child),
 #notebook-container .rendered_html table th:not(:last-child):not(:first-child),
 #notebook-container .rendered_html table td:not(:last-child):not(:first-child) {
   border-left: 2px solid #bbbbbb;
@@ -345,75 +375,18 @@ h5 {
 }
 
 @media print {
-  .content-page table tr:not(:last-child) td,
+  .site-content table tr:not(:last-child) td,
   #notebook-container .rendered_html table tr:not(:last-child) td {
     border-bottom: 2px solid #bbbbbb;
   }
 }
 
-.content-page tbody tr:nth-child(odd),
+.site-content tbody tr:nth-child(odd),
 #notebook-container .rendered_html tr:nth-child(odd) {
   background: #e0e0e0;
 }
 
-.content-page tbody tr:hover,
+.site-content tbody tr:hover,
 #notebook-container .rendered_html tr:hover {
   background: #6192d39b;
 }
-
-/* .content-page table,
-#notebook-container .rendered_html table {
-  margin-left: auto !important;
-  margin-right: auto !important;
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: black;
-  background: white;
-  font-size: 12px;
-  table-layout: fixed;
-}
-
-.content-page thead,
-#notebook-container .rendered_html thead {
-  border-bottom: 1px solid black;
-  vertical-align: bottom;
-}
-
-.content-page table th,
-.content-page table td,
-#notebook-container .rendered_html table th,
-#notebook-container .rendered_html table td {
-  vertical-align: top;
-  padding: 1em 0.5em;
-  line-height: normal;
-  white-space: normal;
-  max-width: none;
-  border: none;
-}
-
-.content-page thead th,
-#notebook-container .rendered_html thead th {
-  font-weight: bold;
-  vertical-align: bottom;
-  background: linear-gradient(#333 0%, #444 100%);
-  color: #fff;
-  font-weight: bold;
-  height: 40px;
-}
-
-.content-page tbody th,
-#notebook-container .rendered_html tbody th {
-  font-weight: bold;
-  vertical-align: bottom;
-}
-
-.content-page tbody tr:nth-child(odd),
-#notebook-container .rendered_html tr:nth-child(odd) {
-  background: #e0e0e0;
-}
-
-.content-page tbody tr:hover,
-#notebook-container .rendered_html tr:hover {
-  background: #6192d39b;
-} */

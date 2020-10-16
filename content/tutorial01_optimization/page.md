@@ -1,5 +1,4 @@
 ---
-
 template: page
 type: tutorial
 ---

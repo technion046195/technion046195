@@ -5,7 +5,7 @@ import Footer from "./footer"
 
 const Layout = ({ children, type, pageTitle, prev, next, slides }) => {
   return (
-    <div className={`content-page ${type}-page`}>
+    <div className={`site-content ${type}-page`}>
       <SEO title={pageTitle} />
       <Header prev={prev} next={next} slides={slides}/>
       <div className="main-content">
