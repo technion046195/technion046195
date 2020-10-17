@@ -63,11 +63,11 @@ title: Moodle data
 <h3>רקע מתמטי</h3>
 <div>
 <div>
-<h4><a href="tutorial01_optimization/page/">תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית</a></h4>
+<h4><a href="https://technion046195.netlify.app/tutorial01_optimization/">תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית</a></h4>
 הגדרת בעיות אופטימיזציה, גזירה של, ולפי סקלרים וקטורים ומטריצות, היכרות ראשונית עם gradient descent.
 </div><div>21,26,27/10</div>
 <div>
-<h4><a href="tutorial02_probability/page/">תרגול 2 - חזרה על הסתברות והחיזוי</a></h4>
+<h4><a href="https://technion046195.netlify.app/tutorial02_probability/">תרגול 2 - חזרה על הסתברות והחיזוי</a></h4>
 חזרה מהירה על החומר הרלוונטי בהסתברות ועל חזאים.
 </div><div>28/10 , 2,3/11</div>
 </div>

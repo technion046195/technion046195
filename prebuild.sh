@@ -32,7 +32,7 @@ for page in "${pages[@]}"; do
     #     -o "./static/docs/$page.pdf"
 
     echo "Generating static/$page/page.docx"
-    pandoc "./content/$page/page.md" \
+    pandoc "./content/$page/index.md" \
         --resource-path="./content/$page" \
         -f markdown+tex_math_dollars \
         -t docx \
