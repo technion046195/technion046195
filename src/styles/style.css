@@ -23,13 +23,9 @@ body {
   overflow-x: hidden;
 }
 
-img {
-  vertical-align: middle;
-}
-
 a {
   color: #007bff;
-  text-decoration: none;
+  text-decoration: none!important;
 }
 
 a.disabled {
@@ -81,6 +77,22 @@ blockquote {
   margin-left:auto;
   margin-right:auto;
   font-size: 1.1rem;
+}
+
+.link-button {
+  color: #fff;
+  background-color: #17a2b8;
+  display: inline-block;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 0.1rem 1rem;
+  border-radius: .25rem;
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, .3),
+              inset -1px -1px 2px rgba(0, 0, 0, .3);
+
 }
 
 /* Header footer and main */
@@ -322,10 +334,10 @@ h5 {
 
 /* Notebooks */
 /* ========= */
-#notebook-container .rendered_html .output_png,
-#notebook-container .rendered_html .output_gif
- {
-  text-align: center;
+#notebook-container .output_area img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Tables (taken from Pandas/Jupyter) */
@@ -341,8 +353,15 @@ h5 {
   margin-right: auto !important;
   border-collapse: collapse;
   background: white;
-  font-size: 0.85rem;
   table-layout : fixed;
+}
+
+.site-content table {
+  font-size: 0.85rem;
+}
+
+.moodle-section table {
+  font-size: 1.1rem;
 }
 
 .site-content thead,

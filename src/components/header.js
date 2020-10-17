@@ -3,7 +3,6 @@ import { useStaticQuery, Link, graphql } from "gatsby"
 import { Nav, Navbar } from 'react-bootstrap';
 
 import TechnionLogo from "../../content/assets/technion_logo_white.svg"
-import SlidesShield from "../../content/assets/slides_shield.svg"
 
 const CondNavItem = ({ children, to }) => {
   if (to === 'hide') {
@@ -27,7 +26,7 @@ const CondNavItem = ({ children, to }) => {
   }
 }
 
-const Header = ({prev, next, slides}) => {
+const Header = ({prev, next}) => {
   const data = useStaticQuery(
     graphql`
       query {
@@ -49,7 +48,6 @@ const Header = ({prev, next, slides}) => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav as="ul" className="ml-auto">
-            <CondNavItem to={slides}><img src={SlidesShield} alt="Open Slides" /></CondNavItem> 
             <CondNavItem to={prev}>&laquo;הקודם</CondNavItem>
             <CondNavItem to={next}>הבא&raquo;</CondNavItem>
         </Nav>
@@ -61,7 +59,6 @@ const Header = ({prev, next, slides}) => {
 Header.defaultProps = {
   prev: 'hide',
   next: 'hide',
-  slides: 'hide',
 }
 
 export default Header

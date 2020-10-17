@@ -1,12 +1,19 @@
 ---
 template: page
 type: tutorial
+order: 2
 ---
 
 <div dir="rtl"  style="direction:rtl;unicode-bidi:bidi-override">
 <div id="title">
 
 # תרגול 2 - חזרה על הסתברות וחיזוי
+
+</div>
+
+<div dir="ltr">
+
+<a href="../code.html" class="link-button">Code</a>
 
 </div>
 
@@ -32,7 +39,7 @@ type: tutorial
 
 > נניח ואנו לוקחים כוס מיץ, שופכים את תוכלתה על הרצפה ומסתכלים על הצורה של השלולית שנוצרה.
 
-(חשוב לציין שזהו ניסוי מחשבתי ואין צורך לנסות את זה בבית). 
+(חשוב לציין שזהו ניסוי מחשבתי ואין צורך לנסות את זה בבית).
 
 התופעה המתוארת אשר יוצרת בסופו של דבר את השלולית היא תופעה אקראית, שכן ישנו מגוון רחב של תוצאות שיכולות להתקבל מהתהליך הזה. נגדיר בטבלה הבאה את המושגים ההסתברותיים הרלוונטיים הקשורים לתופעה הזו ואת הסימונים המוקובלים (בהם נעשה שימוש בקורס). מתחת לטבלה תמצאו שרטוט אשר ממחיש את הקשר בין המושגים האלו.
 
@@ -88,7 +95,6 @@ $$
 ![](./assets/temi.png)<br/>רובוט של חברת [temi](https://www.robotemi.com/) הישראלית אשר יכול לסייע להכוונת חולים להמשך טיפול.
 
 </div>
-
 
 ## תרגיל 2.1: תרגיל חימום בהסתברות
 
@@ -322,7 +328,7 @@ $$
 
 <div class="imgbox">
 
-![](./assets/dist_t_given_p.png)
+![](./output/dist_t_given_p.png)
 
 </div>
 
@@ -360,7 +366,7 @@ $$
 
 <div class="imgbox">
 
-![](./assets/dist_tp.png)
+![](./output/dist_tp.png)
 
 </div>
 
@@ -390,7 +396,7 @@ $$
 
 <div class="imgbox">
 
-![](./assets/dist_p_given_t_stack.png)
+![](./output/dist_p_given_t_stack.png)
 
 </div>
 
@@ -552,7 +558,7 @@ $$
 
 ### פתרון 2.4
 
-#### 1)
+**1)**
 
 $$
 \hat{x}^*=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[I\{\hat{x}\neq \text{x}\}\right]
@@ -659,7 +665,7 @@ $$
 
 <div class="imgbox">
 
-![](./assets/p_predictors.png)
+![](./output/p_predictors.png)
 
 </div>
 

@@ -1,7 +1,12 @@
+const express = require('express')
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
-const { execSync, spawnSync } = require('child_process');
+const { spawnSync } = require('child_process');
+
+exports.onCreateDevServer=({app})=>{
+    app.use(express.static('public'))
+}
 
 exports.onPreInit = (_, pluginOptions) => {
   const spawn = spawnSync(`./prebuild.sh`, [], {stdio: ['inherit', 'inherit', 'pipe']});
@@ -27,22 +32,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
   const result = await graphql(`
       query {
-        index: markdownRemark(frontmatter: {type: {eq: "index"}}) {
-          frontmatter {
-            subjects {
-              slugs
-            }
-          }
-        }
-        allMarkdownRemark(filter: {frontmatter: {template: {ne: null}}}) {
-          nodes {
-            fields {
-              slug
-            }
-            frontmatter {
-              template
-              type
-            }
+        allMarkdownRemark(
+          sort: { order: ASC, fields: [frontmatter___order] },
+          filter: {frontmatter: {template: {ne: null}}}
+          ) {
+            nodes {
+              fields {
+                slug
+              }
+              frontmatter {
+                template
+                type
+                order
+              }
           }
         }
       }
@@ -60,30 +62,23 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const data = result.data;
 
 
+  let lastByType = {}
   let slugsData = {};
   data.allMarkdownRemark.nodes.forEach((node) => {
     slug = node.fields.slug;
     let type = node.frontmatter.type;
+    let order = node.frontmatter.order;
     let template = node.frontmatter.template;
     slugsData[slug] = {type, template,  prev: 'disable', next: 'disable'};
-  });
 
-  let lastByType = {}
-  data.index.frontmatter.subjects.map(subject => {
-    subject.slugs.map(function(slug) { 
-      slug = '/' + slug + '/page/';
-      if (slugsData[slug] == null) {
-        console.log(`!!!! Missing slug: ${slug}`)
-      } else {
-        let type = slugsData[slug].type;
-        if (lastByType[type] != null) {
-          slugsData[lastByType[type]].next = slug;
-          slugsData[slug].prev = lastByType[type];
-        }
-        lastByType[type] = slug;
+    if (order != null) {
+      if (lastByType[type] != null) {
+        slugsData[lastByType[type]].next = slug;
+        slugsData[slug].prev = lastByType[type];
       }
-    })
-  })
+      lastByType[type] = slug;
+    }
+  });
 
   Object.keys(slugsData).forEach(slug => {
     createPage({

@@ -1,12 +1,19 @@
 ---
 template: page
 type: tutorial
+order: 1
 ---
 
 <div dir="rtl">
 <div id="title">
 
 # תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית
+
+</div>
+
+<div dir="ltr">
+
+<a href="../code.html" class="link-button">Code</a>
 
 </div>
 
@@ -18,7 +25,7 @@ type: tutorial
 
 <div class="imgbox">
 
-![](./assets/circle_dataset.png)
+![](./output/circle_dataset.png)
 
 </div>
 
@@ -529,7 +536,7 @@ $$
 
 <div class="imgbox">
 
-![](./assets/circle_fitting_iterations.gif)
+![](./output/circle_fitting_iterations.gif)
 
 </div>
 
