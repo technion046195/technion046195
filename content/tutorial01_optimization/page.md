@@ -70,7 +70,7 @@ order: 1
 
 <!-- -->
 
-- $\langle\boldsymbol{x},\boldsymbol{y}\rangle(=\boldsymbol{x}^\top\boldsymbol{y}=\sum_i x_iy_i)$ - המכפלה הוקטורית הסטנדרטית בין $\boldsymbol{x}$ ל $\boldsymbol{y}$.
+- $\langle\boldsymbol{x},\boldsymbol{y}\rangle(=\boldsymbol{x}^\top\boldsymbol{y}=\sum_i x_iy_i)$ - המכפלה הפנימית הסטנדרטית בין $\boldsymbol{x}$ ל $\boldsymbol{y}$.
 - $\|\boldsymbol{x}\|_2(=\sqrt{\langle\boldsymbol{x},\boldsymbol{x}\rangle})$- הנורמה הסטנדרטית (נורמת $l2$) של הוקטור $\boldsymbol{x}$.
 - $\|\boldsymbol{x}\|_l(=\sqrt[l]{\sum_i x_i^l})$ - נורמת $l$ של $\boldsymbol{x}$
 
@@ -430,16 +430,16 @@ $$
 \frac{d}{d\boldsymbol{A}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})
 &=\frac{d}{d\boldsymbol{A}}(\sum_{i,j} a_{i,j}x_ix_j)\\
 &=\begin{bmatrix}
-\frac{d}{da_{1,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{1,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{1,m}}(\sum_{i,j} a_{i,j}x_ix_j) \\
-\frac{d}{da_{2,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{2,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{2,m}}(\sum_{i,j} a_{i,j}x_ix_j) \\
+\frac{d}{da_{1,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{1,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{1,d}}(\sum_{i,j} a_{i,j}x_ix_j) \\
+\frac{d}{da_{2,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{2,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{2,d}}(\sum_{i,j} a_{i,j}x_ix_j) \\
 \vdots && \vdots && \ddots && \vdots \\
-\frac{d}{da_{n,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{n,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{n,m}}(\sum_{i,j} a_{i,j}x_ix_j)
+\frac{d}{da_{d,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{d,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{d,d}}(\sum_{i,j} a_{i,j}x_ix_j)
 \end{bmatrix} \\
 &=\begin{bmatrix}
-x_1x_1 && x_1x_2 && \cdots && x_1x_m \\
-x_2x_1 && x_2x_2 && \cdots && x_2x_m \\
+x_1x_1 && x_1x_2 && \cdots && x_1x_d \\
+x_2x_1 && x_2x_2 && \cdots && x_2x_d \\
 \vdots && \vdots && \ddots && \vdots \\
-x_nx_1 && x_nx_2 && \cdots && x_nx_m
+x_dx_1 && x_dx_2 && \cdots && x_dx_d
 \end{bmatrix}
 =\boldsymbol{x}\boldsymbol{x}^\top
 \end{aligned}
