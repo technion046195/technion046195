@@ -13,7 +13,7 @@ order: 2
 
 <div dir="ltr">
 
-<a href="./code.html" class="link-button">Code</a>
+<a href="../tutorial02_probability_code.html" class="link-button">Code</a>
 
 </div>
 
