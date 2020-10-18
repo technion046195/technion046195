@@ -13,7 +13,7 @@ order: 1
 
 <div dir="ltr">
 
-<a href="../code.html" class="link-button">Code</a>
+<a href="./code.html" class="link-button">Code</a>
 
 </div>
 
