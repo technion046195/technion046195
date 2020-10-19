@@ -62,7 +62,7 @@ title: Moodle data
 <div><div></div><div>תאריך</div></div>
 <div>
 <div>
-<h4><a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/static/assignments/assignment_0_ex.ipynb">תרגיל בית 0 - היכרות עם Python ו Colab</a></h4>
+<h4><a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/static/assignments/assignment_0_ex.ipynb" target="_blank">תרגיל בית 0 - היכרות עם Python ו Colab</a></h4>
 תרגיל זה הוא לא להגשה, אך יש לפתוח אותו ולעקוב אחרי ההוראות המופיעות בתרגיל.
 </div>
 </div>
