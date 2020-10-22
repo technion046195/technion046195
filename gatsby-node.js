@@ -2,19 +2,19 @@ const express = require('express')
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
-// const { spawnSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 exports.onCreateDevServer=({app})=>{
     app.use(express.static('public'))
 }
 
-// exports.onPreInit = (_, pluginOptions) => {
-//   const spawn = spawnSync(`./prebuild.sh`, [], {stdio: ['inherit', 'inherit', 'pipe']});
-//   if (spawn.stderr.length) {
-//     console.log(`Error: stderr:  ${spawn.stderr.toString()}`);
-//     process.exit(1)
-//   }
-// }
+exports.onPreInit = (_, pluginOptions) => {
+  const spawn = spawnSync(`./prebuild.sh`, [], {stdio: ['inherit', 'inherit', 'pipe']});
+  if (spawn.stderr.length) {
+    console.log(`Error: stderr:  ${spawn.stderr.toString()}`);
+    process.exit(1)
+  }
+}
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
