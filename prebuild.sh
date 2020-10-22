@@ -5,7 +5,7 @@ set -e
 echo "-> Running prebuild script"
 
 mkdir -p ~/.jupyter/custom
-cp /project/app/src/styles/style.css ~/.jupyter/custom/custom.css
+cp ./src/styles/style.css ~/.jupyter/custom/custom.css
 if [ ! -d "./static" ]; then
     mkdir static
 fi
