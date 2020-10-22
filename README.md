@@ -27,7 +27,7 @@ The diagrams in this course are generated using [draw.io](https://app.diagrams.n
 
 ## Contributing
 
-The suggested way for editing the contant of the website is by running the site localy which is updated on the fly as the markdown content is being updated.
+The suggested way for editing the content of the website is by running the site localy which is updated on the fly as the markdown content is being updated.
 
 ### Install docker
 
