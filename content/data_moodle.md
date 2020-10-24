@@ -20,11 +20,11 @@
 |   | תפקיד | מייל | שעות קבלה | חדר |
 | - | - | - | - | - |
 | דניאל סודרי | אחראי | daneil.soudry@technion.ac.il | --- | פישבך 435 |
-| עומר יאיר | מרצה | omer.yair@campus.technion.ac.il | TBD | מאייר 514 |
-| ליאור שני | מתרגל אחראי | lior.shani@campus.technion.ac.il | TBD | פישבך 460 |
-| נועה אלקובי | מתרגלת | snoaa@campus.technion.ac.il | TBD | מאייר 514 |
-| אביעד אברדם | מתרגל | aaberdam@campus.technion.ac.il  | TBD | טאוב 433 |
-| שחר פרייזלר | בודק תרגילים | spraizler@campus.technion.ac.il | TBD | מאייר 661 |
+| עומר יאיר | מרצה | omer.yair@campus.technion.ac.il | חמישי 9:00-10:00 | מאייר 514 |
+| ליאור שני | מתרגל אחראי | lior.shani@campus.technion.ac.il | שלישי 19:30-20:30 | פישבך 460 |
+| נועה אלקובי | מתרגלת | snoaa@campus.technion.ac.il | רביעי 12:30-13:30 | מאייר 514 |
+| אביעד אברדם | מתרגל | aaberdam@campus.technion.ac.il  | שני 10:30-11:30 | טאוב 433 |
+| שחר פרייזלר | בודק תרגילים | spraizler@campus.technion.ac.il | --- | מאייר 661 |
 
 ### מבנה הקרוס
 
