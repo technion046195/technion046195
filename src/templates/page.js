@@ -5,9 +5,9 @@ import "katex/dist/katex.min.css"
 import Layout from "../components/layout"
 
 const Page = ({ data, pageContext }) => {
-  const title = data.page.headings[0].value
-  const type = data.page.frontmatter.type
-  const { prev, next } = pageContext
+  const title = data.page.headings[0].value;
+  const type = data.page.frontmatter.type;
+  const { prev, next } = pageContext;
   return (
     <Layout pageTitle={title} type={type} prev={prev} next={next}>
       <article dangerouslySetInnerHTML={{ __html: data.page.html }} />

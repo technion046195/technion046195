@@ -1,6 +1,6 @@
 import React from "react"
 import SEO from "../components/seo"
-// import { graphql } from "gatsby"
+import { graphql } from "gatsby"
 
 class MoodlePage extends React.Component {
   componentDidMount() {
@@ -16,10 +16,12 @@ class MoodlePage extends React.Component {
   render() {
     console.log('Render lifecycle')
     return (
-      <div className="site-content moodle-data">
+      <div className="site-style site-content moodle-data">
         <SEO title="Moodle data" />
-        <article dangerouslySetInnerHTML={{ __html: this.props.data.data_moodle.html }}/>
-        <article dangerouslySetInnerHTML={{ __html: this.props.data.data_all.html }}/>
+        <div className="main-content">
+          <article dangerouslySetInnerHTML={{ __html: this.props.data.data_moodle.html }}/>
+          <article dangerouslySetInnerHTML={{ __html: this.props.data.data_all.html }}/>
+        </div>
       </div>
     )
   }
