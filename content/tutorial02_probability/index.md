@@ -156,7 +156,7 @@ $$
 **6)** **על פי הגדרה**, ההסתברות המותנית של המאורע הראשון בהינתן המאורע השני שווה ל:
 
 $$
-   \text{Pr}(\text{t}>39\lvert \text{f}=1)=\frac{\text{Pr}(\text{t}>39\cap\text{f}=1)}{\text{Pr}(\text{t}>39)}=\frac{0.05}{0.2}=0.25
+   \text{Pr}(\text{t}>39\lvert \text{f}=1)=\frac{\text{Pr}(\text{t}>39\cap\text{f}=1)}{\text{Pr}(\text{f}=1)}=\frac{0.05}{0.1}=0.5
 $$
 
 ## פונקציות פילוג (Distributions)
