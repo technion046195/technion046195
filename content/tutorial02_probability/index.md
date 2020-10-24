@@ -60,11 +60,12 @@ order: 2
 2. בכתב יד, נשתמש בקו עילי על מנת לסמן את המשתנים האקראיים (לדוגמא: $\bar{x}$, $\bar{\boldsymbol{x}}$ או $\bar{X}$)
 3. בשתי השורות האחרונות השתמשנו בסימונים מהצורה $\text{x}<2$ כקיצור ל $\lbrace\omega:\text{x}(\omega)<2\rbrace$. זוהי צורת כתיבה נפוצה ואנו נשתמש בה מכאן והלאה. (מבחינה מתמטית הסימון המקוצר חסר משמעות שכן הוא משווה בין פונקציה לבין מספר).
 
-<div class="imgbox" style="width:90%">
+<div class="imgbox">
+<div class="imgbox" style="max-width:810px">
 
 ![](./assets/random_process.png)
 
-</div>
+</div></div>
 
 פונקציות של משתנים אקראיים:
 
@@ -142,10 +143,11 @@ $$
 בכדי לענות על הסעיפים הבאים נשתמש בדיאגרמה הבאה (המכונה [דיאגרמת Venn](https://en.wikipedia.org/wiki/Venn_diagram))
 
 <div class="imgbox">
+<div class="imgbox" style="max-width:527px">
 
 ![](./assets/ex_2_1_venn.png)
 
-</div>
+</div></div>
 
 **4)** $\text{Pr}(\text{t}>39\cup\text{f}=1)=\text{Pr}(\text{t}>39)+\text{Pr}(\text{f}=1)-\text{Pr}(\text{t}>39\cap\text{f}=1)=0.2+0.1-0.05=0.25$
 

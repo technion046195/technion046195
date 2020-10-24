@@ -95,10 +95,11 @@ order: 1
 נרשום תחילה את המרחק של נקודה בודדת $\boldsymbol{x}$ ממעגל בעל מרכז ב $\boldsymbol{c}$ ורדיוס $r$. מרחק זה שווה להפרש בין המרחק בין $\boldsymbol{x}$ ל $\boldsymbol{c}$ והרדיוס, כפי שמופיע בשרטוט הבא:
 
 <div class="imgbox">
+<div class="imgbox" style="max-width:370px">
 
 ![](./assets/dist_from_circle.png)
 
-</div>
+</div></div>
 
 נסמן את הריבוע של מרחק זה ב $e$:
 
