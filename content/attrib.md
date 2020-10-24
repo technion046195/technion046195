@@ -19,6 +19,10 @@ type: attrib
 
 - [Eye image](https://unsplash.com/s/photos/eye?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText) by [Amanda Dalbjörn](https://unsplash.com/@amandadalbjorn?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
 
+### Other
+
+- The temi robot: from the company's [official web site](https://www.robotemi.com/).
+
 ## Fonts
 
 - [Trashim from the Culmus project](http://culmus.sourceforge.net/fancy/index.html)
