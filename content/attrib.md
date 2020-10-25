@@ -22,6 +22,7 @@ type: attrib
 ### Other
 
 - The temi robot: from the company's [official web site](https://www.robotemi.com/).
+- Slide backgound pattern from [MyPaint project](https://github.com/mypaint/mypaint)
 
 ## Fonts
 
