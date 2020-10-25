@@ -82,7 +82,7 @@ order: 2
 לרוב יעניין אותנו לעבוד עם יותר ממשנתה אקראי יחיד. במקרה כזה נוח לאחד את כל המשתנים האקראיים לוקטור המכונה וקטור אקראי:
 
 $$
-\boldsymbol{x}=\mathbf{x}(\omega)=[\text{x}_1(\omega),\text{x}_1(\omega),\ldots,\text{x}_1(\omega)]^\top
+\boldsymbol{x}=\mathbf{x}(\omega)=[\text{x}_1(\omega),\text{x}_2(\omega),\ldots,\text{x}_3(\omega)]^\top
 $$
 
 (ניתן באופן דומה להגדיר גם מטריצות וטנזורים אקראיים)
