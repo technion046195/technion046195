@@ -18,6 +18,7 @@ RUN apt-get update && \
         texlive-lang-arabic \
         locales \
         jq \
+        fonts-humor-sans \
         && \
     rm -rf /var/lib/apt/lists/*
 
