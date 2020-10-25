@@ -312,7 +312,7 @@ $$
 
 $$
 \begin{aligned}
-\text{Pr}(\text{p}_1\geq70\cup\text{p}_2\geq70\cup\ldots\cup\text{p}_{10}\geq70)
+\text{Pr}(\text{p}_1\geq70\cap\text{p}_2\geq70\cap\ldots\cap\text{p}_{10}\geq70)
 &=\text{Pr}(\text{p}_1\geq70)\text{Pr}(\text{p}_2\geq70)\cdot\ldots\cdot\text{Pr}(\text{p}_{10}\geq70)\\
 &=\prod_{i=1}^{10}\text{Pr}(\text{p}_i\geq70)
 =0.4^{10}
