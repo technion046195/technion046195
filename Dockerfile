@@ -8,6 +8,7 @@ RUN apt-get update && \
         sudo \
         git \
         curl \
+        wget \
         dumb-init \
         python3 \
         python3-dev \
@@ -18,8 +19,21 @@ RUN apt-get update && \
         texlive-lang-arabic \
         locales \
         jq \
+        xvfb \
         fonts-humor-sans \
         && \
+    wget -L https://github.com/jgm/pandoc/releases/download/2.10.1/pandoc-2.10.1-1-amd64.deb -O /tmp/pandoc-2.10.1-1-amd64.deb && \
+    dpkg -i /tmp/pandoc-2.10.1-1-amd64.deb && \
+    rm /tmp/pandoc-2.10.1-1-amd64.deb  && \
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/google-chrome-stable_current_amd64.deb && \
+    dpkg -i /tmp/google-chrome-stable_current_amd64.deb || true 0 && \
+    rm /tmp/google-chrome-stable_current_amd64.deb && \
+    wget https://github.com/jgraph/drawio-desktop/releases/download/v13.7.9/draw.io-amd64-13.7.9.deb -O /tmp/draw.io-amd64-13.7.9.deb && \
+    dpkg -i /tmp/draw.io-amd64-13.7.9.deb || true 0 && \
+    rm /tmp/draw.io-amd64-13.7.9.deb && \
+    echo "#\!/bin/sh\nxvfb-run /usr/bin/drawio \"\${@}\" --no-sandbox" > /usr/local/bin/drawio && \
+    chmod a+x /usr/local/bin/drawio && \
+    apt-get -fy install && \
     rm -rf /var/lib/apt/lists/*
 
 ## Set locale
@@ -29,12 +43,6 @@ RUN sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen &&
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8  
-
-## Install Pandoc
-## ==============
-RUN curl -L https://github.com/jgm/pandoc/releases/download/2.10.1/pandoc-2.10.1-1-amd64.deb --output /tmp/pandoc-2.10.1-1-amd64.deb && \
-    dpkg -i /tmp/pandoc-2.10.1-1-amd64.deb && \
-    rm /tmp/pandoc-2.10.1-1-amd64.deb 
 
 ## Install Node.js + npm
 ## =====================
@@ -54,15 +62,6 @@ RUN npm install -g gatsby-cli@^2.12.77
 RUN mkdir -p /project/app
 WORKDIR /project/app
 
-## Install site dependencies
-## =========================
-COPY ./package.json /project/app/package.json
-RUN cd /project/app && \
-    npm install && \
-    npm cache clean --force && \
-    mv node_modules ../
-    # chmod ag+w -R /project/node_modules
-
 ## Setup python packages
 ## =====================
 COPY ./pip_requirements.txt /project/app/pip_requirements.txt
@@ -70,6 +69,14 @@ RUN pip3 install -r /project/app/pip_requirements.txt && sudo rm -r /root/.cache
 ENV MPLBACKEND=Agg
 ## Import matplotlib the first time to build the font cache.
 RUN python3 -c "import matplotlib.pyplot"
+
+## Install site dependencies
+## =========================
+COPY ./package.json /project/app/package.json
+RUN cd /project/app && \
+    npm install && \
+    npm cache clean --force && \
+    mv node_modules ../
 
 ## Setup Jupyter extensions
 ## ------------------------
