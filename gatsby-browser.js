@@ -1,4 +1,4 @@
-import "../node_modules/reveal.js/dist/reveal.css"
+import "reveal.js/dist/reveal.css"
 
 // custom CSS styles
 import "./src/styles/style.css"
