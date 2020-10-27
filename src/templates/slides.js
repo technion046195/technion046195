@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import SEO from "../components/seo"
-import { graphql } from "gatsby"
+import { graphql, withPrefix } from "gatsby"
 import { Helmet } from "react-helmet"
 
 const Slides = ({ data }) => {
@@ -35,7 +35,7 @@ const Slides = ({ data }) => {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.1.0/reveal.js"></script>
+        <script src={withPrefix('reveal.js')} type="text/javascript"></script>
       </Helmet>
       <div className="reveal" id="reveal-top">
         <div className="slides site-style" dangerouslySetInnerHTML={{ __html: data.slides.html }} />
