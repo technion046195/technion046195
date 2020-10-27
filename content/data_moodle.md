@@ -53,7 +53,7 @@
 
 התרגולים יועברו בזום בקישורים הקבועים הבאים:
 
-- **ליאור**:
+- **ליאור**: https://technion.zoom.us/j/91170383604
 - **נועה**: https://moodle.technion.ac.il/mod/url/view.php?id=880630
 - **אביעד**: https://moodle.technion.ac.il/mod/zoom/view.php?id=880296
 
