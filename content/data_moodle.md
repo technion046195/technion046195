@@ -47,7 +47,15 @@
 
 ### חדר זום
 
-ההרצאות והתרגולים יועברו בזום בקישור הקבוע הבא: <https://technion.zoom.us/j/93162086378>
+ההרצאות יועברו בזום בקישור הקבוע הבא:
+
+- https://technion.zoom.us/j/93488594227
+
+התרגולים יועברו בזום בקישורים הקבועים הבאים:
+
+- **ליאור**:
+- **נועה**: https://moodle.technion.ac.il/mod/url/view.php?id=880630
+- **אביעד**: https://moodle.technion.ac.il/mod/zoom/view.php?id=880296
 
 התרגולים וההרצאות יהיו מוקלטים. את התרגולים המוקלטים ניותן למצוא [בתחתית העמוד](https://moodle.technion.ac.il/course/view.php?id=1917#section-2).
 
