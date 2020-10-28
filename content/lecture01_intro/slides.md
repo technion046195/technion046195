@@ -3,13 +3,14 @@ template: slides
 type: lecture
 order: 1
 ---
-<section class="center" style="direction:rtl">
+<div class="slides" style="direction:rtl">
+<section class="center">
 <div id="title">
 
 # הרצאה 1 - מבוא
 
 </div>
-</section><section style="direction:rtl">
+</section><section>
 
 ## תרגיל
 
@@ -19,9 +20,9 @@ order: 1
 
 <br /><br /><br />
 
-ננסה להדגים כיצד עובדים רוב השיטות בתחום בעזרת דוגמא.
+ננסה להדגים כיצד עובדים רוב השיטות בתחום בעזרת דוגמאות.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## תרגיל
 
@@ -36,7 +37,7 @@ order: 1
 
 </div><div></div><div>
 
-1, 1, 2, 3, 5, 7, **?**
+1, 1, 2, 3, 5, 8, **?**
 
 </div><div></div><div>
 
@@ -44,7 +45,7 @@ order: 1
 
 </div><div></div></div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## תרגיל
 
@@ -63,7 +64,7 @@ order: 1
 
 </div> <div>
 
-1, 1, 2, 3, 5, 7,
+1, 1, 2, 3, 5, 8,
 <span class="r-stack" style="display:inline-grid">
 <strong class="fragment fade-out" data-fragment-index="1">?</strong>
 <strong class="fragment" data-fragment-index="1">13</strong>
@@ -87,7 +88,7 @@ order: 1
 
 </div></div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## כיצד אנו פותרים תרגילים כאלה?
 
@@ -95,16 +96,16 @@ order: 1
 <li>נחפש חוקיות (מודל).</li>
 <li class="fragment">לרוב נחפש את מודל מתוך אוסף של מודלים מוכרים.</li>
 <li class="fragment">יתכן יותר ממודל אחד מתאים.</li>
-<li class="fragment">נעדיף מודל פשוט על פני מודל מסובך <a href="https://en.wikipedia.org/wiki/Occam%27s_razor">התער של אוקאם</a></li>
+<li class="fragment">נעדיף מודל פשוט על פני מודל מסובך (<a href="https://en.wikipedia.org/wiki/Occam%27s_razor">התער של אוקאם</a>).</li>
 <li class="fragment">מודל יכול להכיל פרמטר שיש לקבוע על פי המספרים <br/>(למשל ה2 וה3 בדוגמא הראשונה).</li>
 <li class="fragment">לרוב, ככל שהמודל "מסובך יותר" נצטרך יותר דוגמאות.</li>
 </ul>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## בחירת המודל
 
-- למצוא מודל שמתאים לתצפיות זה קל.
+- למצוא מודל שמתאים לדוגמאות זה קל.
 - לבחור מבין כל המודל את המודל הנכון, זה קשה.<br/>(ולרוב בלתי אפשרי)
 
 <div class="fragment">
@@ -126,7 +127,7 @@ order: 1
 
 </div></div></div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## מודלים אפשריים
 
@@ -158,7 +159,7 @@ order: 1
 
 </div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## המודל צריך לדעת להכליל
 
@@ -180,7 +181,7 @@ $$
 
 </div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## מערכות אקראיות
 
@@ -192,7 +193,7 @@ $$
 
 - בפועל, ברוב במערכות שאותם נרצה למדל יהיה רכיב סטוכסטי (אקראי). זאת אומרת, שיתכן שבעבור פרמטרים זהים נקבל התנהגויות שונות.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## מערכות אקראיות - דוגמא
 
@@ -200,12 +201,12 @@ $$
 <br/><br/>
 מכיוון שזמן הנסיעה תלוי בעוד הרבה גורמים אחרים חוץ מהעומס, ניתן לקבל זמנים שונים בעבור אותו עומס.
 <br/><br/>
-</div><div class="imgbox" style="width:600px">
+<div class="imgbox" style="width:600px">
 
 ![](./output/drive_prediction.png)
 
 </div>
-</section><section style="direction:rtl">
+</section><section>
 
 ## המודל גם יטעה לפעמים
 
@@ -218,7 +219,7 @@ $$
 במקרים כאלה נעזר בתורת ההסתברות על מנת לתאר את הבעיה והפתרון.
 
 </div>
-</section><section style="direction:rtl">
+</section><section>
 
 ## אז איך עושים את זה?
 
@@ -235,7 +236,7 @@ $$
 
 מרבית הקרוס יעסוק בשיטות לביצוע שלושת השלבים האלו.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## מודלים פרמטריים
 
@@ -263,7 +264,7 @@ $$
 </li><li class="fragment">רשת נוירונים.</li>
 </ul>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## איך נדאג שהמודל הפרמטרי שלנו יכיל את המודל האופטימאלי?
 
@@ -281,7 +282,7 @@ $$
 
 </div><div style="direction:ltr;font-size:0.7em">George E. P. Box</div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## בחירת המודל הפרמטרי (משפחת המודלים)
 
@@ -311,7 +312,7 @@ $$
 ![](./output/drive_prediction_poly_15.png)
 
 </div></div>
-</section><section style="direction:rtl">
+</section><section>
 
 ## כבר אמרנו קודם, הבעיה היא בעיית הכללה
 
@@ -350,7 +351,7 @@ $$
 
 מבין האופציות הנ"ל, פולינום מסדר 5 הוא הפשרה הטובה ביותר בין ההתאמה לדוגמאות והידע הקודם.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## התאמת מודלים
 
@@ -358,12 +359,10 @@ $$
 
 <br/><br/>
 
-בחלק מהמקרים ינתן יותר משקל לידע שלנו על מצב ואופן פעולת המערכת, ובמקרים אחרים מרבית המשקל ינתן לדוגמאות / תצפיות.
-
 - אנו נשתמש בשם prior knowlage (או בקיצור prior) בכדי להתייחס לידע המוקדם.
 - אנו נשתמש בשם data בכדי להתייחס לדוגמאות / תצפיות.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## Data vs. Prior
 
@@ -383,7 +382,7 @@ $$
 מהירות המכונית תלויה במשתנים כגון אופי הנהג ומצב הכביש. ניתן לנסות לבנות מודל על סמך מידע מנסיעות קודמות.
   
 </div>
-</section><section style="direction:rtl">
+</section><section>
 
 ## Data vs. Prior
 
@@ -398,7 +397,7 @@ $$
 
 </div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## איך זה מתקשר למערכות לומדות?
 
@@ -406,14 +405,7 @@ $$
 
 > התחום של מערכות לומדות עוסק באלגוריתמים אשר מנסים להשתמש במידע זמין על מנת לשפר את הביצעים של מכונה במשימה כל שהיא.
 
-<br/>
-
-### הערות
-
-- איסוף המידע יכול להעשות גם במהלך הבניה של המודל.
-- האלגוריתם יכול לבצע אינטרקציה עם הסביבה.
-
-</section><section style="direction:rtl">
+</section><section>
 
 ## בפועל ...
 
@@ -425,7 +417,7 @@ $$
 
 </div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## וזה באמת עובד?
 
@@ -437,7 +429,7 @@ $$
 
 </div>
 
-</section><section style="direction:rtl"><center>
+</section><section><center>
 
 ### לנהוג במכונית מירוץ
 
@@ -448,7 +440,7 @@ $$
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
         ></iframe>
 
-</center></section><section style="direction:rtl"><center>
+</center></section><section><center>
 
 ### לנצח בני אדם  במשחקי לוח ומחשב
 
@@ -459,7 +451,7 @@ $$
 </div>
 DeepMind's AlphaStar
 
-</center></section><section style="direction:rtl"><center>
+</center></section><section><center>
 
 ### לכתוב בלוגים
 
@@ -469,7 +461,7 @@ Nothing but Words by Liam Porr<br/>
 (and OnerAI's GPT-3)
 </a>
 
-</center></section><section style="direction:rtl"><center>
+</center></section><section><center>
 
 ### לייצר תמונות ריאליסטיות
 
@@ -500,13 +492,13 @@ Nothing but Words by Liam Porr<br/>
 </div>
 </div>
 
-</center></section><section style="direction:rtl"><center>
+</center></section><section><center>
 
 ### לנהל שיחות טלפון.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/D5VN56jQMWM?start=70" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-</center></section><section style="direction:rtl">
+</center></section><section>
 
 ## מערכות לומדות בחיי היום יום
 
@@ -517,7 +509,7 @@ Nothing but Words by Liam Porr<br/>
 - התאמת תוכן למשתמש.
 - עוזרות וירטואליות (Siri, Alexa, Cortanta, Google Now).
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## סוגי בעיות למידה
 
@@ -564,7 +556,7 @@ Nothing but Words by Liam Porr<br/>
 
 </div></div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## סוגי בעיות למידה - דוגמאת
 
@@ -589,7 +581,7 @@ Nothing but Words by Liam Porr<br/>
 </div><div>
 
 **לא מונחית (Unsupervised)**</br>
-ייצור דוגמאות חדשות על סמך ישנות (תנומות, מוזיקה), שינוי מאפיינים (קול של אדם, פנים), דחיסה.
+ייצור דוגמאות חדשות על סמך ישנות (תמונות, מוזיקה), שינוי מאפיינים (קול של אדם, פנים), דחיסה.
 
 </div><div class="imgbox" style="max-height:140px">
 
@@ -613,7 +605,7 @@ Nothing but Words by Liam Porr<br/>
 
 </div></div>
 
-</section><section style="direction:rtl">
+
 
 ## מה נלמד בקורס
 
@@ -626,7 +618,7 @@ Nothing but Words by Liam Porr<br/>
 <li class="fragment">נדון ביכולות והמגבלות של כל אחת מהשיטות והמודלים שנכיר.</li>
 </ul>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## איך נלמד בקורס
 
@@ -635,9 +627,9 @@ Nothing but Words by Liam Porr<br/>
 - 13 הרצאות ותרגולים שבועיים.
 - 6 תרגלי בית (5 להגשה) יבש + רטוב. 25% מהציון.
 - מבחן סופי 75% מהציון.
-- (אולי יהיו תריגילי הכנה - רשות).
+- (אולי יהיו תרגילי הכנה - רשות).
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## סילבוס
 
@@ -648,13 +640,13 @@ Nothing but Words by Liam Porr<br/>
   - רגרסיה לינראית כדוגמא.
   - שימוש במאפיינים.
   - מהו overfit, ואיך מתמודדים איתו?
-- מודלים (דיסקרימינטיביים) לסייוג.
+- מודלים (דיסקרימינטיביים) לסיווג.
   - K-NN.
   - Decision trees.
-- מידול של המודל ההסתברותי (גישה גנרטיבית)
+- מודלים ההסתברותיים (גישה גנרטיבית)
   - שיערוך פרמטרים של מודל הסתברותי.
   - סיווג גנרטבי
-- מודלים מורכבים יותר.
+- שיטות מורכבות יותר.
   - רשתות נוירונים.
   - SVM.
 - Boosting
@@ -663,7 +655,7 @@ Nothing but Words by Liam Porr<br/>
   - אישכול (K-means כדוגמא).
 
 </div>
-</section><section style="direction:rtl">
+</section><section>
 
 ## נוטציות
 
@@ -681,7 +673,7 @@ Nothing but Words by Liam Porr<br/>
 
 בשני התרגולים הראשונים יופיעו הנוטציות הקשורות לאלגברה לינארית והסתברות.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## למה בטכניון?
 
@@ -691,29 +683,11 @@ Nothing but Words by Liam Porr<br/>
 
 </div>
 
-</section><section style="direction:rtl">
-
-## The data in supervised learning
-
-בבעיות של supervised learning אנו נניח תמיד שהdata נאסף באופן חד פעמי מראש.
-
-<br/>
-
-במקרים כאלה, מקובל לכנות את הdata בשם מדגם (dataset) ולסמנו ב $\mathcal{D}$.
-
-<br/><br/>
-
-בנוסף אנו נניח כי הdataset מכיל מדידות של משתנים אקראיים שנלקחו מ$N$ דגימות **בלתי תלויות**:
-
-$$
-\mathcal{D}=\{\boldsymbol{x}_i\}_{i=1}^N\quad \text{i.i.d.}
-$$
-
-</section><section class="center" style="direction:rtl">
+</section><section class="center">
 
 # Supervised learning
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## Supervised learning
 
@@ -721,14 +695,14 @@ $$
 
 - נסתכל על שני משתנים אקראיים של מאורע אקראי $\text{x}$ ו $\text{y}$.
 - נתון לנו מאגר של $N$ זוגות $\{x_i,y_i\}_{i=1}^N$ אשר נלקחו מ$N$ דגימות **בלתי תלויות**.
-- נרצה ללמוד פונקציית חיזוי אשר מ$\text{x}$ ל $\text{y}$ אשר תהיה אופטימאלית תחת פונקציית מחיר נתונה.
+- נרצה ללמוד פונקציית חיזוי אשר מ $\text{x}$ ל $\text{y}$ אשר תהיה אופטימאלית תחת פונקציית מחיר נתונה.
 
 #### הערה
 
 $x$ ו $y$ יכולים להיות גם וקטורים אקראיים.<br/>
 לרוב $x$ הוא וקטור ו$y$ סקלר.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## Supervised learning - notations
 
@@ -738,8 +712,9 @@ $x$ ו $y$ יכולים להיות גם וקטורים אקראיים.<br/>
   כאשר $\theta$ הוא וקטור הפרמטרים של המודל.
 - את תוצאת החיזוי נסמן ב$\hat{y}=h_{\boldsymbol{\theta}}(\boldsymbol{x})$
 - את המודל האופטימאלי נסמן ב: $h^*$.
+- את הפרמטריים האופטימאליים נסמן ב: $\boldsymbol{\theta}^*$.
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## פונקציית המחיר (cost function)
 
@@ -760,7 +735,7 @@ $$
 
 <br/>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## פונקציית מחיר לדוגמא
 
@@ -774,7 +749,7 @@ $$
 
 פונקציה זו מקבלת חזאי $h$ ומחשבת את התוחלת של שגיאת החיזוי הריבועית הממוצעת (בין החיזוי לערך האמיתי).
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## בעבור מודלים פרמטריים
 
@@ -793,20 +768,20 @@ $$
 \boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\ C(\boldsymbol{\theta})
 $$
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## בחזרה לדוגמא
 
 נחזור כעת לדוגמא של חיזוי משך הנסיעה וננסח אותה באופן יותר פורמלי.
 
 <br/>
-</div><div class="imgbox" style="width:500px">
+<div class="imgbox" style="width:500px">
 
 ![](./output/drive_prediction.png)
 
 </div>
 
-</section><section style="direction:rtl">
+</section><section>
 
 ## ניסוח פורמלי - דוגמא
 
@@ -827,3 +802,4 @@ $$
 $$
 
 </section>
+</div>

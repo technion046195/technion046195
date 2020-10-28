@@ -1,15 +1,17 @@
-import React, { useEffect } from "react"
+import React from "react"
 import SEO from "../components/seo"
 import { graphql, withPrefix } from "gatsby"
 import { Helmet } from "react-helmet"
 
-const Slides = ({ data }) => {
-  useEffect(() => {
+class RevealJS extends React.Component {
+  componentDidMount() {
     if(typeof window !== 'undefined' && window.document) {
       function revealWrap() {
         if(window.Reveal == null) {
-          window.setTimeout(revealWrap, 100); /* this checks the flag every 100 milliseconds*/
+          console.log('Reveal is not loaded. Waiting 0.1s');
+          window.setTimeout(revealWrap, 100);
         } else {
+          console.log('Running reveal');
           window.Reveal.initialize({
             width: 900,
             height: 750,
@@ -17,15 +19,22 @@ const Slides = ({ data }) => {
             center: false,
             slideNumber: true,
             transition: 'fade',
-            history: true
+            // history: true
           });
         }
       }
       revealWrap();
     }
-    // const initReveal = require('./init_reveal.js')
-  }, [])
+  }
 
+  render() {
+    return (
+      <div className="reveal site-style" dangerouslySetInnerHTML={{ __html: this.props.html }} />
+    )
+  }
+}
+
+const Slides = ({ data }) => {
   const title = data.slides.headings[0].value;
   const type = data.slides.frontmatter.type;
   return (
@@ -37,9 +46,7 @@ const Slides = ({ data }) => {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css" />
         <script src={withPrefix('reveal.js')} type="text/javascript"></script>
       </Helmet>
-      <div className="reveal" id="reveal-top">
-        <div className="slides site-style" dangerouslySetInnerHTML={{ __html: data.slides.html }} />
-      </div>
+      <RevealJS html={data.slides.html}/>
     </div>
   )
 }
