@@ -31,7 +31,7 @@ RUN apt-get update && \
     wget https://github.com/jgraph/drawio-desktop/releases/download/v13.7.9/draw.io-amd64-13.7.9.deb -O /tmp/draw.io-amd64-13.7.9.deb && \
     dpkg -i /tmp/draw.io-amd64-13.7.9.deb || true 0 && \
     rm /tmp/draw.io-amd64-13.7.9.deb && \
-    echo "#\!/bin/sh\nxvfb-run /usr/bin/drawio \"\${@}\" --no-sandbox" > /usr/local/bin/drawio && \
+    echo "#\!/bin/sh\nxvfb-run -a /usr/bin/drawio \"\${@}\" --no-sandbox" > /usr/local/bin/drawio && \
     chmod a+x /usr/local/bin/drawio && \
     apt-get -fy install && \
     rm -rf /var/lib/apt/lists/*
