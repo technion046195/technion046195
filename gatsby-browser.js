@@ -1,10 +1,10 @@
-import "reveal.js/dist/reveal.css"
+require("reveal.js/dist/reveal.css")
 
 // custom CSS styles
-import "./src/styles/style.css"
+require("./src/styles/style.css")
 
 // Highlighting for code blocks
-import "prismjs/themes/prism.css"
+require("prismjs/themes/prism.css")
 
 // katex css
-// import "katex/dist/katex.min.css"
+require("katex/dist/katex.min.css")
