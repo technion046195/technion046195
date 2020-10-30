@@ -9,7 +9,25 @@ const updateViewSize = () => {
 }
 
 class RevealJS extends React.Component {
+  constructor(props) {
+    super(props);
+    this.deck = null;
+    this.deckRef = React.createRef()
+  }
+
+  componentDidUpdate() {
+    if (this.deck != null) {
+      console.log('Syncing Reveal');
+      // this.deck.layout()
+      // this.deck.sync()
+      this.deck.initialize();
+      const indices = this.deck.getIndices()
+      this.deck.slide(indices.h, indices.v, indices.f);
+    }
+  }
+
   componentDidMount() {
+    const component = this
     if(typeof window !== 'undefined' && window.document) {
       updateViewSize();
       window.addEventListener('resize', updateViewSize);
@@ -19,7 +37,8 @@ class RevealJS extends React.Component {
           window.setTimeout(revealWrap, 100);
         } else {
           console.log('Running reveal');
-          window.Reveal.initialize({
+          component.deck = new window.Reveal(component.deckRef.current, {})
+          component.deck.initialize({
             width: 900,
             height: 750,
             // rtl: true,
