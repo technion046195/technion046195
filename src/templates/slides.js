@@ -3,9 +3,16 @@ import SEO from "../components/seo"
 import { graphql, withPrefix } from "gatsby"
 import { Helmet } from "react-helmet"
 
+const updateViewSize = () => {
+  const adjustedViewHeight = window.innerHeight;
+  document.documentElement.style.setProperty('--avh', `${adjustedViewHeight}px`);
+}
+
 class RevealJS extends React.Component {
   componentDidMount() {
     if(typeof window !== 'undefined' && window.document) {
+      updateViewSize();
+      window.addEventListener('resize', updateViewSize);
       function revealWrap() {
         if(window.Reveal == null) {
           console.log('Reveal is not loaded. Waiting 0.1s');

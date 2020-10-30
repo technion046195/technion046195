@@ -453,12 +453,10 @@ a.link-button {
 /* Slides */
 /* ====== */
 .reveal {
-  width: 100vw;
   height: 100vh;
+  height: var(--avh, 100vh);
   font-size: 2em;
   font-weight: 600;
-  /* line-height: 1.25em; */
-  /* font-family: "KtavYad"; */
 }
 
 .reveal p {
