@@ -1,5 +1,4 @@
 const express = require('express')
-const http = require('http')
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 const puppeteer = require('puppeteer')
@@ -7,20 +6,143 @@ const fs = require('fs');
 const os = require('os');
 const { spawn } = require('child_process');
 
-exports.onCreateDevServer=({ app })=>{
+var codeToCopyList = [];
+var codeToHTMLList = [];
+var pagesToDocxList = [];
+var pagesToPrintList = [];
+
+exports.onCreateDevServer = ({ app }) => {
     app.use(express.static('public'));
-    generateExtras({runServer: false}).then((res) => {console.log('Extras were generated')});
+    generateExtras();
+}
+
+exports.onPreInit = async () => {
+  await setJupyterCSS();
+}
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
+
+  let typeDefs;
+
+  typeDefs = `
+    type File implements Node {
+      fields: Fields
+    }
+    type Fields {
+      slug: String!
+      code_copy_filename: String!
+      code_html_filename: String!
+    }
+  `
+  createTypes(typeDefs)
+  
+  typeDefs = `
+    type MarkdownRemark implements Node {
+      frontmatter: FrontMatter
+    }
+    type FrontMatter {
+      make_docx: String!
+      print_pdf: String!
+      slides_pdf: String!
+    }
+  `
+  createTypes(typeDefs)
+
+  typeDefs = `
+    type MarkdownRemark implements Node {
+      fields: Fields
+    }
+    type Fields {
+      slug: String!
+      docx_filename: String!
+      print_pdf_filename: String!
+      slides_pdf_filename: String!
+      slides_compact_pdf_filename: String!
+    }
+  `
+  createTypes(typeDefs)
 }
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
+
+  if (node.internal.type === `File` & node.ext == '.ipynb') {
+    try {
+      const gatsby_data = JSON.parse(fs.readFileSync(node.absolutePath)).metadata.gatsby_data;
+      if (gatsby_data != null) {
+        const slug = createFilePath({ node, getNode })
+        createNodeField({
+          node,
+          name: `slug`,
+          value: slug
+        })
+        if ((gatsby_data.make_public != null) & gatsby_data.make_public){
+          let codeCopyFilename = `${__dirname}/public/assets/${slug.slice(1, -1).replace(/\//g,'_')}.ipynb`
+          createNodeField({
+            node,
+            name: `code_copy_filename`,
+            value: codeCopyFilename
+          })
+          codeToCopyList.push({'src': node.absolutePath, 'dist': codeCopyFilename})
+        }
+        if ((gatsby_data.make_html != null) & gatsby_data.make_html){
+          let codeHTMLFilename = `${__dirname}/public${slug}index.html`
+          createNodeField({
+            node,
+            name: `code_html_filename`,
+            value: codeHTMLFilename
+          })
+          codeToHTMLList.push({'codeFilename': node.absolutePath, codeHTMLFilename});
+        }
+      }
+    } catch(error) {
+      console.log(`Got an error when trying to read ${node.absolutePath}`);
+      console.log(error);
+    }
+  }
+
   if (node.internal.type === `MarkdownRemark`) {
-    const value = createFilePath({ node, getNode })
+    const slug = createFilePath({ node, getNode })
     createNodeField({
-      name: `slug`,
       node,
-      value,
+      name: `slug`,
+      value: slug
     })
+    if ((node.frontmatter.make_docx != null) & node.frontmatter.make_docx){
+      let docxFilename = `${__dirname}/public/assets/${slug.slice(1,-1).replace(/\//g,'_')}.docx`
+      createNodeField({
+        node,
+        name: `docx_filename`,
+        value: docxFilename
+      })
+      pagesToDocxList.push({'mdFilename': node.fileAbsolutePath, docxFilename})
+    }
+    if ((node.frontmatter.print_pdf != null) & node.frontmatter.print_pdf){
+      let printPDFFilename = `${__dirname}/public/assets/${slug.slice(1,-1).replace(/\//g,'_')}.pdf`
+      createNodeField({
+        node,
+        name: `print_pdf_filename`,
+        value: printPDFFilename
+      })
+      pagesToPrintList.push({'slug': slug, 'pdfFilename': printPDFFilename, 'profile': 'page'})
+    }
+    if ((node.frontmatter.slides_pdf != null) & node.frontmatter.slides_pdf){
+      let slidesPDFFilename = `${__dirname}/public/assets/${slug.slice(1,-1).replace(/\//g,'_')}_deck.pdf`
+      createNodeField({
+        node,
+        name: `slides_pdf_filename`,
+        value: slidesPDFFilename
+      })
+      pagesToPrintList.push({'slug': slug + '?print-pdf', 'pdfFilename': slidesPDFFilename, 'profile': 'slides'})
+      let slidesCompactPDFFilename = `${__dirname}/public/assets/${slug.slice(1,-1).replace(/\//g,'_')}.pdf`
+      createNodeField({
+        node,
+        name: `slides_compact_pdf_filename`,
+        value: slidesCompactPDFFilename
+      })
+      pagesToPrintList.push({'slug': slug + '?print-pdf&compact', 'pdfFilename': slidesCompactPDFFilename, 'profile': 'slides'})
+    }
   }
 }
 
@@ -45,19 +167,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }
       }
     `)
-
-  var slug;
-
-  if (result.errors) {
-    reporter.panicOnBuild(
-      `There was an error loading your blog posts`,
-      result.errors
-    )
-    return
-  }
+    if (result.errors) { throw result.errors; }
   const data = result.data;
-
-
+  let slug;
   let lastByType = {}
   let slugsData = {};
   data.allMarkdownRemark.nodes.forEach((node) => {
@@ -86,137 +198,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         next: slugsData[slug].next,
       }
     })
-  })
+  });
 }
 
-exports.onPostBuild = async ({ graphql }) => {
-  await generateExtras({ graphql });
-}
+exports.onPostBuild = async () => {
+  const port = 8000;
+  const app = express();
+  app.use(express.static('public'));
+  const server = await new Promise(resolve => {
+    console.log(`Temporarily serving site on ${port}`);
+    const server = app.listen(port, () => {
+      console.log(`Server up`);
+      resolve(server);
+    })
+  });
 
-generateExtras = async ({ graphql=null, runServer=true }) => {
-  jupyterCSSPromise = setJupyterCSS();
-
-  let serverPromise = null
-  if (runServer) {
-    const port = 8000;
-    const app = express();
-    app.use(express.static('public'));
-    serverPromise = new Promise(resolve => {
-      console.log('Temporarily serving site');
-      const server = app.listen(port, () => {
-        console.log(`Server up`);
-        resolve(server);
-      })
-    });
-  } else {
-    serverPromise = new Promise(resolve => setTimeout(resolve, 6000))
-  }
-
-  let queryPromise = null
-  query = `
-    query {
-      allMarkdownRemark(
-        filter: {frontmatter: {generate: {ne: null}}}
-        ) {
-          nodes {
-            fields {
-              slug
-            }
-            frontmatter {
-              generate
-            }
-            fileAbsolutePath
-        }
-      }
-    }
-  `
-  if ( graphql == null ) {
-    queryPromise = new Promise((resolve) => {
-      const req = http.request(
-        {
-          hostname: 'localhost',
-          port: 8000,
-          path: '/__graphql',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-        }, resp => {
-          const chunks = [];
-          resp.on('data', chunk => chunks.push(chunk))
-          resp.on('end', () => {
-            let res = JSON.parse(Buffer.concat(chunks));
-            resolve(res);
-          });
-        });
-      req.on('error', error => {
-        console.error(error)
-      })
-      req.write(JSON.stringify({query}));
-      req.end()
-    });
-  } else {
-    queryPromise = graphql(query)
-  }
-
-  const results = await Promise.all([serverPromise, queryPromise, jupyterCSSPromise]);
-  const server = results[0];
-  const data = results[1].data;
-
-  let promisesArray = [];
-  data.allMarkdownRemark.nodes.forEach((node) => {
-    const generate = node.frontmatter.generate;
-    const mdFilename = node.fileAbsolutePath;
-    const slug = node.fields.slug;
-
-    const url = `http://localhost:8000${slug}`
-
-    if (generate.includes('code-html')){
-      promisesArray.push(codeToHtml({
-        codeFilename: `${path.dirname(mdFilename)}/code.ipynb`,
-        codeHTMLFilename: `${__dirname}/public${slug}code/index.html`,
-        outputCodeFilename: `${__dirname}/public${slug.slice(0, -1)}.ipynb`,
-        }));
-    }
-
-    if (generate.includes('docx')){
-      promisesArray.push(mdToDoc({
-        mdFilename,
-        docxFilename: `${__dirname}/public/${slug.slice(1, -1).replace("/", "_")}.docx`,
-        }));
-    }
-
-    // // Netlify does not support texlive (via homebrew): https://github.com/netlify/build-image/pull/474
-    // if (generate.includes('pdf')){
-    //   promisesArray.push(mdToPDF({
-    //     mdFilename,
-    //     pdfFilename: `${__dirname}/public/${slug.slice(1, -1).replace("/", "_")}.pdf`,
-    //     }));
-    // }
-
-    if (generate.includes('print-pdf')){
-      promisesArray.push(printToPDF({
-        url,
-        pdfFilename: `${__dirname}/public/${slug.slice(1, -1).replace("/", "_")}.pdf`,
-        }));
-    }
-
-    if (generate.includes('slides-pdf')){
-      promisesArray.push(printToPDF({
-        url :`${url}?print-pdf`,
-        pdfFilename: `${__dirname}/public/${slug.slice(1, -1).replace("/", "_")}_deck.pdf`,
-        slides: true,
-        }));
-      promisesArray.push(printToPDF({
-        url :`${url}?print-pdf&compact`,
-        pdfFilename: `${__dirname}/public/${slug.slice(1, -1).replace("/", "_")}.pdf`,
-        slides: true,
-        }));
-    }
-  })
-
-  await Promise.all(promisesArray);
+  await generateExtras();
   
   if (server != null){
     server.close();
@@ -224,14 +221,44 @@ generateExtras = async ({ graphql=null, runServer=true }) => {
   }
 }
 
-const setJupyterCSS = async () => {
-  fs.mkdirSync(`${os.homedir()}/jupyter/custom`, { recursive: true });
-  console.log(`Copying Jupyter CSS`);
-  fs.copyFile(`${__dirname}/src/styles/style.css`, `${os.homedir()}/.jupyter/custom/custom.css`, (err) => {if (err) throw err});
+// # Auxiliary functions
+// =====================
+generateExtras = async () => {
+  console.log('-> Generating extras');
+  let promisesArray = [];
+  let args;
+  while (codeToCopyList.length>0) {
+    args = codeToCopyList.pop()
+    promisesArray.push(copyFile(args))
+  }
+  while (codeToHTMLList.length>0) {
+    args = codeToHTMLList.pop()
+    promisesArray.push(codeToHTML(args))
+  }
+  while (pagesToDocxList.length>0) {
+    args = pagesToDocxList.pop()
+    promisesArray.push(mdToDocx(args))
+  }
+  while (pagesToPrintList.length>0) {
+    args = pagesToPrintList.pop()
+    promisesArray.push(printToPDF(args))
+  }
+  await Promise.all(promisesArray);
+  console.log('-> Extras generated');
 }
 
-const codeToHtml = async ({codeFilename, codeHTMLFilename, outputCodeFilename}) => {
-  console.log(`Converting: ${codeFilename} -> ${codeHTMLFilename}`);
+const copyFile = async ({src, dist}) => {
+  console.log(`-> Copying: ${src} -> ${dist}`);
+  fs.mkdirSync(path.dirname(dist), { recursive: true });
+  fs.copyFile(src, dist, (err) => {if (err) throw err});
+}
+
+const setJupyterCSS = async () => {
+  copyFile({'src': `${__dirname}/src/styles/style.css`, 'dist': `${os.homedir()}/.jupyter/custom/custom.css`});
+}
+
+const codeToHTML = async ({codeFilename, codeHTMLFilename}) => {
+  console.log(`-> Converting: ${codeFilename} -> ${codeHTMLFilename}`);
   fs.mkdirSync(path.dirname(codeHTMLFilename), { recursive: true });
   const cmd_args = [
     'nbconvert',
@@ -241,21 +268,16 @@ const codeToHtml = async ({codeFilename, codeHTMLFilename, outputCodeFilename}) 
     '--output-dir=public',
     `--output=${codeHTMLFilename}`,
     codeFilename]
-  
   await new Promise(resolve => {
     const run = spawn('jupyter', cmd_args)
     run.stdout.on('data', (data) => {console.log(`  ${data}`);});
     run.stderr.on('data', (data) => {console.log(`  !! error: ${data}`);});
     run.on('close', (code) => {resolve(code);})
   });
-
-  console.log(`Copying: ${codeFilename} -> ${outputCodeFilename}`);
-  fs.mkdirSync(path.dirname(outputCodeFilename), { recursive: true });
-  fs.copyFile(codeFilename, outputCodeFilename, (err) => {if (err) throw err});
 }
 
-const mdToDoc = async ({mdFilename, docxFilename}) => {
-  console.log(`Converting: ${mdFilename} -> ${docxFilename}`);
+const mdToDocx = async ({mdFilename, docxFilename}) => {
+  console.log(`-> Converting: ${mdFilename} -> ${docxFilename}`);
   fs.mkdirSync(path.dirname(docxFilename), { recursive: true });
   const cmd_args = [
     mdFilename,
@@ -272,7 +294,7 @@ const mdToDoc = async ({mdFilename, docxFilename}) => {
 }
 
 const mdToPDF = async ({mdFilename, pdfFilename}) => {
-  console.log(`Converting: ${mdFilename} -> ${pdfFilename}`);
+  console.log(`-> Converting: ${mdFilename} -> ${pdfFilename}`);
   fs.mkdirSync(path.dirname(pdfFilename), { recursive: true });
   const cmd_args = [
     mdFilename,
@@ -294,12 +316,13 @@ const mdToPDF = async ({mdFilename, pdfFilename}) => {
   });
 }
 
-const printToPDF = async ({url, pdfFilename, slides=false}) => {
-  console.log(`Printing: ${url} -> ${pdfFilename}`);
+const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
+  const url = 'http://localhost:8000' + slug;
+  console.log(`-> Printing: ${url} -> ${pdfFilename}`);
   fs.mkdirSync(path.dirname(pdfFilename), { recursive: true });
   let trail = 1
   while(true) {
-    let browser = null
+    let browser;
     try {
       browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -308,8 +331,8 @@ const printToPDF = async ({url, pdfFilename, slides=false}) => {
       const page = await browser.newPage()
       page.on('error', err => { if (!page.isClosed()) { page.close(); }});
       await page.goto(url, { waitUntil: 'networkidle2' });
-      await new Promise(resolve => setTimeout(resolve, 10000))
-      if (slides) {
+      await new Promise(resolve => setTimeout(resolve, 15000))
+      if (profile == 'slides') {
         await page.pdf({
           width: "9.75in",
           height: "8.13in",
@@ -318,7 +341,7 @@ const printToPDF = async ({url, pdfFilename, slides=false}) => {
           preferCSSPageSize: true,
           printBackground: true
         })
-      } else {
+      } else if (profile == 'page') {
         await page.pdf({
           format: 'A4',
           path: pdfFilename,
@@ -328,6 +351,8 @@ const printToPDF = async ({url, pdfFilename, slides=false}) => {
           headerTemplate: '<div></div>',
           footerTemplate: '<div style="width:100%;margin:0;text-align:center;font-size:12px;font-style:italic;color:#c0c0c0"><span class="pageNumber"></span></div>'
         })
+      } else {
+        console.log(`-> Unknown print profile ${profile}`);
       }
       await browser.close();
       break;
@@ -336,10 +361,10 @@ const printToPDF = async ({url, pdfFilename, slides=false}) => {
       await browser.close();
       if (trail < 5) {
         trail++;
-        console.log(`Error loading ${url}. Trying again. Trail: ${trail}`);
+        console.log(`Error loading "${url}". Trying again. Trail: ${trail}`);
         await new Promise(resolve => setTimeout(resolve, 1000))
       } else {
-        console.log(`Error loading ${url}.`);
+        console.log(`Error loading "${url}". Will not try again`);
         break;
       }
     }

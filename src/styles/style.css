@@ -419,15 +419,15 @@ a.link-button {
 /* Site content -  print */
 /* --------------------- */
 @media print {
-  .site-style .header {
+  .site-content .header {
     display: none;
   }
 
-  .site-style .footer {
+  .site-content .footer {
     display: none;
   }
 
-  .site-style .imgbox {
+  .site-content .imgbox {
     max-width: 60%;
   }
 

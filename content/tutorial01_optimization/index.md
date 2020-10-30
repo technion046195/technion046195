@@ -1,8 +1,9 @@
 ---
-template: page
 type: tutorial
-generate: [pdf,docx,code-html]
 index: 1
+template: page
+make_docx: true
+print_pdf: true
 ---
 
 <div dir="rtl">
@@ -10,8 +11,8 @@ index: 1
 # תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית
 
 <div dir="ltr">
-<a href="../tutorial01_optimization.pdf" class="link-button">PDF</a>
-<a href="./code" class="link-button">Code</a>
+<a href="/assets/tutorial01_optimization.pdf" class="link-button" target="_blank">PDF</a>
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## הקדמה

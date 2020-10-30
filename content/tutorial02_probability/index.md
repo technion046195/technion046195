@@ -2,7 +2,8 @@
 type: tutorial
 index: 2
 template: page
-generate: [print-pdf,docx,code-html]
+make_docx: true
+print_pdf: true
 ---
 
 <div dir="rtl"  style="direction:rtl;unicode-bidi:bidi-override">
@@ -10,8 +11,8 @@ generate: [print-pdf,docx,code-html]
 # תרגול 2 - חזרה על הסתברות וחיזוי
 
 <div dir="ltr">
-<a href="../tutorial02_probability.pdf" class="link-button">PDF</a>
-<a href="./code" class="link-button">Code</a>
+<a href="/assets/tutorial02_probability.pdf" class="link-button" target="_blank">PDF</a>
+<a href="./code" class="link-button" target="_blank">Code</a>
 </div>
 
 ## הקדמה

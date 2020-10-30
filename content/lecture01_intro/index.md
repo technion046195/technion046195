@@ -1,8 +1,7 @@
 ---
-template: page
 type: lecture
-generate: [code-html]
 index: 1
+template: page
 ---
 
 <div dir="rtl">
@@ -10,7 +9,7 @@ index: 1
 # הרצאה 1 - מבוא
 
 <div dir="ltr">
-<a href="./slides" class="link-button">Slides</a>
-<a href="./code" class="link-button">Code</a>
+<a href="./slides/" class="link-button" target="_blank">Slides</a>
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 </div>
