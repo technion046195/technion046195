@@ -1,4 +1,5 @@
-require("reveal.js/dist/reveal.css")
+// require("reveal.js/dist/reveal.css")
+require("./static/reveal.css")
 
 // custom CSS styles
 require("./src/styles/style.css")

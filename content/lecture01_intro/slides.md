@@ -1,16 +1,21 @@
 ---
 template: slides
-type: lecture
-order: 1
+type: lecture-slides
+generate: [slides-pdf]
+index: 1
 ---
 <div class="slides" style="direction:rtl">
 <section class="center">
 
 # הרצאה 1 - מבוא
 
+<div dir="ltr">
+<a href="../../lecture01_intro_slides.pdf" class="link-button">PDF</a>
+</div>
+
 </section><section>
 
-## תרגיל
+## הסבר בעזרת דוגמא
 
 <br />
 
@@ -603,7 +608,7 @@ Nothing but Words by Liam Porr<br/>
 
 </div></div>
 
-
+</section><section>
 
 ## מה נלמד בקורס
 

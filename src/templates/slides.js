@@ -31,6 +31,11 @@ class RevealJS extends React.Component {
     if(typeof window !== 'undefined' && window.document) {
       updateViewSize();
       window.addEventListener('resize', updateViewSize);
+      var compact = window.location.search.substring(1).split("&").includes('compact')
+      if (compact) {
+        component.deckRef.current.classList.add('compact');
+      }
+
       function revealWrap() {
         if(window.Reveal == null) {
           console.log('Reveal is not loaded. Waiting 0.1s');
@@ -45,7 +50,10 @@ class RevealJS extends React.Component {
             center: false,
             slideNumber: true,
             transition: 'fade',
-            // history: true
+            // history: true,
+            hash: true,
+            pdfMaxPagesPerSlide: 1,
+            pdfSeparateFragments: (!compact)
           });
         }
       }
@@ -55,7 +63,7 @@ class RevealJS extends React.Component {
 
   render() {
     return (
-      <div className="reveal site-style" dangerouslySetInnerHTML={{ __html: this.props.html }} />
+      <div className="reveal site-style" ref={this.deckRef} dangerouslySetInnerHTML={{ __html: this.props.html }} />
     )
   }
 }
@@ -69,7 +77,6 @@ const Slides = ({ data }) => {
       <Helmet>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css" />
         <script src={withPrefix('reveal.js')} type="text/javascript"></script>
       </Helmet>
       <RevealJS html={data.slides.html}/>

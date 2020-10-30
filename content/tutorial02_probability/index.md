@@ -1,7 +1,8 @@
 ---
-template: page
 type: tutorial
-order: 2
+index: 2
+template: page
+generate: [print-pdf,docx,code-html]
 ---
 
 <div dir="rtl"  style="direction:rtl;unicode-bidi:bidi-override">
@@ -9,9 +10,8 @@ order: 2
 # תרגול 2 - חזרה על הסתברות וחיזוי
 
 <div dir="ltr">
-
-<a href="../tutorial02_probability_code.html" class="link-button">Code</a>
-
+<a href="../tutorial02_probability.pdf" class="link-button">PDF</a>
+<a href="./code" class="link-button">Code</a>
 </div>
 
 ## הקדמה

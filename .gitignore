@@ -3,8 +3,5 @@ public/
 node_modules/
 package-lock.json
 .ipynb_checkpoints
-static/*
-!static/reveal.js
-!static/reveal.js.map
 content/assignments/*solution.ipynb
 moodle.html
