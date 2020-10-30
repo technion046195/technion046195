@@ -11,7 +11,7 @@ print_pdf: true
 # תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית
 
 <div dir="ltr">
-<a href="/assets/tutorial01_optimization.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/tutorial01.pdf" class="link-button" target="_blank">PDF</a>
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 

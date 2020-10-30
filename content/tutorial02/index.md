@@ -11,7 +11,7 @@ print_pdf: true
 # תרגול 2 - חזרה על הסתברות וחיזוי
 
 <div dir="ltr">
-<a href="/assets/tutorial02_probability.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/tutorial02.pdf" class="link-button" target="_blank">PDF</a>
 <a href="./code" class="link-button" target="_blank">Code</a>
 </div>
 
