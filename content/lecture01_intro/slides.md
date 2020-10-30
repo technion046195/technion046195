@@ -5,11 +5,9 @@ order: 1
 ---
 <div class="slides" style="direction:rtl">
 <section class="center">
-<div id="title">
 
 # הרצאה 1 - מבוא
 
-</div>
 </section><section>
 
 ## תרגיל

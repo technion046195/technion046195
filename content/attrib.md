@@ -2,11 +2,8 @@
 type: attrib
 ---
 
-<div id="title">
-
 # Attributions
 
-</div>
 <div style="direction:ltr;unicode-bidi:bidi-override">
 
 ## Images

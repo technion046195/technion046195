@@ -5,13 +5,10 @@ order: 1
 ---
 
 <div dir="rtl">
-<div id="title">
 
 # תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית
 
-</div>
 
-<div dir="ltr">
 
 <a href="../tutorial01_optimization_code.html" class="link-button">Code</a>
 

@@ -5,11 +5,8 @@ order: 2
 ---
 
 <div dir="rtl"  style="direction:rtl;unicode-bidi:bidi-override">
-<div id="title">
 
 # תרגול 2 - חזרה על הסתברות וחיזוי
-
-</div>
 
 <div dir="ltr">
 
