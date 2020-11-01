@@ -80,9 +80,12 @@ RUN cd /project/app && \
 
 ## Setup Jupyter extensions
 ## ------------------------
-RUN jupyter contrib nbextension install --system && \
+RUN jupyter nbextension enable --py widgetsnbextension && \
+    jupyter contrib nbextension install --system && \
     jupyter nbextensions_configurator enable && \
-    jupyter nbextension enable spellchecker/main
+    jupyter nbextension enable spellchecker/main && \
+    jupyter nbextension enable scratchpad/main && \
+    jupyter nbextension enable livemdpreview/livemdpreview
 
 COPY ./src/styles/style.css /root/.jupyter/custom/custom.css
 
