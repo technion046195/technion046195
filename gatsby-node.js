@@ -42,9 +42,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       frontmatter: FrontMatter
     }
     type FrontMatter {
-      make_docx: String!
-      print_pdf: String!
-      slides_pdf: String!
+      make_docx: Boolean!
+      print_pdf: Boolean!
+      slides_pdf: Boolean!
     }
   `
   createTypes(typeDefs)
