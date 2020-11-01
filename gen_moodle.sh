@@ -2,7 +2,7 @@
 
 set -e
 
-pandoc moodle.md \
+pandoc content/data_moodle.md \
     -f markdown \
     -t html \
     --self-contained \

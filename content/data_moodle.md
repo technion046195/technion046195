@@ -1,7 +1,8 @@
 ---
 ---
 
-<div dir="rtl">
+<div dir="rtl" class="site-style site-content moodle-data">
+<div dir="rtl" class="main-content">
 
 ## פרטי הקורס
 
@@ -45,22 +46,29 @@
 - [חיפוש שותף](https://moodle.technion.ac.il/mod/forum/view.php?id=630237) - פורום המיועד למציאת שותפים לתרגילי הבית.
 - [פורום כללי](https://moodle.technion.ac.il/mod/forum/view.php?id=630238) - פורום לדיונים כלליים על החומר הנלמד בהרצאות והתרגולים ועל תרגילי הבית.
 
+### הרצאות ותרגולים
+
+את עמודי התוכן של ההרצאות והתרגולים ניתן למצוא באתר [הזה](https://technion046195.netlify.app/)
+
 ### חדר זום
 
-ההרצאות יועברו בזום בקישור הקבוע הבא:
+ההרצאות יועברו בזום ב[קישור הקבוע הזה](https://technion.zoom.us/j/93488594227)
 
-- https://technion.zoom.us/j/93488594227
+ההרצאות והתרגולים יועברו בזום בקישורים הקבועים הבאים:
 
-התרגולים יועברו בזום בקישורים הקבועים הבאים:
+- [**הרצאות**](https://technion.zoom.us/j/93488594227)
+- [**תרגול - ליאור**](https://technion.zoom.us/j/91170383604)
+- [**תרגול - נועה**](https://moodle.technion.ac.il/mod/url/view.php?id=880630)
+- [**תרגול - אביעד**](https://moodle.technion.ac.il/mod/zoom/view.php?id=880296)
 
-- **ליאור**: https://technion.zoom.us/j/91170383604
-- **נועה**: https://moodle.technion.ac.il/mod/url/view.php?id=880630
-- **אביעד**: https://moodle.technion.ac.il/mod/zoom/view.php?id=880296
+### הקלטות
 
-התרגולים וההרצאות יהיו מוקלטים. את התרגולים המוקלטים ניותן למצוא [בתחתית העמוד](https://moodle.technion.ac.il/course/view.php?id=1917#section-2).
+התרגולים וההרצאות יהיו מוקלטים. את ההקלטות ניתן למצוא: [פה](https://panoptotech.cloud.panopto.eu/Panopto/Pages/Sessions/List.aspx?folderID=96167bcb-b96d-4f04-ba88-ac6200ad32b1)
+
 
 ### קישורים אחרים
 
 - [עומד הקורס במערכת הug](https://ug3.technion.ac.il/rishum/course/046195) - מכיל מידע על זמני התרגולים ההרצאות ומועדי הבחינות.
 
+</div>
 </div>
