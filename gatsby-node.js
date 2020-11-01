@@ -68,8 +68,10 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
   if (node.internal.type === `File` & node.ext == '.ipynb') {
+    console.log(`Processing ${node.absolutePath}`)
     try {
       const gatsby_data = JSON.parse(fs.readFileSync(node.absolutePath)).metadata.gatsby_data;
+      console.log(`notebook gatsby_data: ${gatsby_data}`)
       if (gatsby_data != null) {
         const slug = createFilePath({ node, getNode })
         createNodeField({
@@ -359,7 +361,7 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
     }
     catch(error){
       await browser.close();
-      if (trail < 5) {
+      if (trail < 10) {
         trail++;
         console.log(`Error loading "${url}". Trying again. Trail: ${trail}`);
         await new Promise(resolve => setTimeout(resolve, 1000))
