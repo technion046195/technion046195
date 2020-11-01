@@ -14,7 +14,7 @@
                                                                           \"metadata\": {}} \
                                                                     end)] \
                 | .metadata = {\"kernalspec\": .metadata.kernelspec} \
-                              + (if (.metadata | has(\"gatsby_data\")) then {\"gastby_data\": .metadata.gatsby_data} else null end) \
+                              + (if (.metadata | has(\"gatsby_data\")) then {\"gatsby_data\": .metadata.gatsby_data} else null end) \
                 '"
     smudge = cat
     required = true

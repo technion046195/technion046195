@@ -68,10 +68,8 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
   if (node.internal.type === `File` & node.ext == '.ipynb') {
-    console.log(`Processing ${node.absolutePath}`)
     try {
       const gatsby_data = JSON.parse(fs.readFileSync(node.absolutePath)).metadata.gatsby_data;
-      console.log(`notebook gatsby_data: ${gatsby_data}`)
       if (gatsby_data != null) {
         const slug = createFilePath({ node, getNode })
         createNodeField({
