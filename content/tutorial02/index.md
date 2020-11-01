@@ -6,13 +6,13 @@ make_docx: true
 print_pdf: true
 ---
 
-<div dir="rtl"  style="direction:rtl;unicode-bidi:bidi-override">
+<div dir="rtl" class="site-style">
 
 # תרגול 2 - חזרה על הסתברות וחיזוי
 
 <div dir="ltr">
 <a href="/assets/tutorial02.pdf" class="link-button" target="_blank">PDF</a>
-<a href="./code" class="link-button" target="_blank">Code</a>
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## הקדמה

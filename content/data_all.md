@@ -37,7 +37,7 @@
      <h4><a class="disabled">הרצאה 2</a></h4>
    </div><div>3/11</div>
    <div>
-     <h4><a class="disabled">תרגול 3</a></h4>
+     <h4><a href="/tutorial03/">תרגול 3</a></h4>
    </div><div>4,9,10/11</div>
  </div>
  <h3>התאמת יתר ובעיית ההכללה</h3>

@@ -4,7 +4,7 @@ index: 1
 template: page
 ---
 
-<div dir="rtl">
+<div dir="rtl" class="site-style">
 
 # הרצאה 1 - מבוא
 

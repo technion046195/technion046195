@@ -6,7 +6,7 @@ make_docx: true
 print_pdf: true
 ---
 
-<div dir="rtl">
+<div dir="rtl" class="site-style">
 
 # תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית
 

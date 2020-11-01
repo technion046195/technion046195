@@ -10,7 +10,7 @@ slides_pdf: true
 # הרצאה 1 - מבוא
 
 <div dir="ltr">
-<a href="/assets/lecture01_slides.pdf" class="link-button">PDF</a>
+<a href="/assets/lecture01_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 
 </section><section>
