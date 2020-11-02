@@ -304,11 +304,11 @@ $$
 
 </div><div class="imgbox fragment" style="width:450px">
 
-![](./output/drive_prediction_poly_3.png)
+![](./output/drive_prediction_poly_2.png)
 
 </div><div class="imgbox fragment" style="width:450px">
 
-![](./output/drive_prediction_poly_5.png)
+![](./output/drive_prediction_poly_4.png)
 
 </div><div class="imgbox fragment" style="width:450px">
 

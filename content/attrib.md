@@ -14,14 +14,17 @@ type: attrib
 
 ### From [Unsplash](https://unsplash.com):
 
-- [Eye image](https://unsplash.com/s/photos/eye?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText) by [Amanda Dalbjörn](https://unsplash.com/@amandadalbjorn?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
+- [Eye image](https://unsplash.com/photos/UbJMy92p8wk) by [Amanda Dalbjörn](https://unsplash.com/@amandadalbjorn?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
 
-<span>Photo by <a href="https://unsplash.com/@shubhamsharan?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Shubham Sharan</a> on <a href="https://unsplash.com/s/photos/lecture?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+- [class room](https://unsplash.com/photos/Z-fq3wBVfMU) by [Shubham Sharan](https://unsplash.com/@shubhamsharan?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
 
-<span>Photo by <a href="https://unsplash.com/@pluyar?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Shane Aldendorff</a> on <a href="https://unsplash.com/s/photos/magnifying-glass?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+- [Magnifying glass](https://unsplash.com/photos/mQHEgroKw2k) by [Shane Aldendorff](https://unsplash.com/@pluyar?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
 
-<span>Photo by <a href="https://unsplash.com/@bonvoyagepictures?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Julian Schiemann</a> on <a href="https://unsplash.com/s/photos/tennis?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+- [Stock prices](https://unsplash.com/photos/DfjJMVhwH_8) by [Austin Distel](https://unsplash.com/@austindistel?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
 
+- [Tennis](https://unsplash.com/photos/Z4Sxy1_3wdY) by [Julian Schiemann](https://unsplash.com/@bonvoyagepictures?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
+
+- [Sled](https://unsplash.com/photos/yB_aiAWkm40) by [Ethan Hu](https://unsplash.com/@ethanhjy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
 ### Other
 
 - The temi robot: from the company's [official web site](https://www.robotemi.com/).

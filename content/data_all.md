@@ -28,7 +28,7 @@
  הרצאת מבוא על התחום.
  <div>
    <div>
-     <h4><a href="/lecture01/slides/">הרצאה 1 - מבוא</a></h4>
+     <h4><a href="/lecture01/slides/">הרצאה 1</a></h4>
    </div><div>27/10</div>
  </div>
  <h3>רגרסיה לינארית כדוגמא</h3>
