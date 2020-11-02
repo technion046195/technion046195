@@ -35,6 +35,7 @@ $$
 ##### הערות
 
 - את המשתנים $\text{y}$ מקובל לכנות **labels** (תגיות).
+- את המשתנים $\text{x}$ מקובל לכנות **observations \ measurements** (תצפיות / מדידיות).
 - גם $\text{x}$ וגם $\text{y}$ יכולים להיות וקטורים או סקלרים. המקרה הנפוץ הינו ש $\mathbf{x}$ הוא וקטור ו $\text{y}$ סקלר.
 
 #### רישום כבעיית אופטימיזציה
@@ -119,11 +120,11 @@ $$
 
 #### מאפיינים
 
-בהינתן מודל פרמטרי כל שהוא, ניתן בקלות לייצר מודלים פרמטרים חדשים על ידי ביצוע עיבוד מקדים כל שהוא ל $\boldsymbol{x}$ לפני שהוא מוזן למודל. את העיבוד המקדים ניתן לתאר כאוסף של פונקציות $\phi_k$ אשר פועלות על $\boldsymbol{x}$. את המידע המעובד (המוצא של ה $\phi$-ים) מקובל לכנות מאפיינים. כמו כן, לרוב נוח לאגד את כל הפונקציות $\phi$ לפונקציה אחת $\Phi$ אשר פועלת על $\boldsymbol{x}$ ומחזירה את וקטור המאפיינים:
+בהינתן מודל פרמטרי כל שהוא, ניתן בקלות לייצר מודלים פרמטרים חדשים על ידי ביצוע עיבוד מקדים כל שהוא ל $\boldsymbol{x}$ לפני שהוא מוזן למודל. את העיבוד המקדים ניתן לתאר כאוסף של פונקציות $\varphi_k$ אשר פועלות על $\boldsymbol{x}$. את המידע המעובד (המוצא של ה $\varphi$-ים) מקובל לכנות מאפיינים. כמו כן, לרוב נוח לאגד את כל הפונקציות $\varphi$ לפונקציה אחת $\Phi$ אשר פועלת על $\boldsymbol{x}$ ומחזירה את וקטור המאפיינים:
 
 $$
 \Phi(\boldsymbol{x})=
-[\phi_1(\boldsymbol{x}),\phi_2(\boldsymbol{x}),\cdot,\phi_M(\boldsymbol{x})]^{\top}
+[\varphi_1(\boldsymbol{x}),\varphi_2(\boldsymbol{x}),\cdot,\varphi_M(\boldsymbol{x})]^{\top}
 $$
 
 המודל הפרמטרי החדש יהיה הרכבה של $h$ ו $\Phi$:
@@ -151,7 +152,7 @@ $$
 כפי שציינו קודם, וכפי שנראה בתרגיל, תמיד ניתן להשתמש במאפיינים על מנת לקבל פונקציות מורכבות יותר:
 
 $$
-h(\boldsymbol{x};\boldsymbol{\theta})=\theta_1 \phi_1(\boldsymbol{x})+\theta_2 \phi_2(\boldsymbol{x})+\dots+\theta_M \phi_M(\boldsymbol{x})
+h(\boldsymbol{x};\boldsymbol{\theta})=\theta_1 \varphi_1(\boldsymbol{x})+\theta_2 \varphi_2(\boldsymbol{x})+\dots+\theta_M \varphi_M(\boldsymbol{x})
 =\Phi(\boldsymbol{x})^{\top}\boldsymbol{\theta}
 $$
 
@@ -316,7 +317,7 @@ $$
 **4)** נרצה כעת להשתמש בפונקציות המאפיינים הבאות:
 
 $$
-\phi_m(x)=\exp\left(-\frac{(x-\mu_m)^2}{2\sigma_m^2}\right)\qquad m\in1,2,3
+\varphi_m(x)=\exp\left(-\frac{(x-\mu_m)^2}{2\sigma_m^2}\right)\qquad m\in1,2,3
 $$
 
 כאשר
@@ -339,10 +340,10 @@ $$
 h(x;\boldsymbol{\theta})=\theta_1+\theta_2 x
 $$
 
-במודל הלינארי שרמשנו קודם היה חסר איבר ההיסט ($\theta_1$). על ידי שימוש במאפיינים נוכל להוסיף את האיבר הזה למודל אם נבחר להשתמש במאפיינים הבאים:
+כפי שראינו בהרצאה, ניתן להוסיף את איבר ההיסט על ידי שימוש במאפיינים. אנו נעשה זאת על ידי שימוש במאפיינים הבאים:
 
 $$
-\phi_1(x)=1,\quad\phi_2(x)=x
+\varphi_1(x)=1,\quad\varphi_2(x)=x
 $$
 
 או בכתיב וקטורי
@@ -356,8 +357,6 @@ $$
 $$
 \mathcal{D}=\{\{[1,-1]^{\top},2.5\},\{[1,2]^{\top},2\},\{[1,4]^{\top},1\}\}
 $$
-
-**הערה**: אנו נראה שבמקרים רבים מקובל לרשום מודלים פרמטריים ללא איבר היסט מתוך ההנחה שתמיד ניתן להוסיף איבר כזה על ידי שימוש במאפיינים.
 
 נרשום את $X$ ו $\boldsymbol{y}$:
 
@@ -528,11 +527,11 @@ $$
 בעבור המאפיינים:
 
 $$
-\phi_1(x)=\exp\left(-\frac{(x+1)^2}{2\cdot1.5^2}\right)
+\varphi_1(x)=\exp\left(-\frac{(x+1)^2}{2\cdot1.5^2}\right)
 \quad,
-\phi_2(x)=\exp\left(-\frac{(x-2)^2}{2}\right)
+\varphi_2(x)=\exp\left(-\frac{(x-2)^2}{2}\right)
 \quad,
-\phi_3(x)=\exp\left(-\frac{(x-4)^2}{2}\right)
+\varphi_3(x)=\exp\left(-\frac{(x-4)^2}{2}\right)
 $$
 
 המטריצה $X$ תהיה:
@@ -959,7 +958,7 @@ $$
 נתחיל בנסות להשתמש במאפיין בודד. מכיוון שאנו מצפים שהדבר שהכי ישפיע על זמן הנסיעה הינו המרחק שאותו יש ליסוע, ננסה להשתמש במרחק האווירי בין נקודת האיסוף לנקודת ההורדה כמאפיין שלנו:
 
 $$
-\phi_{\text{dist}}(\boldsymbol{x})=\sqrt{
+\varphi_{\text{dist}}(\boldsymbol{x})=\sqrt{
 (\text{x}_{\text{pick east}}-\text{x}_{\text{drop east}})^2
 +(\text{x}_{\text{pick north}}-\text{x}_{\text{drop north}})^2}
 $$
@@ -968,7 +967,7 @@ $$
 
 $$
 h(\boldsymbol{x};\theta)
-=\theta\phi_{\text{dist}}(\boldsymbol{x})
+=\theta\varphi_{\text{dist}}(\boldsymbol{x})
 =\theta\sqrt{
 (\text{x}_{\text{pick east}}-\text{x}_{\text{drop east}})^2
 +(\text{x}_{\text{pick north}}-\text{x}_{\text{drop north}})^2}
@@ -995,10 +994,10 @@ $$
 =(X^{\top}X)^{-1}X\boldsymbol{y}
 $$
 
-כאשר $X$ הוא הוקטור של המאפיין היחיד $\phi_{\text{dist}}$
+כאשר $X$ הוא הוקטור של המאפיין היחיד $\varphi_{\text{dist}}$
 
 $$
-X = [\phi_{\text{dist}}(\boldsymbol{x}_1),\phi_{\text{dist}}(\boldsymbol{x}_2),\dots,\phi_{\text{dist}}(\boldsymbol{x}_N)]^{\top}
+X = [\varphi_{\text{dist}}(\boldsymbol{x}_1),\varphi_{\text{dist}}(\boldsymbol{x}_2),\dots,\varphi_{\text{dist}}(\boldsymbol{x}_N)]^{\top}
 $$
 
 הפרמטר המתקבל מחישוב זה הינו:
