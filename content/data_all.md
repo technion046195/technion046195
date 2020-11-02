@@ -34,7 +34,7 @@
  <h3>רגרסיה לינארית כדוגמא</h3>
  <div>
    <div>
-     <h4><a class="disabled">הרצאה 2</a></h4>
+     <h4><a href="/lecture02/">הרצאה 2</a></h4>
    </div><div>3/11</div>
    <div>
      <h4><a href="/tutorial03/">תרגול 3</a></h4>
