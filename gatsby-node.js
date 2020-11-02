@@ -11,6 +11,9 @@ var codeToHTMLList = [];
 var pagesToDocxList = [];
 var pagesToPrintList = [];
 
+require('events').EventEmitter.prototype._maxListeners = 70;
+require('events').defaultMaxListeners = 70;
+
 exports.onCreateDevServer = ({ app }) => {
     app.use(express.static('public'));
     generateExtras();
@@ -225,6 +228,7 @@ exports.onPostBuild = async () => {
 // =====================
 generateExtras = async () => {
   console.log('-> Generating extras');
+  await new Promise(resolve => setTimeout(resolve, 10000))
   let promisesArray = [];
   let args;
   while (codeToCopyList.length>0) {
@@ -331,7 +335,7 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
       const page = await browser.newPage()
       page.on('error', err => { if (!page.isClosed()) { page.close(); }});
       await page.goto(url, { waitUntil: 'networkidle2' });
-      await new Promise(resolve => setTimeout(resolve, 15000))
+      await new Promise(resolve => setTimeout(resolve, 20000))
       if (profile == 'slides') {
         await page.pdf({
           width: "9.75in",
