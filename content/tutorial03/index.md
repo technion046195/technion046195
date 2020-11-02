@@ -371,7 +371,7 @@ $$
 $$
 \begin{aligned}
 \boldsymbol{\theta}^*_{\mathcal{D}}
-&=(X^{\top}X)^{-1}X\boldsymbol{y}\\
+&=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}\\
 &=\left(\begin{bmatrix}1&1&1\\-1&2&4\end{bmatrix}
         \begin{bmatrix}1&-1\\1&2\\1&4\end{bmatrix}\right)^{-1}
    \begin{bmatrix}1&1&1\\-1&2&4\end{bmatrix}
@@ -427,7 +427,7 @@ $$
 
 $$
 \boldsymbol{\theta}^*_{\mathcal{D}}
-=(X^{\top}X)^{-1}X\boldsymbol{y}
+=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}
 =\frac{1}{30}[74,-3,-2]^{\top}
 =[2.467,-0.1,-0.067]^{\top}
 $$
@@ -480,7 +480,7 @@ $$
 
 $$
 \boldsymbol{\theta}^*_{\mathcal{D}}
-=(X^{\top}X)^{-1}X\boldsymbol{y}
+=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}
 =\frac{1}{120}[-86,177,37]^{\top}
 =[-0.7167,1.475,-0.3083]^{\top}
 $$
@@ -509,7 +509,7 @@ $$
 
 $$
 \boldsymbol{\theta}^*_{\mathcal{D}}
-=(X^{\top}X)^{-1}X\boldsymbol{y}
+=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}
 =\frac{1}{150}[354,-19,-2]^{\top}
 =[2.36,-0.1267,-0.0133]^{\top}
 $$
@@ -544,7 +544,7 @@ $$
 
 $$
 \boldsymbol{\theta}^*_{\mathcal{D}}
-=(X^{\top}X)^{-1}X\boldsymbol{y}
+=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}
 =[2.4827,1.5585,0.7794]^{\top}
 $$
 
@@ -631,8 +631,8 @@ $$
 \begin{aligned}
 \boldsymbol{\theta}^*_{\mathcal{D}}
 &=\underset{\boldsymbol{\theta}}{\arg\min} \hat{R}_{\mathcal{D}}(h(\cdot;\boldsymbol{\theta}))\\
-&=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N l(h(\boldsymbol{x}_i;\boldsymbol{\theta}),y_i)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N|\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i|^3
+&=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N l(h(\boldsymbol{x}^{(i)};\boldsymbol{\theta}),y^{(i)})\\
+&=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N|\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)}|^3
 \end{aligned}
 $$
 
@@ -643,13 +643,13 @@ $$
 $$
 \begin{aligned}
 \nabla_{\boldsymbol{\theta}}\hat{R}_{\mathcal{D}}(h(\cdot;\boldsymbol{\theta}))
-&=\nabla_{\boldsymbol{\theta}}\left(\frac{1}{N}\sum_{i=0}^N|\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i|^3\right)\\
-&=\frac{1}{N}\sum_{i=0}^N\nabla_{\boldsymbol{\theta}}|\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i|^3\\
+&=\nabla_{\boldsymbol{\theta}}\left(\frac{1}{N}\sum_{i=0}^N|\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)}|^3\right)\\
+&=\frac{1}{N}\sum_{i=0}^N\nabla_{\boldsymbol{\theta}}|\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)}|^3\\
 &=\frac{1}{N}\sum_{i=0}^N\nabla_{\boldsymbol{\theta}}\left(
-    (\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i)^3\text{sign}(\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i)
+    (\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^3\text{sign}(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})
     \right)\\
 &=\frac{1}{N}\sum_{i=0}^N 3\boldsymbol{x}
-    (\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i)^2\text{sign}(\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i)\\
+    (\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2\text{sign}(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})\\
 \end{aligned}
 $$
 
@@ -672,7 +672,7 @@ $$
 \boldsymbol{\theta}^{(t+1)}
 &=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}\hat{R}(h(\cdot;\boldsymbol{\theta}^{(t)}))\\
 &=\boldsymbol{\theta}^{(t)}-\eta \frac{1}{N}\sum_{i=0}^N 3\boldsymbol{x}
-    (\boldsymbol{x}_i^{\top}\boldsymbol{\theta}^{(t)}-y_i)^2\text{sign}(\boldsymbol{x}_i^{\top}\boldsymbol{\theta}^{(t)}-y_i)\\
+    (\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}^{(t)}-y^{(i)})^2\text{sign}(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}^{(t)}-y^{(i)})\\
 \end{aligned}
 $$
 
@@ -1021,7 +1021,7 @@ $$
 נחשב את הסיכון האמפירי המתקבל בעבור מודל זה:
 
 $$
-\hat{R}_{\mathcal{D}}(h)=\frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}_i)-y_i)^2=32.67\text{min}^2
+\hat{R}_{\mathcal{D}}(h)=\frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}^{(i)})-y^{(i)})^2=32.67\text{min}^2
 $$
 
 #### בחירת מאפיינים - נסיון שני
