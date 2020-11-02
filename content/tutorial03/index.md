@@ -25,7 +25,7 @@ print_pdf: true
 - נתון לנו **מדגם** של זוגות של $\text{x}$ ו $\text{y}$ אשר יוצרו מ $N$ דגימות בלתי תלויות:
 
 $$
-\mathcal{D}=\{x_i, y_i\}_{i=1}^N
+\mathcal{D}=\{x^{(i)}, y^{(i)}\}_{i=1}^N
 $$
 
 - נסמן ב $\hat{y}=h(x)$ חזאיים אפשריים של $\text{y}$ בהינתן $\text{x}$.
@@ -89,13 +89,13 @@ $$
 $$
 \hat{R}_{\mathcal{D}}(h)
 =\hat{\mathbb{E}}_{\mathcal{D}}\left[l(h(\mathbf{x}),\text{y})\right]
-=\frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}_i),y_i)
+=\frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}^{(i)}),y^{(i)})
 $$
 
 בעיית האופטימיזציה תהיה במקרה זה:
 
 $$
-h^*_{\mathcal{D}} = \underset{h}{\arg\min} \frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}_i),y_i)
+h^*_{\mathcal{D}} = \underset{h}{\arg\min} \frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}^{(i)}),y^{(i)})
 $$
 
 שיטה זו מוכנה empirical risk minimization (ERM).
@@ -115,7 +115,7 @@ $$
 כאשר עובדים עם מודל פרמטרי, האופטימיזציה היא למעשה על על הפרמטרים, והבעיה הופכת להיות:
 
 $$
-\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}_i;\boldsymbol{\theta}),y_i)
+\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}^{(i)};\boldsymbol{\theta}),y^{(i)})
 $$
 
 #### מאפיינים
@@ -168,8 +168,8 @@ $$
 
 $$
 \boldsymbol{\theta}^*_{\mathcal{D}}
-=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}_i;\boldsymbol{\theta})-y_i)^2
-=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(\boldsymbol{x}_i^{\top}\boldsymbol{\theta}-y_i)^2
+=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
+=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2
 $$
 
 ##### כתיב מטריצי
@@ -179,17 +179,17 @@ $$
 - נדגיר את הוקטור $\boldsymbol{y}$ כוקטור של כל התגיות במדגם:
 
   $$
-  \boldsymbol{y}=[y_1,y_2,\cdot,y_n]^{\top}
+  \boldsymbol{y}=[y^{(1)},y^{(2)},\cdot,y^{(N)}]^{\top}
   $$
 
 - נגדיר את המטריציה $X$ כמטריצה של כל ה$\boldsymbol{x}$-ים במדגם:
 
   $$
   X=\begin{bmatrix}
-  - & \boldsymbol{x}_1 & - \\
-  - & \boldsymbol{x}_2 & - \\
+  - & \boldsymbol{x}^{(1)} & - \\
+  - & \boldsymbol{x}^{(2)} & - \\
   & \vdots & \\
-  - & \boldsymbol{x}_N & -
+  - & \boldsymbol{x}^{(N)} & -
   \end{bmatrix}
   $$
 
@@ -218,10 +218,10 @@ $$
 
 $$
 X=\begin{bmatrix}
-- & \Phi(\boldsymbol{x}_1) & - \\
-- & \Phi(\boldsymbol{x}_2) & - \\
+- & \Phi(\boldsymbol{x}^{(1)}) & - \\
+- & \Phi(\boldsymbol{x}^{(2)}) & - \\
 & \vdots & \\
-- & \Phi(\boldsymbol{x}_N) & -
+- & \Phi(\boldsymbol{x}^{(N)}) & -
 \end{bmatrix}
 $$
 
@@ -292,7 +292,7 @@ $$
 נתונה לנו בעיית LLS עם המדגם הבא:
 
 $$
-\mathcal{D}=\{\{x_1=-1,y_1=2.5\},\{x_2=2,y_2=2\},\{x_3=4,y_3=1\}\}
+\mathcal{D}=\{\{x^{(1)}=-1,y^{(1)}=2.5\},\{x^{(2)}=2,y^{(2)}=2\},\{x^{(3)}=4,y^{(3)}=1\}\}
 $$
 
 להבא בקורס, נשמיט את הרישום של $x$ ו $y$ בהגדרת המדגם ונרשום אותו בקצרה באופן הבא:
@@ -938,7 +938,7 @@ $$
 $$
 h^*_{\mathcal{D}}
 =\underset{h}{\arg\min} \hat{R}_{\mathcal{D}}(h)
-=\underset{h}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}_i)-y_i)^2
+=\underset{h}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}^{(i)})-y^{(i)})^2
 $$
 
 בתרגול הבא ננסה לשפר את הבחירה של המודל כך שהיא גם תוכל להכליל טוב יותר. כמו כן, בתרגול זה נשתמש במודל לינארי לפונקציית החיזוי:
@@ -950,7 +950,7 @@ $$
 
 $$
 \boldsymbol{\theta}^*_{\mathcal{D}}
-=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}_i;\boldsymbol{\theta})-y_i)^2
+=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
 $$
 
 #### בחירת מאפיינים - נסיון ראשון
@@ -997,7 +997,7 @@ $$
 כאשר $X$ הוא הוקטור של המאפיין היחיד $\varphi_{\text{dist}}$
 
 $$
-X = [\varphi_{\text{dist}}(\boldsymbol{x}_1),\varphi_{\text{dist}}(\boldsymbol{x}_2),\dots,\varphi_{\text{dist}}(\boldsymbol{x}_N)]^{\top}
+X = [\varphi_{\text{dist}}(\boldsymbol{x}^{(1)}),\varphi_{\text{dist}}(\boldsymbol{x}^{(2)}),\dots,\varphi_{\text{dist}}(\boldsymbol{x}^{(N)})]^{\top}
 $$
 
 הפרמטר המתקבל מחישוב זה הינו:
@@ -1045,7 +1045,7 @@ $$
 חישוב של הפרמטרים והסיכון האמפירי בשיטה דומה לקודם נותנת סיכון אמפירי של:
 
 $$
-\hat{R}_{\mathcal{D}}(h)=\frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}_i)-y_i)^2=26.42\text{min}^2
+\hat{R}_{\mathcal{D}}(h)=\frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}^{(i)})-y^{(i)})^2=26.42\text{min}^2
 $$
 
 ### עוד מאפיינים
