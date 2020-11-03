@@ -334,7 +334,13 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
       });
       const page = await browser.newPage()
       console.log(`    -> Going to: ${url}`);
-      page.on('error', err => { if (!page.isClosed()) { page.close(); }});
+      page.on('error', err => { 
+        try {
+          if (!page.isClosed()) { page.close(); }
+        } catch(error){
+          console.log(`Unable to close page`);
+        }
+      });
       await page.goto(url, { waitUntil: 'networkidle2' });
       await new Promise(resolve => setTimeout(resolve, 20000))
       console.log(`    -> Printing: ${url}`);
