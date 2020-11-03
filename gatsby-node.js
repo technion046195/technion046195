@@ -228,7 +228,7 @@ exports.onPostBuild = async () => {
 // =====================
 generateExtras = async () => {
   console.log('-> Generating extras');
-  await new Promise(resolve => setTimeout(resolve, 10000))
+  // await new Promise(resolve => setTimeout(resolve, 10000))
   let promisesArray = [];
   let args;
   while (codeToCopyList.length>0) {
@@ -245,7 +245,7 @@ generateExtras = async () => {
   }
   while (pagesToPrintList.length>0) {
     args = pagesToPrintList.pop()
-    promisesArray.push(printToPDF(args))
+    await printToPDF(args);
   }
   await Promise.all(promisesArray);
   console.log('-> Extras generated');
@@ -329,20 +329,20 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
     let browser;
     try {
       browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
         headless: true
       });
       const page = await browser.newPage()
       console.log(`    -> Going to: ${url}`);
-      // page.on('error', err => { 
-      //   try {
-      //     if (!page.isClosed()) { page.close(); }
-      //   } catch(error){
-      //     console.log(`Unable to close page`);
-      //   }
-      // });
+      page.on('error', err => { 
+        try {
+          if (!page.isClosed()) { page.close(); }
+        } catch(error){
+          console.log(`Unable to close page`);
+        }
+      });
       await page.goto(url, { waitUntil: 'networkidle2' });
-      await new Promise(resolve => setTimeout(resolve, 20000))
+      await new Promise(resolve => setTimeout(resolve, 10000))
       console.log(`    -> Printing: ${url}`);
       if (profile == 'slides') {
         await page.pdf({
