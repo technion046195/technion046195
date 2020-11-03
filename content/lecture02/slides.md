@@ -32,7 +32,7 @@ slides_pdf: true
 
 ## בעיית החיזוי
 
-- בבעוית חיזוי אנו מנסים לחזות את ערכו של משתנה אקראי לא ידוע, לרוב על סמך משתנים אקראיים ידועים.
+- בבעיות חיזוי אנו מנסים לחזות את ערכו של משתנה אקראי לא ידוע, לרוב על סמך משתנים אקראיים ידועים.
 
 <div class="fragment">
 
@@ -135,11 +135,11 @@ $N$ - מספר הדגימות שבמדגם.
 
 <div class="fragment">
 
-- שהציון נמוך יותר=  חזאי טוב יותר.
+- ציון נמוך יותר = חזאי טוב יותר.
 
 </div><div class="fragment">
 
-- החאי האופטימאלי $h^*$ הוא החזאי בעל הציון הנמוך ביותר:
+- החזאי האופטימאלי $h^*$ הוא החזאי בעל הציון הנמוך ביותר:
 
 $$
 h^* = \underset{h}{\arg\min}C(h)
@@ -160,11 +160,15 @@ $$
 
 - פונקציית הcost מנסה לתת ציון ליכולת החיזוי הכללית של החזאי.
 
+<div class="fragment">
+
 - פונקציית ה**loss** (הפסד) $l$ נותנת ציון לחיזוי בודד.
 
 $$
-l(h(\boldsymbol{x},y)=l(\hat{y},y)
+l(h(\boldsymbol{x}),y)=l(\hat{y},y)
 $$
+
+</div><div class="fragment">
 
 - ניתן להגדיר את פונקציית הcost כתוחלת על פונקציית loss:
 
@@ -172,12 +176,15 @@ $$
 C(h)=\mathbb{E}\left[l(h(\mathbf{x}),\text{y})\right]
 $$
 
+</div><div class="fragment">
+
 - במקרים כאלה, מוקבל להשתמש בשם **risk** ובסימון:
 
 $$
 R(h)=\mathbb{E}\left[l(h(\mathbf{x}),\text{y})\right]
 $$
 
+</div>
 </section><section>
 
 ## פונקציות loss (risk) נפוצות
@@ -185,7 +192,9 @@ $$
 #### Zero-one loss (misclassification rate):
 
   $$
-  l(\hat{y},y)=I\{\hat{y}\neq y\}
+  l(\hat{y},y)=I\{\hat{y}\neq y\},
+  \qquad
+  R(h)=\mathbb{E}\left[I\{h(\boldsymbol{x})\neq y\}\right]
   $$
 
   נפוצה בבעיות classificaiton.
@@ -195,7 +204,9 @@ $$
 #### $l_2$ loss (mean squared error (MSE))
 
   $$
-  l(\hat{y},y)=(\hat{y}-y)^2
+  l(\hat{y},y)=(\hat{y}-y)^2,
+  \qquad
+  R(h)=\mathbb{E}\left[(h(\boldsymbol{x})-y)^2\right]
   $$
 
   נפוצה בבעיות regression.<br/>
@@ -206,7 +217,9 @@ $$
 #### $l_1$ loss (mean absolute error (MAE))
 
   $$
-  l(\hat{y},y)=|\hat{y}-y|
+  l(\hat{y},y)=|\hat{y}-y|,
+  \qquad
+  R(h)=\mathbb{E}\left[|h(\boldsymbol{x})-y|\right]
   $$
 
   גם כן נפוצה בבעיות regression.
@@ -300,7 +313,7 @@ ERM משתמשת בתוחלת האמפירית על מנת להחליף את הr
 
 $$
 R(h)=\mathbb{E}\left[l(h(\mathbf{x}),\text{y})\right]
-\approx\hat{R}(h)=\frac{1}{N}\sum_{i=1}^N\left[l(h(\boldsymbol{x}^{(i)}),y^{(i)})\right]
+\approx\hat{R}_{\mathcal{D}}(h)=\frac{1}{N}\sum_{i=1}^N\left[l(h(\boldsymbol{x}^{(i)}),y^{(i)})\right]
 $$
 
 בעיית האופטימיזציה תהיה:
@@ -332,7 +345,7 @@ $$
 
 ## האם החזאי ידע להכליל?
 
-- לא מובטח שהפתרון של בעיית האופטימיזציה החדשה באמת יצליח להניב מחיר נמוך בפונקציית המחיר המקורית.
+- לא מובטח שהפתרון של בעיית האופטימיזציה האלטרנטיבית באמת יצליח להניב מחיר נמוך בפונקציית המחיר המקורית.
 - האופטימיזציה היא על כל המרחב. זאת אומרת שניתן למצוא אין סוף פונקציות אשר מבצעות חיזוי מושלם.
 
 </section><section>
@@ -477,7 +490,9 @@ $$
 
 ## Linear least squares
 
-ERM + מודל לינארי + MSE:
+MSE + מודל לינארי + ERM:
+
+<div class="fragment">
 
 $$
 \boldsymbol{\theta}^*_{\mathcal{D}}
@@ -490,6 +505,7 @@ $$
 
 בעיית הLLS נפוצה מאד ומופיעה בתחומים רבים.
 
+</div>
 </section><section>
 
 ## Linear least squares - כתיב מטריצי
@@ -535,8 +551,11 @@ $$
 בעזרת הגרות אלו, ניתן לרשום את בעיית האופטימיזציה של LLS באופן הבא:
 
 $$
+\begin{aligned}
 \boldsymbol{\theta}^*_{\mathcal{D}}
-=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
+&=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2\\
+&=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
+\end{aligned}
 $$
 
 </section><section>
@@ -595,17 +614,19 @@ $$
 h(x;\theta)=\theta x
 $$
 
-נחשת את $\theta$ על ידי:
+בעבור מקרה זה, נקבל ש: $X=[x^{(1)}, x^{(2)}, \dots, x^{(N)}]^{\top}$.
+
+<br/>
+
+נחשב את $\theta$ על ידי:
 
 $$
 \theta^*_{\mathcal{D}}=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}
 $$
 
-כאשר $X=[x^{(1)}, x^{(2)}, \dots, x^{(N)}]^{\top}$.
-
-<br/>
 התוצאה המקבלת הינה:
 
+<br/>
 <div class="imgbox" style="max-height:300px">
 
 ![](../lecture01/output/drive_prediction_linear_no_bias.png)
@@ -636,7 +657,7 @@ $$
 
 ## שאלה
 
-בדוגמא של חיזוי זמן הנסיעה, אילו מהפעולות הבאות שנעשה על $x$ (מספר המכוניות על הכביש) ימנע מאיתנו את היכולת לנסות ולפתור את בעיית החיזוי:
+אילו מהפעולות הבאות על $x$ ימנע מאיתנו את לנסות ולפתור את בעיית החיזוי:
 
 - החלפת יחידות (נגיד לספור את כמות המכוניות במאות).
 
@@ -671,12 +692,11 @@ $$
 
 ## מאפיינים
 
-את קלט החדש $\boldsymbol{x}_{\text{new}}$ מקובל לכנות וקטור ה**מאפיינים (features)**.
-
+את המוצא של הפונקציה $\Phi$ מקובל לכנות וקטור ה**מאפיינים (features)**.
 השימוש במאפיינים מאפשר דברים כגון:
 
 - הרחבת מודלים פשוטים למודלים מורכבים יותר.
-- החלפת האופן בשבו מיוצג המידע. לדוגמא:
+- החלפת האופן שבו המידע מיוצג. לדוגמא:
   - החלפת יחידות.
   - הפיכת תמונת פנים לוקטור של מאפיינים כגון: המרחק בין העיניים, גוון העור, עד כמה הפנים אליפטיות וכו'
   - ניקוי רעשים בהקלטות audio.
