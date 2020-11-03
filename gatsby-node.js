@@ -333,9 +333,11 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
         headless: true
       });
       const page = await browser.newPage()
+      console.log(`    -> Going to: ${url}`);
       page.on('error', err => { if (!page.isClosed()) { page.close(); }});
       await page.goto(url, { waitUntil: 'networkidle2' });
       await new Promise(resolve => setTimeout(resolve, 20000))
+      console.log(`    -> Printing: ${url}`);
       if (profile == 'slides') {
         await page.pdf({
           width: "9.75in",
