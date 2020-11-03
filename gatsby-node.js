@@ -362,7 +362,11 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
       break;
     }
     catch(error){
-      await browser.close();
+      try {
+        await browser.close();
+      } catch(error){
+        console.log(`Unable to close the browser`);
+      }
       if (trail < 10) {
         trail++;
         console.log(`Error loading "${url}". Trying again. Trail: ${trail}`);
