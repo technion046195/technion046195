@@ -228,7 +228,6 @@ exports.onPostBuild = async () => {
 // =====================
 generateExtras = async () => {
   console.log('-> Generating extras');
-  // await new Promise(resolve => setTimeout(resolve, 10000))
   let promisesArray = [];
   let args;
   while (codeToCopyList.length>0) {
@@ -333,17 +332,9 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
         headless: true
       });
       const page = await browser.newPage()
-      console.log(`    -> Going to: ${url}`);
-      page.on('error', err => { 
-        try {
-          if (!page.isClosed()) { page.close(); }
-        } catch(error){
-          console.log(`Unable to close page`);
-        }
-      });
+      page.on('error', err => { if (!page.isClosed()) { page.close(); }});
       await page.goto(url, { waitUntil: 'networkidle2' });
       await new Promise(resolve => setTimeout(resolve, 10000))
-      console.log(`    -> Printing: ${url}`);
       if (profile == 'slides') {
         await page.pdf({
           width: "9.75in",
@@ -370,11 +361,7 @@ const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
       break;
     }
     catch(error){
-      try {
-        await browser.close();
-      } catch(error){
-        console.log(`Unable to close the browser`);
-      }
+      try {await browser.close();} catch(error){console.log(`Unable to close the browser`);}
       if (trail < 10) {
         trail++;
         console.log(`Error loading "${url}". Trying again. Trail: ${trail}`);
