@@ -844,6 +844,8 @@ $$
 
 Gradient descent מנסה למצוא מינימום לוקאלי על ידי בכיוון שבו הפונקציה יורדת הכי מהר.
 
+<br/>
+
 <div class="imgbox" style="max-height:400px">
 
 ![](../lecture02/assets/sled.jpg)
@@ -895,7 +897,7 @@ $$
 \end{bmatrix}
 $$
 
-בעובר $\boldsymbol{\theta}^{(0)}=[1,1,1]^{\top}$ (ו $\eta=0.1$) מקבלים את הפתרון הבא:
+בעובר $\boldsymbol{\theta}^{(0)}=[100,100,100]^{\top}$ (ו $\eta=0.1$) מקבלים את הפתרון הבא:
 
 <br/>
 
