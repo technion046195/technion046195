@@ -183,6 +183,7 @@ body {
 
 .imgbox p {
   max-height: inherit;
+  max-width: 100%;
 }
 
 .imgbox img {
@@ -194,11 +195,16 @@ body {
   width: 100%;
 }
 
-.imgbox:not(.no-shadow) img,
-figure:not(.no-shadow) img {
+.imgbox img{
   border-radius: 10px;
   /* filter: drop-shadow(5px 5px 5px #222); */
   box-shadow: 5px 5px 15px #888888;
+}
+
+.imgbox.no-shadow img{
+  border-radius: initial;
+  /* filter: initial; */
+  box-shadow: initial;
 }
 
 /* inline-blocks */
