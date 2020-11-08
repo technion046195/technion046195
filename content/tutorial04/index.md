@@ -368,7 +368,7 @@ $$
 \sum_{i=1}^D w_i\theta_i^2
 $$
 
-(כאן $D$ הוא מספר הפרמטרים, זאת אומרת האורך של $\boldsymbol{\theta}$ אשר במודל לינארי שווה גם לאורך של $\boldsymbol{x}$).
+(כאן $D$ הוא מספר הפרמטרים של המודל).
 
 הדרכה: הגדירו את מטריצת המשקלים $W=\text{diag}(\{w_i\})$, רשמו את הבעיה בכתיב מטריצי ופתרו אותה בדומה לסעיף הקודם.
 
@@ -399,16 +399,11 @@ $$
 בעיית האופטימיזציה של LLS הינה:
 
 $$
-\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_{i=0}^N(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2
+\boldsymbol{\theta}^*
+=\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
 $$
 
-כאשר נוסיף לבעיית האופטימיזציה איבר של רגולריזציית $l_2$ נקבל: 
-
-$$
-\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_{i=0}^N(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_2^2
-$$
-
-על מנת לפתור את בעיית האופטימיזציה נשרום את הבעיה בכתיב וקטורי בדומה לבעיית ה LLS המקורית. נגדיר
+כאשר
 
 $$
 \boldsymbol{y}=[y^{(1)},y^{(2)},\cdot,y^{(n)}]^{\top}
@@ -421,7 +416,7 @@ X=\begin{bmatrix}
 \end{bmatrix}
 $$
 
-ונרשום את בעיית האופטימיזציה כ:
+כאשר נוסיף לבעיית האופטימיזציה איבר של רגולריזציית $l_2$ נקבל: 
 
 $$
 \boldsymbol{\theta}^*
@@ -429,13 +424,13 @@ $$
 +\lambda\lVert\boldsymbol{\theta}\rVert_2^2
 $$
 
-נזגור ונשווה ל-$0$. נשתמש בנזגרת המוכרת $\nabla_{\boldsymbol{x}}\lVert\boldsymbol{x}\rvert_2^2=2\boldsymbol{x}$:
+נזגור ונשווה ל-$0$. נשתמש בנזגרת המוכרת $\nabla_{\boldsymbol{x}}\lVert\boldsymbol{x}\rVert_2^2=\nabla_{\boldsymbol{x}}\boldsymbol{x}^{\top}\boldsymbol{x}=2\boldsymbol{x}$:
 
 $$
 \begin{aligned}
 \nabla_{\boldsymbol{\theta}}\left( \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
 +\lambda\lVert\boldsymbol{\theta}\rVert_2^2\right)=&0\\
-\Leftrightarrow \frac{2}{N}X^{\top}(X\boldsymbol{\theta}-\boldsymbol{y})
+\Leftrightarrow \frac{2}{N}(X^{\top}X\boldsymbol{\theta}-X^{\top}\boldsymbol{y})
 +2\lambda\boldsymbol{\theta}=&0\\
 \Leftrightarrow (X^{\top}X+N\lambda I)\boldsymbol{\theta}=&
 X^{\top}\boldsymbol{y}\\
@@ -456,7 +451,7 @@ $$
 +\lambda\sum_{i=1}^D w_i\theta_i^2
 $$
 
-נפעל על פי ההדרכת. נגדיר את המטריצה:
+נפעל על פי ההדרכה. נגדיר את המטריצה:
 
 $$
 W=\begin{bmatrix}
@@ -481,7 +476,7 @@ $$
 \begin{aligned}
 \nabla_{\boldsymbol{\theta}}\left( \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
 +\lambda\boldsymbol{\theta}^{\top}W\boldsymbol{\theta}\right)=&0\\
-\Leftrightarrow \frac{2}{N}X^{\top}(X\boldsymbol{\theta}-\boldsymbol{y})
+\Leftrightarrow \frac{2}{N}(X^{\top}X\boldsymbol{\theta}-X^{\top}\boldsymbol{y})
 +2\lambda W\boldsymbol{\theta}=&0\\
 \Leftrightarrow (X^{\top}X+N\lambda W)\boldsymbol{\theta}=&
 X^{\top}\boldsymbol{y}\\
@@ -534,9 +529,9 @@ $$
 
 #### 6)
 
-כפי שציינו בסעיף הקודם, רגולריזציית ה $l_1$ תשפיע באופן מועט יחסית על האיברים הקטנים ולא תתאמץ להקטין אותם ובעיקר תפעל להקטין את האיברים הגדולים. מנגד, רגולריזציית ה $l_1$ תמשיך ולנסות להקטין את האיברים כל עוד הם שונים מ-0 ולכן בפועל היא תיטה לאפס יותר איברים.
+כפי שציינו בסעיף הקודם, רגולריזציית ה $l_2$ תשפיע באופן מועט יחסית על האיברים הקטנים ולא תתאמץ להקטין אותם ובעיקר תפעל להקטין את האיברים הגדולים. מנגד, רגולריזציית ה $l_1$ תמשיך ולנסות להקטין את האיברים כל עוד הם שונים מ-0 ולכן בפועל היא תיטה לאפס יותר איברים.
 
-**הערה**: בפועל בגלל שגודלו של איבר הרגולריזציה של $l_1$ קבוע הוא יקטין את האיברים לערכים קרובים ל-0 ואז יתחיל להתנדנד סביב ה-0.
+**הערה**: בפועל בגלל שגודלו של איבר הרגולריזציה בגרדיאנט של $l_1$ קבוע הוא יקטין את האיברים לערכים קרובים ל-0 ואז יתחיל להתנדנד סביב ה-0.
 
 ## K-fold cross validation
 
@@ -554,7 +549,7 @@ $$
 
 כמו תמיד, לאחר קבעית ה hyper-parameters ניתן לאחד חזרה את כל הקבוצות ל train set אחד ולבנות בעזרתו את המודל תוך שימוש ב hyper-parameters שנבחרו.
 
-סכימה של החלוקה של המדגם בעבור בחירה של $K=5$ (לקוח מתוך התיעוד של החבילה [scikit learn](https://scikit-learn.org/stable/modules/cross_validation.html)):
+להלן סכימה של החלוקה של המדגם בעבור בחירה של $K=5$ (שרטוט זה לקוח מתוך התיעוד של החבילה [scikit learn](https://scikit-learn.org/stable/modules/cross_validation.html)):
 
 <div class="imgbox no-shadow" style="max-width:600px">
 
@@ -780,4 +775,4 @@ $$
 
 שגיאת חיזוי ממוצעת: $3.1$
 
-באמת על פי leave-one-out נראה שוב כי המודל מסדר 0 הוא העדיף. מכיוון ששיטה זו לא מסתמכת על נקודה אחת לקביעת סדר המודל ישנו סיכוי טוב יותר שה hyper-parameters אשר נבחרים בשיטה זו יניבו מודל אשר מכליל בצורה טובה יותר
+על פי leave-one-out נראה שוב כי המודל מסדר 0 הוא העדיף. מכיוון ששיטה זו לא מסתמכת על נקודה אחת לקביעת סדר המודל ישנו סיכוי טוב יותר שה hyper-parameters אשר נבחרים בשיטה זו יניבו מודל אשר מכליל בצורה טובה יותר
