@@ -176,6 +176,7 @@ body {
 /* ------ */
 .imgbox {
   max-width: 90%;
+  width: fit-content;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -195,13 +196,13 @@ body {
   width: 100%;
 }
 
-.imgbox img{
+.imgbox{
   border-radius: 10px;
   /* filter: drop-shadow(5px 5px 5px #222); */
   box-shadow: 5px 5px 15px #888888;
 }
 
-.imgbox.no-shadow img{
+.imgbox.no-shadow{
   border-radius: initial;
   /* filter: initial; */
   box-shadow: initial;

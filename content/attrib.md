@@ -25,12 +25,21 @@ type: attrib
 - [Tennis](https://unsplash.com/photos/Z4Sxy1_3wdY) by [Julian Schiemann](https://unsplash.com/@bonvoyagepictures?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
 
 - [Sled](https://unsplash.com/photos/yB_aiAWkm40) by [Ethan Hu](https://unsplash.com/@ethanhjy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
+
 ### Other
 
 - The temi robot: from the company's [official web site](https://www.robotemi.com/).
 - Slide backgound pattern from [MyPaint project](https://github.com/mypaint/mypaint)
 - DeepMind playing Starcraft for [DeepmMind's website](https://deepmind.com/blog/article/alphastar-mastering-real-time-strategy-game-starcraft-ii)
 - Fake persons image from [this person does not exist](https://thispersondoesnotexist.com/)
+- K-fold cross validation scheme form [scikit-learn](https://scikit-learn.org/stable/modules/cross_validation.html)
+
+## Vector graphics
+
+### From [Freepik](https://www.freepik.com/)
+
+- [Dartboard](https://www.freepik.com/free-vector/dart-board-icon_838791.htm) by [ikaika](https://www.freepik.com/ikaika)
+- [Dart arrow](https://www.freepik.com/free-vector/target-concept_764916.htm) by [freepik](https://www.freepik.com/freepik)
 
 ## Fonts
 
