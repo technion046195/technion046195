@@ -57,6 +57,18 @@ const SEO = ({ title }) => {
           name: `twitter:description`,
           content: site.siteMetadata.description,
         },
+        {
+          name: `Cache-Control"`,
+          content: `no-cache, no-store, must-revalidate`
+        },
+        {
+          name: `Pragma`,
+          content: `no-cache`
+        },
+        {
+          name: `Expires`,
+          content: `0`
+        },
       ]}
     />
   )
