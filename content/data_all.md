@@ -46,7 +46,7 @@
      <h4><a class="disabled">הרצאה 3</a></h4>
    </div><div>10/11</div>
    <div>
-     <h4><a class="disabled">תרגול 4</a></h4>
+     <h4><a href="/tutorial04/">תרגול 4</a></h4>
    </div><div>11,16,17/11</div>
  </div>
  <h3>בעיות סיווג</h3>
