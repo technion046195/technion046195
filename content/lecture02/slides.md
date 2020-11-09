@@ -191,11 +191,11 @@ $$
 
 #### Zero-one loss (misclassification rate):
 
-  $$
+$$
   l(\hat{y},y)=I\{\hat{y}\neq y\},
   \qquad
   R(h)=\mathbb{E}\left[I\{h(\boldsymbol{x})\neq y\}\right]
-  $$
+$$
 
   נפוצה בבעיות classificaiton.
 
@@ -203,11 +203,11 @@ $$
 
 #### $l_2$ loss (mean squared error (MSE))
 
-  $$
+$$
   l(\hat{y},y)=(\hat{y}-y)^2,
   \qquad
   R(h)=\mathbb{E}\left[(h(\boldsymbol{x})-y)^2\right]
-  $$
+$$
 
   נפוצה בבעיות regression.<br/>
   בנוסף קיים גם root mean squared error (RMSE).
@@ -216,11 +216,11 @@ $$
 
 #### $l_1$ loss (mean absolute error (MAE))
 
-  $$
+$$
   l(\hat{y},y)=|\hat{y}-y|,
   \qquad
   R(h)=\mathbb{E}\left[|h(\boldsymbol{x})-y|\right]
-  $$
+$$
 
   גם כן נפוצה בבעיות regression.
 
@@ -388,9 +388,9 @@ $$
 
 1. פונקציות לינאריות: 
 
-  $$
+$$
   h(\boldsymbol{x};\boldsymbol{\theta})=\theta_1 x_1+\theta_2 x_2+\theta_2 x_2
-  $$
+$$
 2. פולינומים:
 
 $$
@@ -600,9 +600,9 @@ $$
 
 נשתמש במודל:
 
-  $$
+$$
   h(x;\theta)=\theta x
-  $$
+$$
 
 ונפתור בעזרת LLS.
 

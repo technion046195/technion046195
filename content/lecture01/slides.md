@@ -12,7 +12,6 @@ slides_pdf: true
 <div dir="ltr">
 <a href="/assets/lecture01_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
-
 </section><section>
 
 ## הסבר בעזרת דוגמא
@@ -383,7 +382,7 @@ $$
 #### מודל המצריך שימוש בdata
 
 מהירות המכונית תלויה במשתנים כגון אופי הנהג ומצב הכביש. ניתן לנסות לבנות מודל על סמך מידע מנסיעות קודמות.
-  
+
 </div>
 </section><section>
 

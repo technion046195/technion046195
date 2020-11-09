@@ -11,9 +11,11 @@ print_pdf: true
 # תרגול 4 - Generalization & overfitting
 
 <div dir="ltr">
+<a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial04.pdf" class="link-button" target="_blank">PDF</a>
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
+
 
 ## תקציר התיאוריה
 
