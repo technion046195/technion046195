@@ -66,6 +66,7 @@ div class="fragment">
 - **Train set (סט אימון)**: בו נשתמש לבנות את החזאי.
 - **Test set (סט בחן)**: בו נשתמש בכדי להעריך את ביצועי המערכת.
 
+<div class="fragment">
 
 
 #### גדולו של ה test set
@@ -75,7 +76,6 @@ div class="fragment">
   - מקובל להשתמש בפיצול של 80% train ו- 20% test.
 
 
-
 </div>
 </section><section>
 
@@ -83,7 +83,7 @@ div class="fragment">
 
 בקורס זה נציג שני פירוקים נפוצים של שגיאת החיזוי בבעיות supervised learning.
 
-#### Aprroxiamtion-estimation decomposition
+#### Approxiamtion-estimation decomposition
 
 
 <div class="fragment">
@@ -100,7 +100,6 @@ div class="fragment">
 
 ![](../lecture03/assets/models_diagram_approx_estim_decomp.png)
 
-</div>
 
 </div>
 </section><section>
@@ -153,13 +152,16 @@ $$
 ##### Tradeoffs
 
 יכולת הביטוי של המודל הפרמטרי לרוב ישפיע מאד על גודלם של השגיאות אותם נקבל:
-
+<div class="fragment">
 
 
 - **מודל בעל יכולת ביטוי גבוהה** לרוב יהיה בעל **שגיאת קירוב / bias נמוך** אך **שגיאת שיערוך / variance גבוה**.
+</div><div class="fragment">
+
 - **מודל בעל יכולת ביטוי נמוכה** לרוב יהיה בעל **שגיאת שיערוך / variance נמוך** אך **שגיאת קירוב / bias גבוה**.
 
-<br/>
+</div><div class="fragment">
+
 
 המודל עם הביצועים הטובים ביותר (יכולת הכללה טובה) ימצא בנקודת ביניים:
 
