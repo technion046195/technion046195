@@ -50,7 +50,7 @@ print_pdf: true
 
 1. **Noise - ה"רעש" של התויות**: השגיאה שהחזאי האופטימאלי צפוי לעשות. שגיאה זו נובעת מהאקראיות של התויות $y$.
 2. **Approximation error - שגיאת קירוב**: השגיאה עקב ההגבלה של המודל למשפחה מצומצמת של מודלים (לרוב למודל פרמטרי). שגיאה זו נובעת מההבדל בין המודל האופטימאלי $h^*$ לבין המודל **הפרמטרי** האופטימאלי $h^*(\cdot,\boldsymbol{\theta})$.
-3. **Estimation error - שגיאת השיערוך**: השגיאה הנובעת מהשימוש במדגם כתחליף לפילוג האמיתי ןחוסר היכולת שלנו למצוא את המודל הפרמטרי האופטימאלי. שגיאה זו נובעת מההבדל בין המודל הפרמטרי האופטימאלי $h^*(\cdot,\boldsymbol{\theta})$ למודל הפרמטרי המשוערך על סמך המדגם $h_{\mathcal{D}}^*(\cdot,\boldsymbol{\theta})$.
+3. **Estimation error - שגיאת השיערוך**: השגיאה הנובעת מהשימוש במדגם כתחליף לפילוג האמיתי וחוסר היכולת שלנו למצוא את המודל הפרמטרי האופטימאלי. שגיאה זו נובעת מההבדל בין המודל הפרמטרי האופטימאלי $h^*(\cdot,\boldsymbol{\theta})$ למודל הפרמטרי המשוערך על סמך המדגם $h_{\mathcal{D}}^*(\cdot,\boldsymbol{\theta})$.
 
 <div class="imgbox" style="max-width:500px">
 
@@ -62,21 +62,26 @@ print_pdf: true
 
 פירוק זה מתייחס למקרים שבהם פונקציית המחיר הינה MSE (או RMSE).
 
-המדגם $\mathcal{D}$ שאיתו אנו עובדים הוא אקראי (משום שהוא אוסף של דגימות אקראיות) ולכן גם החזאי $h_{\mathcal{D}}$ שאותו נצייר על סמך המדגם הוא אקראי. נגדיר את החזאי הממוצע $\bar{h}$ כחזאי המתקבל כאשר לוקחים תוחלת על החזאים המיוצרים על ידי אלגואיתם מסויים על פני כל המדגמים האפשריים.
+המדגם $\mathcal{D}$ שאיתו אנו עובדים הוא אקראי (משום שהוא אוסף של דגימות אקראיות) ולכן גם החזאי $h_{\mathcal{D}}$ שאותו נייצר על סמך המדגם הוא אקראי. נגדיר את החזאי הממוצע $\bar{h}$ כחזאי המתקבל כאשר לוקחים תוחלת על החזאים המיוצרים על ידי אלגואיתם מסויים על פני כל המדגמים האפשריים.
 
 $$
-\bar{h}(x)=\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)|x\right]
+\bar{h}(x)=\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]
 $$
 
-(הסימון של $\mathcal{D}$ מתחת ל $\mathbb{E}$ אינו נחוץ מתמטית, הסופנו אותו כאן רק בכדי להזכיר את העובדה שהמדגם $\mathcal{D}$ הינו גם משתנה אקראי ושהתוחלת מתבצעת עליו).
+לשם הבהירות, אנו נשתמש בסימון $\mathbb{E}_\mathcal{D}$ בכדי לציין תוחלת על פני המדגמים האפשריים. (תוחלת ללא סימון $\mathbb{E}$ תהיה לפי $\mathbf{x}$ ו $\text{y}$).
 
-בעבור המקרה של MSE אנו יודעים כי החזאי האופטימאלי הינו: $h^*(x)=\mathbb{E}\left[\text{y}|x\right]$. על ידי שימוש בחזאי האופטימאלי והממוצע אלו ניתן לפרק התוחלת הצפויה של שגיאת ה MSE של אלגוריתם נתון באופן הבא:
+בעבור המקרה של MSE אנו יודעים כי החזאי האופטימאלי הינו: $h^*(x)=\mathbb{E}\left[\text{y}|x\right]$. על ידי שימוש בחזאי האופטימאלי והחזאי הממוצע ניתן לפרק התוחלת על שגיאת ה MSE של אלגוריתם נתון באופן הבא:
 
 $$
-\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
-=\underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
-+\underbrace{\mathbb{E}\left[(\bar{h}(\text{x})-h^*(\text{x}))^2\right]}_{\text{Bias}^2}
-+\underbrace{\mathbb{E}\left[(h^*(\text{x})-y)^2\right]}_{\text{Noise}}
+\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
+\right]
+=
+\mathbb{E}\left[
+    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
+    +\underbrace{(\bar{h}(\text{x})-h^*(\text{x}))^2}_{\text{Bias}^2}
+    +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+\right]
 $$
 
 בפירוק הזה:
@@ -176,16 +181,21 @@ $$
 **2)** הראו כי בעבור אלגוריתם אשר מייצר חזאיים $h_{\mathcal{D}}$ בהינתן מדגמים $\mathcal{D}$, ניתן לפרק את התוחלת (על פני מדגמים וחיזויים שונים) של שגיאת ה MSE באופן הבא:
 
 $$
-\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
-=\underbrace{\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
-+\underbrace{\mathbb{E}\left[(\bar{h}(\text{x})-h^*(\text{x}))^2\right]}_{\text{Bias}^2}
-+\underbrace{\mathbb{E}\left[(h^*(\text{x})-y)^2\right]}_{\text{Noise}}
+\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
+\right]
+=
+\mathbb{E}\left[
+    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
+    +\underbrace{(\bar{h}(\text{x})-h^*(\text{x}))^2}_{\text{Bias}^2}
+    +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+\right]
 $$
 
 כאשר:
 
 $$
-\bar{h}(x)=\mathbb{E}\left[h_{\mathcal{D}}(x)|x\right]
+\bar{h}(x)=\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]
 $$
 
 ו
@@ -196,25 +206,31 @@ $$
 
 הדרכה:
 
-1. הראו ראשית כי ניתן לפרק את השגיאה באופן הבא:
+1. הראו ראשית כי ניתן לפרק את השגיאת ה MSE בעבור מדגם נתון באופן הבא:
 
     $$
-    \mathbb{E}_{\mathcal{D}}\left[(h^*_{\mathcal{D}}(\text{x})-y)^2\right]=
-        \mathbb{E}_{\mathcal{D}}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-y)^2\right]=
+        \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
         +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
     $$
 
-    לשם כך השתמשו בהחלקה על מנת להתנות את התחולת ב $\text{x}$ ו $\mathcal{D}$ ולקבל תוחלת לי $\text{y}$. הפעילו את הזהות מסעיף 1 התוחלת של $\text{y}$.
+    לשם כך השתמשו בהחלקה על מנת להתנות את התחולת ב $\text{x}$ ולקבל תוחלת לפי $\text{y}$. הפעילו את הזהות מסעיף 1 על התוחלת של $\text{y}$.
 
-2. הראו כי ניתן להמשיך ולפרק את הביטוי הראשון בתוצאה שהתקבלה באופן הבא:
+2. הראו כי ניתן לפרק את התוחלת הזו באופן הבא:
 
     $$
-    \mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
-    =\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]
-    +\mathbb{E}\left[(\bar{h}(\text{x})-h^*(\text{x}))^2 \right]
+    \mathbb{E}_{\mathcal{D}}\left[
+        \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    \right]
+    =\mathbb{E}\left[
+        \mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]
+        +(\bar{h}(\text{x})-h^*(\text{x}))^2
+    \right]
     $$
 
-    לשם כך השתמשו שוב בהחלקה, הפעם על ידי התניה ב $\text{x}$ על מנת לקבל תוחלת לפי $\mathcal{D}$ והשתמשו בזהות מסעיף 1 על התוחלת לפי $\mathcal{D}$.
+    לשם כך החליפו את סדר התוחלות והשתמשו בזהות מסעיף 1 על התוחלת לפי $\mathcal{D}$.
+
+3. השתמשו בשני הפירוקים הנ"ל על עמת להראות את פירוק ה bias-variance המלא.
 
 **3)** הניחו כי כאשר גודל המדגם הולך וגדל החזאי המתקבלים מהמודל מתכנסים (במובן הסתברותי) לחזאי ה"ממוצע": $h_{\mathcal{D}}\rightarrow\bar{h}$. מה תוכלו לומר על התלות של איברי השגיאה בגודל המדגם?
 
@@ -267,22 +283,18 @@ $$
 $$
 \begin{aligned}
 \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
-&=\mathbb{E}\left[\mathbb{E}\left[(\underbrace{h_{\mathcal{D}}(\text{x})}_{:=a}-y)^2\middle|\text{x},\mathcal{D}\right]\right]\\
+&=\mathbb{E}\left[\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\middle|\text{x}\right]\right]\\
 &=\mathbb{E}\left[
-    (h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[y\middle|\text{x},\mathcal{D}\right])^2
-    +\mathbb{E}\left[(\mathbb{E}\left[\text{y}|x,\mathcal{D}\right]-\text{y})^2\middle|\text{x},\mathcal{D}\right]
+    (h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[y\middle|\text{x}\right])^2
+    +\mathbb{E}\left[(\mathbb{E}\left[\text{y}|x\right]-\text{y})^2\middle|\text{x}\right]
     \right]
 \end{aligned}
 $$
 
-מיכוון שהאיבר היחיד שתלוי במדגם $\mathcal{D}$ הינו $h_{\mathcal{D}}$ נוכל להסיר את ההתניה בו מהתוחלות הפנימיות:
+נארגן מחדש טיפה את את התוחלות:
 
 $$
 \begin{aligned}
-&=\mathbb{E}\left[
-    (h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[y\middle|\text{x}\right])^2
-    +\mathbb{E}\left[(\mathbb{E}\left[\text{y}|x\right]-\text{y})^2\middle|\text{x}\right]
-    \right]\\
 &=\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[y\middle|\text{x}\right])^2\right]
 +\mathbb{E}\left[\mathbb{E}\left[(\mathbb{E}\left[\text{y}|x\right]-\text{y})^2\middle|\text{x}\right]\right]\\
 &=\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[y\middle|\text{x}\right])^2\right]
@@ -301,39 +313,74 @@ $$
 
 ##### שלב שני
 
-נמשיך ונפרק את האיבר הראשון על פי ההדרכה. נבצע החלקה על $\text{x}$ ונשתמש בזיהות מסעיף 1 על התוחלת הפנימית לפי $\mathcal{D}$:
+ על פי ההדרכה נפרק את התוחלת הבאה על ידי החלפת סדר התוחלות ושימוש בזיהות מסעיף 1 על התוחלת לפי $\mathcal{D}$:
 
 $$
 \begin{aligned}
-\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
-&=\mathbb{E}\left[\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\middle|\text{x}\right]\right]\\
+\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+\right]
 &=\mathbb{E}\left[
-    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[h_{\mathcal{D}}(\text{x})\middle|\text{x}\right])^2\middle|\text{x}\right]
-    +(\mathbb{E}\left[h_{\mathcal{D}}(\text{x})\middle|\text{x}\right]-h^*(\text{x}))^2
-    \right]\\
-&=\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[h_{\mathcal{D}}(\text{x})\middle|\text{x}\right])^2\right]
-+\mathbb{E}\left[(\mathbb{E}\left[h_{\mathcal{D}}(\text{x})\middle|\text{x}\right]-h^*(\text{x}))^2 \right]
+    \mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+\right]\\
+&=\mathbb{E}\left[
+    \mathbb{E}_{\mathcal{D}}\left[
+        (h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(\text{x})\right])^2
+    \right]
+    +(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(\text{x})\right]-h^*(\text{x}))^2
+\right]
 \end{aligned}
 $$
 
 נשתמש בסימון $\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(\text{x})\middle|\text{x}\right]=\bar{h}(\text{x})$ ונקבל:
 
 $$
-\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]
-+\mathbb{E}\left[(\bar{h}(\text{x})-h^*(\text{x}))^2 \right]
+\mathbb{E}\left[
+    \mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]
+    +(\bar{h}(\text{x})-h^*(\text{x}))^2
+\right]
 $$
 
 זהו הפירוק של השגיאה לרכיב ה variance של החזאי אשר מבטא את השגיאה הצפויה עקב ההשתנות של החזאי כתלות במדגם שאיתו נעבוד, ורכיב bias אשר מבטא את השגיאה אשר נובעת מההבדל בין החזאי ה"ממוצע" והחזאי האידאלי.
 
 ##### נרכיב את הכל
 
-כאשר נציב את הפירוק השני לפירוק הראשון נקבל את ה bias-variance decomposition:
+נשתמש בפירוק הראשון על מנת לקבל:
 
 $$
-\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
-=\underbrace{\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
-+\underbrace{\mathbb{E}\left[(\bar{h}(\text{x})-h^*(\text{x}))^2\right]}_{\text{Bias}^2}
-+\underbrace{\mathbb{E}\left[(h^*(\text{x})-y)^2\right]}_{\text{Noise}}
+\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-y)^2\right]
+\right]
+=\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
+\right]
+$$
+
+מכיוון שהאיבר השני לא תלוי ב $\mathcal{D}$ נוכל להוציא אותו מהתוחלת על $\mathcal{D}$:
+
+$$
+=\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+\right]
++\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
+$$
+
+נציב את הפירוק מהשלב השני ונקבל:
+
+$$
+\begin{aligned}
+&=\mathbb{E}\left[
+    \mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]
+    +(\bar{h}(\text{x})-h^*(\text{x}))^2
+\right]
++\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]\\
+&=\mathbb{E}\left[
+    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
+    +\underbrace{(\bar{h}(\text{x})-h^*(\text{x}))^2}_{\text{Bias}^2}
+    +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+\right]
+\end{aligned}
 $$
 
 #### 3)
@@ -729,16 +776,16 @@ $$
 
 ##### סדר 0
 
-<div class="imgbox">
-<div class="imgbox no-shadow" style="max-width:30%;display:inline-block;margin:0">
+<div class="imgbox" style="max-width:100%">
+<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/ex_4_3_4_order_0_fold_0.png)
 
-</div><div class="imgbox no-shadow" style="max-width:30%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/ex_4_3_4_order_0_fold_1.png)
 
-</div><div class="imgbox no-shadow" style="max-width:30%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/ex_4_3_4_order_0_fold_2.png)
 
@@ -753,16 +800,16 @@ $$
 
 ##### סדר ראשון
 
-<div class="imgbox">
-<div class="imgbox no-shadow" style="max-width:30%;display:inline-block;margin:0">
+<div class="imgbox" style="max-width:100%">
+<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/ex_4_3_4_order_1_fold_0.png)
 
-</div><div class="imgbox no-shadow" style="max-width:30%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/ex_4_3_4_order_1_fold_1.png)
 
-</div><div class="imgbox no-shadow" style="max-width:30%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/ex_4_3_4_order_1_fold_2.png)
 
