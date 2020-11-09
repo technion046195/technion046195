@@ -1,0 +1,460 @@
+---
+type: lecture-slides
+index: 3
+template: slides
+slides_pdf: true
+---
+<div class="slides site-style" style="direction:rtl">
+<section class="center">
+
+# הרצאה 3<br/>Generalization & overfitting
+
+<div dir="ltr">
+<a href="/assets/lecture02_slides.pdf" class="link-button" target="_blank">PDF</a>
+</div>
+
+</section><section>
+
+## הדגרות
+
+- $\text{y}$ - ה labels - המשתנה האקראי שאותו אנו מנסים לחזות.
+- $\mathbf{x}$ - ה measuments - הוקטור הארקאי שלפיו מנסים לחזות.
+- $\mathcal{D}=\{\boldsymbol{x}_i, y_i\}_{i=0}^N$ - המדגם (dataset).
+- $\hat{y}$ - תוצאת חיזוי כל שהיא.
+- $\hat{y}=h(\boldsymbol{x})$ - פונקציית החיזוי.
+- $C(h)$ - פונקציית המחיר אשר נותנת "ציון" לכל חזאי.
+
+דרך הנפוצה להגדיר את פונקציית המחיר:
+
+$$
+C(h)=R(h)=\mathbb{E}[l(h(\mathbf{x}),y)]
+$$
+
+</section><section>
+
+## החזאי האופטימאלי ו ERM
+
+<br/>
+
+$$
+h^*=\underset{h}{\arg\min}\ C(h)\left(=\underset{h}{\arg\min}\ \mathbb{E}[l(h(\mathbf{x}),\text{y})]\right)
+$$
+
+בעיה: תוחלת על פילוג לא ידוע.
+
+<br/>
+
+פיתרון אפשרי: שימוש ב ERM:
+
+$$
+h^*_{\mathcal{D}}=\underset{h}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}_i),y_i)
+$$
+
+</section><section>
+
+## שימוש במודל פרמטרי
+
+- נגביל את עצמו למשפחה מצומצמת של חזאיים.
+- נשתמש במודל פרמטרי $h(\boldsymbol{x};\boldsymbol{\theta})$.
+- בעיית האופטימיזציה תהיה:
+
+$$
+\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}_i;\boldsymbol{\theta}),y_i)
+$$
+
+</section><section>
+
+## בהרצאה זו
+
+- נדון בבעית ה overfitting הנובעת מבחירת החזאי על סמך המדגם.
+- נסביר את החשיבות של השימוש במודל פרמטרי לצורך ההתמודדות עם הבעיה.
+- נציג שיטה נוספת להתמודדות עם הבעיה בשם רגולריזציה.
+
+</section><section>
+
+## הכללה (generalization)
+
+> בעיית הלמידה בתחום של מערכות לומדות היא בעיית הכללה, שבה אנו מנסים על סמך דוגמאות להסיק מסקנות לגבי ההתנהגות הכללית של המערכת.
+
+לדוגמא בבעיות supervised learning מטרה שלנו היא לבנות חזאי אשר יוכל לבצע חיזויים טובים על דגימות שלא ראינו לפני.
+
+</section><section>
+
+## הערכת הביצועיים / יכולת ההכללה של חזאי
+
+- נרצה להעריך את יכולת ההכללה של החזאי שבנינו על דגימות שלא הופיעו בשלב הלימוד.
+- נצטרך מדגם נוסף המכיל דגימות שונות מהמדגם שבו השתמשנו בשלב הלימוד.
+- נקצה חלק מתוך המדגם לטובת הערכת הביצועיים.
+
+נחלק את המדגם שלנו לשני חלקים:
+
+- **Train set** - $\mathcal{D}_\text{train}$ - המדגם שעלפיו אנו נבנה את חזאי.
+- **Test set** - $\mathcal{D}_\text{test}$ - המדגם שבו נשתמש להעריכת ביצועים.
+
+</section><section>
+
+## הערכת הביצועיים של פונקציית risk
+
+כאשר פונקציית המחיר שלנו היא ממהצורה של פונקציית risk הערכת הביצועים תעשה בעזרת תוחלת אמפירית על ה test set:
+
+$$
+\text{test score}=\frac{1}{N}\sum_{\boldsymbol{x}_i,y_i\in\mathcal{D}_{\text{test}}} l(h(\boldsymbol{x}_i),y_i)
+$$
+
+</section><section>
+
+## גדולו של ה test set
+
+- אנו נרצה שיהיה גדול מספיק בכדי שההערכה תהיה מדוייקת.
+- לא גדול מידי, בכדי לשמור את ה train set כמה שיותר גדול.
+- כאשר המדגם לא מאד גדול מקובל לפצל את המדגם ל 80% train ו 20% test.
+
+</section><section>
+
+### Overfitting (התאמת יתר)
+
+> תופעת ה overfitting מתארת את המצב שבו המודל הנלמד לומד מאפיינים מסויימים אשר מופיעים רק במדגם ואינם הם אינם מייצגים את התכונות של הפילוג האמיתי שלפיו מפולגים המשתנים האקראיים אשר מהם נוצר המדגם במדגם. תופעה זו פוגעת ביכולת ההכללה של המודל.
+
+<div class="imgbox" style="max-width:350px;background-color:white">
+
+![](./assets/overfitting.png)
+
+</div>
+
+</section><section>
+
+### Overfitting (התאמת יתר)
+
+<div class="imgbox" style="max-width:600px;background-color:white">
+
+![](../lecture02/assets/models_diagram.png)
+
+</div>
+
+</section><section>
+
+## הגבלת המודל
+
+- חזאי לא מוגבל יכול לקבל כל צורה כל עוד הוא עובר בין הנקודות של המדגם.
+- בכדי לשלוט בצורה שבה הוא מתנהג נוכל להגביל את המרחב שבו אנו מחפשים.
+- נעשה זאת על ידי שימוש במודל פרמטרי.
+
+תזכורת:
+
+- $h^*(\boldsymbol{x};\boldsymbol{\theta})$: החזאי ה**פרמטרי** האופטימאלי.
+
+- $h^*_{\mathcal{D}}(\boldsymbol{x};\boldsymbol{\theta})$: החזאי המושערך.
+
+</section><section>
+
+## הגבלת המודל
+
+<div class="imgbox" style="max-width:600px;background-color:white">
+
+![](../lecture02/assets/models_diagram_non_parametric.png)
+
+</div>
+
+</section><section>
+
+### יכולת הביטוי של מודל פרמטרי
+
+**יכולת הביטוי (expressiveness)** של מודל מתייחסת לגודל של מרחב הפונקציות שאותו יכול המודל פרמטרי מסויים לייצג.
+
+- **יכולת ביטוי נמוכה** -> יודע לייצג משפחה מצומצמת. לדוגמא: מודל לינארי.
+- **יכולת ביטוי גבוהה** -> יודע לייצג **או לקרב** משפחה רחבה. לדוגמא: פולינום מסדר גבוהה.
+
+איזה יכולת ביטוי נעדיף?
+
+- מצד אחד אנו נרצה מודל עם יכולת ביטוי גבוה על מנת שיוכל לקרב את החזאי האידאלי.
+- מצד שני יכולת יצוג גבוה תאפשר הרבה overfitting.
+
+</section><section>
+
+## Aprroxiamtion-estimation decomposition
+
+נתייחס לשני גורמים אשר מונעים מאיתנו למצוא את החזאי האופטימאלי $h^*(\boldsymbol{x})$:
+
+<br/>
+
+**Approximation error - שגיאת קירוב**
+
+השגיאה עקב ההגבלה למודל פרמטרי.
+
+נובעת מההבדל בין $h^*(\boldsymbol{x})$ לבין $h^*(\boldsymbol{x},\boldsymbol{\theta})$.
+
+<br/>
+
+**Estimation error - שגיאת השיערוך**
+
+השגיאה הנובעת מהשימוש במדגם כתחליף לפילוג האמיתי.
+
+נובעת מההבדל בין $h^*(\boldsymbol{x},\boldsymbol{\theta})$ לבין $h_{\mathcal{D}}^*(\boldsymbol{x},\boldsymbol{\theta})$.
+
+</section><section>
+
+## Aprroxiamtion-estimation decomposition
+
+<div class="imgbox" style="max-width:600px;background-color:white">
+
+![](./assets/models_diagram_approx_estim_decomp.png)
+
+</div>
+
+</section><section>
+
+## Nosie error
+
+כאשר נרצה לדבר על השגיאה הכוללת נרצה להתייחס להבדל בין החיזוי של החזאי המשוערך ו $y$.
+
+<br/>
+
+במקרים אלו נוסיף גורם שלישי:
+
+<br/>
+<br/>
+
+**Noise - ה"רעש" של התויות**
+
+השגיאה שהחזאי האופטימאלי צפוי לעשות.
+
+שגיאה זו נובעת מהאקראיות של התויות $y$.
+
+</section><section>
+
+## Approximaion-estimation Tradeoff
+
+- ככל שיכולת הביטוי תגדל המרחק בין $h^*(\boldsymbol{x};\boldsymbol{\theta})$ לבין $h^*(\boldsymbol{x})$ יקטן ושגיאת הקירוב תקטן.
+
+- לרוב ככל שיכולת הביטוי תגדל גם שיגאת השיערוך תגדל.
+
+<div class="imgbox" style="max-width:600px;background-color:white">
+
+![](./assets/approx_estim_tradeoff.png)
+
+</div>
+
+</section><section>
+
+## המדגם כמשתנה אקראי
+
+- ביצועיו של חזאי כל שהוא תלויים לא רק בשיטה ובמודל הפרמטרי אלא גם במדגם שאיתו עבדנו.
+- בעבור מדגמים שונים אנו מצפים לקבל ביצועים שונים.
+- ניתן להסתכל על המדגם כמשתנה אקראי.
+- בכדי לבטל את התלות במדגם נמצע את הביצועים על פני כל המדגמים האפשריים.
+
+$$
+\text{average score}=\mathbb{E}_{\mathcal{D}}\left[\text{score using}\ \mathcal{D}\right]
+$$
+
+כאשר $\mathbb{E}_\mathcal{D}$ היא התוחלת על פני המדגמים האפשריים
+
+</section><section>
+
+## החזאי הממוצע
+
+לצורך הדיון התיאורטי על מרכיבי שיגאת החיזוי נגדיאר את החזאי הממוצע באופן הבא:
+
+<br/>
+
+החזאי אשר מחזיר את החיזוי הממוצא על פני כלל החזאיים המתאימים למדגמים השונים:
+
+$$
+\bar{h}(x)=\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]
+$$
+
+</section><section>
+
+## Bias-variance decomposition
+
+- פירוק יותר פרקטי.
+- מתאים לפונקציית מחיר של MSE.
+
+$$
+\begin{aligned}
+&\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
+\right]\\
+&\qquad=
+\mathbb{E}\left[
+    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
+    +\underbrace{(\bar{h}(\text{x})-h^*(\text{x}))^2}_{\text{Bias}^2}
+    +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+\right]
+\end{aligned}
+$$
+
+כאשר
+
+- $\bar{h}(x)=\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]$
+- $h^*(x)=\mathbb{E}\left[\text{y}|x\right]$.
+
+</section><section>
+
+## Bias-variance decomposition
+
+$$
+\begin{aligned}
+&\mathbb{E}_{\mathcal{D}}\left[
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
+\right]\\
+&\qquad=
+\mathbb{E}\left[
+    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
+    +\underbrace{(\bar{h}(\text{x})-h^*(\text{x}))^2}_{\text{Bias}^2}
+    +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+\right]
+\end{aligned}
+$$
+
+<div class="imgbox" style="max-width:500px;background-color:white">
+
+![](./assets/bias_variance_tradeoff.png)
+
+</div>
+
+</section><section>
+
+## Hyper-parameters
+
+Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים בשיטה או במודל הפרמטרי ואך אנו לא מבצעים את האופטימיזציה על-פיהם.
+
+<br/>
+
+דוגמאות:
+
+- סדר הפולינום שבו אנו משתמשים.
+- הפרמטר $\eta$ אשר קובע את גודל הצעד באלגוריתם ה gradient descent.
+- פרמטרים אשר קובעים את המבנה של רשת נוירונים.
+
+</section><section>
+
+## סדר המודל
+
+<br/>
+<br/>
+<br/>
+
+כאשר hyper-parameter מוסיים שולט ביכולת הביטוי של המודל הפרמטרי, כדוגמאת המקרה של סדר הפולינום, נכנה פרמטר זה **הסדר של המודל**.
+
+</section><section>
+
+## בחירת hyper-parameters <br/> בעזרת validation set
+
+- hyper-parameters אינם חלק מבעיית האופטימיזציה.
+- אנו צריכים דרך אחרת לקבוע אותם.
+- לרוב לנאלץ לקבוע אותם בעזרת ניסוי וטעיה.
+- לא נוכל להשתמש ב test set לצורך זה.
+- נצטרך לייצר מדגם ניפרד חדש.
+- נפצל עוד את ה train set ל:
+  - train set חדש.
+  - validation set
+
+</section><section>
+
+## שלבי הבחירה של hyper-prameters
+
+- נפצל את ה train set ל train ו validation.
+- נחזור על הפעולות הבאות בעבור סטים שונים של hyper-parameters:
+  - נבנה את המודל על סמך ה train.
+  - נשערך את ביצועי המודל על הvalidation
+- נבחר את הפרמטרים עם הביצועים הטובים ביותר על ה validation.
+- נאחד בחזרה את ה train וה validation.
+- נבנה את המודל הסופי על סמך ה hyper-parameters שנבחרו.
+
+</section><section>
+
+## רגולריזציה
+
+- דרך אלטרנטיבית להקטין את שגיאת השיערוך / variance.
+- הרעיון: להתערב בבעית האופטימיזציה על מנת לגרום לה "להעדיף" מודלים מסויימים.
+- זוהי הגבלה "רכה" של משפחת המודלים.
+- מאפשר שימוש במודלים פרמטרים בעלי יכולת ביטוי גבוהה יותר.
+
+</section><section>
+
+## רגולריזציה
+
+השיטה: נוסיף איבר אשר יתן "קנס" למודלים לא רצויים.
+
+$$
+\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\underbrace{f(\boldsymbol{\theta})}_{\text{The regular objective function}}+\lambda\underbrace{g(\boldsymbol{\theta})}_{\text{The regularization term}}
+$$
+
+הפרמטר $\lambda$ קובע את עוצמת (או משקל) הרגולריזציה.
+
+הוא hyper-parameter שיש לקבוע בעזרת ה validation set.
+
+</section><section>
+
+## בחירת הרגולריזציה
+
+- הבחירה של פונקציית הרגולריזציה $g(\theta)$ היא קשה ותלויה באופי הבעיה.
+- לרוב הבחירה תהיה בשיטה של ניסוי טעיה על פונקציות רגולריזציה נפוצות.
+- פונקציות הרגולריזציות הנפוצות ביותר הינן:
+    - $l_1$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_1$.
+    - $l_2$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_2^2$.
+
+
+רגולריזציית $l_2$ מכונה גם Tikhonov regularizaion
+
+</section><section>
+
+## $l_1$ ו $l_2$ הדומה
+
+- מנסות לשמור את הפרמטריים כמה שיותר קטנים.
+- מוטיבציה: מודל בעל הפרמטרים קטנים יותר יהיה לרוב עם בעל נגזרות קטונות יותר ולכן הוא ופחות "ישתולל".
+
+</section><section>
+
+## $l_1$ ו $l_2$ השונה
+
+### $l_2$
+
+- גדל בצורה ריבועית עם הפרמטרים
+- ינסה להקטין בעיקר את הפרמטרים הגודלים ופחות את הקטנים.
+- הרגולריזציה שואפת לפרמטרים בעלי גודל יותר אחיד.
+
+</section><section>
+
+## $l_1$ ו $l_2$ השונה
+
+### $l_1$
+
+- תפעל להקטין את כל האיברים כמה שיותר ללא קשר לגודלם.
+- רגולריזציית $l_1$ תגרום לפרמטרים הפחות חשובים להתאפס.
+- וקטור הפרמטרים שיתקבל יכיל הרבה מאד אפסים - וקטור דליל (sparse).
+
+</section><section>
+
+## Ridge regression: LLS + $l2$ regularization
+
+$$
+\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})+\lambda\lVert\boldsymbol{\theta}\rVert_2^2
+$$
+
+גם לבעיה זו יש פתרון סגור והוא נתון על ידי:
+
+$$
+\boldsymbol{\theta}^*=(X^{\top}X+\lambda)^{-1}X^{\top}\boldsymbol{y}
+$$
+
+אנו נראה את הפתוח של פתרון זה בתרגיל 4.2.
+
+</section><section>
+
+## LASSO: LLS + $l1$ regularization
+
+$$
+\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})+\lambda\lVert\boldsymbol{\theta}\rVert_1
+$$
+
+לבעיה זו אין פתרון סגור ויש צורך להשתמש באלגוריתמים איטרטיביים כגון gradient descent.
+
+<br/>
+<br/>
+<br/>
+
+LASSO = Linear Absolute Shrinkage and Selection Opperator
+
+</div>
