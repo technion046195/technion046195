@@ -16,6 +16,8 @@ diagrams["tutorial04/assets/bias_variance_tradeoff_less_variance.png"]="-p10 -t 
 diagrams["tutorial04/assets/center_of_mass.png"]="-p11 -t -b20"
 diagrams["lecture03/assets/bias_and_variance.png"]="-p12 -t -b20"
 diagrams["lecture03/assets/overfitting.png"]="-p13 -t -b20"
+diagrams["lecture03/assets/approx_estim_tradeoff.png"]="-p14 -t -b20"
+diagrams["lecture03/assets/models_diagram_regularization.png"]="-p15 -t -b20"
 
 for diag in "${!diagrams[@]}"; do
     echo "Generating ./content/$diag"
