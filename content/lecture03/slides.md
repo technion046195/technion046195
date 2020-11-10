@@ -164,8 +164,8 @@ $$
 
 </div>
 
-- Train score (RMSE): 11.34 min
-- Test scroe (RMSE): 15.58 min
+- Train score (RMSE): 0.66 min
+- Test scroe (RMSE): 103.77 min
 
 </section><section>
 
@@ -231,7 +231,7 @@ $$
 
 ## Aprroxiamtion-estimation decomposition
 
-<div class="imgbox" style="max-width:600px;background-color:white">
+<div class="imgbox" style="max-width:700px;background-color:white">
 
 ![](./assets/models_diagram_approx_estim_decomp.png)
 
@@ -241,7 +241,7 @@ $$
 
 ## Nosie error
 
-כאשר נרצה לדבר על השגיאה הכוללת נרצה להתייחס להבדל בין החיזוי של החזאי המשוערך ו $y$.
+כאשר נרצה לדבר על השגיאה הכוללת נרצה להתייחס להבדל בין החיזוי של החזאי המשוערך $h^*_{\mathcal{D}}(\boldsymbol{x};\boldsymbol{\theta})$ ו $y$.
 
 <br/>
 
@@ -289,7 +289,7 @@ $$
 
 ## החזאי הממוצע
 
-לצורך הדיון התיאורטי על מרכיבי שיגאת החיזוי נגדיאר את החזאי הממוצע באופן הבא:
+לצורך הדיון התיאורטי על מרכיבי שיגאת החיזוי נגדיר את החזאי הממוצע באופן הבא:
 
 <br/>
 
@@ -371,7 +371,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 <br/>
 <br/>
 
-כאשר hyper-parameter מוסיים שולט ביכולת הביטוי של המודל הפרמטרי, כדוגמאת המקרה של סדר הפולינום, נכנה פרמטר זה **הסדר של המודל**.
+כאשר hyper-parameter מסויים שולט ביכולת הביטוי של המודל הפרמטרי, כדוגמאת המקרה של סדר הפולינום, נכנה פרמטר זה **הסדר של המודל**.
 
 </section><section>
 
@@ -508,14 +508,23 @@ $$
 
 </section><section>
 
+## רגולריזציה - אילוסטרציה
+
+<div class="imgbox" style="max-width:800px;background-color:white">
+
+![](./assets/models_diagram_regularization.png)
+
+</div>
+
+</section><section>
+
 ## בחירת הרגולריזציה
 
-- הבחירה של פונקציית הרגולריזציה $g(\theta)$ היא קשה ותלויה באופי הבעיה.
+- באופן כללי, הבחירה של פונקציית הרגולריזציה $g(\theta)$ תלויה באופי הבעיה.
 - לרוב הבחירה תהיה בשיטה של ניסוי טעיה על פונקציות רגולריזציה נפוצות.
 - פונקציות הרגולריזציות הנפוצות ביותר הינן:
-    - $l_1$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_1$.
-    - $l_2$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_2^2$.
-
+  - $l_1$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_1$.
+  - $l_2$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_2^2$.
 
 רגולריזציית $l_2$ מכונה גם Tikhonov regularizaion
 
