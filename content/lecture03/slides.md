@@ -19,7 +19,7 @@ slides_pdf: true
 
 - $\text{y}$ - ה labels - המשתנה האקראי שאותו אנו מנסים לחזות.
 - $\mathbf{x}$ - ה measuments - הוקטור הארקאי שלפיו מנסים לחזות.
-- $\mathcal{D}=\{\boldsymbol{x}_i, y_i\}_{i=0}^N$ - המדגם (dataset).
+- $\mathcal{D}=\{\boldsymbol{x}^{(i)}, y^{(i)}\}_{i=0}^N$ - המדגם (dataset).
 - $\hat{y}$ - תוצאת חיזוי כל שהיא.
 - $\hat{y}=h(\boldsymbol{x})$ - פונקציית החיזוי.
 - $C(h)$ - פונקציית המחיר אשר נותנת "ציון" לכל חזאי.
@@ -47,7 +47,7 @@ $$
 פיתרון אפשרי: שימוש ב ERM:
 
 $$
-h^*_{\mathcal{D}}=\underset{h}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}_i),y_i)
+h^*_{\mathcal{D}}=\underset{h}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}^{(i)}),y^{(i)})
 $$
 
 </section><section>
@@ -59,7 +59,7 @@ $$
 - בעיית האופטימיזציה תהיה:
 
 $$
-\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}_i;\boldsymbol{\theta}),y_i)
+\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}^{(i)};\boldsymbol{\theta}),y^{(i)})
 $$
 
 </section><section>
@@ -98,7 +98,7 @@ $$
 כאשר פונקציית המחיר שלנו היא ממהצורה של פונקציית risk הערכת הביצועים תעשה בעזרת תוחלת אמפירית על ה test set:
 
 $$
-\text{test score}=\frac{1}{N}\sum_{\boldsymbol{x}_i,y_i\in\mathcal{D}_{\text{test}}} l(h(\boldsymbol{x}_i),y_i)
+\text{test score}=\frac{1}{N}\sum_{\boldsymbol{x}^{(i)},y^{(i)}\in\mathcal{D}_{\text{test}}} l(h(\boldsymbol{x}^{(i)}),y^{(i)})
 $$
 
 </section><section>
@@ -108,6 +108,29 @@ $$
 - אנו נרצה שיהיה גדול מספיק בכדי שההערכה תהיה מדוייקת.
 - לא גדול מידי, בכדי לשמור את ה train set כמה שיותר גדול.
 - כאשר המדגם לא מאד גדול מקובל לפצל את המדגם ל 80% train ו 20% test.
+
+</section><section>
+
+## דוגמא: פיצול train-test
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_train_test.png)
+
+</div>
+
+</section><section>
+
+## דוגמא: הערכת ביצועים
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_linear.png)
+
+</div>
+
+- Train score (RMSE): 11.34 min
+- Test scroe (RMSE): 15.58 min
 
 </section><section>
 
@@ -130,6 +153,19 @@ $$
 ![](../lecture02/assets/models_diagram.png)
 
 </div>
+
+</section><section>
+
+## דוגמא: overfitting
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_overfitting.png)
+
+</div>
+
+- Train score (RMSE): 11.34 min
+- Test scroe (RMSE): 15.58 min
 
 </section><section>
 
@@ -364,6 +400,91 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 </section><section>
 
+## דוגמא: פיצול train-validation-test
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_train_val_test.png)
+
+</div>
+
+</section><section>
+
+## דוגמא: בחירת סדר המודל
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_0.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_1.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_2.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_3.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_4.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_5.png)
+
+</div>
+</div>
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_6.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_7.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_8.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_9.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_10.png)
+
+</div>
+</div>
+
+<div class="imgbox" style="max-width:450px">
+
+![](./output/drive_prediction_selecting_order.png)
+
+</div>
+
+</section><section>
+
+## דוגמא: Retrain
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_final.png)
+
+</div>
+
+- Train score (RMSE): 2.53 min
+- Test scroe (RMSE): 6.88 min
+
+</section><section>
+
 ## רגולריזציה
 
 - דרך אלטרנטיבית להקטין את שגיאת השיערוך / variance.
@@ -457,4 +578,19 @@ $$
 
 LASSO = Linear Absolute Shrinkage and Selection Opperator
 
+</section><section>
+
+## דוגמא: Ridge regression
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_regularization.png)
+
+</div>
+
+- $\lambda=10^{-4}$
+- Train score (RMSE): 2.62 min
+- Test scroe (RMSE): 6.83 min
+
+</section>
 </div>

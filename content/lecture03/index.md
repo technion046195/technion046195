@@ -12,7 +12,7 @@ print_pdf: true
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/lecture03.pdf" class="link-button" target="_blank">PDF</a>
-<!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## רקע
@@ -21,7 +21,7 @@ print_pdf: true
 
 - $\text{y}$ - ה labels - המשתנה האקראי שאותו אנו מנסים לחזות.
 - $\mathbf{x}$ - ה measuments - הוקטור הארקאי שלפיו אנו מנסים לחזות.
-- $\mathcal{D}=\{\boldsymbol{x}_i, y_i\}_{i=0}^N$ - המדגם (dataset) אשר כולל $N$ זוגות בלתי תלויים של דגימות של $\mathbf{x}$ ו $\text{y}$.
+- $\mathcal{D}=\{\boldsymbol{x}^{(i)}, y^{(i)}\}_{i=0}^N$ - המדגם (dataset) אשר כולל $N$ זוגות בלתי תלויים של דגימות של $\mathbf{x}$ ו $\text{y}$.
 - $\hat{y}$ - תוצאת חיזוי כל שהיא.
 - $\hat{y}=h(\boldsymbol{x})$ - פונקציית החיזוי.
 - $C(h)$ - פונקציית המחיר אשר נותנת "ציון" לכל חזאי.
@@ -43,13 +43,13 @@ $$
 הבעיה עם פונקציית המחיר הזו הינה התוחלת על הפילוג לא ידוע. הצגנו פתרון בשם ERM אשר מתמודד עם בעיה זו על ידי החלפת התוחלת בתוחלת אמפירית על המדגם
 
 $$
-h^*_{\mathcal{D}}=\underset{h}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}_i),y_i)
+h^*_{\mathcal{D}}=\underset{h}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}^{(i)}),y^{(i)})
 $$
 
 בנוסף ציינו שלרוב אנו נגביל את עצמו לחזאיים אשר מגיעים ממשפחה מצומצמת של חזאיים וציינו שהדרך הנפוצה לעשות זאת הינה על ידי שימוש במודל פרמטרי $h(\boldsymbol{x};\boldsymbol{\theta})$:
 
 $$
-\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}_i;\boldsymbol{\theta}),y_i)
+\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}^{(i)};\boldsymbol{\theta}),y^{(i)})
 $$
 
 ראנו בתרגול מספר דוגמאות לשימוש בשיטה זו בשילוב עם מודל לינארי.
@@ -74,7 +74,7 @@ $$
 כאשר אנו עובדים עם פונקציית מחיר מסוג risk נוכל להעריך את ביצועי החזאי על ה test set בעזרת התוחלת האמפירית:
 
 $$
-\text{test score}=\frac{1}{N}\sum_{\boldsymbol{x}_i,y_i\in\mathcal{D}_{\text{test}}} l(h(\boldsymbol{x}_i),y_i)
+\text{test score}=\frac{1}{N}\sum_{\boldsymbol{x}_{(i)},y_{(i)}\in\mathcal{D}_{\text{test}}} l(h(\boldsymbol{x}_{(i)}),y_{(i)})
 $$
 
 ##### גדולו של ה test set
