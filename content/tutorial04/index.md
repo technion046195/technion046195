@@ -211,8 +211,8 @@ $$
 1. הראו ראשית כי ניתן לפרק את השגיאת ה MSE בעבור מדגם נתון באופן הבא:
 
     $$
-    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-y)^2\right]=
-        \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]=
+        \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
         +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
     $$
 
@@ -280,7 +280,7 @@ $$
 
 ##### שלב ראשון
 
-נפעל על פי ההדרכה. נחליק על ידי התניה ב $\text{x}$ ו $\mathcal{D}$ ונפעיל את הזהות מסעיף 1 על התוחלת הפנימית (לפי $\text{y}$):
+נפעל על פי ההדרכה. נחליק על ידי התניה ב $\text{x}$  ונפעיל את הזהות מסעיף 1 על התוחלת הפנימית (לפי $\text{y}$):
 
 $$
 \begin{aligned}
@@ -293,7 +293,7 @@ $$
 \end{aligned}
 $$
 
-נארגן מחדש טיפה את את התוחלות:
+נארגן מחדש את התוחלות:
 
 $$
 \begin{aligned}
@@ -334,7 +334,7 @@ $$
 \end{aligned}
 $$
 
-נשתמש בסימון $\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(\text{x})\middle|\text{x}\right]=\bar{h}(\text{x})$ ונקבל:
+נשתמש בסימון $\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(\text{x})\right]=\bar{h}(\text{x})$ ונקבל:
 
 $$
 \mathbb{E}\left[
@@ -351,10 +351,10 @@ $$
 
 $$
 \mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-y)^2\right]
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
 \right]
 =\mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
     +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
 \right]
 $$
@@ -363,7 +363,7 @@ $$
 
 $$
 =\mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
 \right]
 +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
 $$

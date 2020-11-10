@@ -131,7 +131,7 @@ body {
   font-size: 0.85rem;
 }
 
-.site-content thead,
+.site-style thead,
 #notebook-container .rendered_html thead {
   background-color: #aaaaaa;
   border-bottom: 1px solid black;
@@ -139,33 +139,33 @@ body {
   vertical-align: bottom;
 }
 
-.site-content thead th,
+.site-style thead th,
 #notebook-container .rendered_html thead th {
   font-weight: bold;
   vertical-align: bottom;
 }
 
-.site-content table th,
-.site-content table td,
+.site-style table th,
+.site-style table td,
 #notebook-container .rendered_html table th,
 #notebook-container .rendered_html table td {
   padding: 1em 0.5em;
 }
 
-.site-content table th:not(:last-child):not(:first-child),
-.site-content table td:not(:last-child):not(:first-child),
+.site-style table th:not(:last-child):not(:first-child),
+.site-style table td:not(:last-child):not(:first-child),
 #notebook-container .rendered_html table th:not(:last-child):not(:first-child),
 #notebook-container .rendered_html table td:not(:last-child):not(:first-child) {
   border-left: 2px solid #bbbbbb;
   border-right: 2px solid #bbbbbb;
 }
 
-.site-content tbody tr:nth-child(odd),
+.site-style tbody tr:nth-child(odd),
 #notebook-container .rendered_html tr:nth-child(odd) {
   background: #e0e0e0;
 }
 
-.site-content tbody tr:hover,
+.site-style tbody tr:hover,
 #notebook-container .rendered_html tr:hover {
   background: #6192d39b;
 }

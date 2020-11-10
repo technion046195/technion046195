@@ -167,7 +167,7 @@ $$
 
 <div class="fragment">
 
-- ה -0variance מודד את השונות של התוצאות החיזוי המתקבלות סביב החזאי הממוצע. תוחלת באיזור זה היא גם על פני המדגמים השונים אותם ניתן לקבל וגם על פני $\text{x}$. זהו האיבר היחיד בפירוק אשר תלוי בפילוג של המדגם.
+- variance מודד את השונות של התוצאות החיזוי המתקבלות סביב החזאי הממוצע. תוחלת באיזור זה היא גם על פני המדגמים השונים אותם ניתן לקבל וגם על פני $\text{x}$. זהו האיבר היחיד בפירוק אשר תלוי בפילוג של המדגם.
 
 </div><div class="fragment">
 
@@ -331,12 +331,12 @@ $$
 **סעיף 1:**
 
 **הראו כי בעבור משתנה אקראי כל שהוא $\text{x}$ וקבוע $a$ ניתן לפרק את התחולת של המרחק הריבועי בין $\text{a}$ לבין $a$ באופן הבא:**
+
 $$
 \mathbb{E}\left[(\text{x}-a)^2\right]
 =\underbrace{\mathbb{E}\left[(\text{x}-\mathbb{E}\left[\text{x}\right])^2\right]}_{=\text{Var}(\text{x})}
 +(\underbrace{\mathbb{E}\left[\text{x}\right]-a}_{\text{bias}})^2
 $$
-
 
 **פתרון:**
 
@@ -351,6 +351,7 @@ $$
 </section><section>
 
 נוכיח את הזהות על ידי הוספה והחסרה של $\mathbb{E}[\text{x}]$ בתוך הסוגריים:
+
 $$
 \begin{aligned}
 \mathbb{E}\left[(\text{x}-a)^2\right]&
@@ -378,6 +379,7 @@ $$
 **סעיף 2:**
 
  הראו כי בעבור אלגוריתם אשר מייצר חזאיים $h_{\mathcal{D}}$ בהינתן מדגמים $\mathcal{D}$, ניתן לפרק את התוחלת (על פני מדגמים וחיזויים שונים) של שגיאת ה MSE באופן הבא:
+
 $$
 \begin{aligned}
 \mathbb{E}_{\mathcal{D}}&\left[
@@ -411,8 +413,8 @@ $$
 1. הראו ראשית כי ניתן לפרק את השגיאת ה MSE בעבור מדגם נתון באופן הבא:
 
    $$
-   \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-y)^2\right]=
-       \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+   \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]=
+       \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
        +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
    $$
 
@@ -440,7 +442,7 @@ $$
 
 ##### שלב ראשון
 
-נפעל על פי ההדרכה. נחליק על ידי התניה ב $\text{x}$ ו $\mathcal{D}$ ונפעיל את הזהות מסעיף 1 על התוחלת הפנימית (לפי $\text{y}$):
+נפעל על פי ההדרכה. נחליק על ידי התניה ב $\text{x}$ ונפעיל את הזהות מסעיף 1 על התוחלת הפנימית (לפי $\text{y}$):
 
 $$
 \begin{aligned}
@@ -455,7 +457,8 @@ $$
 
 <div class="fragment">
 
-נארגן מחדש טיפה את את התוחלות:
+נארגן מחדש את התוחלות:
+
 $$
 \begin{aligned}
 &=\mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}\left[y\middle|\text{x}\right])^2\right]
@@ -475,8 +478,6 @@ $$
 $$
 
 <div class="fragment">
-
-
 
 </br></br>
 
@@ -509,7 +510,8 @@ $$
 
 <div class="fragment">
 
-נשתמש בסימון $\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(\text{x})\middle|\text{x}\right]=\bar{h}(\text{x})$ ונקבל:
+נשתמש בסימון $\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(\text{x})\right]=\bar{h}(\text{x})$ ונקבל:
+
 $$
 \mathbb{E}\left[
     \mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]
@@ -529,10 +531,10 @@ $$
 
 $$
 \mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-y)^2\right]
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
 \right]
 =\mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
     +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
 \right]
 $$
@@ -540,9 +542,10 @@ $$
 <div class="fragment">
 
 מכיוון שהאיבר השני לא תלוי ב $\mathcal{D}$ נוכל להוציא אותו מהתוחלת על $\mathcal{D}$:
+
 $$
 =\mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h^*_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
+    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-h^*(\text{x}))^2\right]
 \right]
 +\mathbb{E}\left[(h^*(\text{x})-\text{y})^2\right]
 $$
@@ -550,6 +553,7 @@ $$
 </div><div class="fragment">
 
 נציב את הפירוק מהשלב השני ונקבל:
+
 $$
 \begin{aligned}
 &=\mathbb{E}\left[
@@ -567,8 +571,6 @@ $$
 
 </div>
 </section><section>
-
-
 
 **סעיף 3:**
 
@@ -603,10 +605,6 @@ $$
 
   * שגיאת ה- Bias תקטן ככל שמשפחת המודלים גדולה יותר.
 
-    
-
-
-
 </section><section>
 
 <div class="imgbox" style="max-width:600px">
@@ -626,7 +624,6 @@ $$
 </section><section>
 
 ## תרגיל 4.2 - רגולריזציה
-
 
 #### 1) בעבור Rigde regression (המקרה של LLS + $l2$ regularization) רשמו את בעיית האופטימיזציה ופתרו  אותה על ידי גזירה והשוואה ל-0.
 
@@ -659,11 +656,8 @@ X=\begin{bmatrix}
 \end{bmatrix}
 $$
 
+כאשר נוסיף לבעיית האופטימיזציה איבר של רגולריזציית $l_2$ נקבל:
 
-
-
-
-כאשר נוסיף לבעיית האופטימיזציה איבר של רגולריזציית $l_2$ נקבל: 
 $$
 \boldsymbol{\theta}^*
 =\underset{\boldsymbol{\theta}}{\arg\min} \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
@@ -673,6 +667,7 @@ $$
 </section><section>
 
 נגזור ונשווה ל-$0$. נשתמש בנזגרת המוכרת $\nabla_{\boldsymbol{x}}\lVert\boldsymbol{x}\rVert_2^2=\nabla_{\boldsymbol{x}}\boldsymbol{x}^{\top}\boldsymbol{x}=2\boldsymbol{x}$:
+
 $$
 \begin{aligned}
 &\nabla_{\boldsymbol{\theta}}\left( \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
@@ -688,8 +683,6 @@ $$
 
 <div class="fragment">
 
-
-
 </br>
 
 * ניתן כמובן "לבלוע" את ה$N$ בתוך הפרמטר $\lambda$, אך שינוי זה מצריך להתאים את הפרמטר $\lambda$ לגודל המדגם ולעדכנו כאשר גודל המדגם משתנה (נגיד במקרה בו ממפרישים חלק מהמדגם ל validation set).
@@ -698,6 +691,7 @@ $$
 </section><section>
 
 **2) נסתכל כעת על וריאציה של Ridge regression שבה אנו נותנים משקל שונה $w_i$ לרגולריזציה של כל פרמטר:**
+
 $$
 \sum_{i=1}^D w_i\theta_i^2
 $$
@@ -724,11 +718,10 @@ $$
 +\lambda\sum_{i=1}^D w_i\theta_i^2
 $$
 
-
-
 </section><section>
 
 נפעל על פי ההדרכה. נגדיר את המטריצה:
+
 $$
 W=\begin{bmatrix}
 w_1 & 0 & \dots & 0 \\
@@ -748,9 +741,8 @@ $$
 
 </section><section>
 
-
-
 נגזור ונשווה ל-0:
+
 $$
 \begin{aligned}
 &\nabla_{\boldsymbol{\theta}}\left( \frac{1}{N}\lVert X\boldsymbol{\theta}-\boldsymbol{y}\rVert_2^2
@@ -847,13 +839,9 @@ $$
 
 כפי שציינו בסעיף הקודם, רגולריזציית ה $l_2$ תשפיע באופן מועט יחסית על האיברים הקטנים ולא תתאמץ להקטין אותם ובעיקר תפעל להקטין את האיברים הגדולים. מנגד, רגולריזציית ה $l_1$ תמשיך ולנסות להקטין את האיברים כל עוד הם שונים מ-0 ולכן בפועל היא תיטה לאפס יותר איברים.
 
-
-
 </br></br>
 
 **הערה**: בפועל בגלל שגודלו של איבר הרגולריזציה בגרדיאנט של $l_1$ קבוע הוא יקטין את האיברים לערכים קרובים ל-0 ואז יתחיל להתנדנד סביב ה-0.
-
-
 
 </div>
 </section><section>
@@ -869,8 +857,6 @@ $$
 </div>
 </section><section>
 
-
-
 בשיטה זו נחלק את ה train set שלנו ל $K$ קבוצות ונבצע את הערכת הביצויים $K$ פעמים באופן הבא:
 
 <div class="fragment">
@@ -885,12 +871,8 @@ $$
 
 גדולים אופיינים ל $K$ הינם בין 5 ל10.
 
-
-
 </div>
 </section><section>
-
-
 
 להלן סכימה של החלוקה של המדגם בעבור בחירה של $K=5$ :
 
@@ -927,8 +909,6 @@ $$
 * ננסה להתאים למדגם הנתון אחד משני מודלים: מודל לינארי מסדר 0 (פונקציה קבועה) או מסדר ראשון (פונקציה לינארית עם היסט). בתרגיל זה נבחן דרכים לקביעת סדר המודל.
 
 * נפצל את המדגם כך ששלושת הדגימות הראשונות יהיו הtrain set והאחרונה תהיה ה test set.
-
-
 
 </section><section>
 
@@ -1204,7 +1184,6 @@ $$
 <div class="imgbox" style="max-width:250px">
 
 ![](../tutorial03/assets/taxis.jpg)
-
 
 </section><section>
 
