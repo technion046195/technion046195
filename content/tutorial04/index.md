@@ -16,7 +16,6 @@ print_pdf: true
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
-
 ## תקציר התיאוריה
 
 ### מושגים

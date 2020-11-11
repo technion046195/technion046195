@@ -10,7 +10,7 @@ slides_pdf: true
 # תרגול 4 - Generalization & overfitting
 
 <div dir="ltr">
-<a href="/assets/tutorial4_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/tutorial04_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 
 </section><section>
