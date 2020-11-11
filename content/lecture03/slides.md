@@ -10,7 +10,7 @@ slides_pdf: true
 # הרצאה 3<br/>Generalization & overfitting
 
 <div dir="ltr">
-<a href="/assets/lecture02_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/lecture03_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 
 </section><section>
