@@ -14,3 +14,5 @@ jupyter_contrib_nbextensions==0.5.1
 imageio==2.9.0
 requests==2.24.0
 pyproj==2.6.1
+graphviz==0.14.2
+tabulate==0.8.7

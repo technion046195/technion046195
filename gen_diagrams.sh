@@ -3,21 +3,23 @@
 set -e
 
 declare -A diagrams
-diagrams["tutorial01/assets/dist_from_circle.png"]="-p0 -b20"
-diagrams["tutorial02/assets/random_process.png"]="-p1 -b20"
-diagrams["tutorial02/assets/ex_2_1_venn.png"]="-p2 -b20"
-diagrams["lecture01/assets/data_vs_prior.png"]="-p3 -t -b20"
-diagrams["lecture01/assets/data_vs_prior_ml.png"]="-p4 -t -b20"
-diagrams["lecture02/assets/models_diagram.png"]="-p6 -t -b20"
-diagrams["lecture02/assets/models_diagram_non_parametric.png"]="-p7 -t -b20"
-diagrams["lecture03/assets/models_diagram_approx_estim_decomp.png"]="-p8 -t -b20"
-diagrams["lecture03/assets/bias_variance_tradeoff.png"]="-p9 -t -b20"
-diagrams["tutorial04/assets/bias_variance_tradeoff_less_variance.png"]="-p10 -t -b20"
-diagrams["tutorial04/assets/center_of_mass.png"]="-p11 -t -b20"
-diagrams["lecture03/assets/bias_and_variance.png"]="-p12 -t -b20"
-diagrams["lecture03/assets/overfitting.png"]="-p13 -t -b20"
-diagrams["lecture03/assets/approx_estim_tradeoff.png"]="-p14 -t -b20"
-diagrams["lecture03/assets/models_diagram_regularization.png"]="-p15 -t -b20"
+diagrams["tutorial01/assets/dist_from_circle.png"]="-p0 -b20 -s 3"
+diagrams["tutorial02/assets/random_process.png"]="-p1 -b20 -s 3"
+diagrams["tutorial02/assets/ex_2_1_venn.png"]="-p2 -b20 -s 3"
+diagrams["lecture01/assets/data_vs_prior.png"]="-p3 -t -b20 -s 3"
+diagrams["lecture01/assets/data_vs_prior_ml.png"]="-p4 -t -b20 -s 3"
+diagrams["lecture02/assets/models_diagram.png"]="-p6 -t -b20 -s 3"
+diagrams["lecture02/assets/models_diagram_non_parametric.png"]="-p7 -t -b20 -s 3"
+diagrams["lecture03/assets/models_diagram_approx_estim_decomp.png"]="-p8 -t -b20 -s 3"
+diagrams["lecture03/assets/bias_variance_tradeoff.png"]="-p9 -t -b20 -s 3"
+diagrams["tutorial04/assets/bias_variance_tradeoff_less_variance.png"]="-p10 -t -b20 -s 3"
+diagrams["tutorial04/assets/center_of_mass.png"]="-p11 -t -b20 -s 3"
+diagrams["lecture03/assets/bias_and_variance.png"]="-p12 -t -b20 -s 3"
+diagrams["lecture03/assets/overfitting.png"]="-p13 -t -b20 -s 3"
+diagrams["lecture03/assets/approx_estim_tradeoff.png"]="-p14 -t -b20 -s 3"
+diagrams["lecture03/assets/models_diagram_regularization.png"]="-p15 -t -b20 -s 3"
+diagrams["lecture04/assets/binary_tree.png"]="-p16 -t -b20 -s 3"
+diagrams["lecture04/assets/tree_fraud_detection.png"]="-p18 -t -b20 -s 4"
 
 for diag in "${!diagrams[@]}"; do
     echo "Generating ./content/$diag"
@@ -25,7 +27,7 @@ for diag in "${!diagrams[@]}"; do
         rm "./content/$diag"
     fi
     IFS=' ' read -r -a args <<< "${diagrams[$diag]}"
-    drawio -x -f png -s 3 -o "./content/$diag" "${args[@]}" ./content/assets/diagrams.drawio
+    drawio -x -f png -o "./content/$diag" "${args[@]}" ./content/assets/diagrams.drawio
     # mogrify -strip "./content/$diag"
 done
 

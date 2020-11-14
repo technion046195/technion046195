@@ -1,0 +1,6 @@
+// Tree
+digraph {
+	root [label=<<I><B>x</B></I>> shape=plaintext]
+	node_1 [label="?" color="#82B366" fillcolor="#D5E8D4" penwidth=3 style=filled]
+	root -> node_1 [penwidth=2]
+}

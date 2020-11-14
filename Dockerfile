@@ -19,6 +19,7 @@ RUN apt-get update && \
         texlive-lang-arabic \
         locales \
         jq \
+        graphviz \
         xvfb \
         fonts-humor-sans \
         && \
