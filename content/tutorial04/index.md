@@ -566,7 +566,7 @@ $$
 בעבור רגולריזציית ה $l_1$ נקבל:
 
 $$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}} f(\boldsymbol{\theta^{(t)}})-2\eta\lambda\cdot\text{sign}(\boldsymbol{\theta}^{(t)})
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}} f(\boldsymbol{\theta^{(t)}})-\eta\lambda\cdot\text{sign}(\boldsymbol{\theta}^{(t)})
 $$
 
 כאשר פונקציית ה$\text{sign}$ פועלת איבר איבר.

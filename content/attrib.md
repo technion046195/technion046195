@@ -33,6 +33,7 @@ type: attrib
 - DeepMind playing Starcraft for [DeepmMind's website](https://deepmind.com/blog/article/alphastar-mastering-real-time-strategy-game-starcraft-ii)
 - Fake persons image from [this person does not exist](https://thispersondoesnotexist.com/)
 - K-fold cross validation scheme form [scikit-learn](https://scikit-learn.org/stable/modules/cross_validation.html)
+- The Titanic form [Wikipedia](https://en.wikipedia.org/wiki/Titanic)
 
 ## Vector graphics
 
