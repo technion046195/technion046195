@@ -1,22 +1,21 @@
 const express = require('express')
 const path = require(`path`)
-const { createFilePath } = require(`gatsby-source-filesystem`)
-const puppeteer = require('puppeteer')
 const fs = require('fs');
 const os = require('os');
 const { spawn } = require('child_process');
+const crypto = require('crypto');
+const objectHash = require('object-hash');
+const puppeteer = require('puppeteer')
+const { createFilePath } = require(`gatsby-source-filesystem`)
 
-var codeToCopyList = [];
-var codeToHTMLList = [];
-var pagesToDocxList = [];
 var pagesToPrintList = [];
 
-require('events').EventEmitter.prototype._maxListeners = 70;
-require('events').defaultMaxListeners = 70;
+// require('events').EventEmitter.prototype._maxListeners = 70;
+// require('events').defaultMaxListeners = 70;
 
 exports.onCreateDevServer = ({ app }) => {
     app.use(express.static('public'));
-    generateExtras();
+    printToPDF(pagesToPrintList, 3, true);
 }
 
 exports.onPreInit = async () => {
@@ -33,9 +32,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       fields: Fields
     }
     type Fields {
-      slug: String!
-      code_copy_filename: String!
-      code_html_filename: String!
+      slug: String
+      code_copy_filename: String
+      code_html_filename: String
     }
   `
   createTypes(typeDefs)
@@ -57,11 +56,11 @@ exports.createSchemaCustomization = ({ actions }) => {
       fields: Fields
     }
     type Fields {
-      slug: String!
-      docx_filename: String!
-      print_pdf_filename: String!
-      slides_pdf_filename: String!
-      slides_compact_pdf_filename: String!
+      slug: String
+      docx_filename: String
+      print_pdf_filename: String
+      slides_pdf_filename: String
+      slides_compact_pdf_filename: String
     }
   `
   createTypes(typeDefs)
@@ -75,11 +74,6 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       const gatsby_data = JSON.parse(fs.readFileSync(node.absolutePath)).metadata.gatsby_data;
       if (gatsby_data != null) {
         const slug = createFilePath({ node, getNode })
-        createNodeField({
-          node,
-          name: `slug`,
-          value: slug
-        })
         if ((gatsby_data.make_public != null) & gatsby_data.make_public){
           let codeCopyFilename = `${__dirname}/public/assets/${slug.slice(1, -1).replace(/\//g,'_')}.ipynb`
           createNodeField({
@@ -87,7 +81,6 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
             name: `code_copy_filename`,
             value: codeCopyFilename
           })
-          codeToCopyList.push({'src': node.absolutePath, 'dist': codeCopyFilename})
         }
         if ((gatsby_data.make_html != null) & gatsby_data.make_html){
           let codeHTMLFilename = `${__dirname}/public${slug}index.html`
@@ -96,7 +89,6 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
             name: `code_html_filename`,
             value: codeHTMLFilename
           })
-          codeToHTMLList.push({'codeFilename': node.absolutePath, codeHTMLFilename});
         }
       }
     } catch(error) {
@@ -119,7 +111,6 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
         name: `docx_filename`,
         value: docxFilename
       })
-      pagesToDocxList.push({'mdFilename': node.fileAbsolutePath, docxFilename})
     }
     if ((node.frontmatter.print_pdf != null) & node.frontmatter.print_pdf){
       let printPDFFilename = `${__dirname}/public/assets/${slug.slice(1,-1).replace(/\//g,'_')}.pdf`
@@ -128,7 +119,6 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
         name: `print_pdf_filename`,
         value: printPDFFilename
       })
-      pagesToPrintList.push({'slug': slug, 'pdfFilename': printPDFFilename, 'profile': 'page'})
     }
     if ((node.frontmatter.slides_pdf != null) & node.frontmatter.slides_pdf){
       let slidesPDFFilename = `${__dirname}/public/assets/${slug.slice(1,-1).replace(/\//g,'_')}_deck.pdf`
@@ -137,29 +127,41 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
         name: `slides_pdf_filename`,
         value: slidesPDFFilename
       })
-      pagesToPrintList.push({'slug': slug + '?print-pdf', 'pdfFilename': slidesPDFFilename, 'profile': 'slides'})
       let slidesCompactPDFFilename = `${__dirname}/public/assets/${slug.slice(1,-1).replace(/\//g,'_')}.pdf`
       createNodeField({
         node,
         name: `slides_compact_pdf_filename`,
         value: slidesCompactPDFFilename
       })
-      pagesToPrintList.push({'slug': slug + '?print-pdf&compact', 'pdfFilename': slidesCompactPDFFilename, 'profile': 'slides'})
     }
   }
 }
 
-exports.createPages = async ({ graphql, actions, reporter }) => {
+exports.createPages = async ({ cache, graphql, actions }) => {
   const { createPage } = actions
   const result = await graphql(`
       query {
-        allMarkdownRemark(
+        files: allFile{
+          nodes {
+            absolutePath
+            fields {
+              code_html_filename
+              code_copy_filename
+            }
+          }
+        }
+        md_pages: allMarkdownRemark(
           sort: { order: ASC, fields: [frontmatter___index] },
           filter: {frontmatter: {template: {ne: null}}}
           ) {
             nodes {
+              fileAbsolutePath
               fields {
                 slug
+                docx_filename
+                print_pdf_filename
+                slides_pdf_filename
+                slides_compact_pdf_filename
               }
               frontmatter {
                 template
@@ -170,12 +172,75 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }
       }
     `)
-    if (result.errors) { throw result.errors; }
+
+  if (result.errors) { throw result.errors; }
   const data = result.data;
+
+  let tasks = [];
+  for (const node of data.files.nodes){ 
+    if ((node.fields != null) && (node.fields.code_copy_filename != null)) {
+      tasks.push(async () => {
+        const src = node.absolutePath;
+        const dist = node.fields.code_copy_filename;
+        const cacheKey = `code_to_copy-${src}`;
+        const hash = objectHash({src, dist}) + (await getChecksum(src));
+        await cacheAndRun(cache, cacheKey, hash, async () => {await copyFile({src, dist});})
+      });
+    }
+  }
+  await runJobsQueue(tasks, nWorkers=10);
+
+  tasks = [];
+  for (const node of data.files.nodes){ 
+    if ((node.fields != null) && (node.fields.code_html_filename != null)) {
+      tasks.push(async () => {
+        const codeFilename = node.absolutePath;
+        const codeHTMLFilename = node.fields.code_html_filename;
+        const cacheKey = `code_to_html-${codeHTMLFilename}`;
+        const hash = objectHash({codeFilename, codeHTMLFilename}) + (await getChecksum(codeFilename));
+        await cacheAndRun(cache, cacheKey, hash, async () => {await codeToHTML({codeFilename, codeHTMLFilename});})
+      });
+    }
+  }
+  await runJobsQueue(tasks, nWorkers=10);
+
+  tasks = [];
+  for (const node of data.md_pages.nodes){ 
+    if ((node.fields != null) && (node.fields.docx_filename != null)) {
+      tasks.push(async () => {
+        const mdFilename = node.fileAbsolutePath;
+        const docxFilename = node.fields.docx_filename;
+        const cacheKey = `md_to_docx-${docxFilename}`;
+        const hash = objectHash({mdFilename, docxFilename}) + (await getChecksum(mdFilename));
+        await cacheAndRun(cache, cacheKey, hash, async () => {await mdToDocx({mdFilename, docxFilename});})
+      });
+    }
+  }
+  await runJobsQueue(tasks, nWorkers=5);
+
+  let args;
+  for (const node of data.md_pages.nodes){ 
+    args = null;
+    if (node.fields != null) {
+      if (node.fields.print_pdf_filename != null) {
+        args = {'slug': node.fields.slug, 'pdfFilename': node.fields.print_pdf_filename, 'profile': 'page'};
+      } else if (node.fields.slides_pdf_filename != null) {
+        args = {'slug': node.fields.slug + '?print-pdf', 'pdfFilename': node.fields.slides_pdf_filename, 'profile': 'slides'};
+      } else if (node.fields.slides_compact_pdf_filename != null) {
+        args = {'slug': node.fields.slug + '?print-pdf&compact', 'pdfFilename': node.fields.slides_compact_pdf_filename, 'profile': 'slides'};
+      }
+    }
+    if (args != null) {
+      const cacheKey = `print_pdf-${args.pdfFilename}`;
+      const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
+      await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
+    }
+  }
+
   let slug;
   let lastByType = {}
   let slugsData = {};
-  data.allMarkdownRemark.nodes.forEach((node) => {
+  data.md_pages.nodes.forEach((node) => {
     slug = node.fields.slug;
     const type = node.frontmatter.type;
     const index = node.frontmatter.index;
@@ -216,38 +281,52 @@ exports.onPostBuild = async () => {
     })
   });
 
-  await generateExtras();
+  await printToPDF(pagesToPrintList);
   
-  if (server != null){
-    server.close();
-    console.log('Server down')
-  }
+  server.close();
+  console.log('Server down')
 }
 
 // # Auxiliary functions
 // =====================
-generateExtras = async () => {
-  console.log('-> Generating extras');
+const getChecksum = (path) => {
+  return new Promise(function (resolve, reject) {
+    const hash = crypto.createHash('md5');
+    const input = fs.createReadStream(path);
+
+    input.on('error', reject);
+
+    input.on('data', function (chunk) {
+      hash.update(chunk);
+    });
+
+    input.on('close', function () {
+      resolve(hash.digest('hex'));
+    });
+  });
+}
+
+const cacheAndRun = async (cache, key, hash, func) => {
+  let obj = await cache.get(key);
+  if ((obj == null) || (obj.hash != hash)) {
+    await func();
+    await cache.set(key, {hash})
+  }
+}
+
+const runJobsQueue = async (tasks, nWorkers=5) => {
+  const runWorker = async () => {
+    while (tasks.length > 0) {
+        task = tasks.shift();
+        await task();
+    }
+  }
+
   let promisesArray = [];
-  let args;
-  while (codeToCopyList.length>0) {
-    args = codeToCopyList.pop()
-    promisesArray.push(copyFile(args))
-  }
-  while (codeToHTMLList.length>0) {
-    args = codeToHTMLList.pop()
-    promisesArray.push(codeToHTML(args))
-  }
-  while (pagesToDocxList.length>0) {
-    args = pagesToDocxList.pop()
-    promisesArray.push(mdToDocx(args))
-  }
-  while (pagesToPrintList.length>0) {
-    args = pagesToPrintList.pop()
-    await printToPDF(args);
+  for (let i = 0; i < nWorkers; i++) {
+    promisesArray.push(runWorker());
   }
   await Promise.all(promisesArray);
-  console.log('-> Extras generated');
 }
 
 const copyFile = async ({src, dist}) => {
@@ -319,57 +398,67 @@ const mdToPDF = async ({mdFilename, pdfFilename}) => {
   });
 }
 
-const printToPDF = async ({slug, pdfFilename, profile='page'}) => {
-  const url = 'http://localhost:8000' + slug;
-  console.log(`-> Printing: ${url} -> ${pdfFilename}`);
-  fs.mkdirSync(path.dirname(pdfFilename), { recursive: true });
-  let trail = 1
-  while(true) {
-    let browser;
-    try {
-      browser = await puppeteer.launch({
+const printToPDF = async (pagesToPrintList, nWorkers=3, continuos=false) => {
+  const runWorker = async () => {
+    console.log("Opening browser");
+    const browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
         headless: true
       });
-      const page = await browser.newPage()
-      page.on('error', err => { if (!page.isClosed()) { page.close(); }});
-      await page.goto(url, { waitUntil: 'networkidle2' });
-      await new Promise(resolve => setTimeout(resolve, 10000))
-      if (profile == 'slides') {
-        await page.pdf({
-          width: "9.75in",
-          height: "8.13in",
-          path: pdfFilename,
-          margin: 0,
-          preferCSSPageSize: true,
-          printBackground: true
-        })
-      } else if (profile == 'page') {
-        await page.pdf({
-          format: 'A4',
-          path: pdfFilename,
-          scale: 0.75,
-          margin: { left: '0.75in', top: '0.75in', right: '0.75in', bottom: '0.75in' },
-          displayHeaderFooter: true,
-          headerTemplate: '<div></div>',
-          footerTemplate: '<div style="width:100%;margin:0;text-align:center;font-size:12px;font-style:italic;color:#c0c0c0"><span class="pageNumber"></span></div>'
-        })
-      } else {
-        console.log(`-> Unknown print profile ${profile}`);
+    const page = await browser.newPage()
+    // page.on('error', err => { if (!page.isClosed()) { page.close(); }});
+
+    let url;
+    let args;
+    while (true) {
+      if (pagesToPrintList.length == 0) {
+        if (continuos) {
+          await new Promise(resolve => setTimeout(resolve, 5000))
+          continue;
+        } else {
+          break;
+        }
       }
-      await browser.close();
-      break;
-    }
-    catch(error){
-      try {await browser.close();} catch(error){console.log(`Unable to close the browser`);}
-      if (trail < 10) {
-        trail++;
-        console.log(`Error loading "${url}". Trying again. Trail: ${trail}`);
-        await new Promise(resolve => setTimeout(resolve, 1000))
-      } else {
-        console.log(`Error loading "${url}". Will not try again`);
+      args = pagesToPrintList.shift();
+      url = 'http://localhost:8000' + args.slug;
+      console.log(`-> Printing: ${url} -> ${args.pdfFilename}`);
+      fs.mkdirSync(path.dirname(args.pdfFilename), { recursive: true });
+      while(true) {
+        await page.goto(url, { waitUntil: 'networkidle2' });
+        await new Promise(resolve => setTimeout(resolve, 5000))
+        if (args.profile == 'slides') {
+          await page.pdf({
+            width: "9.75in",
+            height: "8.13in",
+            path: args.pdfFilename,
+            margin: 0,
+            preferCSSPageSize: true,
+            printBackground: true
+          })
+        } else if (args.profile == 'page') {
+          await page.pdf({
+            format: 'A4',
+            path: args.pdfFilename,
+            scale: 0.75,
+            margin: { left: '0.75in', top: '0.75in', right: '0.75in', bottom: '0.75in' },
+            displayHeaderFooter: true,
+            headerTemplate: '<div></div>',
+            footerTemplate: '<div style="width:100%;margin:0;text-align:center;font-size:12px;font-style:italic;color:#c0c0c0"><span class="pageNumber"></span></div>'
+          })
+        } else {
+          console.log(`-> Unknown print profile ${args.profile}`);
+        }
         break;
       }
     }
+    console.log("Closing browser");
+    await browser.close();
   }
+
+  let promisesArray = [];
+  for (let i = 0; i < nWorkers; i++) {
+    promisesArray.push(runWorker());
+  }
+  await Promise.all(promisesArray);
+  console.log("Finished printing");
 }
