@@ -21,56 +21,27 @@ const SEO = ({ title }) => {
 
   return (
     <Helmet
-      htmlAttributes={{ lang: site.siteMetadata.lang, dir: 'rtl' }}
-      title={title}
       titleTemplate={`${site.siteMetadata.title} | %s`}
-      meta={[
-        {
-          name: `description`,
-          content: site.siteMetadata.description,
-        },
-        {
-          property: `og:title`,
-          content: title,
-        },
-        {
-          property: `og:description`,
-          content: site.siteMetadata.description,
-        },
-        {
-          property: `og:type`,
-          content: `website`,
-        },
-        {
-          name: `twitter:card`,
-          content: `summary`,
-        },
-        {
-          name: `twitter:creator`,
-          content: site.siteMetadata.author,
-        },
-        {
-          name: `twitter:title`,
-          content: title,
-        },
-        {
-          name: `twitter:description`,
-          content: site.siteMetadata.description,
-        },
-        {
-          name: `Cache-Control"`,
-          content: `no-cache, no-store, must-revalidate`
-        },
-        {
-          name: `Pragma`,
-          content: `no-cache`
-        },
-        {
-          name: `Expires`,
-          content: `0`
-        },
-      ]}
-    />
+      title={title}
+    >
+      {/* General tags */}
+      <meta name="description" content={site.siteMetadata.description} />
+
+      {/* OpenGraph tags */}
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={site.siteMetadata.description} />
+
+      {/* Twitter Card tags */}
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:creator" content={site.siteMetadata.author} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={site.siteMetadata.description} />
+      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+      <meta http-equiv="Pragma" content="no-cache" />
+      <meta http-equiv="Expires" content="0" />
+      <html lang={site.siteMetadata.lang} dir="rtl" />
+    </Helmet>
   )
 }
 
