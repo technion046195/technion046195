@@ -34,6 +34,7 @@ type: attrib
 - Fake persons image from [this person does not exist](https://thispersondoesnotexist.com/)
 - K-fold cross validation scheme form [scikit-learn](https://scikit-learn.org/stable/modules/cross_validation.html)
 - The Titanic form [Wikipedia](https://en.wikipedia.org/wiki/Titanic)
+- WD-40 from [the offical site](https://www.wd40.com/products/smart-straw-12-oz/)
 
 ## Vector graphics
 
@@ -41,6 +42,7 @@ type: attrib
 
 - [Dartboard](https://www.freepik.com/free-vector/dart-board-icon_838791.htm) by [ikaika](https://www.freepik.com/ikaika)
 - [Dart arrow](https://www.freepik.com/free-vector/target-concept_764916.htm) by [freepik](https://www.freepik.com/freepik)
+- [Duck tape](https://www.freepik.com/free-vector/gray-silver-duct-roll-adhesive-tape-realistic_6055214.htm) by [upklyak](https://www.freepik.com/upklyak)
 
 ## Fonts
 

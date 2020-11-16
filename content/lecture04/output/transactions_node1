@@ -1,0 +1,10 @@
+// Tree
+digraph {
+	root [label=<<I><B>x</B></I>> shape=plaintext]
+	root -> node_1 [penwidth=2]
+	node_1 [label=<x<SUB>1</SUB>≥75> color="#6C8EBF" fillcolor="#DAE8FC" penwidth=3 style=filled]
+	node_1 -> leaf_1_1 [label=No penwidth=2]
+	leaf_1_1 [label=Legit shape=plaintext]
+	node_1 -> leaf_1_2 [label=Yes penwidth=2]
+	leaf_1_2 [label=Fraud shape=plaintext]
+}

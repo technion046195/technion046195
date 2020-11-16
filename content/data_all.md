@@ -52,10 +52,10 @@
  <h3>בעיות סיווג</h3>
  <div>
    <div>
-     <h4><a class="disabled">הרצאה 4</a></h4>
+     <h4><a href="/lecture04">הרצאה 4</a></h4>
    </div><div>17/11</div>
    <div>
-     <h4><a class="disabled">תרגול 5</a></h4>
+     <h4><a href="/tutorial05">תרגול 5</a></h4>
    </div><div>18,23,24/11</div>
  </div>
  <h3>שיערוך א-פרמטרי</h3>

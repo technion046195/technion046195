@@ -19,7 +19,10 @@ diagrams["lecture03/assets/overfitting.png"]="-p13 -t -b20 -s 3"
 diagrams["lecture03/assets/approx_estim_tradeoff.png"]="-p14 -t -b20 -s 3"
 diagrams["lecture03/assets/models_diagram_regularization.png"]="-p15 -t -b20 -s 3"
 diagrams["lecture04/assets/binary_tree.png"]="-p16 -t -b20 -s 3"
-diagrams["lecture04/assets/tree_fraud_detection.png"]="-p18 -t -b20 -s 4"
+diagrams["lecture04/assets/tree_fraud_detection.png"]="-p17 -t -b20 -s 4"
+diagrams["lecture04/assets/engineering_flowchart.png"]="-p18 -t -b20 -s 3"
+
+ 
 
 for diag in "${!diagrams[@]}"; do
     echo "Generating ./content/$diag"
