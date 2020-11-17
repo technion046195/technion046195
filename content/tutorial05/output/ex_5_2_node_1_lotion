@@ -4,7 +4,7 @@ digraph {
 	node_1 [label=Lotion color="#82B366" fillcolor="#D5E8D4" penwidth=3 style=filled]
 	root -> node_1 [penwidth=2]
 	leaf_1_1 [label="Leaf 1" shape=plaintext]
-	node_1 -> leaf_1_1 [label=Yo penwidth=2]
+	node_1 -> leaf_1_1 [label=No penwidth=2]
 	leaf_1_2 [label="Leaf 2" shape=plaintext]
 	node_1 -> leaf_1_2 [label=Yes penwidth=2]
 }
