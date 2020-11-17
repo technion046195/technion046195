@@ -403,7 +403,7 @@ const mdToPDF = async ({mdFilename, pdfFilename}) => {
   });
 }
 
-const printToPDF = async (pagesToPrintList, nWorkers=3, continuos=false) => {
+const printToPDF = async (pagesToPrintList, nWorkers=1, continuos=false) => {
   const runWorker = async () => {
     console.log("Opening browser");
     const browser = await puppeteer.launch({
