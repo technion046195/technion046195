@@ -403,18 +403,19 @@ const mdToPDF = async ({mdFilename, pdfFilename}) => {
   });
 }
 
-const printToPDF = async (pagesToPrintList, nWorkers=1, continuos=false) => {
+const printToPDF = async (pagesToPrintList, nWorkers=2, continuos=false) => {
   const runWorker = async () => {
     console.log("Opening browser");
-    const browser = await puppeteer.launch({
+    let browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
         headless: true
       });
-    const page = await browser.newPage()
+    let page = await browser.newPage()
     // page.on('error', err => { if (!page.isClosed()) { page.close(); }});
 
     let url;
     let args;
+    let trail;
     while (true) {
       if (pagesToPrintList.length == 0) {
         if (continuos) {
@@ -428,32 +429,49 @@ const printToPDF = async (pagesToPrintList, nWorkers=1, continuos=false) => {
       url = 'http://localhost:8000' + args.slug;
       console.log(`-> Printing: ${url} -> ${args.pdfFilename}`);
       fs.mkdirSync(path.dirname(args.pdfFilename), { recursive: true });
+      trail=1;
       while(true) {
-        await page.goto(url, { waitUntil: 'networkidle2' });
-        await new Promise(resolve => setTimeout(resolve, 5000))
-        if (args.profile == 'slides') {
-          await page.pdf({
-            width: "9.75in",
-            height: "8.13in",
-            path: args.pdfFilename,
-            margin: 0,
-            preferCSSPageSize: true,
-            printBackground: true
-          })
-        } else if (args.profile == 'page') {
-          await page.pdf({
-            format: 'A4',
-            path: args.pdfFilename,
-            scale: 0.75,
-            margin: { left: '0.75in', top: '0.75in', right: '0.75in', bottom: '0.75in' },
-            displayHeaderFooter: true,
-            headerTemplate: '<div></div>',
-            footerTemplate: '<div style="width:100%;margin:0;text-align:center;font-size:12px;font-style:italic;color:#c0c0c0"><span class="pageNumber"></span></div>'
-          })
-        } else {
-          console.log(`-> Unknown print profile ${args.profile}`);
+        try {
+          await page.goto(url, { waitUntil: 'networkidle2' });
+          await new Promise(resolve => setTimeout(resolve, 5000))
+          if (args.profile == 'slides') {
+            await page.pdf({
+              width: "9.75in",
+              height: "8.13in",
+              path: args.pdfFilename,
+              margin: 0,
+              preferCSSPageSize: true,
+              printBackground: true
+            })
+          } else if (args.profile == 'page') {
+            await page.pdf({
+              format: 'A4',
+              path: args.pdfFilename,
+              scale: 0.75,
+              margin: { left: '0.75in', top: '0.75in', right: '0.75in', bottom: '0.75in' },
+              displayHeaderFooter: true,
+              headerTemplate: '<div></div>',
+              footerTemplate: '<div style="width:100%;margin:0;text-align:center;font-size:12px;font-style:italic;color:#c0c0c0"><span class="pageNumber"></span></div>'
+            })
+          } else {
+            console.log(`-> Unknown print profile ${args.profile}`);
+          }
+          break;
+        } catch(error) {
+          try {await browser.close();} catch(error){console.log(`Unable to close the browser`);}
+          let browser = await puppeteer.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+            headless: true
+          });
+          page = await browser.newPage()
+          if (trail < 5) {
+            trail++;
+            console.log(`Error loading "${url}". Trying again. Trail: ${trail}`);
+            await new Promise(resolve => setTimeout(resolve, 1000))
+          } else {
+            console.log(`Error loading "${url}". Will not try again`);
+          }
         }
-        break;
       }
     }
     console.log("Closing browser");
