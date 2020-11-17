@@ -144,7 +144,11 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 
 2. החיזוי יהיה התווית השכיחה ביותר מבין $K$ התוויות של הדגימות שנבחרו בשלב 1.
 
-</div><div class="fragment">
+</div>
+
+</section><section>
+
+#### 
 
 - במקרה של שוויון בשלב 2, נשווה את המרחק הממוצע בין ה $\boldsymbol{x}$-ים השייכים לכל תווית ונבחר בתווית בעלת המרחק הממוצע הקצר ביותר.
 - במקרה של שוויון גם בין המרחקים הממוצעים, נבחר אקראית.
@@ -170,7 +174,9 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 
 </div>
 
+</section><section>
 
+#### 
 
 טרמינולוגיה:
 
@@ -200,6 +206,10 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 
 </div>
 
+</section><section>
+
+#### 
+
 היתרונות של השימוש בעץ החלטה כחזאי:
 
 1. פשוט למימוש (אוסף של תנאי if .. else ..).
@@ -209,6 +219,12 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 </section><section>
 
 ### בניית עץ החלטה לסיווג
+
+</section><section>
+
+#### 
+
+
 
 #### מדדים לחוסר ההומוגניות של פילוג
 
@@ -267,7 +283,7 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 
 #### חוסר הומוגניות ממוצעת של עץ - ציון של עץ החלטה
 
-1. נעביר את הדגימות מהמדגם דרך העץ ונפצל אותם על פי העלה שעליו הם הגיעו. נסמן את האינדקסים של הדגימות שהגיעו לעלה ה $j$ ב $\mathcal{I}_j$. נסמן את כמות הדגימות שהגיעו לעלה ה $j$ ב $N_j$.
+1. נעביר את הדגימות מהמדגם דרך העץ ונפצל אותם על פי העלים. נסמן את האינדקסים של הדגימות שהגיעו לעלה ה $j$ ב $\mathcal{I}_j$. נסמן את כמות הדגימות שהגיעו לעלה ה $j$ ב $N_j$.
 
 2. נחשב את הפילוג האמפירי של התויות שהגיעו לכל עלה:
 
@@ -275,13 +291,7 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
    \hat{p}_{j,y}=\frac{1}{N_j}\sum_{i\in\mathcal{I}_j} I\{y_i=y\}
    $$
 
-   ($p_{j,y}$ הוא פשוט השכיחות של הערך $y$ מבין התוויות בעלה ה $j$)
-
-3. נחשב את חוסר ההומוגניות של כל עלה:
-
-   $$
-   Q(\hat{p}_j)
-   $$
+3. נחשב את חוסר ההומוגניות של כל עלה: $Q(\hat{p}_j)$
 
 4. הציון הכולל של העץ הינו הממוצע המשוקלל של חוסר ההומוגניות של העלים ביחס למספר הדגימות בכל עלה:
 
@@ -490,8 +500,6 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 
 </section><section>
 
-## 
-
 ##### Hair
 
 <div class="imgbox no-shadow">
@@ -500,8 +508,6 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 ![](./output/ex_5_2_node_1_hair.png)
 
 </div>
-
-נעביר את המדגם דרך העץ ונרכז בטבלה הבאה את התוויות ואנטרופיה המתקבלות בכל עלה:
 
 <div style="direction:ltr">
 
@@ -638,7 +644,8 @@ $$
 
 ##### Height
 
-<div class="imgbox no-shadow">
+<div class="imgbox no-shadow" style="max-width:400px">
+
 
 
 ![](./output/ex_5_2_node_1_1_height.png)
@@ -664,7 +671,8 @@ $$
 
 ##### Weight
 
-<div class="imgbox no-shadow">
+<div class="imgbox no-shadow" style="max-width:400px">
+
 
 
 ![](./output/ex_5_2_node_1_1_weight.png)
@@ -690,7 +698,8 @@ $$
 
 ##### Lotion
 
-<div class="imgbox no-shadow">
+<div class="imgbox no-shadow" style="max-width:400px">
+
 
 
 ![](./output/ex_5_2_node_1_1_lotion.png)
@@ -895,7 +904,8 @@ $$
 
 ה node האופטימאלי כאן הוא הפיצול לפי $\text{x}_1$ ונשים לב שהענף של $\text{x}_1=1$ כבר הומוגני:
 
-<div class="imgbox no-shadow">
+<div class="imgbox no-shadow" style="max-width:200px">
+
 
 
 
@@ -962,7 +972,8 @@ $$
   * ללא תלות בערך של $\text{x}_2$ הוא חוזה $1$
 * לכן, באותה המידה ניתן להשתמש גם בעץ הבא ולקבל את אותו החיזוי:
 
-<div class="imgbox no-shadow">
+<div class="imgbox no-shadow" style="max-width:150px">
+
 
 
 
@@ -1055,7 +1066,8 @@ $$
 
 * נציג את הפילוג של כל אחד מהשדות בעבור האנשים ושרדו ואלה שלו:
 
-<div class="imgbox" style="max-width:800px">
+<div class="imgbox" style="max-width:600px">
+
 
 
 ![](./output/titanic_data_slices.png)
@@ -1100,21 +1112,15 @@ $$
 
 </section><section>
 
-### 
-
 * בעבור ה- node הראשון:
 
 <div style="direction:ltr">
-
-
 <div class="imgbox no-shadow">
-
-
 ![](./output/titanic_node_1.png)
 
-</div>
+</section><section>
 
-</div>
+
 
 ``` text
 Score before split: 0.492
@@ -1146,6 +1152,10 @@ Scores:
 
 </div>
 
+</section><section>
+
+
+
 ``` text
 Score before split: 0.146
 Scores:
@@ -1162,30 +1172,21 @@ Scores:
 
 </section><section>
 
+
+
+
 <div class="imgbox no-shadow">
+
 
 ![](./output/titanic_node_1_2.png)
 
-``` text
-Score before split: 0.214
-Scores:
-- pclass: 0.202   <-
-- sex: 0.214
-- sibsp: 0.212
-- parch: 0.209
-- embarked: 0.205
-- age >= 10: 0.207
-- fare >= 26.2875: 0.205
-```
-
-
-
-
-
-
-
 </div>
 
+
+</section><section>
+
+
+
 ``` text
 Score before split: 0.214
 Scores:
@@ -1197,6 +1198,8 @@ Scores:
 - age >= 10: 0.207
 - fare >= 26.2875: 0.205
 ```
+
+
 
 </section><section>
 
@@ -1206,6 +1209,12 @@ Scores:
 ![](./output/titanic_node_1_1_1.png)
 
 </div>
+
+</section><section>
+
+
+
+<div class="imgbox no-shadow">
 
 ```text
 Score before split: 0.010
@@ -1243,7 +1252,10 @@ Scores:
 * לאחר חישוב העץ המלא נשתמש ב validation set על מנת להסיר את הענפים שלא משפרים (או פוגעים) בציון על ה validation set.
 * בדיקה זו מראה שיש ארבעה node של תורמים לשיפור התוצאה ולכן נסיר אותם ונקבל את העץ הסופי הבא:
 
-<div class="imgbox no-shadow">
+
+
+<div class="imgbox no-shadow" style="max-width:400px">
+
 
 
 ![](./output/titanic_after_pruning.png)
