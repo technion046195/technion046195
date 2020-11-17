@@ -1110,6 +1110,7 @@ $$
 
 <div style="direction:ltr">
 <div class="imgbox no-shadow">
+
 ![](./output/titanic_node_1.png)
 
 </section><section>
