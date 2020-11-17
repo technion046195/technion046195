@@ -220,20 +220,25 @@ exports.createPages = async ({ cache, graphql, actions }) => {
 
   let args;
   for (const node of data.md_pages.nodes){ 
-    args = null;
     if (node.fields != null) {
       if (node.fields.print_pdf_filename != null) {
-        args = {'slug': node.fields.slug, 'pdfFilename': node.fields.print_pdf_filename, 'profile': 'page'};
-      } else if (node.fields.slides_pdf_filename != null) {
-        args = {'slug': node.fields.slug + '?print-pdf', 'pdfFilename': node.fields.slides_pdf_filename, 'profile': 'slides'};
-      } else if (node.fields.slides_compact_pdf_filename != null) {
-        args = {'slug': node.fields.slug + '?print-pdf&compact', 'pdfFilename': node.fields.slides_compact_pdf_filename, 'profile': 'slides'};
+        const args = {'slug': node.fields.slug, 'pdfFilename': node.fields.print_pdf_filename, 'profile': 'page'};
+        const cacheKey = `print_pdf-${args.pdfFilename}`;
+        const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
+        await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
       }
-    }
-    if (args != null) {
-      const cacheKey = `print_pdf-${args.pdfFilename}`;
-      const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
-      await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
+      if (node.fields.slides_pdf_filename != null) {
+        const args = {'slug': node.fields.slug + '?print-pdf', 'pdfFilename': node.fields.slides_pdf_filename, 'profile': 'slides'};
+        const cacheKey = `print_pdf-${args.pdfFilename}`;
+        const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
+        await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
+      }
+      if (node.fields.slides_compact_pdf_filename != null) {
+        const args = {'slug': node.fields.slug + '?print-pdf&compact', 'pdfFilename': node.fields.slides_compact_pdf_filename, 'profile': 'slides'};
+        const cacheKey = `print_pdf-${args.pdfFilename}`;
+        const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
+        await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
+      }
     }
   }
 
