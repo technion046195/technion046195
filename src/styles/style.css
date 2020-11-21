@@ -546,6 +546,10 @@ a.link-button {
   color: #006992;
 }
 
+.reveal.site-style .imgbox:not(.no-shadow){
+  background-color: white;
+}
+
 /* Site content -  print */
 /* --------------------- */
 @media print {

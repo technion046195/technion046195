@@ -677,6 +677,10 @@ $$
 
 ## חלק מעשי - הטיטניק
 
+<div dir="ltr">
+<a href="./example/" class="link-button" target="_blank">Code</a>
+</div>
+
 <div class="imgbox" style="max-width:800px">
 
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/RMS_Titanic_3.jpg/1200px-RMS_Titanic_3.jpg)
