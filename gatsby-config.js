@@ -9,18 +9,6 @@ module.exports = {
   plugins: [
     `gatsby-plugin-react-helmet`,
     {
-      resolve: `gatsby-plugin-manifest`,
-      options: {
-        name: `technion046195-intro-to-ml`,
-        short_name: `technion046195`,
-        start_url: `/`,
-        background_color: `#ffffff`,
-        theme_color: ` #006992`,
-        display: `minimal-ui`,
-        icon: `content/assets/technion046195_logo.png`
-      },
-    },
-    {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `content`,

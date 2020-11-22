@@ -48,4 +48,8 @@ type: attrib
 
 - [Trashim from the Culmus project](http://culmus.sourceforge.net/fancy/index.html)
 
+## Other
+
+- Icons where generated using [RealFaviconGenerator](https://realfavicongenerator.net/)
+
 </div>
