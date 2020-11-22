@@ -20,7 +20,6 @@ module.exports = {
         icon: `content/assets/technion046195_logo.png`
       },
     },
-    `gatsby-plugin-offline`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -46,13 +45,28 @@ module.exports = {
           `gatsby-remark-copy-linked-files`,
         ],
       },
+    },
+    {
+      resolve:`gatsby-plugin-netlify`,
+      options: {
+        headers: {
+          "/public/**/*.html": [
+            "cache-control: public",
+            "cache-control:  max-age=0", 
+            "cache-control: must-revalidate"
+          ],
+          "/sw.js": [
+            "cache-control: public",
+            "cache-control:  max-age=0", 
+            "cache-control: must-revalidate"
+          ],
+          "/public/page-data/*": [
+            "cache-control: public",
+            "cache-control:  max-age=0", 
+            "cache-control: must-revalidate"
+          ]
+        }
+      }
     }
   ],
 }
-
-          // {
-          //   resolve: `gatsby-remark-images`,
-          //   maxWidth: 900,
-          //   linkImagesToOriginal: false,
-          //   quality: 90,
-          // }

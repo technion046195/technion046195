@@ -37,9 +37,6 @@ const SEO = ({ title }) => {
       <meta name="twitter:creator" content={site.siteMetadata.author} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={site.siteMetadata.description} />
-      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-      <meta http-equiv="Pragma" content="no-cache" />
-      <meta http-equiv="Expires" content="0" />
       <html lang={site.siteMetadata.lang} dir="rtl" />
     </Helmet>
   )
