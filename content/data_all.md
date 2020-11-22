@@ -64,7 +64,7 @@
      <h4><a class="disabled">הרצאה 5</a></h4>
    </div><div>24/11</div>
    <div>
-     <h4><a class="disabled">תרגול 6</a></h4>
+     <h4><a href="/tutorial06">תרגול 6</a></h4>
    </div><div>25,31/11 , 1/12</div>
  </div>
  <h3>שיערוך פרמטרי</h3>
