@@ -4,7 +4,6 @@ index: 3
 template: page
 make_docx: true
 print_pdf: true
-dir: rtl
 ---
 <div dir="rtl" class="site-style">
 
