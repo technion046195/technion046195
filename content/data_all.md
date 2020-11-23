@@ -61,7 +61,7 @@
  <h3>שיערוך א-פרמטרי</h3>
  <div>
    <div>
-     <h4><a class="disabled">הרצאה 5</a></h4>
+     <h4><a href="/lecture05">הרצאה 5</a></h4>
    </div><div>24/11</div>
    <div>
      <h4><a href="/tutorial06">תרגול 6</a></h4>
