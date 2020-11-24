@@ -31,7 +31,7 @@ print_pdf: true
 <div style="text-align:center">
 
 מדגם<br/>
-️🠟<br/>
+▼<br/>
 חזאי בעל ביצועים טובים על המדגם
 
 </div>
@@ -41,9 +41,9 @@ print_pdf: true
 <div style="text-align:center">
 
 מדגם<br/>
-️🠟<br/>
+▼<br/>
 פילוג על סמך המדגם<br/>
-️🠟<br/>
+▼<br/>
 חזאי אופטימאלי בהינתן הפילוג
 
 </div>
