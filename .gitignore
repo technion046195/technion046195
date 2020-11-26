@@ -5,4 +5,4 @@ node_modules/
 package-lock.json
 .ipynb_checkpoints
 content/assignments/*solution.ipynb
-moodle.html
+ignore/

@@ -71,26 +71,19 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
 
   if (node.internal.type === `File` & node.ext == '.ipynb') {
     try {
-      const gatsby_data = JSON.parse(fs.readFileSync(node.absolutePath)).metadata.gatsby_data;
-      if (gatsby_data != null) {
-        const slug = createFilePath({ node, getNode })
-        if ((gatsby_data.make_public != null) & gatsby_data.make_public){
-          let codeCopyFilename = `${__dirname}/public/assets/${slug.slice(1, -1).replace(/\//g,'_')}.ipynb`
-          createNodeField({
-            node,
-            name: `code_copy_filename`,
-            value: codeCopyFilename
-          })
-        }
-        if ((gatsby_data.make_html != null) & gatsby_data.make_html){
-          let codeHTMLFilename = `${__dirname}/public${slug}index.html`
-          createNodeField({
-            node,
-            name: `code_html_filename`,
-            value: codeHTMLFilename
-          })
-        }
-      }
+      const slug = createFilePath({ node, getNode })
+      let codeCopyFilename = `${__dirname}/public/assets/${slug.slice(1, -1).replace(/\//g,'_')}.ipynb`
+      createNodeField({
+        node,
+        name: `code_copy_filename`,
+        value: codeCopyFilename
+      })
+      let codeHTMLFilename = `${__dirname}/public${slug}index.html`
+      createNodeField({
+        node,
+        name: `code_html_filename`,
+        value: codeHTMLFilename
+      })
     } catch(error) {
       console.log(`Got an error when trying to read ${node.absolutePath}`);
       console.log(error);

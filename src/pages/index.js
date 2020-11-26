@@ -7,7 +7,7 @@ const Home = ({ data }) => {
   return (
     <Layout type="index" pageTitle='Main'>
       <article dangerouslySetInnerHTML={{ __html: data.data_site.html }}/>
-      <article dangerouslySetInnerHTML={{ __html: data.data_all.html }}/>
+      <article dangerouslySetInnerHTML={{ __html: data.toc.html }}/>
     </Layout>
   )
 }
@@ -17,7 +17,7 @@ export const query = graphql`
     data_site: markdownRemark(fields: { slug: { eq: "/data_site/" } }) {
       html
     }
-    data_all: markdownRemark(fields: { slug: { eq: "/data_all/" } }) {
+    toc: markdownRemark(fields: { slug: { eq: "/toc/" } }) {
       html
     }
   }
