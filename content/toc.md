@@ -9,7 +9,7 @@
 
 ### שבוע 0 (21-26/10) - רקע מתימטי
 
-->✍️ תרגיל בית 0 - <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_0_ex.ipynb" target="_blank">רטוב</a> (לא להגשה) - הכירות עם Python ו Colab
+- ✍️ תרגיל בית 0 - <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_0_ex.ipynb" target="_blank">רטוב</a> (לא להגשה) - הכירות עם Python ו Colab
 - [תרגול 1](https://technion046195.netlify.app/tutorial01/) - (<a href="https://moodle.technion.ac.il/mod/resource/view.php?id=882936" target="_blank">שקפים</a>) בעיות אופטימיזציה וגזירה וקטורית
 
 ### שבוע 1 (27/10-2/11)
@@ -37,7 +37,7 @@
 - [הרצאה 5](https://technion046195.netlify.app/lecture05/) - שיערוך פילוג דיסקרטי, ECDF, היסטוגרמה, KDE ותוחלת מותנית.
 - [תרגול 6](https://technion046195.netlify.app/tutorial06/) -  שיערוך פילוג דיסקרטי, ECDF, היסטוגרמה ושיעורך פילוג מעורב
 - ✍️ תרגיל בית 1 - <a href="https://moodle.technion.ac.il/mod/resource/view.php?id=712113" target="_blank">יבש</a>, <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_1_ex.ipynb" target="_blank">רטוב</a> - תאריך הגשה 19/12/20 - LLS וחזאים
-- ✍️ תרגיל בית 2 - <a href="https://moodle.technion.ac.il/mod/resource/view.php?id=908234" target="_blank">יבש</a>, רטוב - תאריך הגשה 19/12/20 - עצי החלטה
+- ✍️ תרגיל בית 2 - <a href="https://moodle.technion.ac.il/mod/resource/view.php?id=908234" target="_blank">יבש</a>, <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_2_ex.ipynb" target="_blank">רטוב</a> - תאריך הגשה 19/12/20 - עצי החלטה
 
 ### שבוע 6 (1-6/12) - שיערוך פרמטרי
 
