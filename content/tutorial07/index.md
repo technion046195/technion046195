@@ -237,7 +237,10 @@ $$
 מכאן ש:
 
 $$
-\hat{\mu}_{\text{MLE}}=\hat{\theta}_1=\frac{1}{N}\sum_{i=1}^N x^{(i)} \\
+\hat{\mu}_{\text{MLE}}=\hat{\theta}_1=\frac{1}{N}\sum_{i=1}^N x^{(i)}
+$$
+
+$$
 \hat{\sigma^2}_{\text{MLE}}=\hat{\theta}_2=\frac{1}{N}\sum_{i=1}^N\left(x^{(i)}-\hat{\mu}_{\text{MLE}}\right)^2
 $$
 
@@ -423,7 +426,7 @@ $$
 
 נחשב את הפרמטרים של המודל הפרמטרי של LDA:
 
-נסמן ב $\mathcal{I}_c$$ את אוסף כל התצפיות של שבהם הזן הוא $c$:
+נסמן ב $\mathcal{I}_c$ את אוסף כל התצפיות של שבהם הזן הוא $c$:
 
 $$
 \mathcal{I}_1=\{1,2\}
@@ -457,7 +460,7 @@ $$
 
 $$
 \boldsymbol{\mu}_2=\frac{1}{|\mathcal{I}_2|}\sum_{i\in\mathcal{I}_2}\boldsymbol{x}^{(i)}
-=\begin{pmatrix}-2\\2\end{pmatrix}\\
+=\begin{pmatrix}-2\\2\end{pmatrix}
 $$
 
 $$
@@ -515,12 +518,12 @@ p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) &> p_{\text{y}|\mathbf{x}}(2|\boldsymb
   -\tfrac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_1)^T\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_1)+\log\left(p_{\text{y}}(1)\right)
   &>
   -\tfrac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_2)^T\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_2)+\log\left(p_{\text{y}}(2)\right) \\
-\end{aligned} \\
 \Leftrightarrow
   \boldsymbol{x}^T\Sigma^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)
-  +\tfrac{1}{2}(\boldsymbol{\mu}_2^T\Sigma^{-1}\boldsymbol{\mu}_2 -\boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1)
+  +\tfrac{1}{2}(\boldsymbol{\mu}_2^T\Sigma^{-1}\boldsymbol{\mu}_2 &-\boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1)
   +\log\left(\frac{p_{\text{y}}(1)}{p_{\text{y}}(2)}\right)
   >0
+\end{aligned}
 $$
 
 זוהי למעשה הפרדה לשני תחומים על ידי הקו הבא:
@@ -532,10 +535,12 @@ $$
 כאשר:
 
 $$
+\begin{aligned}
 \boldsymbol{a}=\Sigma^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)
 =\begin{pmatrix} 10 \\ 0 \end{pmatrix} \\
 b=\tfrac{1}{2}(\boldsymbol{\mu}_2^T\Sigma^{-1}\boldsymbol{\mu}_2 - \boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1) + \log\left(\frac{p_{\text{y}}(1)}{p_{\text{y}}(2)}\right)
 =\log(2)
+\end{aligned}
 $$
 
 זוהי כמובן התוצאה עבור מסווג LDA בינארי בין שני הזנים של $\text{y}=1$ ו $\text{y}=2$.
@@ -549,7 +554,10 @@ $$
 באופן דומה ניתן לחשב גם את שני קווי ההפרדה האחרים (בין 1 ל 3 ובין 2 ל 3):
 
 $$
-1-3:\quad 5x_1+\frac{25}{8}x_2+\frac{55}{16}=0 \\
+1-3:\quad 5x_1+\frac{25}{8}x_2+\frac{55}{16}=0
+$$
+
+$$
 2-3:\quad -5x_1+\frac{25}{8}x_2+\frac{55}{16}-\log(2)=0
 $$
 
@@ -596,14 +604,19 @@ $$
 ראינו כי בעבור המודל הנורמלי, ניתן למצוא את הפרמטרים של משערך הMLE באופן מפורש (אנליטית), והפתרון נתון על ידי:
 
 $$
+\begin{aligned}
 \mu=\displaystyle{\frac{1}{N}\sum_i x_i} \\
 \sigma=\sqrt{\displaystyle{\frac{1}{N}\sum_i\left(x_i-\mu\right)^2}}
+\end{aligned}
 $$
 
 בעבור המדגם הנתון נקבל:
 
 $$
-\hat{\mu} = 11.4\ \text{min} \\
+\hat{\mu} = 11.4\ \text{min}
+$$
+
+$$
 \hat{\sigma} = 7.0\ \text{min}
 $$
 
@@ -676,9 +689,11 @@ $$
 גם בעבור המקרה הזה נוכל לפתור את בעיית האופטימיזציה באופן אנליטי על ידי גזירה והשוואה לאפס:
 
 $$
-\frac{\partial l_\text{rayleigh}\left(\theta\right)}{\partial\theta}=0 \\
-\Leftrightarrow -\frac{2N}{\theta}+\frac{\sum_ix^2}{\theta^3}=0 \\
-\Leftrightarrow \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i x^2}
+\begin{aligned}
+& \frac{\partial l_\text{rayleigh}\left(\theta\right)}{\partial\theta}=0 \\
+\Leftrightarrow & -\frac{2N}{\theta}+\frac{\sum_ix^2}{\theta^3}=0 \\
+\Leftrightarrow & \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i x^2}
+\end{aligned}
 $$
 
 בעבור המדגם הנתון נקבל:
@@ -722,8 +737,14 @@ $$
 שימוש בפונקציה הנ"ל, מניב את התוצאות הבאות:
 
 $$
-\hat{a} = 4.4 \\
-\hat{c} = 0.8 \\
+\hat{a} = 4.4
+$$
+
+$$
+\hat{c} = 0.8
+$$
+
+$$
 \hat{\sigma} = 1.6
 $$
 
@@ -736,6 +757,5 @@ $$
 </div>
 
 ניתן לראות המודל של Generalized Gamma Distribution אכן מניב תוצאה אשר דומה מאד לצורת ההסטוגרמה.
-
 
 </div>
