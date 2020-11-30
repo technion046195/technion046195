@@ -41,7 +41,7 @@
 
 ### שבוע 6 (1-6/12) - שיערוך פרמטרי וסיווג גנרטיבי
 
-- הרצאה 6 - MLE, MAP, Naive Bayes, LDA, QDA
+- [הרצאה 6](/lecture06) - MLE, MAP, Naive Bayes, LDA, QDA
 - [תרגול 7](/tutorial07/) - MLE, MAP ו LDA
 - ✍️ תרגיל בית 3 - יבש, רטוב - תאריך הגשה 22/12/20 - שיערוך
 
