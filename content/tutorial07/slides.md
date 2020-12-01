@@ -12,7 +12,7 @@ slides_pdf: true
 # תרגול 7 - שיערוך פילוג בשיטות פרמטריות וסיווג גנרטיבי
 
 <div dir="ltr">
-<a href="/assets/tutorial05_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/tutorial07_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 </section><section>
 
