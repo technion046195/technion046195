@@ -10,7 +10,7 @@ slides_pdf: true
 # הרצאה 6 - שיערוך פילוג בשיטות פרמטריות וסיווג גנרטיבי
 
 <div dir="ltr">
-<a href="/assets/lecture05_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/lecture06_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 
 </section><section>
