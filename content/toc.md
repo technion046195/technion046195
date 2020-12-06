@@ -95,4 +95,11 @@
 - הרצאה 13 - סיכום
 
 </div>
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+
 </div>

@@ -16,6 +16,14 @@ print_pdf: true
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
+## מה נלמד היום
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+
 ## הגישה הגנרטיבית
 
 ### דיסקרימינטיבי vs. גנרטיבי

@@ -15,6 +15,15 @@ slides_pdf: true
 
 </section><section>
 
+## מה נלמד היום
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+</section><section>
+
 ## בעיות סיווג
 
 בעיות supervised learning שבהם $\text{y}$ משתנה אקראי בדיד אשר יכול לקבל סט ערכים סופי (לרוב קטן).

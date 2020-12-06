@@ -15,6 +15,15 @@ slides_pdf: true
 
 </section><section>
 
+## מה נלמד היום
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+</section><section>
+
 ## הגדרות
 
 - $\text{y}$ - ה labels - המשתנה האקראי שאותו אנו מנסים לחזות.

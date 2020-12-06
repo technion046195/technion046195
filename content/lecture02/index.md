@@ -15,6 +15,14 @@ print_pdf: true
 <a href="../lecture01/code/" class="link-button" target="_blank">Code</a>
 </div>
 
+## מה נלמד היום
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+
 ## Supervised learing (למידה מונחית)
 
 בהרצאה הקודמת הכרנו באופן כללי את סוגי הבעיות בהם עוסק התחום של מערכות לומדות והתחלנו לדבר על בעיות מסוג supervised learning (למידה מונחית). בעיות אלו הם הבסיסיות ביותר בתחום והבנה טובה של בעיות אלו היא הבסיס להבנה של כל שאר הבעיות במערכות לומדות. אנו נעסוק בבעיות מסוג זה לאורך רוב רובו של הסימסטר.

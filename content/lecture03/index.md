@@ -15,6 +15,14 @@ print_pdf: true
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
+## מה נלמד היום
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+
 ## רקע
 
 בהרצאה הקודמת הצגנו את בעיית החיזוי שבה אנו מנסים לבנות חזאי על סמך מדגם. והגדרנו את ההמוגשים והסימונים הבאים:

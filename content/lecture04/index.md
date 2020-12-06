@@ -16,6 +16,14 @@ print_pdf: true
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
+## מה נלמד היום
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+
 ## בעיות סיווג
 
 בעיות סיווג הם בעיות supervised learning שבהם המשתנה האקראי שאותו מנסים לחזות $\text{y}$ הוא משתנה אקראי בדיד אשר יכול לקבל סט ערכים סופי (לרוב קטן).

@@ -635,26 +635,9 @@ Nothing but Words by Liam Porr<br/>
 
 ## סילבוס
 
-<div class=dense-list style="font-size:0.8em;line-height:1.25;padding-right:150px">
+<div class="imgbox" style="max-width:900px">
 
-- היכרות עם העקרונות הבסיסיים במערכות לומדות <br/>
-  ובעיית של למידה מודרכת.
-  - רגרסיה לינראית כדוגמא.
-  - שימוש במאפיינים.
-  - מהו overfit, ואיך מתמודדים איתו?
-- מודלים (דיסקרימינטיביים) לסיווג.
-  - K-NN.
-  - Decision trees.
-- מודלים ההסתברותיים (גישה גנרטיבית)
-  - שיערוך פרמטרים של מודל הסתברותי.
-  - סיווג גנרטבי
-- שיטות מורכבות יותר.
-  - רשתות נוירונים.
-  - SVM.
-- Boosting
-- Unsupervised learning.
-  - הרדת מימד (PCA כדוגמא).
-  - אישכול (K-means כדוגמא).
+![](../assets/course_diagram.png)
 
 </div>
 </section><section>
