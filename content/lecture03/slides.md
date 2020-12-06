@@ -15,7 +15,7 @@ slides_pdf: true
 
 </section><section>
 
-## הדגרות
+## הגדרות
 
 - $\text{y}$ - ה labels - המשתנה האקראי שאותו אנו מנסים לחזות.
 - $\mathbf{x}$ - ה measuments - הוקטור הארקאי שלפיו מנסים לחזות.
@@ -150,7 +150,7 @@ $$
 
 <div class="imgbox" style="max-width:600px;background-color:white">
 
-![](../lecture02/assets/models_diagram.png)
+![](../lecture02/assets/models_diagram_non_parametric.png)
 
 </div>
 
@@ -187,7 +187,7 @@ $$
 
 <div class="imgbox" style="max-width:600px;background-color:white">
 
-![](../lecture02/assets/models_diagram_non_parametric.png)
+![](../lecture02/assets/models_diagram.png)
 
 </div>
 

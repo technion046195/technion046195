@@ -170,7 +170,9 @@ h\left(x\right)=
   0\qquad \text{otherwise}\\
 \end{cases}
 $$
+
 כאשר:
+
 $$
 \boldsymbol{a}=\Sigma^{-1}\left(\boldsymbol{\mu}_1-\boldsymbol{\mu}_0\right)
 $$
@@ -178,13 +180,14 @@ $$
 $$
 b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{p_\text{y}\left(1\right)}{p_\text{y}\left(0\right)}\right)
 $$
+
 נשים לב כי תנאי ההחלטה שבין שני התחומים הינו לינארי, ומכאן מקבל האלגוריתמם את שמו.
 
 ## תרגיל 7.1 - שיערוך MLE
 
 נתון מדגם $\mathcal{D}=\{x^{(i)}\}_{i=1}^N$ של דגימות בלתי תלויות של משתנה אקראי $\text{x}$. מצאו את משערך ה MLE של המודלים הבאים:
 
-**1)** פילוג נורמלי: $\text{x}\sim N\left(\mu,\sigma^2\right)$ עם פרמטרים $$\mu$$ ו$$\sigma^2$$ לא ידועים.
+**1)** פילוג נורמלי: $\text{x}\sim N\left(\mu,\sigma^2\right)$ עם פרמטרים $\mu$ ו$\sigma^2$ לא ידועים.
 
 **2)** פילוג אחיד: $\text{x}\sim U\left[0, \theta\right]$, עם פרמטר $\theta$ לא יודע.
 
@@ -195,12 +198,15 @@ $$
 #### 1)
 
 המודל של פונקציית ה PDF יהיה:
+
 $$
 p(x;\boldsymbol{\theta}))=\frac{1}{\sqrt{2\pi\sigma^2}_2}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)
 $$
+
 נסמן את וקטור הפרמטרים: $\boldsymbol{\theta}=[\mu,\sigma^2]^T$
 
 משערך ה MLE נתון על ידי:
+
 $$
 \begin{aligned}
 \hat{\boldsymbol{\theta}}_{\text{MLE}}
@@ -209,7 +215,9 @@ $$
 & = \underset{\boldsymbol{\theta}}{\arg\min}\quad \frac{N}{2}\log\left(2\pi\theta_2\right)+\sum_{i=1}^N\frac{1}{2\theta}_2\left(x^{(i)}-\theta_1\right)^2 \\
 \end{aligned}
 $$
+
 נפתור על ידי גזירה והשוואה ל 0 (נסמן ב $f(\boldsymbol{\theta})$ את פונקציית המטרה אותה יש למזער):
+
 $$
 \begin{aligned}
 & \begin{cases}
@@ -226,7 +234,9 @@ $$
 \end{cases} \\
 \end{aligned}
 $$
+
 מכאן ש:
+
 $$
 \hat{\mu}_{\text{MLE}}=\hat{\theta}_1=\frac{1}{N}\sum_{i=1}^N x^{(i)}
 $$
@@ -234,9 +244,11 @@ $$
 $$
 \hat{\sigma^2}_{\text{MLE}}=\hat{\theta}_2=\frac{1}{N}\sum_{i=1}^N\left(x^{(i)}-\hat{\mu}_{\text{MLE}}\right)^2
 $$
+
 #### 2)
 
 המודל של פונקציית ה PDF יהיה:
+
 $$
 p(x;\theta))
 =\begin{cases}
@@ -244,7 +256,9 @@ p(x;\theta))
   0 & \text{else}
 \end{cases}
 $$
+
 ולכן:
+
 $$
 \hat{\boldsymbol{\theta}}_{\text{MLE}}
 =\underset{\boldsymbol{\theta}}{\arg\max}\ \prod_{i=1}^N p(x^{(i)};\boldsymbol{\theta})
@@ -254,18 +268,23 @@ $$
 \end{cases}
 $$
 התנאי $\theta\geq x^{(i)}$ לכל $i$ שקול ל $\theta>\max_i\{x^{(i)}\}$. מצד אחד נרצה לקיים תנאי זה בכדי שה likelihood לא יתאפס, מצד שני נרצה ש $\theta$ יהיה כמה שיותר קטן בכדי למקסם את $1/\theta^N$. לכן נבחר את ה $\theta$ מינימאלי אשר מקיים את התנאי:
+
 $$
 \hat{\theta}_{\text{MLE}} = \max_i\{x^{(i)}\}
 $$
+
 זאת אומרת, אנו נשערך את $\theta$ להיות הערך המסקימאלי במדגם.
 
 #### 3)
 
 המודל של פונקציית ה PDF יהיה:
+
 $$
 p(x;\boldsymbol{\theta}))=\theta\exp(-\theta x)
 $$
+
 משערך ה MLE נתון על ידי:
+
 $$
 \begin{aligned}
 \hat{\boldsymbol{\theta}}_{\text{MLE}}
@@ -273,7 +292,9 @@ $$
 & = \underset{\boldsymbol{\theta}}{\arg\min}\ -N\log(\theta)+\theta\sum_{i=1}^N x^{(i)}
 \end{aligned}
 $$
+
 נפתור על ידי גזירה והשוואה ל 0 (נסמן ב $f(\theta)$ את פונקציית המטרה אותה יש למזער):
+
 $$
 \begin{aligned}
 & \frac{\partial}{\partial\theta}f(\theta)=0 \\
@@ -281,15 +302,18 @@ $$
 \Leftrightarrow & \theta=\frac{1}{\frac{1}{N}\sum_{i=1}^N x^{(i)}} \\
 \end{aligned}
 $$
+
 מכאן ש:
+
 $$
 \hat{\theta}_{\text{MLE}} = \frac{1}{\frac{1}{N}\sum_{i=1}^N x^{(i)}}
 $$
+
 ## תרגיל 7.2 - MAP
 
-ביום טוב, עומרי כספי קולע בהסתברות $$p$$ מהקו. ביום רע, הוא קולע בהסתברות $$q$$ מהקו. $$\alpha$$ מהימים הם ימים טובים עבור עומרי.
+ביום טוב, עומרי כספי קולע בהסתברות $p$ מהקו. ביום רע, הוא קולע בהסתברות $q$ מהקו. $\alpha$ מהימים הם ימים טובים עבור עומרי.
 
-ביום מסויים זרק עומרי $$N$$ זריקות וקלע $$m$$ מתוכם. מאמנו של עומרי צריך לזהות האם מדובר ביום טוב או רע של השחקן (ולהשאיר אותו או להחליף אותו בהתאמה).
+ביום מסויים זרק עומרי $N$ זריקות וקלע $m$ מתוכם. מאמנו של עומרי צריך לזהות האם מדובר ביום טוב או רע של השחקן (ולהשאיר אותו או להחליף אותו בהתאמה).
 
 מהו חוק ההחלטה אשר ממקסם את סיכויי המאמן לצדוק?
 
@@ -303,6 +327,7 @@ $$
 - $\text{y}$ - משתנה אקראי בינארי של האם היום הינו יום טוב או לא. (0-יום לא טוב, 1-יום טוב).
 
 על פי הנתונים בשאלה:
+
 $$
 p_{\text{x}|\text{y}}(x|0)=\begin{cases}
   1-q & x=0 \\
@@ -323,30 +348,40 @@ p_{\text{y}}(y)=\begin{cases}
   \alpha & y=1
 \end{cases}
 $$
+
 בכדי למקסם את הסיכוי לחזות האם היום הוא יום טוב בהינתן המדגם נרצה למצוא איזה ערך יותר סביר בהינתן המדגם (יום טוב או רע), במילים אחרות אנו רוצים את ה $\text{y}$ הכי סביר בהינתן $\mathcal{D}=\{x^{(i)}\}$:
+
 $$
 \hat{y}=\underset{y}{\arg\max}\ p_{\text{y}|\mathcal{D}}(y|\mathcal{D})
 $$
+
 זוהי למעשה בעיית MAP קלאסית, כאשר $\text{y}$ משמש למעשה כפרמטר בפילוג של $\text{x}|\text{y}$. בכדי לשמור על אחידות עם הסימונים שהגדרנו קודם לבעיות שיערוך נסמן את $\text{y}$ ב $\theta$. עלינו לפתור אם כן את:
+
 $$
 \hat{\theta}
 =\underset{\theta}{\arg\max}\ p_{\theta|\mathcal{D}}(\theta|\mathcal{D})
 =\underset{\theta}{\arg\max}\ p_{\mathcal{D}|\theta}(\mathcal{D}|\theta)p_{\theta}(\theta)
 =\underset{\theta}{\arg\max}\ p_{\theta}(\theta)\prod_i p_{\text{x}|\theta}(x^{i}|\theta)
 $$
+
 מכיוון ש $\theta$ יכול לקבל רק שני ערכים נוכל לבדוק את שניהם ולקבוע מי מהם סביר יותר.
 
 בעבור $\theta=0$ נקבל:
+
 $$
 p_{\theta}(0)\prod_i p_{\text{x}|\theta}(x^{(i)}|0)
 =(1-\alpha)q^m\left(1-q\right)^{N-m}
 $$
+
 בעבור $\theta=1$ נקבל:
+
 $$
 p_{\theta}(1)\prod_i p_{\text{x}|\theta}(x^{(i)}|1)
 =\alpha p^m\left(1-p\right)^{N-m}
 $$
+
 לכן החיזוי האופטימאלי יהיה:
+
 $$
 \begin{aligned}
 \hat{\theta}
@@ -360,6 +395,7 @@ $$
 \end{cases} \\
 \end{aligned}
 $$
+
 #### תרגיל 7.3 - LDA
 
 בסוואנה חיים שלושה זני פילים אשר נמצאים בסכנת הכחדה. ידוע כי כל אחד משלושת הזנים ניזון מצמחיה מעט שונה ועל מנת לשמר את אוכלוסיית הפילים מעוניינים לפזר להם אוכל ברחבי הסוואנה. בכדי למקסם את האפקטיביות של פעולה זו מעוניינים לשערך בכל נקודת חלוקה מהו הזן שהכי סביר להמצא באותה נקודה על מנת להתאים את סוג המזון לזן זה.
@@ -384,13 +420,14 @@ $$
 
 </div>
 
-השתמש במסווג LDA על מנת לבנות חזאי אשר ישערך את הזן הזפוץ ביותר בכל קואורדינטה.
+השתמש במסווג LDA על מנת לבנות חזאי אשר ישערך את הזן הנפוץ ביותר בכל קואורדינטה.
 
 ### פתרון 7.3
 
 נחשב את הפרמטרים של המודל הפרמטרי של LDA:
 
 נסמן ב $\mathcal{I}_c$ את אוסף כל התצפיות של שבהם הזן הוא $c$:
+
 $$
 \mathcal{I}_1=\{1,2\}
 $$
@@ -402,7 +439,9 @@ $$
 $$
 \mathcal{I}_3=\{4,5\}
 $$
+
 נשערך את $p_{\text{y}}(y)$:
+
 $$
 p_{\text{y}}(y)=\begin{cases}
   \frac{|\mathcal{I}_1|}{N}=\frac{2}{5} & 1 \\
@@ -410,7 +449,9 @@ p_{\text{y}}(y)=\begin{cases}
   \frac{|\mathcal{I}_3|}{N}=\frac{2}{5} & 3 \\
 \end{cases}
 $$
+
 נחשב את התוחלות של כל אחת משלושת הפילוגים $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|c)$:
+
 $$
 \boldsymbol{\mu}_1=\frac{1}{|\mathcal{I}_1|}\sum_{i\in\mathcal{I}_1}\boldsymbol{x}^{(i)}
 =\frac{1}{2}\left(\begin{pmatrix}1\\2\end{pmatrix}+\begin{pmatrix}3\\2\end{pmatrix}\right)
@@ -427,18 +468,24 @@ $$
 =\frac{1}{2}\left(\begin{pmatrix}0\\-1\end{pmatrix}+\begin{pmatrix}0\\-5\end{pmatrix}\right)
 =\begin{pmatrix}0\\-3\end{pmatrix}
 $$
+
 נחשב את מטריצת covariance המשותפת של הפילוגים:
+
 $$
 \Sigma=\frac{1}{N}\sum_{i}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}})(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}})^T
 $$
+
 דרך נוחה לחשב את הסכום בביטוי זה הינה באופן הבא. נגדיר את המטריצה של התצפיות לאחר חיסור של התוחלת המתאימה לכל זן:
+
 $$
 \tilde{X}
 =\begin{pmatrix}-\boldsymbol{x}_1-\\-\boldsymbol{x}_2-\\-\boldsymbol{x}_3-\\-\boldsymbol{x}_4-\\-\boldsymbol{x}_5-\end{pmatrix}-\begin{pmatrix}-\boldsymbol{\mu}_{y_1}-\\-\boldsymbol{\mu}_{y_2}-\\ -\boldsymbol{\mu}_{y_3}\\-\boldsymbol{\mu}_{y_4}-\\-\boldsymbol{\mu}_{y_5}-\end{pmatrix}
 =\begin{pmatrix}1 & 2 \\ 3 & 2 \\ -2 & 2 \\ 0 & -1 \\ 0 & -5 \end{pmatrix}-\begin{pmatrix} 2 & 2 \\ 2 & 2 \\ -2  & 2 \\ 0 & -3 \\ 0 & -3 \end{pmatrix}
 =\begin{pmatrix}-1 & 0 \\ 1 & 0 \\ 0 & 0 \\ 0 & 2 \\ 0 & -2 \end{pmatrix}
 $$
+
 ניתן להראות כי ניתן לכתוב את הסכום בביטוי ל $$\Sigma$$ באופן הבא:
+
 $$
 \begin{aligned}
 \Sigma
@@ -447,14 +494,18 @@ $$
 & =\frac{1}{5}\begin{pmatrix} 2  & 0 \\ 0 & 8 \end{pmatrix}
 \end{aligned}
 $$
+
 נשתמש כעת בפילוגים שאותם שיערכנו על מנת לבנות את החזאי. האיזור שבו זן 1 הינו הזן הסביר ביותר הינו האיזור שבו מתקיים:
+
 $$
 \begin{cases}
 p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) > p_{\text{y}|\mathbf{x}}(2|\boldsymbol{x}) \\
 p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) > p_{\text{y}|\mathbf{x}}(3|\boldsymbol{x})
 \end{cases}
 $$
+
 נחשב את התנאי הראשון
+
 $$
 \begin{aligned}
 p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) &> p_{\text{y}|\mathbf{x}}(2|\boldsymbol{x}) \\
@@ -474,11 +525,15 @@ p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) &> p_{\text{y}|\mathbf{x}}(2|\boldsymb
   >0
 \end{aligned}
 $$
+
 זוהי למעשה הפרדה לשני תחומים על ידי הקו הבא:
+
 $$
 \boldsymbol{a}^T \boldsymbol{x}+b=0
 $$
+
 כאשר:
+
 $$
 \begin{aligned}
 \boldsymbol{a}=\Sigma^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)
@@ -487,13 +542,17 @@ b=\tfrac{1}{2}(\boldsymbol{\mu}_2^T\Sigma^{-1}\boldsymbol{\mu}_2 - \boldsymbol{\
 =\log(2)
 \end{aligned}
 $$
+
 זוהי כמובן התוצאה עבור מסווג LDA בינארי בין שני הזנים של $\text{y}=1$ ו $\text{y}=2$.
 
 מכאן שקו המפריד בין זן 1 ל זן 2 נתון על ידי:
+
 $$
 1-2:\quad 10x_1+\log(2)=0
 $$
+
 באופן דומה ניתן לחשב גם את שני קווי ההפרדה האחרים (בין 1 ל 3 ובין 2 ל 3):
+
 $$
 1-3:\quad 5x_1+\frac{25}{8}x_2+\frac{55}{16}=0
 $$
@@ -501,6 +560,7 @@ $$
 $$
 2-3:\quad -5x_1+\frac{25}{8}x_2+\frac{55}{16}-\log(2)=0
 $$
+
 <div class="imgbox" style="max-width:500px">
 
 ![](./output/ex_7_3_classification.png)
@@ -542,13 +602,16 @@ $$
 - $p_\text{normal}\left(x_i;\boldsymbol{\theta}\right)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{\left(x_i-\mu\right)^2}{2\sigma^2}\right), i=1,...,N$ - המודל
 
 ראינו כי בעבור המודל הנורמלי, ניתן למצוא את הפרמטרים של משערך הMLE באופן מפורש (אנליטית), והפתרון נתון על ידי:
+
 $$
 \begin{aligned}
 \mu=\displaystyle{\frac{1}{N}\sum_i x_i} \\
 \sigma=\sqrt{\displaystyle{\frac{1}{N}\sum_i\left(x_i-\mu\right)^2}}
 \end{aligned}
 $$
+
 בעבור המדגם הנתון נקבל:
+
 $$
 \hat{\mu} = 11.4\ \text{min}
 $$
@@ -556,6 +619,7 @@ $$
 $$
 \hat{\sigma} = 7.0\ \text{min}
 $$
+
 נשרטט את ההיסטוגרמה של של משכי הנסיעה יחד עם הפילוג הנורמלי המשוערך:
 
 <div class="imgbox" style="max-width:500px">
@@ -573,15 +637,19 @@ $$
 ### נסיון 2: פילוג Rayleigh
 
 פילוג Rayleigh מתאר את הפילוג של האורך האוקלידי ($l_2$ norm) של וקטור גאוסי דו מימדי עם תוחלת 0 וחוסר קורלציה ופילוג זהה לשני רכיבי הוקטור. במלים אחרות, עבור וקטור בעל הפילוג הבא:
+
 $$
 \boldsymbol{Z}\sim N\left(\begin{bmatrix} 0 \\ 0 \end{bmatrix}, \begin{bmatrix} \sigma^2 & 0 \\ 0 & \sigma^2 \end{bmatrix}\right)
 $$
+
 פילוג Rayleigh מתאר את הפילוג של הגודל  $\left\lVert\boldsymbol{Z}\right\rVert_2=\sqrt{Z_x^2+Z_y^2}$.
 
 פונקציית צפיפות ההסתברות של פילוג Reyligh נתונה על ידי:
+
 $$
 p_\text{Rayleigh}\left(z;\sigma\right)=\frac{z}{\sigma^2}\exp\left({-\frac{z^2}{2\sigma^2}}\right), \quad z\geq0
 $$
+
 נשים לב כי הפילוג מוגדר רק בעבור ערכים חיוביים. לפילוג זה פרמטר יחיד $\sigma$ שנקרא פרמטר סקאלה (scale parameter). בניגוד לפילוג הנורמלי, פה $\sigma$ אינה שווה לסטיית התקן של הפילוג.
 
 ניתן מוטיבציה קצרה לבחירה שלנו במודל זה.
@@ -597,10 +665,13 @@ $$
 לשם השלמות נסמן את וקטור הפרמטרים של ב: $\theta=\left[\sigma\right]$
 
 במקרה זה המודל נתון על ידי:
+
 $$
 p_\text{rayleigh}\left(\boldsymbol{x};\theta\right)=\prod_{i=1}^{N}\frac{x_i}{\theta^2}\exp\left(-\frac{x_i^2}{2\theta^2}\right)
 $$
+
 ופונקציית ה log likelihood תהיה:
+
 $$
 \begin{aligned}
 l_\text{rayleigh}\left(\theta\right)
@@ -608,11 +679,15 @@ l_\text{rayleigh}\left(\theta\right)
 & = \sum_i\log\left(x_i\right)-2N\log\left(\theta\right)-\frac{1}{2\theta^2}\sum_ix_i^2
 \end{aligned}
 $$
+
 בעיית האופטימיזציה שלנו תהיה:
+
 $$
 \hat{\boldsymbol{\theta}}=\underset{\boldsymbol{\theta}}{\arg\min}\quad-\sum_i\log\left(x_i\right)+2N\log\left(\theta\right)+\frac{1}{2\theta^2}\sum_ix_i^2
 $$
+
 גם בעבור המקרה הזה נוכל לפתור את בעיית האופטימיזציה באופן אנליטי על ידי גזירה והשוואה לאפס:
+
 $$
 \begin{aligned}
 & \frac{\partial l_\text{rayleigh}\left(\theta\right)}{\partial\theta}=0 \\
@@ -620,10 +695,13 @@ $$
 \Leftrightarrow & \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i x^2}
 \end{aligned}
 $$
+
 בעבור המדגם הנתון נקבל:
+
 $$
 \hat{\sigma} = 9.5
 $$
+
 נוסיף את השיערוך החדש שקיבלנו לגרף ממקודם:
 
 <div class="imgbox" style="max-width:500px">
@@ -639,12 +717,14 @@ $$
 ### נסיון 3: Generalized Gamma Distribution
 
 פילוג Rayleigh הינו מקרה פרטי של משפחה כללית יותר של פונקציות פילוג המכונה Generalized Gamma Distribution. פונקציית צפיפות ההסתברות של משפחה זו נתונה על ידי:
+
 $$
 p_\text{gengamma}\left(z;\sigma,a,c\right)=
 \frac{cz^{ca-1}\exp\left(-\left(z/\sigma\right)^c\right)}{\sigma^{ca-1}\Gamma\left(a\right)}
 , \quad z\geq0
 $$
-(כשאר $$\Gamma$$ היא פונקציה המוכנה [פונקציית גמא (gamma function)](https://en.wikipedia.org/wiki/Gamma_function) )
+
+(כשאר $\Gamma$ היא פונקציה המוכנה [פונקציית גמא (gamma function)](https://en.wikipedia.org/wiki/Gamma_function) )
 
 למודל זה 3 פרמטרים: $\boldsymbol{\theta}=\left[\sigma, a, c\right]^T$.
 
@@ -655,6 +735,7 @@ $$
 אתם תעשו שימוש בפונקציות אלו בתרגיל הבית הרטוב.
 
 שימוש בפונקציה הנ"ל, מניב את התוצאות הבאות:
+
 $$
 \hat{a} = 4.4
 $$

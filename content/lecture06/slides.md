@@ -507,7 +507,7 @@ $$
 p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
 $$
 
- כאשר הדגימות במדגם **בהינתן** $\boldsymbol{\theta}$ הם i.i.d, מתקיים:
+ כאשר הדגימות במדגם **בהינתן** $\boldsymbol{\theta}$ הן i.i.d, מתקיים:
 
 $$
 \hat{\boldsymbol{\theta}}_{\text{MAP}}

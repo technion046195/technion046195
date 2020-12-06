@@ -81,6 +81,29 @@ $$
 
 אנו נרצה לבחור את ה test set כך שיהיה מספיק גדול בכדי שההערכה של ביצועים תהיה כמה שיותר מדוייקת אך לא גדול מידי, בכדי לשמור את ה train set כמה שיותר גדול. כאשר המדגם גדול מספיק לא תהיה לנו בעיה להפריש test set שהוא גדול מספיק אך עדיין מהווה אחוז קטן מכלל הדגימות. כאשר המדגם לא מאד גדול מקובל לפצל את המדגם ל 80% train ו 20% test.
 
+### דוגמא: הערכת ביצועים
+
+נסתכל על הדומא מההרצאה הקודמת שבה ניסינו לחזות את זמן הנסיעה בכביש החוף על מספר המכוניות שנמצאות על הכביש. ננסה להעריך את ביצועיו של המודל הלינארי על ידי הפרדת המדגם ל train set ו test set:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_train_test.png)
+
+</div>
+
+נקבע את הפרמטרים של המודל על פי ה train set ו בדוק את הביצועים על ה test set:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_linear.png)
+
+</div>
+
+את הביצועים של החזאי נחשב על פי RMSE (שורש של השגיאה הריבועית הממוצעת). לשם השוואה נחשב את הביצועים גם על ה train set. נקבל שגיאות של:
+
+- Train score (RMSE): 11.34 min
+- Test scroe (RMSE): 15.58 min
+
 ### Overfitting (התאמת יתר)
 
 > תופעת ה overfitting מתארת את המצב שבו המודל הנלמד לומד מאפיינים מסויימים אשר מופיעים רק במדגם אשר לא מייצגים את התכונות של הפילוג האמיתי. תופעה זו פוגעת ביכולת ההכללה של המודל.
@@ -99,9 +122,24 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](../lecture02/assets/models_diagram.png)
+![](../lecture02/assets/models_diagram_non_parametric.png)
 
 </div>
+
+#### דוגמא: overfitting
+
+ראינו בהרצאה הקודמת שכאשר ננסה להתאים פולינום מסדר גבוה לדגימות נקבל פונקציה שמאד "משתוללת". הסיבה לכך היא שהמודל עושה overfitting:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_overfitting.png)
+
+</div>
+
+אם ננסה להעריך את הביצועים של המודל נקבל ביצועים מאד טובים על ה train set ופחות טובים על ה test set. בעבור פולינום מסדר 12 אשר מופיע בשרטוט נקבל:
+
+- Train score (RMSE): 0.66 min
+- Test scroe (RMSE): 103.77 min
 
 ## הגבלת המודל ופירוק שיגאת החיזוי
 
@@ -117,7 +155,7 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](../lecture02/assets/models_diagram_non_parametric.png)
+![](../lecture02/assets/models_diagram.png)
 
 </div>
 
@@ -157,11 +195,11 @@ $$
 
 </div>
 
-בשני קצוות הגרף הנקבל שגיאה כוללת מאד גדולה ומטרתינו תהיה למצוא את נקודת הפשרה בין שני הקצוות שבה השגיאה הכוללת היא הקטנה ביותר. תלות זו מוכרת בשם **approxiamtion-estimation tradeoff**.
+בשני קצוות הגרף הנקבל שגיאה כוללת מאד גדולה ומטרתינו תהיה למצוא את נקודת הפשרה בין שני הקצוות שבה השגיאה הכוללת היא הקטנה ביותר. תלות זו מוכרת בשם **approximation-estimation tradeoff**.
 
 ### Bias-variance decomposition
 
-פירוק ה approximation-estiamtion הוא פירוק רעיוני אשר מתאר את הגורמים השונים לשגיאה. במקרה הספציפי שבו פונקציית המחיר בבעיה הינה MSE ניתן להשתמש גם בפירוק אלטרנטיבי אחר. בפירוק זה ניתן להראות ניתן לפרק את גיאת ה MSE לסכום של שלושה רכיבי שגיאה. לפני שנראה את הפירוק עצמו נגדיר ראשית חזאי נוסף אותו נכנה החזאי הממוצע.
+פירוק ה approximation-estiamtion הוא פירוק רעיוני אשר מתאר את הגורמים השונים לשגיאה. במקרה הספציפי שבו פונקציית המחיר בבעיה הינה MSE ניתן להשתמש גם בפירוק אלטרנטיבי אחר. בפירוק זה ניתן להראות ניתן לפרק את שגיאת ה MSE לסכום של שלושה רכיבי שגיאה. לפני שנראה את הפירוק עצמו נגדיר ראשית חזאי נוסף אותו נכנה החזאי הממוצע.
 
 #### המדגם כמשתנה אקראי והחזאי הממוצע
 
@@ -203,7 +241,7 @@ $$
 
 - ה **variance** מודד את השונות של החזאים השונים המתקבלים ממדגמים שונים סביב החזאי הממוצע. זהו האיבר היחיד בפירוק אשר תלוי בפילוג של המדגם.
 - ה **bias** מודד את ההפרש הריבועי בין החיזוי של החזאי הממוצע לבין החיזוי של החזאי האופטימאלי.
-- ה **noise** (בודמה לפירוק הקודם) מודד את השגיאה הריבועית המתקבלת בעבור החיזוי האופטימאלי (אשר נובעת מהאקראיות של $y$).
+- ה **noise** (בדומה לפירוק הקודם) מודד את השגיאה הריבועית המתקבלת בעבור החיזוי האופטימאלי (אשר נובעת מהאקראיות של $y$).
 
 בתרגול 4 אנו נראה את הפיתוח של פירוק זה.
 
@@ -255,6 +293,95 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 - נבחר את הפרמטרים עם הביצועים הטובים ביותר על ה validation.
 - נאחד בחזרה את ה train וה validation.
 - נבנה את המודל הסופי על סמך ה hyper-parameters שנבחרו.
+
+## דוגמא: בחירת סדר המודל
+
+נדגים את תהליך בעבור המקרה של בחירת סדר הפולינום בעבור מודל פרמטרי פולינומיאלי. נפצל את המדגם ל80% train set ו 20% validation set ו 20% test set.
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_train_val_test.png)
+
+</div>
+
+נבנה על סמך ה train set 11 חזאים המבוססים על מודל פולינומיאלי מסדרים בין $K=0$ ל $K=10$:
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_0.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_1.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_2.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_3.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_4.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_5.png)
+
+</div>
+</div>
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_6.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_7.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_8.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_9.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_10.png)
+
+</div>
+</div>
+
+נבדוק את ביצועים של החזאים שקיבלנו על ה validation set. לשם השוואה נציג גם את הביצועים על ה train set:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_selecting_order.png)
+
+</div>
+
+על סמך תוצאות אלו נבחר את סדר הפולינום בו נרצה להשתמש על פי הסדר של הפולינום אשר נתן את התוצאות הטובות ביותר על ה validation set. במקרה זה הסדר עם הביצועים הטובים ביותר הינו $K=3$. לאחר בחירת הסדר של הפולינום נוכל או להשתמש בחזאי שכבר אימנו מסדר זה או שנוכל לאמן חזאי חדש על מדגם שמכיל גם את ה train set וגם את ה validation set.
+
+### Retrain
+
+נבחר באופציה השניה ונאחד בחזרה את ה train set וה validation set ונאמן חזאי חדש על סמך מדגם זה:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_final.png)
+
+</div>
+
+נעריך את הביצועים שלו על ה train set וה test set. נקבל:
+
+- Train score (RMSE): 2.53 min
+- Test scroe (RMSE): 6.88 min
 
 ## רגולריזציה
 
@@ -308,5 +435,20 @@ $$
 $$
 
 לבעיה זו אין פתרון סגור ויש צורך להשתמש באלגוריתמים איטרטיביים כגון gradient descent.
+
+## דוגמא: Ridge regression
+
+נחזור לדוגמא שלנו. נשתמש בפולינום מסדר 10 וב Ridge regression בשביל לקבוע את הפרמטרים שלו. ניקבע את פרמטר המשקל של הרגולריזציה להיות $\lambda=10^{-4}$. נקבל את החזאי הבא:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_regularization.png)
+
+</div>
+
+ביצועי החזאי יהיו:
+
+- Train score (RMSE): 2.62 min
+- Test scroe (RMSE): 6.83 min
 
 </div>
