@@ -35,6 +35,7 @@ type: attrib
 - K-fold cross validation scheme form [scikit-learn](https://scikit-learn.org/stable/modules/cross_validation.html)
 - The Titanic form [Wikipedia](https://en.wikipedia.org/wiki/Titanic)
 - WD-40 from [the offical site](https://www.wd40.com/products/smart-straw-12-oz/)
+- Fine needle aspiration form [Wikipedia](https://en.wikipedia.org/wiki/Fine-needle_aspiration)
 
 ## Vector graphics
 

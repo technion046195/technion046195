@@ -497,11 +497,187 @@ $$
 
 שזה בדיוק המינימיזציה של ה log-likelihood עד כדי החלוקה ב $N$ שלא משנה את בעיית האופטימיזציה.
 
+## תרגיל מעשי - איבחון סרטן שד
 
+<div dir="ltr">
+<a href="./example/" class="link-button" target="_blank">Code</a>
+</div>
 
+שיטה נפוצה כיום לאבחון של סרטן הינה בשיטת Fine-needle aspiration. בשיטה זו נלקחת דגימה של רקמה בעזרת מחט ומבוצעת אנליזה בעזרת מיקרוסקופ על מנת לאבחן שני מקרים:
 
+- Malignant - רקמה סרטנית
+- or Benign - רקמה בריאה
 
+להלן דוגמא לתמונת מיקרוסקופ של דגימה שכזו:
 
+<div class="imgbox" style="max-width:600px">
 
+![](./assets/fna.jpg)
+
+</div>
+
+בתרגול זה נעבוד עם מדגם בשם **Breast Cancer Wisconsin Diagnostic** אשר נאסף על ידי חוקרים מאוניברסיטת ויסקונסין. הוא כולל 30 ערכים מספריים, כגון שטח התא הממוצע והרדיוס ההמוצע, אשר חושבו בעבור 569 דגימות שונות. בנוסף יש לכל דגימה במדגם תווית של האם הדגימה הינה סרטנית או לא.
+
+את המדגם המקורי ניתן למצוא פה: [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29), אנחנו נשתמש בגרסא מעט מעובדת שלו הנמצאת [פה](https://technion046195.netlify.app/datasets/wdbc.csv).
+
+נציג כמה עמודות ושורות מייצגות מהמדגם:
+
+<div dir="ltr">
+
+|    | diagnosis   |   radius_mean |   texture_mean |   perimeter_mean |   area_mean |   smoothness_mean |   compactness_mean |   concavity_mean |
+|---:|:------------|--------------:|---------------:|-----------------:|------------:|------------------:|-------------------:|-----------------:|
+|  0 | M           |         17.99 |          10.38 |           122.8  |      1001   |           0.1184  |            0.2776  |          0.3001  |
+|  1 | M           |         20.57 |          17.77 |           132.9  |      1326   |           0.08474 |            0.07864 |          0.0869  |
+|  2 | M           |         19.69 |          21.25 |           130    |      1203   |           0.1096  |            0.1599  |          0.1974  |
+|  3 | M           |         11.42 |          20.38 |            77.58 |       386.1 |           0.1425  |            0.2839  |          0.2414  |
+|  4 | M           |         20.29 |          14.34 |           135.1  |      1297   |           0.1003  |            0.1328  |          0.198   |
+|  5 | M           |         12.45 |          15.7  |            82.57 |       477.1 |           0.1278  |            0.17    |          0.1578  |
+|  6 | M           |         18.25 |          19.98 |           119.6  |      1040   |           0.09463 |            0.109   |          0.1127  |
+|  7 | M           |         13.71 |          20.83 |            90.2  |       577.9 |           0.1189  |            0.1645  |          0.09366 |
+|  8 | M           |         13    |          21.82 |            87.5  |       519.8 |           0.1273  |            0.1932  |          0.1859  |
+|  9 | M           |         12.46 |          24.04 |            83.97 |       475.9 |           0.1186  |            0.2396  |          0.2273  |
+
+</div>
+
+רק לשם המחשה נתחיל בניסיון לחזות האם הרקמה סרטנית או לא רק על פי שתי השדות הראשונים:
+
+- **radius_mean** - רדיוס התא הממוצא בדגימה.
+- **texture_mean** - סטיית התקן הממוצעת של רמת האפור בצבע של כל תא בדגימה.
+
+השל התוויות $\text{y}$ הינו:
+
+- **diagnosis** - התווית של הדגימה: M = malignant (סרטני), B = benign (בריא)
+
+(בחרנו להתחיל עם 2 שדות משום שמעבר לכך כבר לא נוכל לשרטט את הפילוג של הדגימות ואת החיזוי).
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_2d_dataset.png)
+
+</div>
+
+נרצה למצוא חזאי אשר יפריד בין הנקודות הכתומות לנקודות הכחולות. לשם כך נפצל את המדגם ל 40% train / 20% validation / 20% test. להתאים שלושה מודלים: LDA, QDA, linear logistic regression.
+
+### LDA
+
+נחשב את פרמטרים של המודל:
+
+$$
+p_{\text{y}}(0)=\frac{|\mathcal{I}_0|}{N}=0.37
+$$
+
+$$
+p_{\text{y}}(1)=\frac{|\mathcal{I}_1|}{N}=0.63
+$$
+
+$$
+\boldsymbol{\mu}_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\boldsymbol{x}^{(i)}=[12.3,17.9]^{\top}
+$$
+
+$$
+\boldsymbol{\mu}_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\boldsymbol{x}^{(i)}=[17.5,21.3]^{\top}
+$$
+
+$$
+\Sigma = \frac{1}{N}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+=\begin{bmatrix}
+5.8 & 0.67 \\
+0.67 & 13.5
+\end{bmatrix}
+$$
+
+פרמטרים אלו יתנו את החיזוי הבא:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_lda.png)
+
+</div>
+
+נזכיר כי החזאי המתקבל ממודל ה LDA הינו חזאי אשר מחלק את המרחב לשני חלקים על ידי משטח לינארי (במקרה זה קו ישר).
+
+ביצועי חזאי זה על ה valudation set (במובן של misclassification rate) הינם: 0.09. זאת אומרת שאנו צפויים לצדוק באבחון ב 91% מהמקרים.
+
+### QDA
+
+נחשב את פרמטרים של המודל. הפרמטרים של $p_{\text{y}}(y)$ ו $\boldsymbol{\mu}_c$ לא ישתנו. נחשב לכן רק את מטריצות הקווריאנס:
+
+$$
+\Sigma_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)^T
+=\begin{bmatrix}
+3.3 & -0.13 \\
+-0.13 & 13.8
+\end{bmatrix}
+$$
+
+$$
+\Sigma_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)^T
+=\begin{bmatrix}
+10.2 & 2 \\
+2 & 13.2
+\end{bmatrix}
+$$
+
+פרמטרים אלו יתנו את החיזוי הבא:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_qda.png)
+
+</div>
+
+החזאי המתקבל ממודל ה QDA מחלק את המרב על ידי משטח ריבועי. בשרטוט זה המשטח אומנם נראה כמעט ישר אך אם נגדיל טיפה את השרטוט נראה שהוא אכן ריבועי:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_qda_zoom_out.png)
+
+</div>
+
+ביצועי חזאי זה על ה valudation set הינם: 0.08. זהו שיפור של 1% מביצועיו של מודל ה LDA.
+
+### שימוש בכל 30 העמודות במדגם
+
+אם נחזור על החישוב רק עם כל 30 העמודות שבמדגם נקבל miscalssification rate של 0.02.
+
+### Linear Logistic Regression
+
+ננסה כעת להתאים מודל של linear logistic regression מהצורה:
+
+$$
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})
+=\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}))
+$$
+
+בעיית האופטימיזציה של MLE תהיה:
+
+$$
+\boldsymbol{\theta}^*
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
+I\{y^{(i)}=0\}\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
++I\{y^{(i)}=1\}\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+$$
+
+נשתמש ב gradient descent על מנת למצוא את הפרמטרים של המודל. בכדי לבחור את גודל הצעדל ננסה כמה ערכים שונים ונריץ את האלגוריתם למספר קטן של צעדים (1000) ונבחר את גודל הצעד הגדול אשר גודם למודל להתכנס. בדוגמא זו נציג את התוצאות בעבור 4 ערכים של גודל הצעד:
+
+<div class="imgbox" style="max-width:800px">
+
+![](./output/breast_cancer_logistic_select_eta.png)
+
+</div>
+
+בגרפים האלה רואים את החישוב של ה objective על ה train set ועל ה validation set כפונקציה של מספר הצעדים. נשים לב שבעבור בחירה של $\eta=0.1$ או $\eta=1$ המודל מתבדר לערכים מאד גדולים וזה ימנע ממנו להתכנס למינימום של הפונקציית המטרה. נבחר אם כן את גודל הצעד להיות $\eta=0.01$ ונריץ את האלגוריתם מספר רב של צעדים (1000000):
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_logistic_train.png)
+
+</div>
+
+נראה אם כן שגם אחרי מליון צעדים הארלגוריתם עדיין לא התכנס. כפי שציינו זוהי אחת הבעיות העיקריות של אלגוריתם הגרדיאנט בצורתו הפשוטה. למזלנו, ישנם מספר שיטות פשוטות לשפר את האלגוריתם בכדי לפתור בעיה זו אך אנו לא נפרט עליהם בקורס זה.
+
+הביצועים של המודל עם הפרמטרים המתקבלים אחרי מיליון צעדים נותנים miscalssification rate של 0.02 שזה דומה לתוצאה שקיבלנו על ידי שימוש ב QDA.
+
+ביצועי המודל על ה test set הינם: 0.04.
 
 </div>
