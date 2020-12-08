@@ -193,10 +193,10 @@ $$
 
 ### היתרון של הגישה הדיסקרימינטיבית הסתברותית על הגישה הגנרטיבית
 
-הבעיה בגישה בגנרטיבית הייתה הקושי למצוא מודלים שייצגו פילוגים משותפים חוקיים, ספציפית מודלים פרמטריים שמייצגים את $p_{\mathbf{x},\text{x}}(\boldsymbol{x},y)$ צריכים לקיים את התנאים הבאים:
+הבעיה בגישה בגנרטיבית הייתה הקושי למצוא מודלים שייצגו פילוגים משותפים חוקיים, ספציפית מודלים פרמטריים שמייצגים את $p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)$ צריכים לקיים את התנאים הבאים:
 
-1. $p_{\mathbf{x},\text{x}}(\boldsymbol{x},y;\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
-2. $\int\int p_{\mathbf{x},\text{x}}(\boldsymbol{x},y;\boldsymbol{\theta})d\boldsymbol{x}dy=1\qquad \forall \boldsymbol{\theta}$
+1. $p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
+2. $\int\int p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})d\boldsymbol{x}dy=1\qquad \forall \boldsymbol{\theta}$
 
 את התנאי הראשון קל לקיים. אך התנאי השני הוא בעייתי.
 
@@ -354,8 +354,8 @@ $$
 
 $$
 \begin{aligned}
-\text{softmax}(\boldsymbol{z})_1&=\frac{e^{b}}{e^{a}+e^{b}}=\frac{1}{1+e^{a-b}}=\sigma(b-a)\\
-\text{softmax}(\boldsymbol{z})_0&=\frac{e^{a}}{e^{a}+e^{b}}=1-\sigma(b-a)
+\text{softmax}(\boldsymbol{z})_1&=\frac{e^{a}}{e^{a}+e^{b}}=\frac{1}{1+e^{b-a}}=\sigma(a-b)\\
+\text{softmax}(\boldsymbol{z})_2&=\frac{e^{b}}{e^{a}+e^{b}}=1-\sigma(a-b)
 \end{aligned}
 $$
 
@@ -371,7 +371,7 @@ $$
 לשם נוחות נסמן:
 
 - את הוקטור $\boldsymbol{\theta}$ כוקטור אשר כולל את כל $C$ וקטורי הפרמטרים: $\boldsymbol{\theta}=[\boldsymbol{\theta}_1^{\top},\boldsymbol{\theta}_2^{\top},\dots,\boldsymbol{\theta}_C^{\top}]^{\top}$.
-- את הפונקציה $\boldsymbol{f}$ כפונקציה המאגדת את כל $C$ הפונקציות הפרמטריות: $\boldsymbol{f}=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
+- את הפונקציה $\boldsymbol{f}$ כפונקציה המאגדת את כל $C$ הפונקציות הפרמטריות: $\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta})=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
 
 בעזרת סימונים אלו נוכל לרשום את המודל הפרמטרי באופן הבא:
 
@@ -404,7 +404,7 @@ $$
 f_c(\boldsymbol{x};\boldsymbol{\theta}_c)=\boldsymbol{\theta}_c^{\top}\boldsymbol{x}
 $$
 
-במקרה זה פונקציית ה objective היא קמורה (convex) ולכן מובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום הגלובלי.
+במקרה זה פונקציית ה objective היא קמורה (convex) ולכן מובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום גלובלי.
 
 ## Gradient descent (שיטת הגרדיאנט)
 
@@ -495,7 +495,7 @@ $$
 עקב בעיה זו אלגורתם ה gradient descent בצורתו הפשוטה כפי שהוצגה כאן אינו מאד שימושי שכן הוא לרוב לא יצליח להניב תוצאות טובות במספר סביר של צעדים. למזלנו ישנם מספר שיפורים קלים שניתן לעשות לאלגוריתם על מנת להתמודד בצורה טובה עם בעיה זו. לצערינו בקורס זה לא נספיק לכסות שיפורים אלו. אנו נציין השניים מהשיפורים הנפוצים ביותר בתחום::
 
 1. הוספה של רכיב תנע לאלגוריתם
-2. שימוש בגדול צעד שאר משתנה במהלך הריצה
+2. שימוש בגדול צעד אשר משתנה במהלך הריצה
 
 שני מקורות מצויינים לקריאה על נושא זה הם שתי הכתבות הבאות:
 
@@ -510,7 +510,7 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/transactions_dataset.png)
+![](./output/transactions_single_dataset.png)
 
 </div>
 

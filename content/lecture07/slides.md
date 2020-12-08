@@ -223,10 +223,10 @@ $$
 
 ## היתרון של הדיסקרימינטיבית הסתברותית
 
-$p_{\mathbf{x},\text{x}}(\boldsymbol{x},y)$ צריכה לקיים את התנאים הבאים:
+$p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)$ צריכה לקיים את התנאים הבאים:
 
-1. $p_{\mathbf{x},\text{x}}(\boldsymbol{x},y;\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
-2. $\int\int p_{\mathbf{x},\text{x}}(\boldsymbol{x},y;\boldsymbol{\theta})d\boldsymbol{x}dy=1\qquad \forall \boldsymbol{\theta}$
+1. $p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
+2. $\int\int p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})d\boldsymbol{x}dy=1\qquad \forall \boldsymbol{\theta}$
 
 בעבור בעיות סיווג $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ צריכה לקיים את התנאים הבאים:
 
@@ -323,7 +323,7 @@ $$
 &=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
 &=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
     I\{y^{(i)}=1\}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
-&\qquad\qquad\qquad\qquad +I\{y^{(i)}=0\}\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
+&\qquad\qquad\qquad\qquad\qquad\qquad +I\{y^{(i)}=0\}\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
 &=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
     y\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
    +(1-y)\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
@@ -414,8 +414,8 @@ $$
 
 $$
 \begin{aligned}
-\text{softmax}(\boldsymbol{z})_1&=\frac{e^{b}}{e^{a}+e^{b}}=\frac{1}{1+e^{a-b}}=\sigma(b-a)\\
-\text{softmax}(\boldsymbol{z})_0&=\frac{e^{a}}{e^{a}+e^{b}}=1-\sigma(b-a)
+\text{softmax}(\boldsymbol{z})_1&=\frac{e^{a}}{e^{a}+e^{b}}=\frac{1}{1+e^{b-a}}=\sigma(a-b)\\
+\text{softmax}(\boldsymbol{z})_2&=\frac{e^{b}}{e^{a}+e^{b}}=1-\sigma(a-b)
 \end{aligned}
 $$
 
@@ -433,7 +433,7 @@ $$
 לשם נוחות נסמן:
 
 - $\boldsymbol{\theta}=[\boldsymbol{\theta}_1^{\top},\boldsymbol{\theta}_2^{\top},\dots,\boldsymbol{\theta}_C^{\top}]^{\top}$.
-- $\boldsymbol{f}=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
+- $\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta})=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
 
 נוכל לרשום את המודל הפרמטרי באופן הבא:
 
@@ -486,7 +486,7 @@ $$
 
 <br/>
 
-- במקרה זה פונקציית ה objective היא קמורה (convex) ומובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום הגלובלי.
+- במקרה זה פונקציית ה objective היא קמורה (convex) ומובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום גלובלי.
 
 </section><section>
 
@@ -507,7 +507,7 @@ $$
 ## Gradient descent (שיטת הגרדיאנט)
 
 - אלגוריתם חמדן (greedy): מנסה בכל איטרציה לשפר את מצבו לעומת המצב הנוכחי
-- יתכנס למינימום לוקאילי.
+- יתכנס למינימום לוקאלי.
 - הדרישה היחידה הינה היכולת לחשב את הנגזרת של ה objective.
 
 </section><section>
@@ -604,7 +604,7 @@ $$
 ## שיפורים נפוצים
 
 1. הוספה של רכיב תנע לאלגוריתם
-2. שימוש בגדול צעד שאר משתנה במהלך הריצה
+2. שימוש בגדול צעד אשר משתנה במהלך הריצה
 
 <br/>
 
@@ -623,7 +623,7 @@ $$
 
 <div class="imgbox" style="max-width:500px">
 
-![](./output/transactions_dataset.png)
+![](./output/transactions_single_dataset.png)
 
 </div>
 
