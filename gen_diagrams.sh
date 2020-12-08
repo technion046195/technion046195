@@ -34,6 +34,10 @@ diagrams["lecture07/assets/course_diagram.png"]="-p6 -b20 -s 3 ./content/assets/
 # diagrams["lecture10/assets/course_diagram.png"]="-p9 -b20 -s 3 ./content/assets/course_diagram.drawio"
 # diagrams["lecture11/assets/course_diagram.png"]="-p10 -b20 -s 3 ./content/assets/course_diagram.drawio"
 
+diagrams["lecture07/assets/gradient_descent_small_step.png"]="-p0 -b0 -s 1 ./content/lecture07/assets/gradient_descent.drawio"
+diagrams["lecture07/assets/gradient_descent_large_step.png"]="-p1 -b0 -s 1 ./content/lecture07/assets/gradient_descent.drawio"
+diagrams["lecture07/assets/gradient_descent_too_large_step.png"]="-p2 -b0 -s 1 ./content/lecture07/assets/gradient_descent.drawio"
+
 for diag in "${!diagrams[@]}"; do
     echo "Generating ./content/$diag"
     if [ -f "./content/$diag" ]; then

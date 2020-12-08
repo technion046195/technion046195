@@ -185,6 +185,8 @@ body {
 .imgbox p {
   max-height: inherit;
   max-width: 100%;
+  line-height: 0 !important;
+  margin: 0;
 }
 
 .imgbox img {
@@ -198,12 +200,14 @@ body {
 
 .imgbox{
   border-radius: 10px;
+  overflow: hidden;
   /* filter: drop-shadow(5px 5px 5px #222); */
   box-shadow: 5px 5px 15px #888888;
 }
 
 .imgbox.no-shadow{
   border-radius: initial;
+  padding: initial;
   /* filter: initial; */
   box-shadow: initial;
 }
