@@ -2,8 +2,8 @@
 type: tutorial
 index: 9
 template: page
-make_docx: False
-print_pdf: False
+make_docx: True
+print_pdf: True
 ---
 
 <div dir="rtl" class="site-style">
