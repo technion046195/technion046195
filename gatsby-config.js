@@ -13,7 +13,7 @@ module.exports = {
       options: {
         name: `content`,
         path: `${__dirname}/content`,
-        ignore: [`**/\.*`]
+        ignore: [`**/\.*`, `**/*\.drawio`, `**/*\.drawio.bkp`]
       },
     },
     {
@@ -40,17 +40,17 @@ module.exports = {
         headers: {
           "/public/**/*.html": [
             "cache-control: public",
-            "cache-control:  max-age=0", 
+            "cache-control: max-age=0", 
             "cache-control: must-revalidate"
           ],
           "/sw.js": [
             "cache-control: public",
-            "cache-control:  max-age=0", 
+            "cache-control: max-age=0", 
             "cache-control: must-revalidate"
           ],
           "/public/page-data/*": [
             "cache-control: public",
-            "cache-control:  max-age=0", 
+            "cache-control: max-age=0", 
             "cache-control: must-revalidate"
           ]
         }
