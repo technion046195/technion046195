@@ -511,3 +511,5 @@ $$
 הביצועים הטובים ביותר על ה validation set מתקבלים בצעד ה 107056. החזאי המתקבל בצעד זה מניב miscalssifiaction rate של 0.01 על ה validation set.
 
 ביצועים המודל על ה test set הינם 0.03 (לעומת 0.04 ב linear logistic regression).
+
+</div>
