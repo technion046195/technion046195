@@ -90,7 +90,7 @@ $$
 
 ### Back-Propagation
 
-* Back-propogation שימוש בכלל השרשת על מנת לחשב את הנגזרות של רשת נוירונים.
+* Back-propagation שימוש בכלל השרשת על מנת לחשב את הנגזרות של רשת נוירונים.
 
 * תזכורת לכלל השרשרת:
 
@@ -371,7 +371,7 @@ $$
 
 <div class="fragment">
 
-נחשב את $\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})$ בעזרת back-propogation.
+נחשב את $\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})$ בעזרת back-propagation.
 
 </div>
 
@@ -434,8 +434,8 @@ $$
 
 $$
 \begin{aligned}
-z_1&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([0,-1][2,3]^{\top}+1,0)=\max(-2,0)=0\\
-z_2&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([0,-1][4,-5]^{\top}+1,0)=\max(6,0)=6\\
+z_1&=\max(\boldsymbol{x}^{(2)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([0,-1][2,3]^{\top}+1,0)=\max(-2,0)=0\\
+z_2&=\max(\boldsymbol{x}^{(2)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([0,-1][4,-5]^{\top}+1,0)=\max(6,0)=6\\
 y&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2=[0,6][7,8]^{\top}+6=54
 \end{aligned}
 $$
