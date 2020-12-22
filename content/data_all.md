@@ -73,7 +73,7 @@
      <h4><a class="disabled">הרצאה 6</a></h4>
    </div><div>1/12</div>
    <div>
-     <h4><a class="disabled">תרגול 7</a></h4>
+     <h4><a href="/tutorial07/">תרגול 7</a></h4>
    </div><div>2,7,8/12</div>
  </div>
  <h3>סיווג גנרטיבי</h3>
@@ -94,7 +94,7 @@
      <h4><a class="disabled">הרצאה 8</a></h4>
    </div><div>22/12</div>
    <div>
-     <h4><a class="disabled">תרגול 9</a></h4>
+     <h4><a href="/tutorial09/">תרגול 9</a></h4>
    </div><div>23,28,29/12</div>
  </div>
  <h3>Neural networks - methods</h3>
