@@ -38,9 +38,13 @@ diagrams["lecture07/assets/gradient_descent_small_step.png"]="-p0 -b0 -s1 ./cont
 diagrams["lecture07/assets/gradient_descent_large_step.png"]="-p1 -b0 -s1 ./content/lecture07/assets/gradient_descent.drawio"
 diagrams["lecture07/assets/gradient_descent_too_large_step.png"]="-p2 -b0 -s1 ./content/lecture07/assets/gradient_descent.drawio"
 
+diagrams["lecture08/assets/neuron.png"]="-p0 -b20 -s3 ./content/lecture08/assets/neuron.drawio"
+diagrams["lecture08/assets/neuron_scheme.png"]="-p1 -b20 -s4 ./content/lecture08/assets/neuron.drawio"
+diagrams["lecture08/assets/neuron_scheme2.png"]="-p2 -b20 -s4 ./content/lecture08/assets/neuron.drawio"
 diagrams["lecture08/assets/ann.png"]="-p0 -b20 -s3 ./content/lecture08/assets/ann.drawio"
 diagrams["lecture08/assets/mlp.png"]="-p0 -b20 -s3 ./content/lecture08/assets/mlp.drawio"
-diagrams["lecture08/assets/back_prop.png"]="-p0 -b20 -s3 ./content/lecture08/assets/back_prop.drawio"
+diagrams["lecture08/assets/back_prop_simple.png"]="-p0 -b20 -s4 ./content/lecture08/assets/back_prop_simple.drawio"
+diagrams["lecture08/assets/back_prop.png"]="-p0 -b20 -s4 ./content/lecture08/assets/back_prop.drawio"
 
 diagrams["tutorial09/assets/ex9_1.png"]="-p0 -b20 -s3 ./content/tutorial09/assets/ex9_1.drawio"
 diagrams["tutorial09/assets/ex9_3.png"]="-p0 -b20 -s3 ./content/tutorial09/assets/ex9_3.drawio"

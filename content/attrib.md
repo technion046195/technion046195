@@ -45,9 +45,13 @@ type: attrib
 - [Dart arrow](https://www.freepik.com/free-vector/target-concept_764916.htm) by [freepik](https://www.freepik.com/freepik)
 - [Duck tape](https://www.freepik.com/free-vector/gray-silver-duct-roll-adhesive-tape-realistic_6055214.htm) by [upklyak](https://www.freepik.com/upklyak)
 
+### From [Vecteezy](https://www.vecteezy.com/)
+
+- [Neuron](https://www.vecteezy.com/free-vector/neuron)
+
 ## Fonts
 
-- [Trashim from the Culmus project](http://culmus.sourceforge.net/fancy/index.html)
+- [Trashim from the Culmus project](http://culmus.sourceforge.net/fancy/index.html) by [watchtaxinyc](https://www.vecteezy.com/members/watchtaxinyc)
 
 ## Other
 
