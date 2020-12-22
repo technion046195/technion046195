@@ -10,7 +10,7 @@ slides_pdf: true
 # הרצאה 8 - Neural Networks
 
 <div dir="ltr">
-<a href="/assets/lecture06_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/lecture08_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 
 </section><section>
