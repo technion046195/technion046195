@@ -282,7 +282,7 @@ $$
 
 ## הפונקציה הלוגיסטית
 
-שכל מודל פרמטרי מהצורה:
+כל מודל פרמטרי מהצורה:
 
 $$
 \begin{aligned}
@@ -325,8 +325,8 @@ $$
     I\{y^{(i)}=1\}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
 &\qquad\qquad\qquad\qquad\qquad\qquad +I\{y^{(i)}=0\}\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
 &=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    y\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
-   +(1-y)\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+    y^{(i)}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+   +(1-y^{(i)})\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
 \end{aligned}
 $$
 
@@ -337,8 +337,8 @@ $$
 $$
 \boldsymbol{\theta}^*
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    y\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
-   +(1-y)\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+    y^{(i)}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+   +(1-y^{(i)})\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
 $$
 
 במרבית המקרים לא ניתן יהיה לפתור באופן אנליטי ונחפש את הפתרון בשיטות נומריות כגון אלגוריתם ה gradient descent עליו נרחיב בהמשך ההרצאה.
@@ -423,7 +423,7 @@ $$
 
 ## (Non-Binary) Logistic Regression
 
-בעבור $C$ פונקציות פרמטריות כל שהם, $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$, ניתן לבנות מודל פרמטרי חוקי באופן הבא:
+בעבור $C$ פונקציות פרמטריות כל שהן, $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$, ניתן לבנות מודל פרמטרי חוקי באופן הבא:
 
 $$
 p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
@@ -459,7 +459,7 @@ $$
 \begin{aligned}
 \boldsymbol{\theta}^*
 &=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log(\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y})
 \end{aligned}
 $$
 
@@ -594,7 +594,7 @@ $$
 
 ## בעיית הבחירה של גודל הצעד
 
-- כאשר יהיו בבעיה כיוונים שונים בהם ישנו הבדל גדול בקצב השינוי של הפונקציה לרוב לא יהיה גודל צעד אשר יגרום לפונקציה להתכנס במזפר סביר של צעדים.
+- כאשר יהיו בבעיה כיוונים שונים בהם ישנו הבדל גדול בקצב השינוי של הפונקציה לרוב לא יהיה גודל צעד אשר יגרום לפונקציה להתכנס במספר סביר של צעדים.
 - gradient descent בצורתו הפשוטה אינו מאד שימושי.
 - למזלנו ישנם מספר שיפורים שניתן לעשות על מנת להתמודד עם בעיה זו.
 - לצערינו בקורס זה לא נספיק לכסות שיפורים אלו.

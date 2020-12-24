@@ -295,8 +295,8 @@ $$
 $$
 \boldsymbol{\theta}^*
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    y\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
-   +(1-y)\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+    y^{(i)}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+   +(1-y^{(i)})\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
 $$
 
 (בתרגול נראה דרך נוספת לרשום את בעיית האופטימיזציה הזו).
@@ -361,7 +361,7 @@ $$
 
 #### (Non-Binary) Logistic Regression
 
-בדומה לפונקציה הלוגיסטית נוכל להשתמש בפונקציית ה softmax על מנת לבנות פילוגים חוקיים של משתנים דיסקרטיים סופיים. בעבור $C$ פונקציות פרמטריות כל שהם, $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$, ניתן לבנות מודל פרמטרי חוקי לפילוג המותנה באופן הבא:
+בדומה לפונקציה הלוגיסטית נוכל להשתמש בפונקציית ה softmax על מנת לבנות פילוגים חוקיים של משתנים דיסקרטיים סופיים. בעבור $C$ פונקציות פרמטריות כל שהן, $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$, ניתן לבנות מודל פרמטרי חוקי לפילוג המותנה באופן הבא:
 
 $$
 p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
@@ -386,13 +386,15 @@ $$
 \begin{aligned}
 \boldsymbol{\theta}^*
 &=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log(\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y})
 \end{aligned}
 $$
 
 #### היתירות בייצוג של מודל ה logistic regression
 
-בדומה למקרה הבינארי שבו לא היינו צריכים להגדיר 2 פונקציות פרמטריות, אחת ל $\text{y}=0$ ואחת ל $\text{y}=1$, גם במקרה הכללי מספיק להגדיר $C-1$ פונקציות פרמטריות. הדבר נובע מהעובדה שאם מגדירים את ההסתברות של $C-1$ מחלקות, המחלקה הנותרת תקבע באופן מוחלט כך שהיא תשלים את ההסתברות ל-1. הדרך שבה זה מתורגם לפונקציות $f_c$ הינה שהדבר היחיד שחשוב הוא ההפרש בין הפונקציות. אם נוסיף את אותו הערך לכל הפונקציות לא נשנה את הפילוג המתקבל. במילים אחרות, כל שינוי מהצורה של $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)\rightarrow f_c(\boldsymbol{x};\boldsymbol{\theta}_c)+g(\boldsymbol{x})$ לא ישנה את הפילוג $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})$.
+בדומה למקרה הבינארי שבו לא היינו צריכים להגדיר 2 פונקציות פרמטריות, אחת ל $\text{y}=0$ ואחת ל $\text{y}=1$, גם במקרה הכללי מספיק להגדיר $C-1$ פונקציות פרמטריות. הדבר נובע מהעובדה שאם מגדירים את ההסתברות של $C-1$ מחלקות, המחלקה הנותרת תקבע באופן מוחלט כך שהיא תשלים את ההסתברות ל-1.
+
+באופן דומה, אם נוסיף את אותו הערך לכל הפונקציות $f_c$ לא נשנה את הפילוג המתקבל. במילים אחרות, כל שינוי מהצורה של $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)\rightarrow f_c(\boldsymbol{x};\boldsymbol{\theta}_c)+g(\boldsymbol{x})$ לא ישנה את הפילוג $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})$.
 
 במקרים מסויימים נרצה לבטל יתירות זו. ניתן לעשות זאת על ידי קיבוע של אחת הפונקציות הפרמטריות, לרוב הראשונה $c=1$, כך שהיא תהיה שווה זהותית ל 0: $f_1(\boldsymbol{x};\boldsymbol{\theta}_1)=0$ . שינוי שכזה כאמור לא יפגע ביכולת הייצוג של המודל ויבטל את היתירות שיש בייצוג של כל פילוג. בחירה כזו גם תקטין את מספר הפרמטרים שיש ללמוד.
 

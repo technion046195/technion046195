@@ -53,7 +53,7 @@ $$
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
 $$
 
-כאשר הדגימות במדגם הם i.i.d (בעלות פילוג זהה ובלתי תלויות, כפי שנניח תמיד שמתקיים בבעיות supervised learning) נוכל להסיק כי:
+כאשר הדגימות במדגם הן i.i.d (בעלות פילוג זהה ובלתי תלויות, כפי שנניח תמיד שמתקיים בבעיות supervised learning) נוכל להסיק כי:
 
 $$
 p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})=\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
@@ -111,7 +111,7 @@ $$
 p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
 $$
 
- כאשר הדגימות במדגם **בהינתן** $\boldsymbol{\theta}$ הם i.i.d מתקיים כי:
+ כאשר הדגימות במדגם **בהינתן** $\boldsymbol{\theta}$ הן i.i.d מתקיים כי:
 
 $$
 p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})=\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
@@ -161,7 +161,7 @@ $$
 
 ### הפרדה לינארית
 
-בעבור המקרה של סיווג בינארי (סיווג לשני מחלקות) ושימוש בzero-one loss מתקבל החזאי הבא:
+בעבור המקרה של סיווג בינארי (סיווג לשתי מחלקות) ושימוש בzero-one loss מתקבל החזאי הבא:
 
 $$
 h\left(x\right)=
