@@ -13,7 +13,6 @@ print_pdf: True
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial09.pdf" class="link-button" target="_blank">PDF</a>
-<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## תקציר התיאוריה
@@ -374,9 +373,11 @@ $$
 </div>
 
 $$
+\begin{aligned}
 h_{1,1}(x)=\max(x+1,0) \\
 h_{1,2}(x)=\max(x,0) \\
 h_{1,3}(x)=\max(x-1,0) \\
+\end{aligned}
 $$
 
 כעת נדאג לשיפועים. נסתכל על מקטעים משמאל לימין.

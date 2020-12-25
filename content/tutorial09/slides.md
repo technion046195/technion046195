@@ -517,19 +517,18 @@ $$
 
 </section><section>
 
-
-
 <div class="imgbox" style="max-width:400px">
 
 ![](../tutorial09/assets/ex9_3_1.png)
 
 </div>
 
-
 $$
+\begin{aligned}
 h_{1,1}(x)=\max(x+1,0) \\
 h_{1,2}(x)=\max(x,0) \\
 h_{1,3}(x)=\max(x-1,0) \\
+\end{aligned}
 $$
 
 </section><section>
