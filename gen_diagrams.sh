@@ -2,6 +2,35 @@
 
 set -e
 
+gen_diag() {
+    diagfilename=$1
+    echo "Generating $diagfilename"
+    mkdir -p  "$(dirname $diagfilename)"
+    if [ -f "$diagfilename" ]; then
+        rm "$diagfilename"
+    fi
+    drawio -x -o "$diagfilename" "${@:2}"
+}
+
+gen_gif() {
+    giffilename=$1
+    first=$2
+    last=$3
+    delay=$4
+
+    echo "Generating $giffilename"
+    if [ -d "/tmp/imgs" ]; then
+        rm -r "/tmp/imgs"
+    fi
+    mkdir -p  /tmp/imgs
+    mkdir -p  "$(dirname $giffilename)"
+
+    for i in $(seq $first $last); do
+        drawio -x -o "/tmp/imgs/img${i}.png" -f png "-p${i}" "${@:5}"
+    done
+    convert -delay "$delay" -loop 0 /tmp/imgs/*.png "$giffilename"
+}
+
 declare -A diagrams
 diagrams["tutorial01/assets/dist_from_circle.png"]="-p0 -b20 -s3 ./content/assets/diagrams.drawio"
 diagrams["tutorial02/assets/random_process.png"]="-p1 -b20 -s3 ./content/assets/diagrams.drawio"
@@ -38,7 +67,7 @@ diagrams["lecture07/assets/gradient_descent_small_step.png"]="-p0 -b0 -s1 ./cont
 diagrams["lecture07/assets/gradient_descent_large_step.png"]="-p1 -b0 -s1 ./content/lecture07/assets/gradient_descent.drawio"
 diagrams["lecture07/assets/gradient_descent_too_large_step.png"]="-p2 -b0 -s1 ./content/lecture07/assets/gradient_descent.drawio"
 
-diagrams["lecture08/assets/neuron.png"]="-p0 -b20 -s3 ./content/lecture08/assets/neuron.drawio"
+diagrams["lecture08/assets/neuron_model.png"]="-p0 -b20 -s3 ./content/lecture08/assets/neuron.drawio"
 diagrams["lecture08/assets/neuron_scheme.png"]="-p1 -b20 -s4 ./content/lecture08/assets/neuron.drawio"
 diagrams["lecture08/assets/neuron_scheme2.png"]="-p2 -b20 -s4 ./content/lecture08/assets/neuron.drawio"
 diagrams["lecture08/assets/ann.png"]="-p0 -b20 -s3 ./content/lecture08/assets/ann.drawio"
@@ -51,6 +80,18 @@ diagrams["tutorial09/assets/ex9_3.png"]="-p0 -b20 -s3 ./content/tutorial09/asset
 diagrams["tutorial09/assets/ex9_3_1.png"]="-p1 -b20 -s3 ./content/tutorial09/assets/ex9_3.drawio"
 diagrams["tutorial09/assets/example_mlp1.png"]="-p0 -b20 -s3 ./content/tutorial09/assets/example.drawio"
 diagrams["tutorial09/assets/example_mlp2.png"]="-p1 -b20 -s3 ./content/tutorial09/assets/example.drawio"
+
+gen_diag ./content/tutorial10/assets/conv.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/conv.drawio
+gen_gif ./content/tutorial10/assets/conv.gif 0 3 100 -b20 -s3 ./content/tutorial10/assets/conv_anim.drawio
+gen_gif ./content/tutorial10/assets/conv_multi_input.gif 0 3 100 -b20 -s3 ./content/tutorial10/assets/conv_multi_input_anim.drawio
+gen_gif ./content/tutorial10/assets/conv_multi_chan.gif 0 3 100 -b20 -s3 ./content/tutorial10/assets/conv_multi_chan_anim.drawio
+gen_gif ./content/tutorial10/assets/padding.gif 0 5 100 -b20 -s3 ./content/tutorial10/assets/padding.drawio
+gen_gif ./content/tutorial10/assets/stride.gif 0 2 100 -b20 -s3 ./content/tutorial10/assets/stride.drawio
+gen_gif ./content/tutorial10/assets/dilation.gif 0 2 100 -b20 -s3 ./content/tutorial10/assets/dilation.drawio
+gen_gif ./content/tutorial10/assets/max_pooling.gif 0 2 100 -b20 -s3 ./content/tutorial10/assets/max_pooling.drawio
+gen_diag ./content/tutorial10/assets/ex_10_1_network.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/ex_10_1_network.drawio
+gen_diag ./content/tutorial10/assets/ex_10_1_1_1.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/ex_10_1_1_1.drawio
+gen_diag ./content/tutorial10/assets/ex_10_1_1_2.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/ex_10_1_1_2.drawio
 
 for diag in "${!diagrams[@]}"; do
     echo "Generating ./content/$diag"

@@ -12,6 +12,8 @@ type: attrib
 
 - [Stethoscope](https://www.pexels.com/photo/blue-and-silver-stetoscope-40568/) by [Pixabay](https://www.pexels.com/@pixabay)
 
+- [boat](https://www.pexels.com/photo/white-and-black-sail-boat-on-ocean-996328/) by [Mike](https://www.pexels.com/@mikebirdy)
+
 ### From [Unsplash](https://unsplash.com):
 
 - [Eye image](https://unsplash.com/photos/UbJMy92p8wk) by [Amanda Dalbjörn](https://unsplash.com/@amandadalbjorn?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
