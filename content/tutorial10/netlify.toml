@@ -1,0 +1,23 @@
+[[headers]]
+  for = "/**/*.html": 
+  [headers.values]
+    cache-control = '''
+    public,
+    max-age=0,
+    must-revalidate'''
+
+[[headers]]
+  for = "/page-data/*.json"
+  [headers.values]
+    cache-control = '''
+    public,
+    max-age=0,
+    must-revalidate'''
+
+[[headers]]
+  for = "/app-data.json"
+  [headers.values]
+    cache-control = '''
+    public,
+    max-age=0,
+    must-revalidate'''
