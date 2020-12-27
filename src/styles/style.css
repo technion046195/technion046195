@@ -14,6 +14,11 @@
   unicode-bidi: bidi-override;
 }
 
+.site-style .gatsby-highlight {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+}
+
 /* General */
 /* ======= */
 html {

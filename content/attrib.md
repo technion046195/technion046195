@@ -38,6 +38,7 @@ type: attrib
 - The Titanic form [Wikipedia](https://en.wikipedia.org/wiki/Titanic)
 - WD-40 from [the offical site](https://www.wd40.com/products/smart-straw-12-oz/)
 - Fine needle aspiration form [Wikipedia](https://en.wikipedia.org/wiki/Fine-needle_aspiration)
+- LeNet-5 gif from [Yann LeCun's home page](http://yann.lecun.com/exdb/lenet/)
 
 ## Vector graphics
 

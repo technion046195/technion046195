@@ -521,4 +521,285 @@ $$
 \text{Var}\left(w_i\right)= \frac{2}{n}
 $$
 
+## חלק מעשי- LeNet 5
+
+<div dir="ltr">
+<a href="./example/" class="link-button" target="_blank">Code</a>
+</div>
+
+בחלק זה נעבור על היישום המעשי הראשון של רשתות קונבולוציה. הארכיטקטורה זאת שימשה ב1998 ושימש לזהות ספרות בכתב יד על צק'ים במערכות בנקאיות.
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/lenet.gif)
+
+</div>
+
+הרשת מקבלת תמונה רמת אפור של ספרה בגודל 32x32 ומשתמש באריטקטורה הבאה על מנת להוציא וקטור פלט באורך 10 אשר מציג את ההיסברות שהתמונה שייכת לכל אחת מ 10 הספרות.  
+
+#### אריכטקטורה
+
+<div class="imgbox" style="max-width:800px">
+
+![](./assets/lenet_arch.png)
+
+</div>
+
+ארכיטקטורה זו לא עושה שימוש בריפוד ו-dilation, ואלא אם רשום אחרת stride=1.
+
+- C1: Convolutional layer + ReLU activation: kernel size=5x5, output channels=6.
+- S2: Max pooling layer: size=2x2, stride=2
+- C3: Convolutional layer + ReLU activation: kernel size=5x5, output channels=16.
+- S4: Max pooling layer: size=2x2, stride=2
+- C5: Convolutional layer + ReLU activation: kernel size=5x5, output channels=120. (this is, in fact, a fully connected layer)
+- F6: Fully connected layer + ReLU: output vector length= 84
+- Output layer: Fully connected layer: output vector length=10
+
+על מנת לייצג את הסתברות שהתמונה שייכת לאחת מהמחלקות נעשה ביציאה שימוש בשכבת Softmax.
+
+דרך אחת לשרטט את הרשת הינה באופן הבא:
+
+<div class="imgbox" style="max-width:800px">
+
+![](./assets/lenet_arch2.png)
+
+</div>
+
+### הגדרת הבעיה
+
+הבעיה היא בעיית סיווג (לא בינארית) כאשר
+
+- $\mathbf{x}$ הוא תמונה בגודל 28x28 של סיפרה בכתב יד.
+- $\text{y}$ הוא ערך הסיפרה: \[0-9\]
+
+אנו נרצה להשתמש ברשת על מנת לפתור את בעיית הסיווג בגישה הדיסקרימינטיבית הסתברותית (ללמוד את $p_{\text{y}|\mathbf{x}}$). כמו תמיד בכדי לקבל פילוג חוקי אנו נפעיל דםכאצשס על המוצא של הרשת פונקציית.
+
+### Dataset: MNIST
+
+מכיוון שהמדגם המקורי אשר שימש לאימון של הרשת לא פורסם, אנו נשתמש במדגם פופולרי אחר אשר נקרא MNIST. הוא סט פופולרי מאוד שנעשה בו שימוש נרחב עד היום. הסט מורכב 70000  תמונות בינאריות בגודל 28x28 של ספרות בכתב יד, מתוכן 10000 מוגדרים להיות ה test set.
+
+ניתן להוריד את הסט מ [Yann LeCun's web site](http://yann.lecun.com/exdb/mnist/).
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/mnist.png)
+
+</div>
+
+הגדול של התמונות במדגם הם 28x28, בניגוד לגודל של התמונות בעבודה המקורית שהייתה 32x32. בכדי להתאים את הרשת תמונות בגודל זה נוסיף ריפוד של 2 אפסים בכל שפה של התמונה.
+
+#### חלוקה של מאגר המידע
+
+משום שהמאגר מגדיר כבר את ה test set, כל מה שנותר לנו הוא לחלק את ה train set ל train ו validation. מיכוון שה train set מאד גדול (60000 דגימות), מספיק לקחת validation set שהוא קטן יותר מ 25% מ train ושעדיין יהיה מצייג מספיק.
+הסיבה לקחת validation קטן הוא גם בשביל לזרז את השלב של חישוב הביצועים על ה validation וגם בשביל לא להקטין את הגודל של ה train.
+
+ניקח אם כן validation set בגודל 1024.
+
+### בניית הרשת על ידי שימוש ב PyTorch
+
+Python מכיל מספר חבילות אשר מפשטות מאד את הבניה והאימון של רשתות נוירונים. בקורס זה אנחנו נעבוד עם אחת החבילות הפופולריות בתחום אשר נקראת PyTorch.
+
+בתרגיל רטוב 5 תעזרו ב PyTorch בכדי למממש רשת קונסולוציה דומה לזו שנשתמש בה כאן.
+
+#### הגדרת הרשת
+
+הדרך המקובלת להשתמש ב PyTorch היה על ידי הגדרת class יעודי אשר מגדיר את השכבות ואת הדרך בה הרשת פועלת. הדבר נעשה באופן הבא:
+
+```python
+class LeNet5(torch.nn.Module):
+     
+    def __init__(self):   
+        super(LeNet5, self).__init__()
+        
+        ## Defining the layers
+        ## =========================================================
+        ## C1: Convolutional layer: kernel size=5x5, output channels=6.
+        ## Here we will add the padding of 2 to make the images of MNIST fit to the network.
+        self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=6, kernel_size=5, padding=2)
+        self.relu1 = torch.nn.ReLU()  
+
+        ## S2: Max pooling layer: size=2x2, stride=2
+        self.max_pool2 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
+
+        ## C3: Convolutional layer + ReLU activation: kernel size=5x5, output channels=16.
+        self.conv3 = torch.nn.Conv2d(in_channels=6, out_channels=16, kernel_size=5)
+        self.relu3 = torch.nn.ReLU()
+        
+        ## S4: Max pooling layer: size=2x2, stride=2vector)
+        self.max_pool4 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
+
+        ## C5: Convolutional layer + ReLU activation: kernel size=5x5, output channels=120.
+        self.conv5 = torch.nn.Conv2d(in_channels=16, out_channels=120, kernel_size=5)
+        self.relu5 = torch.nn.ReLU()
+
+        ## F6: Fully connected layer + ReLU: output vector length=84
+        self.fc6 = torch.nn.Linear(120, 84)
+        self.relu6 = torch.nn.ReLU()
+        
+        ## Output: Fully connected layer + ReLU: output vector length=10
+        self.fc_output = torch.nn.Linear(84, 10)
+
+        ## Note: It is not actually necessary to define multiple ReLUs and max-pooling operations
+        ## since these layers have no parameters.
+        
+        
+    def forward(self, x):
+        ## C1: Convolutional layer + ReLU activation: kernel size=5x5, output channels=6.
+        x = self.conv1(x)
+        x = self.relu1(x)
+        
+        ## S2: Max pooling layer: size=2x2, stride=2
+        x = self.max_pool2(x)
+
+        ## C3: Convolutional layer + ReLU activation: kernel size=5x5, output channels=16.
+        x = self.conv3(x)
+        x = self.relu3(x)
+
+        ## S4: Max pooling layer: size=2x2, stride=2
+        x = self.max_pool4(x)
+
+        ## C5: Convolutional layer + ReLU activation: kernel size=5x5, output channels=120.
+        x = self.conv5(x)
+        x = self.relu5(x)
+
+        x = x.view(x.shape[0], x.shape[1]) ## Redefine x as a 1D vector
+        
+        ## F6: Fully connected layer + ReLU: output vector length= 84
+        x = self.fc6(x)
+        x = self.relu6(x)
+
+        ## Output layer: Fully connected layer: output vector length=10
+        x = self.fc_output(x)
+        
+        return x
+```
+
+במימוש של פונקציה זו אנו עושים שימוש באובייקטים הבאים מהחבילה של PyTorch:
+
+- **torch.nn.Model**: אובייקט שממנו יש לרשת (inherit) כאשר יוצרים רשת חדש בPyTorch. בקורס זה לא נרחיב על הנושא נציין רק שיש להוסיף תמיד "(torch.nn.Module)" אחרי שם ה class.
+- **[torch.nn.Conv2d](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#conv2d)**: אובייקט אשר מממש קונבולוציה דו מימדית.
+- **[torch.nn.ReLU](https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html?highlight=relu#relu)**: אובייקט אשר מממש פונקציית ReLU (איבר איבר).
+- **[torch.nn.MaxPool2d](https://pytorch.org/docs/stable/generated/torch.nn.MaxPool2d.html?highlight=maxpool#maxpool2d)**: אובייקט אשר מממש max pooling דו מימדי.
+- **[torch.nn.Linear](https://pytorch.org/docs/stable/nn.html#linear)**: אובייקט אשר מבצע טרנספורמציה לינארית (לייתר דיוק אפינית). זה למעשה החלק הלינארי של שכבת FC.
+
+### לימוד
+
+#### חישוב ה Log-likelihood
+
+לצורך הלימוד נצטרך לחשב את ה log-liklihood על ה batch:
+
+$$
+\sum_i \text{softmax}(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}
+$$
+
+כאשר $f(\boldsymbol{x};\boldsymbol{\theta})$ היא הפונקציה שאותה ממשת הרשת עם פרמטרים $\boldsymbol{\theta}$ והסכימה היא על כל הדגימות ב batch.
+
+הפונקציה **[torch.nn.CrossEntropyLoss()](https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html#crossentropyloss)** מקבלת מטריצה שבכל שורה יש $f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ ווקטור של $y^{(i)}$ והיא מחשבת את ה softmax של המטריצה ואז את ה log-likelihood של כל הדגימות.
+
+```python
+## Set the objective
+objective_func = nn.CrossEntropyLoss()
+
+## Calculate the log-likelihood on x and y
+py_hat = net(x)
+objective = objective_func(py_hat, y)
+```
+
+#### Auto differentiation
+
+היתרון גדול של שימוש בחבילה כמו PyTorch הוא שהיא למעשה יודעת לחשב את הנגזרת בשבילנו על ידי שימוש ב back-propogation. לאחר חישוב ה log-likelihood נוכל פשוט לקרוא לפקודה:
+
+```python
+objective.backward()
+```
+
+והחבילה תחשב את כל הגרדיאנטים של ה objective לפי הפרמטרים של המודל. PyTorhc שומר את הגרדיאנטים המתקבלים בתוך הרשת ביחד עם המשתנים
+
+#### Stochastic Gradient Descent
+
+בכדי למצוא את הפרמטרים האופטימאליים נשתמש ב mini-batch gradient descent אשר מופיע ב PyTorch בשם stochastic gradient descent (SGD). הדרך להשתמש באלגוריתם הוא בעזרת שלושת הפקודות הבאות:
+
+```python
+## Initizalie the optimizer
+optimizer = torch.optim.SGD(net.parameters(), lr=eta)
+```
+
+מאתחל את האלגוריתם עם הפרמטרים של הרשת ומגדיר את גודל הצעד
+
+```python
+optimizer.zero_grad()
+```
+
+מאפס את כל הנגזרות ש PyTorch חישב עד כה (יש להריץ פקודה זו לפני כל קריאה ל "objective.backward()" שמחשבת את הגרדיאנטים)
+
+```python
+## Preform the gradient descent step
+optimizer.step()
+```
+
+אשר מבצע את צעד הגרדיאנט ומעדכן את הפרמטרים של הרשת.
+
+#### הכל ביחד
+
+האלגוריתם כולו ראה כך:
+
+```python
+def train(net, eta, n_epoch, train_loader):
+    
+    ## Set the objective
+    objective_func = torch.nn.CrossEntropyLoss()
+    
+    ## Initizalie the optimizer
+    optimizer = torch.optim.SGD(net.parameters(), lr=eta)
+
+    for epoch in tqdm.tqdm(range(n_epoch), leave=False):
+        for x, y in tqdm.tqdm(train_loader, leave=False):
+            optimizer.zero_grad()
+            ## Forward pass
+            py_hat = net(x)
+            objective = objective_func(py_hat, y)
+            ## Backward pass
+            objective.backward()
+            ## Preform the gradient descent step
+            optimizer.step()
+```
+
+#### בחירת גודל צעד הלימוד
+
+בדומה לתהליך שעשינו בתרגול הקודם, נבחן ארבע גדלים של צעד הגרדיאנט $\eta$ ונסתכל על ה objective המתקבל על ה train ועל ה validation:
+
+<div class="imgbox" style="max-width:800px">
+
+![](./output/mnist_lenet_select_eta.png)
+
+</div>
+
+שימו לב כי בגלל השימוש ב stochastic gradient descent הגרף של ה train מאד רועש. בנוסף בגלל שסטוכסטיות של התהילך אנו גם לא נצפה שה validation ירד בצורה מונוטונית ונתעיין במגמה הכללית שלו ונתעלם מעליות נקודתיות בגרף.
+
+מבין ארבעת הערכים שבדקנו נבחר את $\eta=0.3$ שבעברו הגרף מצליח להתכנס (הוא אומנם מעט יותר רועש מאשר $\eta=01$ ולכן לא ברור מי משניים עדיף. הכי טוב זה לבדוק את שניהם).
+
+#### האימון
+
+נריץ את האלגוריתם ה stochasctic gradient descent למשך 20 epochs (20 פעמים שעברנו על כל הדגימות במדגם).
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/mnist_lenet_train.png)
+
+</div>
+
+משום שהגרף של ה validation לא יורד יותר. ניתן להניח שהמודל הגיע למינימום מקומי,(אבל לא ניתן לדעת בוודאות.
+
+**הערה**: לשם הפשטות לא השתמשנו כאן ב early stopping, בפועל היינו רוצים כנראה בזמן האימון לשמור בצד את הפרמטרים שנותנים את ה validation הנמוך ביותר ומשתמשים בהם בכדי לקבוע את הפרמטרים הסופיים של הרשת.
+
+### הערכת ביצועים
+
+נריץ את המודל לאחר הלימוד על סט המבחן ונקבל שפונקצית המחיר הינה $0.011$
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/mnist_lenet_predictions.png)
+
+</div>
+
 </div>
