@@ -37,6 +37,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-netlify`,
       options: {
+        generateMatchPathRewrites: false,
         mergeSecurityHeaders: false,
         headers: {
           "/**/*.html": [
