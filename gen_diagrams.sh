@@ -88,7 +88,8 @@ gen_gif ./content/tutorial10/assets/conv_multi_chan.gif 0 3 100 -b20 -s3 ./conte
 gen_gif ./content/tutorial10/assets/padding.gif 0 5 100 -b20 -s3 ./content/tutorial10/assets/padding.drawio
 gen_gif ./content/tutorial10/assets/stride.gif 0 2 100 -b20 -s3 ./content/tutorial10/assets/stride.drawio
 gen_gif ./content/tutorial10/assets/dilation.gif 0 2 100 -b20 -s3 ./content/tutorial10/assets/dilation.drawio
-gen_gif ./content/tutorial10/assets/max_pooling.gif 0 2 100 -b20 -s3 ./content/tutorial10/assets/max_pooling.drawio
+# gen_gif ./content/tutorial10/assets/max_pooling.gif 0 2 100 -b20 -s3 ./content/tutorial10/assets/max_pooling.drawio
+gen_diag ./content/tutorial10/assets/init_network.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/init_network.drawio
 gen_diag ./content/tutorial10/assets/ex_10_1_network.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/ex_10_1_network.drawio
 gen_diag ./content/tutorial10/assets/ex_10_1_1_1.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/ex_10_1_1_1.drawio
 gen_diag ./content/tutorial10/assets/ex_10_1_1_2.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/ex_10_1_1_2.drawio
