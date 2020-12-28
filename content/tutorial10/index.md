@@ -41,7 +41,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/conv.png)
+![](../lecture09/assets/conv.png)
 
 </div>
 
@@ -51,7 +51,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/conv.gif)
+![](../lecture09/assets/conv.gif)
 
 </div>
 
@@ -59,7 +59,7 @@ $$
 
 גדול המוצא של שכבת הקונבולוציה הוא קטן יותר מהכניסה והוא נתון על ידי $D_{\text{out}}=D_{\text{in}}-K+1$.
 
-שכבת קונבולוציה מורידה באופן דרסטי את מס' המשקולות לעומת שכבת FC. בשכבת FC קיימות $D_{\text{in}}\times D_{\text{out}}$ משקולות בעוד שלשכבת קונבולציה יש $K$ משקולות.
+שכבת קונבולוציה מורידה באופן דרסטי את מס' המשקולות לעומת שכבת FC. בעוד שבשכבת FC קיימות $D_{\text{in}}\times D_{\text{out}}$ משקולות ועוד $D_{\text{out}}$ איברי היסט, בשכבת קונבולציה יש $K$ משקולות ואיבר היסט בודד.
 
 #### קלט רב-ערוצי
 
@@ -69,7 +69,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/conv_multi_input.gif)
+![](../lecture09/assets/conv_multi_input.gif)
 
 </div>
 
@@ -81,7 +81,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/conv_multi_chan.gif)
+![](../lecture09/assets/conv_multi_chan.gif)
 
 </div>
 
@@ -106,7 +106,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/padding.gif)
+![](../lecture09/assets/padding.gif)
 
 </div>
 
@@ -116,7 +116,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/stride.gif)
+![](../lecture09/assets/stride.gif)
 
 </div>
 
@@ -126,7 +126,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/dilation.gif)
+![](../lecture09/assets/dilation.gif)
 
 </div>
 
@@ -138,7 +138,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/max_pooling.gif)
+![](../lecture09/assets/max_pooling.gif)
 
 </div>
 
@@ -158,10 +158,10 @@ $$
     <td><center>kernel size=3<br>padding=2<br>stride=1<br>dilation=1<br>(Full padding)</center></td>
   </tr>
   <tr>
-    <td><img width="150px" src="./assets/no_padding_no_strides.gif"></td>
-    <td><img width="150px" src="./assets/arbitrary_padding_no_strides.gif"></td>
-    <td><img width="150px" src="./assets/same_padding_no_strides.gif"></td>
-    <td><img width="150px" src="./assets/full_padding_no_strides.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/no_padding_no_strides.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/arbitrary_padding_no_strides.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/same_padding_no_strides.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/full_padding_no_strides.gif"></td>
   </tr>
   <tr>
     <td><center>kernel size=3<br>padding=0<br>stride=2<br>dilation=1</center></td>
@@ -170,10 +170,10 @@ $$
     <td><center>kernel size=3<br>padding=0<br>stride=1<br>dilation=2</center></td>
   </tr>
   <tr>
-    <td><img width="150px" src="./assets/no_padding_strides.gif"></td>
-    <td><img width="150px" src="./assets/padding_strides.gif"></td>
-    <td><img width="150px" src="./assets/padding_strides_odd.gif"></td>
-    <td><img width="150px" src="./assets/dilation_2d.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/no_padding_strides.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/padding_strides.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/padding_strides_odd.gif"></td>
+    <td><img width="150px" src="../lecture09/assets/dilation_2d.gif"></td>
   </tr>
 </table>
 
