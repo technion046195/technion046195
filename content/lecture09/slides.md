@@ -91,6 +91,13 @@ $$
 - דרך מוצלחת נוספת למנוע overfitting הינה לעצור את אלגוריתם הגרדיאנט לפני שהוא מתכנס.
 - זה נעשה על ידי חישוב ה objective על ה validataion set ובחירת הפרמטרים שממזערים את ה objective.
 
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/early_stopping.png)
+
+</div>
+
+
 </section><section>
 
 ## Convolutional Neural Networks (CNN)
@@ -370,11 +377,14 @@ $$
 
 כל גרעין ייצר ערוץ אשר מתאים לתופעה שאותה הוא מחפש:
 
-<div class="imgbox">
+<div class="imgbox" style="max-width:500px">
 
 ![](./assets/conv_illustration.png)
 
 </div>
+
+- השכבות הבאות ברשת יחפשו אובייקטים אשר מורכבים מהתופעות שמצאו השכבות הראשונות.
+- לדוגמא נחפש איזורים שמכילים הרבה פסים אנכיים בכדי לזהות שיער, או שני פסים אופקיים סמוכים שעשויים להכיל שפתיים.
 
 </section><section>
 

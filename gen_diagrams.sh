@@ -86,7 +86,7 @@ gen_diag ./content/tutorial09/assets/ex9_3_1.png -f png -p1 -b20 -s3 ./content/t
 gen_diag ./content/tutorial09/assets/example_mlp1.png -f png -p0 -b20 -s3 ./content/tutorial09/assets/example.drawio
 gen_diag ./content/tutorial09/assets/example_mlp2.png -f png -p1 -b20 -s3 ./content/tutorial09/assets/example.drawio
 
-gen_diag ./content/lecture09/assets/course_diagram.png -f png -p8 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture09/assets/early_stopping.png -f png -p1 -b20 -s3 ./content/lecture09/assets/early_stopping.drawio
 gen_diag ./content/lecture09/assets/conv.png -f png -p1 -b20 -s3 ./content/lecture09/assets/conv.drawio
 gen_gif ./content/lecture09/assets/conv.gif 0 3 100 -b20 -s3 ./content/lecture09/assets/conv_anim.drawio
 gen_gif ./content/lecture09/assets/conv_multi_input.gif 0 3 100 -b20 -s3 ./content/lecture09/assets/conv_multi_input_anim.drawio
