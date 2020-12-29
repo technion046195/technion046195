@@ -96,6 +96,7 @@ gen_gif ./content/lecture09/assets/stride.gif 0 2 100 -b20 -s3 ./content/lecture
 gen_gif ./content/lecture09/assets/dilation.gif 0 2 100 -b20 -s3 ./content/lecture09/assets/dilation.drawio
 gen_gif ./content/lecture09/assets/max_pooling.gif 0 2 100 -b20 -s3 ./content/lecture09/assets/max_pooling.drawio
 gen_diag ./content/lecture09/assets/vgg16.png -f png -p1 -b20 -s2 ./content/lecture09/assets/vgg16.drawio
+gen_gif ./content/lecture09/assets/receptive_field.gif 0 3 100 -b20 -s3 ./content/lecture09/assets/receptive_field.drawio
 gen_diag ./content/lecture09/assets/horizontal_filter.png -f png -p1 -b20 -s2 ./content/lecture09/assets/horizontal_filter.drawio
 gen_diag ./content/lecture09/assets/conv_illustration.png -f png -p1 -b20 -s2 ./content/lecture09/assets/conv_illustration.drawio
 gen_diag ./content/lecture09/assets/conv_illustration.png -f png -p1 -b20 -s2 ./content/lecture09/assets/conv_illustration.drawio
