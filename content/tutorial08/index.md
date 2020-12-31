@@ -11,7 +11,7 @@ print_pdf: True
 # תרגול 8 - Logistic Regression and Gradient Descent
 
 <div dir="ltr">
-<a href="./slides/" class="link-button" target="_blank">Slides</a>
+<!-- <a href="./slides/" class="link-button" target="_blank">Slides</a> -->
 <a href="/assets/tutorial08.pdf" class="link-button" target="_blank">PDF</a>
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>

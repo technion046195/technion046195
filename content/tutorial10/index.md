@@ -2,8 +2,8 @@
 type: tutorial
 index: 10
 template: page
-make_docx: True
-print_pdf: True
+make_docx: true
+print_pdf: true
 ---
 
 <div dir="rtl" class="site-style">
@@ -13,6 +13,7 @@ print_pdf: True
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial10.pdf" class="link-button" target="_blank">PDF</a>
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## תקציר התיאוריה
