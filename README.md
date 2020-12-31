@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://technion046195.netlify.app/">
-    <img alt="Logo" src="content/assets/technion046195_logo.png" width="100" />
+    <img alt="Logo" src="static/icons/android-chrome-512x512.png" width="100" />
   </a>
 
 # Course 046196 - Introduction to Machine Learning

@@ -61,7 +61,7 @@ print_pdf: true
 <div class="imgbox">
 <div class="imgbox" style="max-width:810px">
 
-![](./assets/random_process.png)
+![](./assets/random_process_5.png)
 
 </div></div>
 
