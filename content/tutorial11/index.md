@@ -643,517 +643,141 @@ h(\boldsymbol{x})
 \end{aligned}
 $$
 
-<!--
-## חלק מעשי
+## חלק מעשי: זיהוי מין הדובר
 
-<br>
+<div dir="ltr">
+<a href="./example/" class="link-button" target="_blank">Code</a>
+</div>
 
-## בעיה: זיהוי מין הדובר על סמך אות דיבור
-
-<br>
 
 בחלק זה, ננסה להשתמש ב- SVM כדי לזהות את מינו של הדובר באמצעות קולו. מוטיבציה למערכת כזאת יכולה להיות עוזר וירטואלי שרוצה לפנות לדובר לפי מינו. הרחבה לניסיון זה יכולה להיות זיהוי דובר על סמך קולו וכו'.
 
-<br>
-
-## Dataset Labeled Voices
-
-<br>
-
-הרעיון וה- DATA נלקחו מ- Dataset והערכת ביצועים של קורי בקר, אשר נמצאים [באתר הבא](http://www.primaryobjects.com/2016/06/22/identifying-the-gender-of-a-voice-using-machine-learning/).
-
-<br>
-
-בפרוייקט זה נאספו 3168 דגימות קול מתוייגות מהמקורות הבאים:
+הרעיון וה- DATA נלקחו מ- Dataset והערכת ביצועים של קורי בקר, אשר נמצאים [באתר הבא](http://www.primaryobjects.com/2016/06/22/identifying-the-gender-of-a-voice-using-machine-learning/). בפרוייקט זה נאספו 3168 דגימות קול מתוייגות מהמקורות הבאים:
 
 - [The Harvard-Haskins Database of Regularly-Timed Speech](http://www.nsi.edu/~ani/download.html)
 - [Telecommunications & Signal Processing Laboratory (TSP) Speech Database at McGill University](http://www-mmsp.ece.mcgill.ca/Documents../Data/index.html)
 - [VoxForge Speech Corpus](http://www.repository.voxforge1.org/downloads/SpeechCorpus/Trunk/Audio/Main/8kHz_16bit/)
 - [Festvox CMU_ARCTIC Speech Database at Carnegie Mellon University](http://festvox.org/cmu_arctic/)
 
-<br>
+כל רצועת קול עברה עיבוד באמצעות כלי בשם [WarbleR](https://cran.r-project.org/web/packages/warbleR/warbleR.pdf) בכדי לייצר 20 Features לכל דגימה:
 
-כל רצועת קול עברה עיבוד באמצעות כלי בשם[WarbleR](https://cran.r-project.org/web/packages/warbleR/warbleR.pdf) i כדי לייצר 20 Features לכל דגימה.
-
-<br>
-
-ה- Data עצמו נמצא [כאן](https://yairomer.github.io/ml_course/datasets/voice.csv).
-
-<br>
-
-## 🔃 תהליך העבודה
-
-<br>
-
-## 🕵️ בחינת ה - Data
-
-נסתכל על העמודות הראשונות ב- Data
-
-
-מספר הרשומות : $$N=3168$$
-
-<br>
-
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>meanfreq</th>
-      <th>sd</th>
-      <th>median</th>
-      <th>Q25</th>
-      <th>Q75</th>
-      <th>IQR</th>
-      <th>skew</th>
-      <th>kurt</th>
-      <th>sp.ent</th>
-      <th>sfm</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.059781</td>
-      <td>0.064241</td>
-      <td>0.032027</td>
-      <td>0.015071</td>
-      <td>0.090193</td>
-      <td>0.075122</td>
-      <td>12.863462</td>
-      <td>274.402906</td>
-      <td>0.893369</td>
-      <td>0.491918</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.066009</td>
-      <td>0.067310</td>
-      <td>0.040229</td>
-      <td>0.019414</td>
-      <td>0.092666</td>
-      <td>0.073252</td>
-      <td>22.423285</td>
-      <td>634.613855</td>
-      <td>0.892193</td>
-      <td>0.513724</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.077316</td>
-      <td>0.083829</td>
-      <td>0.036718</td>
-      <td>0.008701</td>
-      <td>0.131908</td>
-      <td>0.123207</td>
-      <td>30.757155</td>
-      <td>1024.927705</td>
-      <td>0.846389</td>
-      <td>0.478905</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.151228</td>
-      <td>0.072111</td>
-      <td>0.158011</td>
-      <td>0.096582</td>
-      <td>0.207955</td>
-      <td>0.111374</td>
-      <td>1.232831</td>
-      <td>4.177296</td>
-      <td>0.963322</td>
-      <td>0.727232</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.135120</td>
-      <td>0.079146</td>
-      <td>0.124656</td>
-      <td>0.078720</td>
-      <td>0.206045</td>
-      <td>0.127325</td>
-      <td>1.101174</td>
-      <td>4.333713</td>
-      <td>0.971955</td>
-      <td>0.783568</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>0.132786</td>
-      <td>0.079557</td>
-      <td>0.119090</td>
-      <td>0.067958</td>
-      <td>0.209592</td>
-      <td>0.141634</td>
-      <td>1.932562</td>
-      <td>8.308895</td>
-      <td>0.963181</td>
-      <td>0.738307</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>0.150762</td>
-      <td>0.074463</td>
-      <td>0.160106</td>
-      <td>0.092899</td>
-      <td>0.205718</td>
-      <td>0.112819</td>
-      <td>1.530643</td>
-      <td>5.987498</td>
-      <td>0.967573</td>
-      <td>0.762638</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>0.160514</td>
-      <td>0.076767</td>
-      <td>0.144337</td>
-      <td>0.110532</td>
-      <td>0.231962</td>
-      <td>0.121430</td>
-      <td>1.397156</td>
-      <td>4.766611</td>
-      <td>0.959255</td>
-      <td>0.719858</td>
-        <td>male</td>
-	</tr>
-	<tr>
-  <th>8</th>
-  <td>0.142239</td>
-  <td>0.078018</td>
-  <td>0.138587</td>
-  <td>0.088206</td>
-  <td>0.208587</td>
-  <td>0.120381</td>
-  <td>1.099746</td>
-  <td>4.070284</td>
-  <td>0.970723</td>
-  <td>0.770992</td>
-        <td>male</td>
-</tr>
-<tr>
-  <th>9</th>
-  <td>0.134329</td>
-  <td>0.080350</td>
-  <td>0.121451</td>
-  <td>0.075580</td>
-  <td>0.201957</td>
-  <td>0.126377</td>
-  <td>1.190368</td>
-  <td>4.787310</td>
-  <td>0.975246</td>
-  <td>0.804505</td>
-      <td>male</td>
-</tr>
-<tr>
-  <th>9</th>
-  <td>0.134329</td>
-  <td>0.080350</td>
-  <td>0.121451</td>
-  <td>0.075580</td>
-  <td>0.201957</td>
-  <td>0.126377</td>
-  <td>1.190368</td>
-  <td>4.787310</td>
-  <td>0.975246</td>
-  <td>0.804505</td>
-  <td>male</td>
-  </tr>
-  </tbody>
-</table>
-
-
-​    <br>
-
-## The Data Fields and Types
-
-<br>
-
-להלן התאור של שדות ה- Data מאתר הפרוייקט:
-
-- **meanfreq**: mean frequency (in kHz)
-
-- **sd**: standard deviation of frequency
-
-- **median**: median frequency (in kHz)
-
-- **Q25**: first quantile (in kHz)
-
-- **Q75**: third quantile (in kHz)
-
-- **IQR**: interquantile range (in kHz)
-
-- **skew**: skewness (see note in specprop description)
-
-- **kurt**: kurtosis (see note in specprop description)
-
-- **sp.ent**: spectral entropy
-
-- **sfm**: spectral flatness
-
-- **mode**: mode frequency
-
-- **centroid**: frequency centroid (see specprop)
-
-- **meanfun**: average of fundamental frequency measured across acoustic signal
-
-- **minfun**: minimum fundamental frequency measured across acoustic signal
-
-- **maxfun**: maximum fundamental frequency measured across acoustic signal
-
-- **meandom**: average of dominant frequency measured across acoustic signal
-
-- **mindom**: minimum of dominant frequency measured across acoustic signal
-
-- **maxdom**: maximum of dominant frequency measured across acoustic signal
-
-- **dfrange**: range of dominant frequency measured across acoustic signal
-
-- **modindx**: modulation index. Calculated as the accumulated absolute difference between
+<div dir="ltr">
 
 - **label**: The label of each track: male/female
+- **meanfreq**: mean frequency (in kHz)
+- **sd**: standard deviation of frequency
+- **median**: median frequency (in kHz)
+- **Q25**: first quantile (in kHz)
+- **Q75**: third quantile (in kHz)
+- **IQR**: interquantile range (in kHz)
+- **skew**: skewness (see note in specprop description)
+- **kurt**: kurtosis (see note in specprop description)
+- **sp.ent**: spectral entropy
+- **sfm**: spectral flatness
+- **mode**: mode frequency
+- **centroid**: frequency centroid (see specprop)
+- **meanfun**: average of fundamental frequency measured across acoustic signal
+- **minfun**: minimum fundamental frequency measured across acoustic signal
+- **maxfun**: maximum fundamental frequency measured across acoustic signal
+- **meandom**: average of dominant frequency measured across acoustic signal
+- **mindom**: minimum of dominant frequency measured across acoustic signal
+- **maxdom**: maximum of dominant frequency measured across acoustic signal
+- **dfrange**: range of dominant frequency measured across acoustic signal
+- **modindx**: modulation index. Calculated as the accumulated absolute difference between
 
-  <br>
+</div>
 
-###  📉 סטטיסטיקה של ה- Data
+נציג מספר עמודות ושורות מן המדגם:
 
-<br>
+<div dir="ltr">
 
-מספר הנשים והגברים ב- Data:
+|    | label   |   meanfreq |        sd |    median |        Q25 |       Q75 |       IQR |     skew |       kurt |
+|---:|:--------|-----------:|----------:|----------:|-----------:|----------:|----------:|---------:|-----------:|
+|  0 | male    |  0.059781  | 0.0642413 | 0.0320269 | 0.0150715  | 0.0901934 | 0.075122  | 12.8635  |  274.403   |
+|  1 | male    |  0.0660087 | 0.06731   | 0.0402287 | 0.0194139  | 0.0926662 | 0.0732523 | 22.4233  |  634.614   |
+|  2 | male    |  0.0773155 | 0.0838294 | 0.0367185 | 0.00870106 | 0.131908  | 0.123207  | 30.7572  | 1024.93    |
+|  3 | male    |  0.151228  | 0.0721106 | 0.158011  | 0.0965817  | 0.207955  | 0.111374  |  1.23283 |    4.1773  |
+|  4 | male    |  0.13512   | 0.0791461 | 0.124656  | 0.0787202  | 0.206045  | 0.127325  |  1.10117 |    4.33371 |
+|  5 | male    |  0.132786  | 0.0795569 | 0.11909   | 0.067958   | 0.209592  | 0.141634  |  1.93256 |    8.3089  |
+|  6 | male    |  0.150762  | 0.0744632 | 0.160106  | 0.0928989  | 0.205718  | 0.112819  |  1.53064 |    5.9875  |
+|  7 | male    |  0.160514  | 0.0767669 | 0.144337  | 0.110532   | 0.231962  | 0.12143   |  1.39716 |    4.76661 |
+|  8 | male    |  0.142239  | 0.0780185 | 0.138587  | 0.0882063  | 0.208587  | 0.120381  |  1.09975 |    4.07028 |
+|  9 | male    |  0.134329  | 0.08035   | 0.121451  | 0.07558    | 0.201957  | 0.126377  |  1.19037 |    4.78731 |
 
-<br>
+</div>
 
+הפילוג של התוויות (גברים נשים) במדגם הינו:
 
-![png](output_15_0.png)
+<div class="imgbox" style="max-width:400px">
 
+![](./output/voices_labels_dist.png)
 
+</div>
 
-<br>
+נציג את ההיסטוגרמה של כל אחד מהמאפיינים בעבור כל אחד מתוויות:
 
-היסטוגרמה של כל דגימה כפונקציה של הערך הנמדד:
+<div class="imgbox" style="max-width:900px">
 
+![](./output/voices_distributions.png)
 
+</div>
 
+### Soft SVM
 
-![png](output_17_0.png)
-
-<br>
-
-## 📜 הגדרת הבעיה
-
-<br>
-
-- דגימת קול אקראית - $$w$$
-- משתנים אקראיים:
-  - $$\boldsymbol{x}=X\left(\omega\right)$$: רשימה של $$20$$ ערכים שהוצאו עבור דגימת הקול.
-  - $$y=Y\left(\omega\right)$$: מין הדובר: $$1$$ עבור נקבה, $$-1$$ עבור זכר
-
-הריסק שלנו היינו - Misclassification
-
-
-
-$$
-h^*=\underset{h}{\arg\min}\ E\left[I\left\lbrace h\left(\boldsymbol{x}\right)\neq y\right\rbrace\right]
-$$
-
-
-
-<br>
-
-## 💡 שיטת הלימוד: Soft-SVM
-
-<br>
-
-נשתמש בחבילת האופטימיזציה הקונבקסית [cvxpy](https://www.cvxpy.org/) על מנת לפתור את בעיית האופטימיזציה של SVM.
-
-<br>
-
-### פרמטרים:
-
-הפרמטרים הנלמדים המודל הינם $$w$$ ו- $$b$$ או $$\alpha$$ במקרה שנפתור את הבעיה הדואלית.
-
-<br>
-
-
-### היפר-פרמטרים:
-
-ההיפר-פרמטר היחיד בבעיית ה- Soft-SVM הינו פרמטר העונש $$C$$, שמגדיר מה העונש על הפרת האילוצים.
-
-
-
-<br>
-
-##  עיבוד מקדים
-
-<br>
-
-### 📚 פיצול ה- Data
-
-<br>
-
-* סט אימון - 60%
-* סט וולידציה - 20%
-* סט בוחן - 20%
-
-<br>
-
-### נרמול ה- Data
-
-<br>
-
-חשוב לנרמל את ה- Data לפני הרצת האלגוריתם, משתי סיבות עיקריות:
-
-1. ה- Data מתאר מאפיינים ביחידות וסקלות שונות.
-2. האלגוריתם מנסה למזער את Objective אשר מבוסס מרחק, מה שהופך אותו לרגיש ביחס למרחק לכל כיוון. לדוגמא, אם נכפיל מאפיין מסוייף בערך קבוע גדול מ-1, למעשה ניתן לו חשיבות יתרה ב- Objective
-
-<br>
-
-## ⚙️ שלב הלמידה - הבעייה הדואלית
-
-<br>
-
-ראשית, נפתור את הבעיה הדואלית:
-
-
+ננסה לפתור את בעיית הסיווג של מין הדובר בעזרת soft SVM. נרצה לשם כך לפתור את בעיית האופטימיזציה הבאה (הבעיה הדואלית):
 
 $$
-\left\lbrace\alpha_i\right\rbrace^*=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max} \sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y_iy_j\alpha_i\alpha_j\left<\boldsymbol{x}_i,\boldsymbol{x}_j\right> \\
-\begin{align*}
-\text{s.t.}\quad&0\leq\alpha_i\leq C\quad&\forall i\\
-&\sum_i\alpha_iy_i=0
-\end{align*}
+\begin{aligned}
+\left\lbrace\alpha_i\right\rbrace^*
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+\text{s.t.}\quad
+    &0\leq\alpha_i\leq C\quad\forall i\\
+    &\sum_i\alpha_iy^{(i)}=0
+\end{aligned}
 $$
 
-<br>
-
-נתחיל עם $$C=1$$ ולאחר מכן ננסה לכוונן היפר-פרמטר זה.
-
-<br>
-
-כעת, נבחנה את התוצאה שהתקבלה. נצייר את ערך $$\alpha_i$$ לכל אחת מהדוגמאות:
-
-
-![png](output_31_1.png)
-
-<br>
-
-כצפוי, קיבלנו 3 סוגי ערכים: $$\alpha_i=0$$, $$0<\alpha_i<C$$ ו- $$\alpha_i=C$$. ערכים אלה מתאימים למצבים הבאים
-
-- $$\alpha_i=0$$: דוגמאות שסווגו נכונה ורחוקות מה- Margin: $$y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right) > 1$$
-- $$0<\alpha_i<C$$: דוגמאות שיושבות בדיוק על ה- Margin: $$y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right) = 1$$
-- $$\alpha_i=C$$: נקודות שסווגו באופן לא נכון (בצד הלא נכון של מישורה הפרדה) או סווגו בצורה נכונה אבל יושבות בתוך ה- Margin: $$y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right) < 1$$
-
-<br>
-
-כעת, ניתן להשתמש בנוסחא שנלמדה על מנת לחשב את $$w$$ ו- $$b$$
-
-
+את $\boldsymbol{w}$ נמצא בעזרת:
 
 $$
 \boldsymbol{w}=\sum_i\alpha_iy_i\boldsymbol{x}_i
 $$
 
+את $b$ ניתן לחשב על ידי בחירה של נקודה שעבורה $0<\alpha_i$ ולהשתמש במשוואה: $y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right)=1-\xi_i$.
 
+בכדי לפתור את הבעיה נצטרך לבחור פרמטר משקל $C$ אשר קובע את גודל הקנס לנקודות שחורגות מה margin. נתחיל ב $C=1$ ואחר כך ננסה למצוא את הערך המיטבי.
 
-את $$b$$ ניתן לחשב על ידי לבחור נקודה שעבורה $$0<\alpha_i<C$$ ולהשתמש במשוואה: $$y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right) = 1$$.
+#### חלוקת המדגם
 
-<br>
+כרגיל נחלק את המדגם ל 80%-20%-20% שהם train-validation-test.
 
-נצייר את ההיסטוגרמה של התיוגים של כל הנקודות, ונצבע את 3 המקרים שתיארנו לעיל:
+#### נרמול
 
+חשוב לנרמל את העמודות של המדגם לפני הרצת האלגוריתם משתי סיבות עיקריות:
 
+1. המדגם מכיל מאפיינים ביחידות וסקלות שונות.
+2. האלגוריתם מנסה למזער objective אשר מבוסס מרחק, מה שהופך אותו לרגיש לגודל של כל מאפיין. לדוגמא, אם נכפיל מאפיין מסויים בקבוע גדול מ-1 אנו ניתן לו חשיבות יתרה ב objective.
 
+### תוצאות
 
-![png](output_35_0.png)
+שנשתמש באופטימיזציה נומרית על מנת למצוא את הפרמטרים של משטח ההפרדה. לשם המחשה נשרטט את הפילוג של ה signed distance של הנקודות בכל אחת מהמחלקות
 
+<div class="imgbox" style="max-width:900px">
 
+![](./output/voices_signed_dist.png)
 
-הסיכון שהתקבל על סט הבוחן הינו: $$0.0205$$
+</div>
 
-<br>
+ניתן לראות כי המשטח באמת מצליח לחלק את המדגםעד כדי כמה נקודות שחורגות.
 
-## ⚙️ שלב הלמידה - הבעייה הפרימאלית
+ה miscalssification rate שמתקבל על ה test set הינו 0.028.
 
-<br>
+### מציאת ה $C$ האופטימאלי
 
-כתרגיל, ננסה גם לפתור את הבעיה הפרימאלית ישירות ונשווה בין הפתרונות:
+נבחן סדרה של ערכי $C$ בתחום $10^{-3}$ עד $10^3$. כרגיל, בעבור כל ערך נבנה מסווג ונבחן אותו על ה validation set. נקבל את התוצאה הבאה:
 
+<div class="imgbox" style="max-width:500px">
 
+![](./output/voices_selecting_c.png)
 
-$$
-\boldsymbol{w}^*,b^*=\underset{\boldsymbol{w},b}{\arg\min} \frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_i\xi_i \\
-\begin{align*}
-\text{s.t.}\quad &y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right)\geq1-\xi_i\quad&\forall i\\
-&\xi_i\geq0\quad&\forall i
-\end{align*}
-$$
-
-
-
-<br>
-
-```tex
-The first 10 values if w in the primal problem are:
-[ 0.32403667 -0.13227075 -0.06096529  0.41782102 -0.48840472]
-The first 10 values if w in the dual problem are:
-[ 0.32138073 -0.13206916 -0.05900207  0.4178552  -0.48799808]
-
-The b value of the primal problem is: 0.6602256435596877
-The b value of the dual problem is: 0.658170109096357
-```
-
-<br>
-
-
-## בחירת מודל - כיוונון היפר פרמטרים
-
-<br>
-
-כעת, ננסה לבחור את ההיפר-פרמטר $$C$$. 
-
-נסתכל על ערכים בטווח $$10^{-3}$$ - $$10^3$$ ונשווה את התוצאות על סט האימות
-
-<br>
-
-
-ה- $$C$$ האופטימלי הינו $$0.03162277660168379$$
-
-<br>
-
-הסיכון שהתקבל על סט הבוחן הינו: $$0.017$$
-
-
-
-![png](output_45_2.png)
-
-<br>
-
-## שימוש בפונקציית גרעין:
-
-<br>
-
-כפי שלמדנו, אם נשתמש בפורמולצייה של הבעייה הדואלית, ניתן להחליף את המכפלה הפנימית  $$\left<\boldsymbol{x}_i,\boldsymbol{x}_j\right>$$ בפונקציית גרעין.
-
-<br>
-
-בגרף זה, החלפנו את פונקציית הגרעין ב- Kernel פופולרי המכונה Radial Basis Function או RBF בקיצור.
-
-ה- $$C$$ האופטימלי שהתקבל הינו $$1.0$$.
-
-<br>
-
-הסיכון על סט הבוחן הינו: $$0.016$$
-
-
-
-![png](output_48_2.png)
-
--->
-
+</div>
 </div>
