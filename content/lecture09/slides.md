@@ -32,7 +32,7 @@ $$
 2. MLE:
 
     $$
-    \underset{\boldsymbol{\theta}}{\arg\min} \underbrace{\sum_{i=1}^N \log(p_{\text{y};\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})}_{g(\boldsymbol{\theta};\mathcal{D})}
+    \underset{\boldsymbol{\theta}}{\arg\min} \underbrace{-\sum_{i=1}^N \log(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})}_{g(\boldsymbol{\theta};\mathcal{D})}
     $$
 
 </section><section>
@@ -176,7 +176,7 @@ $$
 
 </div>
 
-- הגדול המוצא של שכבת הקונבולוציה הוא קטן יותר מהכניסה והוא נתון על ידי $D_{\text{out}}=D_{\text{in}}-K+1$.
+- גודל המוצא של שכבת הקונבולוציה הוא קטן יותר מהכניסה והוא נתון על ידי $D_{\text{out}}=D_{\text{in}}-K+1$.
 - בשכבת FC קיימות $D_{\text{in}}\times D_{\text{out}}$ משקולות ועוד $D_{\text{out}}$ איברי היסט.
 - בשכבת קונבולציה יש $K$ משקולות ואיבר היסט בודד.
 
@@ -351,7 +351,7 @@ $$
 
 </div>
 
-- הגודל של האיזור שממנו מושפע נוירון שכבה מסויימת נקרא ה **receptive field** שלו.
+- הגודל של האיזור שממנו מושפע נוירון בשכבה מסויימת נקרא ה **receptive field** שלו.
 - לדוגמא, ה receptive field של נוירון בשכבה השלישית הוא 7.
 - בנוסף, יש גם את שכבות ה pooling אשר מקטינות את המימדים ובכל מגדילות את ה receptive filed.
 
