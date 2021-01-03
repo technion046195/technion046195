@@ -114,6 +114,16 @@ gen_diag ./content/tutorial10/assets/ex_10_1_1_2.png -f png -p1 -b20 -s3 ./conte
 gen_diag ./content/tutorial10/assets/lenet_arch2.png -f png -p1 -b20 -s3 ./content/tutorial10/assets/lenet.drawio
 
 gen_diag ./content/lecture10/assets/course_diagram.png -f png -p9 -b20 -s3 ./content/assets/course_diagram.drawio
-gen_diag ./content/lecture10/assets/plain_geometry.png -f png -p1 -b20 -s3 ./content/lecture10/assets/svm_geometry.drawio
+gen_diag ./content/lecture10/assets/plain_geometry.png -f png -p0 -b20 -s3 ./content/lecture10/assets/plain_geometry.drawio
+gen_diag ./content/lecture10/assets/linear_separable.png -f png -p0 -b20 -s3 ./content/lecture10/assets/linear_separable.drawio
+gen_diag ./content/lecture10/assets/signed_distance.png -f png -p0 -b20 -s3 ./content/lecture10/assets/signed_distance.drawio
+gen_diag ./content/lecture10/assets/margin.png -f png -p0 -b20 -s3 ./content/lecture10/assets/svm_geometry.drawio
+gen_diag ./content/lecture10/assets/svm_xi.png -f png -p1 -b20 -s3 ./content/lecture10/assets/svm_geometry.drawio
+
+gen_diag ./content/tutorial11/assets/ex_11_1.png -f png -p0 -b20 -s3 ./content/tutorial11/assets/ex_11_1.drawio
+gen_diag ./content/tutorial11/assets/ex_11_2.png -f png -p0 -b20 -s3 ./content/tutorial11/assets/ex_11_2.drawio
+gen_diag ./content/tutorial11/assets/ex_11_2_2_sv.png -f png -p1 -b20 -s3 ./content/tutorial11/assets/ex_11_2.drawio
+gen_diag ./content/tutorial11/assets/ex_11_2_3_sv.png -f png -p2 -b20 -s3 ./content/tutorial11/assets/ex_11_2.drawio
+
 
 gen_diag ./content/lecture11/assets/course_diagram.png -f png -p10 -b20 -s3 ./content/assets/course_diagram.drawio
