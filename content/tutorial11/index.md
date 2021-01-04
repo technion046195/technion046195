@@ -12,7 +12,7 @@ print_pdf: true
 # תרגול 11 - SVM ופונקציות גרעין (Kernels)
 
 <div dir="ltr">
-<!-- <a href="./slides/" class="link-button" target="_blank">Slides</a> -->
+<a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial11.pdf" class="link-button" target="_blank">PDF</a>
 <!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
 </div>
