@@ -569,7 +569,7 @@ $$
 \begin{aligned}
 K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})=\exp(0)=1\\
 K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(2)})=\exp(0)=1\\
-K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)})=\exp(-(2^2+2^2))=e^{-4}
+K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)})=\exp(-(2^2+2^2))=e^{-8}
 \end{aligned}
 $$
 
@@ -584,7 +584,7 @@ $$
   +K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(2)})
 \right)\\
 \text{s.t.}\quad &\alpha_i\geq0\quad\forall i\\
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\alpha^2(1-e^{-4})\\
+=\underset{\alpha}{\arg\max}\quad&2\alpha-\alpha^2(1-e^{-8})\\
 \text{s.t.}\quad &\alpha_i\geq0\quad\forall i\\
 \end{aligned}
 $$
@@ -593,9 +593,9 @@ $$
 
 $$
 \begin{aligned}
-&\frac{d}{d\alpha}2\alpha-\alpha^2(1-e^{-4})=0\\
-\Leftrightarrow&1=\alpha(1-e^{-4})\\
-\Leftrightarrow&\alpha=\frac{2}{1-e^{-4}}
+&\frac{d}{d\alpha}2\alpha-\alpha^2(1-e^{-8})=0\\
+\Leftrightarrow&1=\alpha(1-e^{-8})\\
+\Leftrightarrow&\alpha=\frac{2}{1-e^{-8}}
 \end{aligned}
 $$
 
@@ -616,8 +616,8 @@ $$
 \begin{aligned}
 1&=y^{(1)}\left(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})+b\right)\\
 \Leftrightarrow b&=1-\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})\\
-\Leftrightarrow b&=1-\frac{1}{1-e^{-4}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})-K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(1)})\right)\\
-\Leftrightarrow b&=1-\frac{1}{1-e^{-4}}\left(1-e^{-4}\right)=0
+\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})-K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(1)})\right)\\
+\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(1-e^{-4}\right)=0
 \end{aligned}
 $$
 
@@ -627,7 +627,7 @@ $$
 \begin{aligned}
 h(\boldsymbol{x})
 &=\text{sign}(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}\left(\frac{1}{1-e^{-4}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)\right)\\
+&=\text{sign}\left(\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)\right)\\
 &=\text{sign}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)\\
 &=\text{sign}\left(
   \exp\left(-\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}\rVert^2\right)
