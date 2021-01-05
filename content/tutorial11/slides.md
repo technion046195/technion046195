@@ -668,7 +668,7 @@ $$
 
 </section><section>
 
-ננסה לנחש מהם ה support verctors. נתחיל ב 0 ונגדיל בהדרגה את כמות ה support vectors.
+ננסה לנחש מהם ה support vectors. נתחיל ב 0 ונגדיל בהדרגה את כמות ה support vectors.
 
 </section><section>
 
@@ -745,7 +745,24 @@ $$
 
 </div>
 
+
 </section><section>
+
+* נסתכל, ראשית על תת המדגם {3,4,5}. 
+
+<div class="imgbox" style="max-width:500px">
+
+
+![](./assets/ex_11_2.png)
+
+</div>
+* נשים לב שפתרון שבו {3,5} הן SV מתאים לתת המדגם
+
+* אולם ראינו שפתרון זה לא מקיים את האילוצים!
+
+</section><section>
+ 
+ 
 
 ### 
 
@@ -779,9 +796,6 @@ $$
 
 הפתרון של מערכת המשוואות הזו הינה $\boldsymbol{w}=\frac{1}{15}(5,-3)^{\top}$ ו $b=-\frac{2}{15}$
 
-</section><section>
-
-* כעת, נעשה זאת גם עבור הנקודות {3,4,5}. מי מהפתרונות הינו הפתרון לבעיית ה- SVM?
 
 </section><section>
 
