@@ -73,11 +73,13 @@
 
 - [הרצאה 9](/lecture09) - שיטות ברשתות נוירונים
 - [תרגול 10](/tutorial10) - CNN ואיתחולים
-- ✍️ תרגיל בית 5 - יבש, רטוב - תאריך הגשה 19/1/21 - רשתות נוירונים
+- ✍️ תרגיל בית 5 - יבש,
+  <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_5_ex.ipynb" target="_blank">רטוב</a> -
+  תאריך הגשה 19/1/21 - רשתות נוירונים
 
 ### שבוע 10 (5-11/1) - SVM
 
-- הרצאה 10 - SVM ושיטות גרעין
+- [הרצאה 10](/lecture10) - SVM ושיטות גרעין
 - [תרגול 11](/tutorial11) - SVM ושיטות גרעין
 - ✍️ תרגיל בית 6 - יבש, רטוב - תאריך הגשה 26/1/21 - SVM ו AdaBoost
 
