@@ -729,7 +729,7 @@ $$
 
 
 
-<div class="imgbox" style="max-width:500px">
+<div class="imgbox" style="max-width:350px">
 
 
 ![](./assets/ex_11_2.png)
@@ -750,7 +750,7 @@ $$
 
 * נסתכל, ראשית על תת המדגם {3,4,5}. 
 
-<div class="imgbox" style="max-width:500px">
+<div class="imgbox" style="max-width:350px">
 
 
 ![](./assets/ex_11_2.png)
@@ -768,7 +768,7 @@ $$
 
 * השלשה של $\{1,3,5\}$ מגדירה איזור margin שאינו מכיל נקודות אחרות ולכן מקיים את האילוצים:
 
-<div class="imgbox" style="max-width:500px">
+<div class="imgbox" style="max-width:350px">
 
 ![](./assets/ex_11_2_3_sv.png)
 
