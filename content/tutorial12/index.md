@@ -18,7 +18,7 @@ print_pdf: true
 
 ## תקציר התיאוריה
 
-Bagging ו Boosting הם שיטות אשר עושות שימוש במכלול (ensamble) של חזאים בכדי לקבל חזאי עם ביצועים טובים יותר.
+Bagging ו Boosting הן שיטות אשר עושות שימוש במכלול (ensamble) של חזאים בכדי לקבל חזאי עם ביצועים טובים יותר.
 
 ### Bagging
 
@@ -30,7 +30,7 @@ Bagging (Bootstrap + Aggregating) הינה שיטה להקטין את ה **varia
 
 </div>
 
-בשלב ה bootstraping נייצר את המדגמים לכל מדגם נבנה חזאי ובשלב ה aggregation האחד את כל החזאים לחזאי יחיד.
+בשלב ה bootstraping נייצר את המדגמים לכל מדגם נבנה חזאי ובשלב ה aggregation נאחד את כל החזאים לחזאי יחיד.
 
 #### Bootstraping
 
@@ -38,7 +38,7 @@ Bagging (Bootstrap + Aggregating) הינה שיטה להקטין את ה **varia
 
 #### Aggregation
 
-בשלב הראשון נבנה באופן בלתי תלוי מתוך כל אחת מהמגדמים שייצרנו חזאי $h_i(\boldsymbol{x})$. בשלב השני נרכיב את כל החזאים שייצרנו לחזאי אחד כולל.
+בשלב הראשון נבנה באופן בלתי תלוי מתוך כל אחד מהמגדמים שייצרנו חזאי $h_i(\boldsymbol{x})$. בשלב השני נרכיב את כל החזאים שייצרנו לחזאי אחד כולל.
 
 - **בעבור בעיות רגרסיה**: נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{p}\sum_{i=1}^p h_i(\boldsymbol{x})$
 - **בעבור בעיות סיווג**: נבצע majority voting, זאת אומרת: $h(\boldsymbol{x})=\text{majority}(\{h_1(\boldsymbol{x}),h_2(\boldsymbol{x}),\dots,h_p(\boldsymbol{x})\})$
@@ -74,24 +74,24 @@ $$
 1. נבחר את המסווג אשר ממזער את ה misclassification rate הממושקל:
 
     $$
-    h_{t+1}=\underset{h}{\arg\min}\ \sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq h(\boldsymbol{x}^{(i)})\}
+    h_t=\underset{h}{\arg\min}\ \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h(\boldsymbol{x}^{(i)})\}
     $$
 
 2. נחשב את המקדם $\alpha_{t+1}$ של המסווג:
 
     $$
     \begin{aligned}
-    \varepsilon&=\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq h_{t+1}(\boldsymbol{x}^{(i)})\}\\
-    \alpha_{t+1}&=\frac{1}{2}\ln\left(\frac{1-\varepsilon}{\varepsilon}\right)
+    \varepsilon_t&=\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+    \alpha_t&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)
     \end{aligned}
     $$
 
-4. נעדכן את וקטור המשקלים:
+3. נעדכן את וקטור המשקלים:
 
     $$
     \begin{aligned}
-    \tilde{w}_i^{(t+1)}&=w_i^{(t)}\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)\\
-    w_i^{(t+1)}&=\frac{\tilde{w}_i^{(t+1)}}{\sum_{j=1}^N \tilde{w}_j^{(t+1)}}
+    \tilde{w}_i^{(t)}&=w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)\\
+    w_i^{(t)}&=\frac{\tilde{w}_i^{(t)}}{\sum_{j=1}^N \tilde{w}_j^{(t)}}
     \end{aligned}
     $$
 
@@ -100,19 +100,19 @@ $$
 הסיווג הסופי נעשה על ידי קומבינציה לינארית של כל מסווגים והמשקל שלהם.
 
 $$
-h(\boldsymbol{x})=\text{sign}\left(\sum_{k=1}^t\alpha_k h_k(\boldsymbol{x})\right)
+h(\boldsymbol{x})=\text{sign}\left(\sum_{t=1}^T\alpha_t h_t(\boldsymbol{x})\right)
 $$
 
 #### חסם
 
-נסתכל על מסווג אשר התקבל מאלגוריתם AdaBoost שעבורו בכל צעד $k$ שגיאת ה misclassification error הממושקלת קטנה מ $\tfrac{1}{2}-\gamma_k$. בעבור מסווג זה מתקיים ש:
+נסתכל על מסווג אשר התקבל מאלגוריתם AdaBoost שעבורו בכל צעד $t$ שגיאת ה misclassification error הממושקלת קטנה מ $\tfrac{1}{2}-\gamma_t$. בעבור מסווג זה מתקיים ש:
 
 $$
 \frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})=y^{(i)}\}
 \leq
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{k=1}^t\alpha_k y^{(i)}h_k(\boldsymbol{x}^{(i)})\right)
+\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)
 \leq
-\exp\left(-2\sum_{k=1}^t\gamma_k^2\right)
+\exp\left(-2\sum_{t=1}^T\gamma_t^2\right)
 $$
 
 ## תרגיל 12.1: דוגמא חד מימדית
@@ -129,7 +129,7 @@ $$
 
 </div>
 
-נרצה להשתמש במסווגים לינארים מסוג $h(x)=\pm\text{sign}(x-b)$ וב AdaBoost בכדי לבנות מסווג. רשמו את ארבעת האיטרציות הראשונות של האלגוריתם ושרטטו את החזאי המתקבל אחרי כל צעד. הניחו כי: $b\in\{0, 2, 4\}$.
+נרצה להשתמש במסווגים לינארים מסוג $h(x)=\pm\text{sign}(x-b)$ וב AdaBoost בכדי לבנות מסווג. רשמו את ארבעת האיטרציות הראשונות של האלגוריתם ואת החזאי המתקבל אחרי כל צעד. הניחו כי: $b\in\{0, 2, 4\}$.
 
 ### פתרון 12.1
 
@@ -151,7 +151,7 @@ $$
 
 ##### $b=0$
 
-במקרה זה עדיף לקחת את המסווג $h(x)=-\text{sign}(x)$ (אם סימון שלילי) בכדי מזער את misclassification rate.
+במקרה זה עדיף לקחת את המסווג $h(x)=-\text{sign}(x)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
 
 <div class="imgbox" style="max-width:600px">
 
@@ -167,7 +167,7 @@ $$
 
 ##### $b=2$
 
-במקרה זה עדיף לקחת את המסווג $h(x)=\text{sign}(x-2)$ (אם סימון חיובי) בכדי מזער את misclassification rate.
+במקרה זה עדיף לקחת את המסווג $h(x)=\text{sign}(x-2)$ (עם סימון חיובי) בכדי מזער את misclassification rate.
 
 <div class="imgbox" style="max-width:600px">
 
@@ -183,7 +183,7 @@ $$
 
 ##### $b=3$
 
-במקרה זה עדיף לקחת את המסווג $h(x)=-\text{sign}(x-4)$ (אם סימון שלילי) בכדי מזער את misclassification rate.
+במקרה זה עדיף לקחת את המסווג $h(x)=-\text{sign}(x-4)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
 
 <div class="imgbox" style="max-width:600px">
 
@@ -203,8 +203,8 @@ $$
 
 $$
 \begin{aligned}
-\varepsilon&=\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h_1(\boldsymbol{x}^{(i)})\}=\frac{1}{3}\\
-\alpha_1&=\frac{1}{2}\ln\left(\frac{1-\varepsilon}{\varepsilon}\right)=\frac{1}{2}\ln(2)=0.347
+\varepsilon_1&=\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h_1(\boldsymbol{x}^{(i)})\}=\frac{1}{3}\\
+\alpha_1&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_1}{\varepsilon_1}\right)=\frac{1}{2}\ln(2)=0.347
 \end{aligned}
 $$
 
@@ -291,8 +291,8 @@ $$
 
 $$
 \begin{aligned}
-\varepsilon&=\frac{1}{4}\\
-\alpha_2&=\frac{1}{2}\ln\left(\frac{1-\varepsilon}{\varepsilon}\right)=\frac{1}{2}\ln(3)=0.549
+\varepsilon_2&=\frac{1}{4}\\
+\alpha_2&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_2}{\varepsilon_2}\right)=\frac{1}{2}\ln(3)=0.549
 \end{aligned}
 $$
 
@@ -366,8 +366,8 @@ $$
 
 $$
 \begin{aligned}
-\varepsilon&=\frac{1}{6}\\
-\alpha_3&=\frac{1}{2}\ln\left(\frac{1-\varepsilon}{\varepsilon}\right)=\frac{1}{2}\ln(5)=0.805
+\varepsilon_3&=\frac{1}{6}\\
+\alpha_3&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_3}{\varepsilon_3}\right)=\frac{1}{2}\ln(5)=0.805
 \end{aligned}
 $$
 
@@ -441,8 +441,8 @@ $$
 
 $$
 \begin{aligned}
-\varepsilon&=\frac{2}{10}\\
-\alpha_4&=\frac{1}{2}\ln\left(\frac{1-\varepsilon}{\varepsilon}\right)=\frac{1}{2}\ln(4)=0.693
+\varepsilon_4&=\frac{2}{10}\\
+\alpha_4&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_4}{\varepsilon_4}\right)=\frac{1}{2}\ln(4)=0.693
 \end{aligned}
 $$
 
@@ -500,29 +500,121 @@ h(x)
 \end{aligned}
 $$
 
-הסיווג אומנם לא השתנה, אך ככל שנריץ עוד צעדים של האלגוריתם הוא ימשיך לנסות למזער את $\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{k=1}^t\alpha_k y^{(i)}h_k(\boldsymbol{x}^{(i)})\right)$. במקרים רבים כאשר נמשיך להריץ את האלגוריתם יכולת ההכללה של האלגוריתם תמשיך להשתפר גם אחרי שהאלגוריתם מתכנס לסיווג מושלם על ה train set. (זה לא יקרה במקרה המנוון הזה).
+הסיווג אומנם לא השתנה, אך ככל שנריץ עוד צעדים של האלגוריתם הוא ימשיך לנסות למזער את $\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)$. במקרים רבים כאשר נמשיך להריץ את האלגוריתם יכולת ההכללה של האלגוריתם תמשיך להשתפר גם אחרי שהאלגוריתם מתכנס לסיווג מושלם על ה train set. (זה לא יקרה במקרה המנוון הזה).
 
 ## תרגיל 12.2 - שאלות תיאורטיות
 
-השאלות הבאות לא תלויות אחת בשניה.
+מלבד סעיפים 3 ו 4 שתלויים אחד בשני, הסעיפים הבאות לא תלויים אחד בשני.
 
 **1)** מדוע נעדיף ב AdaBoost להשתמש במסווגים בעלי יכולת ביטוי חלשה? לדוגמא מדוע נעדיף להשתמש בעצים בעומק 1 מאשר עצים מאד עמוקים?
 
-**2)** בעבור מדגם כל שהוא בגודל $N$, מובטח לנו שבאלגוריתם ה AdaBoost תמיד נוכל למצוא מסווג כזה אשר יתן לנו שגיאת misclassification rate קטנה מ $\tfrac{1}{2}-\gamma$. אחרי כמה איטרציות של האלגוריתם נקבל בוודאות סיווג מושלם של המדגם.
+**2)** נניח כי בעבור מדגם כל שהוא בגודל $N$, מובטח לנו שבאלגוריתם ה AdaBoost נוכל תמיד למצוא מסווג כזה אשר יתן לנו שגיאת misclassification rate קטנה מ $\tfrac{1}{2}-\gamma$. מצאו חסם עליון על כמות הצעדים של AdaBoost שיש לבצע בכדי לקבל סיווג מושלם.
 
-**רמז**: מהי השגיאה במצב בו המסווג טועה רק על דגימה אחת?
+**רמז**: מהי השגיאת ה misclassification rate (הלא ממושקל) במצב בו המסווג טועה רק על דגימה אחת?
 
-**3)** הם יתכן שבמהלך הריצה של של אלגוריתם ה AdaBoost נבחר פעמיים **ברציפות** את אותו המסווג? זאת אומרת ש $h_k=h_{k+1}$ בעבור $k$ כל שהוא. הניחו כי לכל אורך הריצה של האלגוריתם שגיאת ה misclassification rate הממושקלת קטנה ממש מ $\tfrac{1}{2}$.
+**3)** הראו שאם באלגוריתם AdaBoost ננסה להשתמש באותו המסווג בשני צעדים רצופים בצעד השני נקבל misclassification rate ממושקל ששווה לחצי.
 
-**רמז**: שים לב לשגיאת ה misclassification rate הממושקל של המסווג ה $h_k$ **לאחר** עידכון המשקולות בצעד ה $k$.
+הדרכה (תחת הסימונים שמופיעים בתחילת התרגול)
+
+1. הראו ש: $\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}$.
+2. הראו שקבוע הנרמול של המשקלים נתון על ידי: $\sum_{i=1}^N\tilde{w}_i^{(t)}=2\sqrt{\varepsilon_t(1-\varepsilon_t)}$.
+3. חשבו את ה misclassification rate הממושקל עם משקלים $\boldsymbol{w}^{t}$ והחזאי $h_t$ (מהצעד ה $t$). עשו זאת על ידי הצבה של $w_i^{(t)}$ ושל קבוע הנרמול שלו.
 
 ### פתרון 12.2
 
 #### 1)
 
+AdaBoost מגדיל את ההתאמה של חזאי למדגם על ידי בניית קומבינציה של חזאים. האלגוריתם מקטין את ה underfitting על חשבון ה overfitting. אם נתחיל אם ניקח מודלים בעלי יכולת ביטוי גדולה מידי המודלים יעשו overfitting ושאותו האלגוריתם לא יוכל להקטין.
+
+בפועל מה שיקרה עם ניקח מודלים בעלי יכולת ביטוי גדולה הוא שנמצא בצעד הראשון מודל שיסווג בצורה טובה את המדגם (אך גם כנראה יעשה הרבה overfitting) לו הוא יתן את מרבית המשקל.
+
 #### 2)
 
+בעבור מדגם בגודל $N$ וחזאי עם שגיאת חיזוי אחת על המדגם נקבל שגיאת misclassification rate של $\frac{1}{N}$. נמצא בעזרת החסם את כמות הצעדים שיש לעשות בכדי להגיע לשגיאה קטנה מזו. על פי החסם על השגיאה של AdaBoost אנו יודעים כי:
+
+$$
+\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})=y^{(i)}\}
+\leq
+\exp\left(-2\sum_{t=1}^T\gamma^2\right)
+=\exp\left(-2T\gamma^2\right)
+$$
+
+נמצא את מספר הצעדים המינימאלי $T$ אשר מקיים:
+נדרוש ש:
+
+$$
+\begin{aligned}
+\exp\left(-2T\gamma^2\right)&\leq\frac{1}{N}\\
+\Leftrightarrow -2T\gamma^2&\leq\ln\left(\frac{1}{N}\right)\\
+\Leftrightarrow T&\geq\frac{1}{2\gamma^2}\ln(N)
+\end{aligned}
+$$
+
+מכאן שבעבור $T=\left\lceil\frac{1}{2\gamma^2}\ln(N)\right\rceil+1$ מובטח לנו שנקבל שגיאת misclassification rate קטנה מ $\frac{1}{N}$, זאת אומרת שיש אפס שגיאות סיווג.
+
 #### 3)
+
+נפעל על פי ההדרכה. נתחיל עם השלב הראשון. נשתמש בעובדה ש $\alpha_t=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)$ ונראה ש:
+
+$$
+\begin{aligned}
+\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)
+&=\exp\left(-\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)\\
+&=\exp\left(\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)\right)^{-\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\\
+&=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}
+\end{aligned}
+$$
+
+נמשיך ונחשב את קבוע הנרמול:
+
+$$
+\begin{aligned}
+\sum_{i=1}^N\tilde{w}_i^{(t)}
+&=\sum_{i=1}^N w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\left(I\{y^{(i)}=h(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\right)\\
+&=
+  \left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}=h_t(\boldsymbol{x}^{(i)})\}
+  +\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{-\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}\left(1-I\{y^{(i)}\neq h(\boldsymbol{x}^{(i)})\}\right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(
+    \underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}
+    }_{=1}
+    -\underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}
+    }_{=\varepsilon_t}
+  \right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}
+    \underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}
+    }_{=\varepsilon_t}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(1-\varepsilon_t\right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\varepsilon_t\\
+&=2\sqrt{\varepsilon_t(1-\varepsilon_t)}
+\end{aligned}
+$$
+
+נחשב את ה misclassification rate הממושקל $\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}$. נציב את ההגדרה של $w_i^{(t)}$:
+
+$$
+\begin{aligned}
+\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}
+&=\sum_{i=1}^N \frac{\tilde{w}_i^{(t)}}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+&=\frac{\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\underbrace{\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}}_{=\varepsilon_t}\\
+&=\frac{\varepsilon_t}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\exp\left(\alpha_t\right)\\
+&=\frac{1}{2}\sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\\
+&=\frac{1}{2}
+\end{aligned}
+$$
+
+שגיאת misclassification rate של חצי היא שקולה להטלת מטבע. מכאן שבחירה של אותו המסווג פעמים ברצף לא תשפר את החיזוי ולכן אין טעם במהלך הריצה של האלגוריתם לעשות כן.
 
 ## חלק מעשי - הטיטניק
 
@@ -570,7 +662,7 @@ $$
 
 ### הפילוג של ערכים
 
-הפילוג של כל אחד מהשדות בעבור האנשים ושרדו והאנשים שלא:
+הפילוג של כל אחד מהשדות בעבור האנשים ששרדו והאנשים שלא:
 
 <div class="imgbox" style="max-width:800px">
 
@@ -647,7 +739,7 @@ $$
 
 ### המשך
 
-אם נמשיך כך עוד 20 צעדים נקבל את נמסווג הכולל אשר נותן את הביצועיים הבאים:
+אם נמשיך כך עוד 20 צעדים נקבל את המסווג הכולל אשר נותן את הביצועיים הבאים:
 
 הציון על ה train set יהיה: 0.209
 
