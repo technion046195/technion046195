@@ -683,11 +683,11 @@ $$
 
 <div class="imgbox" style="max-width:800px">
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/RMS_Titanic_3.jpg/1200px-RMS_Titanic_3.jpg)
+![](./assets/titanic.jpg)
 
 </div>
 
-אחד ה Datasets נפוצים למשחקים פשוטים והדגמות של מערכות לומדות הוא רשימת הנוסעים של ספינת הטיטניק.רישמה זו מכילה פרטים שונים על כל אחחד מהנוסעים יחד עם אינדיקטור של איזה מהנוסעים שרד. בעיית supervised learning שניתן להגדיר על מדגם זה הינה הבעיה של לנסות ולחוזת איזה מהנוסעים שרד ואיזה לא על סמך הפרטים של כל נוסע. את המדגם המקורי ניתן למצוא [פה](http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic.html), אנו נעבוד עם גרסא מעט יותר נקיה שלו, שאותה ניתן למצוא [פה](https://technion046195.netlify.app/datasets/titanic_manifest.csv).
+אחד ה Datasets נפוצים למשחקים פשוטים והדגמות של מערכות לומדות הוא רשימת הנוסעים של ספינת הטיטניק. רישמה זו מכילה פרטים שונים על כל אחחד מהנוסעים יחד עם אינדיקטור של איזה מהנוסעים שרד. בעיית supervised learning שניתן להגדיר על מדגם זה הינה הבעיה של לנסות ולחוזת איזה מהנוסעים שרד ואיזה לא על סמך הפרטים של כל נוסע. את המדגם המקורי ניתן למצוא [פה](http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic.html), אנו נעבוד עם גרסא מעט יותר נקיה שלו, שאותה ניתן למצוא [פה](https://technion046195.netlify.app/datasets/titanic_manifest.csv).
 
 נציג את 10 השורות הראשונות במדגם:
 

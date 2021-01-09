@@ -131,3 +131,9 @@ gen_diag ./content/tutorial11/assets/ex_11_2_2_sv.png -f png -p1 -b20 -s3 ./cont
 gen_diag ./content/tutorial11/assets/ex_11_2_3_sv.png -f png -p2 -b20 -s3 ./content/tutorial11/assets/ex_11_2.drawio
 
 gen_diag ./content/lecture11/assets/course_diagram.png -f png -p9 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture11/assets/bagging.png -f png -p0 -b20 -s3 ./content/lecture11/assets/bagging.drawio
+
+gen_diag ./content/tutorial12/assets/ex_12_1.png -f png -p0 -b20 -s3 ./content/tutorial12/assets/ex_12_1.drawio
+gen_diag ./content/tutorial12/assets/ex_12_1_b_0.png -f png -p0 -b20 -s3 ./content/tutorial12/assets/ex_12_1_b_0.drawio
+gen_diag ./content/tutorial12/assets/ex_12_1_b_2.png -f png -p0 -b20 -s3 ./content/tutorial12/assets/ex_12_1_b_2.drawio
+gen_diag ./content/tutorial12/assets/ex_12_1_b_4.png -f png -p0 -b20 -s3 ./content/tutorial12/assets/ex_12_1_b_4.drawio
