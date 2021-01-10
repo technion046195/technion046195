@@ -83,10 +83,10 @@
 - [תרגול 11](/tutorial11) - SVM ושיטות גרעין
 - ✍️ תרגיל בית 6 - יבש, רטוב - תאריך הגשה 26/1/21 - SVM ו AdaBoost
 
-### שבוע 11 (12-18/1) - bagging ו boosting
+### שבוע 11 (12-18/1) - Bagging ו Boosting
 
-- הרצאה 11 - bagging, boosting ו AdaBoost
-- תרגול 12 - AdaBoost
+- הרצאה 11 - Bagging and Boosting
+- [תרגול 12](/tutorial12) - Bagging and Boosting
 
 ### שבוע 12 (19-25/1) - שיטות ב unsupervised learning
 

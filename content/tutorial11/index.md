@@ -6,7 +6,6 @@ make_docx: true
 print_pdf: true
 ---
 
-
 <div dir="rtl" class="site-style">
 
 # תרגול 11 - SVM ופונקציות גרעין (Kernels)
