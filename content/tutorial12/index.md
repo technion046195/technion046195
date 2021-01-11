@@ -18,7 +18,7 @@ print_pdf: true
 
 ## תקציר התיאוריה
 
-Bagging ו Boosting הן שיטות אשר עושות שימוש במכלול (ensamble) של חזאים בכדי לקבל חזאי עם ביצועים טובים יותר.
+Bagging ו Boosting הן שיטות אשר עושות שימוש במכלול (ensemble) של חזאים בכדי לקבל חזאי עם ביצועים טובים יותר.
 
 ### Bagging
 
@@ -34,7 +34,7 @@ Bagging (Bootstrap + Aggregating) הינה שיטה להקטין את ה **varia
 
 #### Bootstraping
 
-ב Bootstraping נקח מדגם נתון בגודל $N$ ונייצר ממנו $p$ מדגמים מספר מדגמים בגודל $\tilde{N}$ על ידי הגרלה של ערכים מתוך המדגם עם חזרות (כך שניתן להגריל כל ערך מספר פעמים). ב bagging נחבר לרוב את $\tilde{N}$ להיות שווה ל $N$.
+ב Bootstraping נקח מדגם נתון בגודל $N$ ונייצר ממנו $p$ מדגמים בגודל $\tilde{N}$ על ידי הגרלה של ערכים מתוך המדגם עם חזרות (כך שניתן להגריל כל ערך מספר פעמים). ב bagging נחבר לרוב את $\tilde{N}$ להיות שווה ל $N$.
 
 #### Aggregation
 
@@ -108,7 +108,7 @@ $$
 נסתכל על מסווג אשר התקבל מאלגוריתם AdaBoost שעבורו בכל צעד $t$ שגיאת ה misclassification error הממושקלת קטנה מ $\tfrac{1}{2}-\gamma_t$. בעבור מסווג זה מתקיים ש:
 
 $$
-\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})=y^{(i)}\}
+\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
 \leq
 \frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)
 \leq
@@ -533,7 +533,7 @@ AdaBoost מגדיל את ההתאמה של חזאי למדגם על ידי בנ�
 בעבור מדגם בגודל $N$ וחזאי עם שגיאת חיזוי אחת על המדגם נקבל שגיאת misclassification rate של $\frac{1}{N}$. נמצא בעזרת החסם את כמות הצעדים שיש לעשות בכדי להגיע לשגיאה קטנה מזו. על פי החסם על השגיאה של AdaBoost אנו יודעים כי:
 
 $$
-\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})=y^{(i)}\}
+\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
 \leq
 \exp\left(-2\sum_{t=1}^T\gamma^2\right)
 =\exp\left(-2T\gamma^2\right)
