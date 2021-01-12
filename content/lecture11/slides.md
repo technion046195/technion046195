@@ -10,7 +10,7 @@ slides_pdf: true
 # הרצאה 11 - Bagging and Boosting
 
 <div dir="ltr">
-<a href="/assets/lecture10_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/lecture11_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 
 </section><section>
