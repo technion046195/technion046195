@@ -85,7 +85,7 @@
 
 ### שבוע 11 (12-18/1) - Bagging ו Boosting
 
-- הרצאה 11 - Bagging and Boosting
+- [הרצאה 11](/lecture11) - Bagging and Boosting
 - [תרגול 12](/tutorial12) - Bagging and Boosting
 
 ### שבוע 12 (19-25/1) - שיטות ב unsupervised learning

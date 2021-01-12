@@ -397,6 +397,7 @@ const mdToPDF = async ({mdFilename, pdfFilename}) => {
 }
 
 const printToPDF = async (pagesToPrintList, nWorkers=1, continuos=false) => {
+  await new Promise(resolve => setTimeout(resolve, 10000))
   const runWorker = async () => {
     console.log("Opening browser");
     let browser = await puppeteer.launch({

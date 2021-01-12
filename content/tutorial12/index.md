@@ -34,14 +34,14 @@ Bagging (Bootstrap + Aggregating) הינה שיטה להקטין את ה **varia
 
 #### Bootstraping
 
-ב Bootstraping נקח מדגם נתון בגודל $N$ ונייצר ממנו $p$ מדגמים בגודל $\tilde{N}$ על ידי הגרלה של ערכים מתוך המדגם עם חזרות (כך שניתן להגריל כל ערך מספר פעמים). ב bagging נחבר לרוב את $\tilde{N}$ להיות שווה ל $N$.
+ב Bootstraping נקח מדגם נתון בגודל $N$ ונייצר ממנו $p$ מדגמים בגודל $\tilde{N}$ על ידי הגרלה של ערכים מתוך המדגם עם חזרות (כך שניתן להגריל כל ערך מספר פעמים). ב bagging נבחר לרוב את $\tilde{N}$ להיות שווה ל $N$.
 
 #### Aggregation
 
-בשלב הראשון נבנה באופן בלתי תלוי מתוך כל אחד מהמגדמים שייצרנו חזאי $h_i(\boldsymbol{x})$. בשלב השני נרכיב את כל החזאים שייצרנו לחזאי אחד כולל.
+בשלב הראשון נבנה באופן בלתי תלוי מתוך כל אחד מהמגדמים שייצרנו חזאי $\tilde{h}_i(\boldsymbol{x})$. בשלב השני נרכיב את כל החזאים שייצרנו לחזאי אחד כולל.
 
-- **בעבור בעיות רגרסיה**: נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{p}\sum_{i=1}^p h_i(\boldsymbol{x})$
-- **בעבור בעיות סיווג**: נבצע majority voting, זאת אומרת: $h(\boldsymbol{x})=\text{majority}(\{h_1(\boldsymbol{x}),h_2(\boldsymbol{x}),\dots,h_p(\boldsymbol{x})\})$
+- **בעבור בעיות רגרסיה**: נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{p}\sum_{i=1}^p \tilde{h}_i(\boldsymbol{x})$
+- **בעבור בעיות סיווג**: נבצע majority voting, זאת אומרת: $h(\boldsymbol{x})=\text{majority}(\{\tilde{h}_1(\boldsymbol{x}),\tilde{h}_2(\boldsymbol{x}),\dots,\tilde{h}_p(\boldsymbol{x})\})$
 
 ### AdaBoost
 
@@ -49,18 +49,11 @@ AdaBoost (Adaptive Boosting) מתייחס לבעיות סיווג בינאריו
 
 ב AdaBoost נסמן את המחלקות ב $\text{y}=\pm1$.
 
-הגדרות:
-
-- **מסווג חזק** - מסווג אשר מסוגל לסווג את המדגם באופן מושלם.
-- **מסווג חלש** - כל מסווג שאינו מסווג חזק ומסוגל לסווג את המדגם בצורה יותר טובה מסיווג אקראי.
-
-שיטות boosting מנסות לבנות מסווג חזק מתוך מכלול של מסווגים חלשים.
-
-בהיתן אוסף של מסווגים בינארים, אלגוריתם ה AdaBoost מנסה לבחור סט של $t$ מסווגים ומקדמים $\{\alpha_k,h_k\}_{k=1}^t$ ולבנות קומבינציה לינארית $\sum_{k=1}^t\alpha_k h_k(\boldsymbol{x})$ שתמזער את בעיית האופטימיזציה הבאה:
+בהיתן אוסף של מסווגים בינארים, אלגוריתם ה AdaBoost מנסה לבחור סט של $t$ מסווגים ומקדמים $\{\alpha_k,\tilde{h}_k\}_{k=1}^t$ ולבנות קומבינציה לינארית $\sum_{k=1}^t\alpha_k \tilde{h}_k(\boldsymbol{x})$ שתמזער את בעיית האופטימיזציה הבאה:
 
 $$
-\underset{\{\alpha_k,h_k\}_k}{\arg\min}\quad
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{k=1}^t\alpha_k y^{(i)}h_k(\boldsymbol{x}^{(i)})\right)
+\underset{\{\alpha_k,\tilde{h}_k\}_k}{\arg\min}\quad
+\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{k=1}^t\alpha_k y^{(i)}\tilde{h}_k(\boldsymbol{x}^{(i)})\right)
 $$
 
 האלגוריתם בונה את הקומבינציה הלינארית בצורה חמדנית על ידי הוספת איבר איבר לקומבינציה (והגדלה של $t$) ועצירה כאשר ביצועי המסווג מספקים או שהאלגוריתם מתחיל לעשות overfitting על ה validation set.
@@ -74,14 +67,14 @@ $$
 1. נבחר את המסווג אשר ממזער את ה misclassification rate הממושקל:
 
     $$
-    h_t=\underset{h}{\arg\min}\ \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h(\boldsymbol{x}^{(i)})\}
+    \tilde{h}_t=\underset{\tilde{h}}{\arg\min}\ \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
     $$
 
 2. נחשב את המקדם $\alpha_{t+1}$ של המסווג:
 
     $$
     \begin{aligned}
-    \varepsilon_t&=\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+    \varepsilon_t&=\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
     \alpha_t&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)
     \end{aligned}
     $$
@@ -90,7 +83,7 @@ $$
 
     $$
     \begin{aligned}
-    \tilde{w}_i^{(t)}&=w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)\\
+    \tilde{w}_i^{(t)}&=w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
     w_i^{(t)}&=\frac{\tilde{w}_i^{(t)}}{\sum_{j=1}^N \tilde{w}_j^{(t)}}
     \end{aligned}
     $$
@@ -100,7 +93,7 @@ $$
 הסיווג הסופי נעשה על ידי קומבינציה לינארית של כל מסווגים והמשקל שלהם.
 
 $$
-h(\boldsymbol{x})=\text{sign}\left(\sum_{t=1}^T\alpha_t h_t(\boldsymbol{x})\right)
+h(\boldsymbol{x})=\text{sign}\left(\sum_{t=1}^T\alpha_t \tilde{h}_t(\boldsymbol{x})\right)
 $$
 
 #### חסם
@@ -110,7 +103,7 @@ $$
 $$
 \frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
 \leq
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)
+\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
 \leq
 \exp\left(-2\sum_{t=1}^T\gamma_t^2\right)
 $$
@@ -129,7 +122,7 @@ $$
 
 </div>
 
-נרצה להשתמש במסווגים לינארים מסוג $h(x)=\pm\text{sign}(x-b)$ וב AdaBoost בכדי לבנות מסווג. רשמו את ארבעת האיטרציות הראשונות של האלגוריתם ואת החזאי המתקבל אחרי כל צעד. הניחו כי: $b\in\{0, 2, 4\}$.
+נרצה להשתמש במסווגים לינארים מסוג $\tilde{h}(x)=\pm\text{sign}(x-b)$ וב AdaBoost בכדי לבנות מסווג. רשמו את ארבעת האיטרציות הראשונות של האלגוריתם ואת החזאי המתקבל אחרי כל צעד. הניחו כי: $b\in\{0, 2, 4\}$.
 
 ### פתרון 12.1
 
@@ -144,14 +137,14 @@ $$
 נבחר מבין המסווגים הנתונים את המסווג אשר ממזער את ה objective שהוא ה misclassification rate הממושקל.
 
 $$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h(x^{(i)})\}
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}
 $$
 
 נבחן את ארבעת הערכים האפשריים של $b$:
 
 ##### $b=0$
 
-במקרה זה עדיף לקחת את המסווג $h(x)=-\text{sign}(x)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
 
 <div class="imgbox" style="max-width:600px">
 
@@ -162,12 +155,12 @@ $$
 חזאי זה יטעה רק על הנקודה השניה $i=2$ ולכן נקבל:
 
 $$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h(x^{(i)})\}=w_2^{(0)}=\tfrac{1}{3}
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\tfrac{1}{3}
 $$
 
 ##### $b=2$
 
-במקרה זה עדיף לקחת את המסווג $h(x)=\text{sign}(x-2)$ (עם סימון חיובי) בכדי מזער את misclassification rate.
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=\text{sign}(x-2)$ (עם סימון חיובי) בכדי מזער את misclassification rate.
 
 <div class="imgbox" style="max-width:600px">
 
@@ -178,12 +171,12 @@ $$
 חזאי זה יטעה רק על הנקודה השלישית $i=3$ ולכן נקבל:
 
 $$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h(x^{(i)})\}=w_3^{(0)}=\tfrac{1}{3}
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\tfrac{1}{3}
 $$
 
 ##### $b=3$
 
-במקרה זה עדיף לקחת את המסווג $h(x)=-\text{sign}(x-4)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x-4)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
 
 <div class="imgbox" style="max-width:600px">
 
@@ -194,16 +187,16 @@ $$
 חזאי זה יטעה רק על הנקודה השלישית $i=1$ ולכן נקבל:
 
 $$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h(x^{(i)})\}=w_1^{(0)}=\tfrac{1}{3}
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\tfrac{1}{3}
 $$
 
-מכיוון שכל שלושת החזאים מניבים את אותו objective נבחר את אחד מהם באקראי. נבחר אם כן את המסווג הראשון של האלגוריתם להיות $h_1=-\text{sign}(x)$.
+מכיוון שכל שלושת החזאים מניבים את אותו objective נבחר את אחד מהם באקראי. נבחר אם כן את המסווג הראשון של האלגוריתם להיות $\tilde{h}_1=-\text{sign}(x)$.
 
 נחשב את $\alpha_1$:
 
 $$
 \begin{aligned}
-\varepsilon_1&=\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h_1(\boldsymbol{x}^{(i)})\}=\frac{1}{3}\\
+\varepsilon_1&=\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}_1(\boldsymbol{x}^{(i)})\}=\frac{1}{3}\\
 \alpha_1&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_1}{\varepsilon_1}\right)=\frac{1}{2}\ln(2)=0.347
 \end{aligned}
 $$
@@ -213,9 +206,9 @@ $$
 $$
 \tilde{\boldsymbol{w}}^{(1)}
 =\begin{bmatrix}
-    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}h_1(x^{(i)})\right)\\
-    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}h_1(x^{(i)})\right)\\
-    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}h_1(x^{(i)})\right)
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)
 \end{bmatrix}
 =\frac{1}{3}\begin{bmatrix}
     \exp\left(-\frac{1}{2}\ln(2)\cdot1\right)\\
@@ -250,7 +243,7 @@ $$
 $$
 \begin{aligned}
 h(x)
-&=\text{sign}\left(\alpha_1 h_1(x)\right)\\
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)\right)\\
 &=\text{sign}\left(-0.347\text{sign}(x)\right)\\
 &=\begin{cases}
 \text{sign}(0.347)&x<0\\
@@ -267,25 +260,25 @@ $$
 
 נמצא את החזאי האופטימאלי:
 
-- בעבור $h(x)=-\text{sign}(x)$ נקבל:
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל:
 
     $$
-    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h(x^{(i)})\}=w_2^{(0)}=\frac{2}{4}
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\frac{2}{4}
     $$
 
-- בעבור $h(x)=\text{sign}(x-2)$ נקבל:
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל:
 
     $$
-    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h(x^{(i)})\}=w_3^{(0)}=\frac{1}{4}
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\frac{1}{4}
     $$
 
-- בעבור $h(x)=-\text{sign}(x-4)$ נקבל:
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל:
 
     $$
-    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq h(x^{(i)})\}=w_1^{(0)}=\frac{1}{4}
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\frac{1}{4}
     $$
 
-המסווג השני והשלישי נותנים את אותם הביצועים נבחר באופן אקראי את המסווג השני $h_2=\text{sign}(x-2)$.
+המסווג השני והשלישי נותנים את אותם הביצועים נבחר באופן אקראי את המסווג השני $\tilde{h}_2=\text{sign}(x-2)$.
 
 נחשב את $\alpha_2$:
 
@@ -301,9 +294,9 @@ $$
 $$
 \tilde{\boldsymbol{w}}^{(2)}
 =\frac{1}{4}\begin{bmatrix}
-    \exp\left(-\alpha_2 y^{(i)}h_2(x^{(i)})\right)\\
-    2\exp\left(-\alpha_2 y^{(i)}h_2(x^{(i)})\right)\\
-    \exp\left(-\alpha_2 y^{(i)}h_2(x^{(i)})\right)
+    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
+    2\exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
+    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)
 \end{bmatrix}
 =\begin{bmatrix}
     \exp\left(-\frac{1}{2}\ln(3)\cdot1\right)\\
@@ -338,7 +331,7 @@ $$
 $$
 \begin{aligned}
 h(x)
-&=\text{sign}\left(\alpha_1 h_1(x)+\alpha_2 h_2(x)\right)\\
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)\right)\\
 &=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)\right)\\
 &=\begin{cases}
 \text{sign}(-0.203)&x<0\\
@@ -356,11 +349,11 @@ $$
 
 נמצא את החזאי האופטימאלי:
 
-- בעבור $h(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{6}$
-- בעבור $h(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{6}$
-- בעבור $h(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{1}{6}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{6}$
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{6}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{1}{6}$
 
-המסווג השלישי הוא בעל הביצועים הטובים ביותר ולכן נבחר $h_3=-\text{sign}(x-4)$.
+המסווג השלישי הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_3=-\text{sign}(x-4)$.
 
 נחשב את $\alpha_3$:
 
@@ -376,9 +369,9 @@ $$
 $$
 \tilde{\boldsymbol{w}}^{(3)}
 =\frac{1}{6}\begin{bmatrix}
-    \exp\left(-\alpha_3 y^{(i)}h_3(x^{(i)})\right)\\
-    2\exp\left(-\alpha_3 y^{(i)}h_3(x^{(i)})\right)\\
-    3\exp\left(-\alpha_3 y^{(i)}h_3(x^{(i)})\right)
+    \exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
+    2\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
+    3\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)
 \end{bmatrix}
 =\frac{1}{6}\begin{bmatrix}
     5^{\frac{1}{2}}\\
@@ -408,7 +401,7 @@ $$
 $$
 \begin{aligned}
 h(x)
-&=\text{sign}\left(\alpha_1 h_1(x)+\alpha_2 h_2(x)+\alpha_3 h_3(x)\right)\\
+&=\text{sign}\left(\alpha_1 h_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)\right)\\
 &=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
 &=\begin{cases}
 \text{sign}(0.602)&x<0\\
@@ -431,11 +424,11 @@ $$
 
 נמצא את החזאי האופטימאלי:
 
-- בעבור $h(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{10}$
-- בעבור $h(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{10}$
-- בעבור $h(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{5}{10}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{10}$
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{10}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{5}{10}$
 
-המסווג השני הוא בעל הביצועים הטובים ביותר ולכן נבחר $h_4=-\text{sign}(x)$.
+המסווג השני הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_4=-\text{sign}(x)$.
 
 נחשב את $\alpha_4$:
 
@@ -451,9 +444,9 @@ $$
 $$
 \tilde{\boldsymbol{w}}^{(4)}
 =\frac{1}{10}\begin{bmatrix}
-    5\exp\left(-\alpha_4 y^{(i)}h_4(x^{(i)})\right)\\
-    2\exp\left(-\alpha_4 y^{(i)}h_4(x^{(i)})\right)\\
-    3\exp\left(-\alpha_4 y^{(i)}h_4(x^{(i)})\right)
+    5\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
+    2\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
+    3\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)
 \end{bmatrix}
 =\frac{1}{10}\begin{bmatrix}
     5\cdot4^{-\frac{1}{2}}\\
@@ -483,7 +476,7 @@ $$
 $$
 \begin{aligned}
 h(x)
-&=\text{sign}\left(\alpha_1 h_1(x)+\alpha_2 h_2(x)+\alpha_3 h_3(x)+\alpha_4 h_4(x)\right)\\
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)+\alpha_4 \tilde{h}_4(x)\right)\\
 &=\text{sign}\left(-1.04\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
 &=\begin{cases}
 \text{sign}(1.295)&x<0\\
@@ -500,7 +493,7 @@ h(x)
 \end{aligned}
 $$
 
-הסיווג אומנם לא השתנה, אך ככל שנריץ עוד צעדים של האלגוריתם הוא ימשיך לנסות למזער את $\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)$. במקרים רבים כאשר נמשיך להריץ את האלגוריתם יכולת ההכללה של האלגוריתם תמשיך להשתפר גם אחרי שהאלגוריתם מתכנס לסיווג מושלם על ה train set. (זה לא יקרה במקרה המנוון הזה).
+הסיווג אומנם לא השתנה, אך ככל שנריץ עוד צעדים של האלגוריתם הוא ימשיך לנסות למזער את $\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)$. במקרים רבים כאשר נמשיך להריץ את האלגוריתם יכולת ההכללה של האלגוריתם תמשיך להשתפר גם אחרי שהאלגוריתם מתכנס לסיווג מושלם על ה train set. (זה לא יקרה במקרה המנוון הזה).
 
 ## תרגיל 12.2 - שאלות תיאורטיות
 
@@ -516,9 +509,9 @@ $$
 
 הדרכה (תחת הסימונים שמופיעים בתחילת התרגול)
 
-1. הראו ש: $\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}$.
+1. הראו ש: $\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}$.
 2. הראו שקבוע הנרמול של המשקלים נתון על ידי: $\sum_{i=1}^N\tilde{w}_i^{(t)}=2\sqrt{\varepsilon_t(1-\varepsilon_t)}$.
-3. חשבו את ה misclassification rate הממושקל עם משקלים $\boldsymbol{w}^{t}$ והחזאי $h_t$ (מהצעד ה $t$). עשו זאת על ידי הצבה של $w_i^{(t)}$ ושל קבוע הנרמול שלו.
+3. חשבו את ה misclassification rate הממושקל עם משקלים $\boldsymbol{w}^{t}$ והחזאי $\tilde{h}_t$ (מהצעד ה $t$). עשו זאת על ידי הצבה של $w_i^{(t)}$ ושל קבוע הנרמול שלו.
 
 ### פתרון 12.2
 
@@ -558,10 +551,10 @@ $$
 
 $$
 \begin{aligned}
-\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)
-&=\exp\left(-\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)\\
-&=\exp\left(\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)\right)^{-\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\\
-&=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}
+\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
+&=\exp\left(-\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+&=\exp\left(\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)\right)^{-\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
+&=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}
 \end{aligned}
 $$
 
@@ -570,27 +563,27 @@ $$
 $$
 \begin{aligned}
 \sum_{i=1}^N\tilde{w}_i^{(t)}
-&=\sum_{i=1}^N w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)\\
-&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\\
-&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\left(I\{y^{(i)}=h_t(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\right)\\
+&=\sum_{i=1}^N w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\left(I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)\\
 &=
-  \left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}=h_t(\boldsymbol{x}^{(i)})\}
-  +\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{-\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+  \left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}
+  +\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{-\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
 &=
-  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}\left(1-I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\right)
-  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}\left(1-I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
 &=
   \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(
     \underbrace{
       \sum_{i=1}^N w_i^{(t-1)}
     }_{=1}
     -\underbrace{
-      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
     }_{=\varepsilon_t}
   \right)
   +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}
     \underbrace{
-      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
     }_{=\varepsilon_t}\\
 &=
   \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(1-\varepsilon_t\right)
@@ -599,15 +592,15 @@ $$
 \end{aligned}
 $$
 
-נחשב את ה misclassification rate הממושקל $\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}$. נציב את ההגדרה של $w_i^{(t)}$:
+נחשב את ה misclassification rate הממושקל $\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}$. נציב את ההגדרה של $w_i^{(t)}$:
 
 $$
 \begin{aligned}
-\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}
-&=\sum_{i=1}^N \frac{\tilde{w}_i^{(t)}}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
-&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}h_t(\boldsymbol{x}^{(i)})\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
-&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}\\
-&=\frac{\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\underbrace{\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq h_t(\boldsymbol{x}^{(i)})\}}_{=\varepsilon_t}\\
+\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
+&=\sum_{i=1}^N \frac{\tilde{w}_i^{(t)}}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\frac{\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\underbrace{\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}}_{=\varepsilon_t}\\
 &=\frac{\varepsilon_t}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\exp\left(\alpha_t\right)\\
 &=\frac{1}{2}\sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\\
 &=\frac{1}{2}
