@@ -58,7 +58,8 @@
 
 - [הרצאה 7](/lecture07) - שיטות דיסקרימינטביות הסתברותיות, logistic regression
 - [תרגול 8](/tutorial08) - Logistic Regression 7 Gradient Descent
-- ✍️ תרגיל בית 4 - יבש,
+- ✍️ תרגיל בית 4 -
+  <a href="https://moodle.technion.ac.il/mod/resource/view.php?id=926176" target="_blank">יבש</a>,
   <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_4_ex.ipynb" target="_blank">רטוב</a> -
   תאריך הגשה 5/1/21 - סיווג גנרטיבי
 
@@ -73,7 +74,8 @@
 
 - [הרצאה 9](/lecture09) - שיטות ברשתות נוירונים
 - [תרגול 10](/tutorial10) - CNN ואיתחולים
-- ✍️ תרגיל בית 5 - יבש,
+- ✍️ תרגיל בית 5 -
+  <a href="https://moodle.technion.ac.il/mod/resource/view.php?id=935677" target="_blank">יבש</a>,
   <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_5_ex.ipynb" target="_blank">רטוב</a> -
   תאריך הגשה 19/1/21 - רשתות נוירונים
 
@@ -81,7 +83,9 @@
 
 - [הרצאה 10](/lecture10) - SVM ושיטות גרעין
 - [תרגול 11](/tutorial11) - SVM ושיטות גרעין
-- ✍️ תרגיל בית 6 - יבש, רטוב - תאריך הגשה 26/1/21 - SVM ו AdaBoost
+- ✍️ תרגיל בית 6 -
+  <a href="https://moodle.technion.ac.il/mod/resource/view.php?id=945196" target="_blank">יבש</a>,
+  <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_6_ex.ipynb" target="_blank">רטוב</a> - SVM ו AdaBoost
 
 ### שבוע 11 (12-18/1) - Bagging ו Boosting
 
