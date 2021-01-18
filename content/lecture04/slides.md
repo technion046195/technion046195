@@ -7,7 +7,7 @@ slides_pdf: true
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# הרצאה 4 - סיווג גנרטיבי
+# הרצאה 4 - סיווג דיסקרימינטיבי
 
 <div dir="ltr">
 <a href="/assets/lecture04_slides.pdf" class="link-button" target="_blank">PDF</a>
@@ -54,7 +54,7 @@ slides_pdf: true
 - אנו מנסים לבנות חזאי בעל ביצועים טובים ככל האפשר על המדגם.
 - בכדי ולהגביל את ה overfitting אנו נשים מגבלות על פונקציית החיזוי.
 
-בהרצאה הקרובה נכיר שתי שיטות גנרטיביות לפתרון בעיות סיווג.
+בהרצאה הקרובה נכיר שתי שיטות דיסקרימינטיביות לפתרון בעיות סיווג.
 
 </section><section>
 

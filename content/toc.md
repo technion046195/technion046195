@@ -27,7 +27,7 @@
 - [הרצאה 3](/lecture03/) - test set, בעיית הoverfitting, פירוק בעיית ההכללה, hyper-parameters, שימוש ב cross-validation, רגולריצזיה.
 - [תרגול 4](/tutorial04/) - bias-variance decomposition, רגולריזציה, k-fold cross validation.
 
-### שבוע 4 (17-23/11) - מבוא לבעיות סיווג
+### שבוע 4 (17-23/11) - סיווג דיסקרימינטיבי
 
 - [הרצאה 4](/lecture04/) - בעיות סיווג, K-NN ועצי החלטה
 - [תרגול 5](/tutorial05/) - K-NN ועצי החלטה.
