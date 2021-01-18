@@ -13,7 +13,7 @@ print_pdf: true
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial13.pdf" class="link-button" target="_blank">PDF</a>
-<!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## תקציר התיאוריה - PCA
@@ -38,12 +38,12 @@ PCA הוא אלגוריתם מאד נפוץ אשר משמש במוקומות ר�
 
 - הקווריאנס האמפירי של המדגם: $P=X^{\top}X$.
 
-נתייחס לפירוק (ליכסון) הבא: $P=U\Lambda U^{\top}$ כאשר $U$ היא מטריצה אורתונורמלית אשר שורותיה הם וקטורים עצמיים של $P$:
+נתייחס לפירוק (ליכסון) הבא: $P=U\Lambda U^{\top}$ כאשר $U$ היא מטריצה אורתונורמלית אשר העמודות שלה הם וקטורים עצמיים של $P$:
 
 $$
 U=\begin{pmatrix}
   | & |  &  & | \\
-  \boldsymbol{u}^{(1)} & \boldsymbol{u}^{(2)} & \dots & \boldsymbol{u}^{(D)} \\
+  \boldsymbol{u}_1 & \boldsymbol{u}_2 & \dots & \boldsymbol{u}_3 \\
   | & |  &  & |
 \end{pmatrix}
 $$
@@ -306,7 +306,7 @@ $$
 והרכיב השני יהיה:
 
 $$
-z_1=\boldsymbol{u}_1^{\top}(\boldsymbol{x}-\mu)
+z_2=\boldsymbol{u}_2^{\top}(\boldsymbol{x}-\mu)
 =\frac{1}{\sqrt{5}}\begin{pmatrix}
   -2 & 1
 \end{pmatrix}
