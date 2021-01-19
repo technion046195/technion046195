@@ -141,4 +141,9 @@ gen_diag ./content/tutorial12/assets/ex_12_1_b_2.png -f png -p0 -b20 -s3 ./conte
 gen_diag ./content/tutorial12/assets/ex_12_1_b_4.png -f png -p0 -b20 -s3 ./content/tutorial12/assets/ex_12_1_b_4.drawio
 
 gen_diag ./content/lecture12/assets/course_diagram.png -f png -p10 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture12/assets/encoder_decoder.png -f png -p0 -b20 -s3 ./content/lecture12/assets/encoder_decoder.drawio
+gen_diag ./content/lecture12/assets/pca_remove_mean.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca_remove_mean.drawio
+gen_diag ./content/lecture12/assets/pca_project.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca_project.drawio
+gen_diag ./content/lecture12/assets/pca_transform.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca_transform.drawio
+gen_diag ./content/lecture12/assets/pca_recon_error.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca_recon_error.drawio
 gen_diag ./content/lecture12/assets/pca.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca.drawio
