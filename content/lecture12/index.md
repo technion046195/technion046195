@@ -2,8 +2,8 @@
 type: lecture
 index: 12
 template: page
-make_docx: false
-print_pdf: false
+make_docx: true
+print_pdf: true
 ---
 
 <div dir="rtl" class="site-style">
