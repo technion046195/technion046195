@@ -94,7 +94,7 @@
 
 ### שבוע 12 (19-25/1) - שיטות ב unsupervised learning
 
-- הרצאה 12 - PCA ו K-means
+- [הרצאה 12](/lecture12) - PCA ו K-means
 - [תרגול 13](/tutorial13) - PCA ו K-means
 - ✍️ תרגיל בית 7 - יבש - לא להגשה - K-means ו PCA
 

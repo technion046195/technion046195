@@ -715,4 +715,5 @@ $$
 
 עם misclassification rate של 0 על ה test set.
 
+</section>
 </div>

@@ -13,7 +13,7 @@ print_pdf: false
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/lecture11.pdf" class="link-button" target="_blank">PDF</a>
-<!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## מה נלמד היום
@@ -26,7 +26,7 @@ print_pdf: false
 
 ## למידה לא מודרכת (Unsupervised Learning)
 
-Unsupervised learning הינה שם כולל למגוון של בעיות בהם אנו מנסים בהינתן מדגם, ללמוד את התכונות של הדגימות או של המדגם כולו. בניגוד ל supervised learning, ב unsupervised learning המדגם יכיל רק אוסף של דגימות ($\boldsymbol{x}$), ללא תווית ($y$). הלהן דוגמאות לכמה בעיות ב unsupervised learning:
+Unsupervised learning הינה שם כולל למגוון של בעיות בהם אנו מנסים בהינתן מדגם, ללמוד את התכונות של הדגימות או של המדגם כולו. בניגוד ל supervised learning, ב unsupervised learning המדגם יכיל רק אוסף של דגימות ($\boldsymbol{x}$), ללא תווית ($y$). להלן דוגמאות לכמה בעיות ב unsupervised learning:
 
 - אשכול (חלוקה לקבוצות).
 - מציאת ייצוג "נוח" יותר של הדגימות.
@@ -100,7 +100,7 @@ $$
 2. ויזואליזציה - בהם נרצה להפוץ וקטורים ממימד גבוה למימד 2 או 3 שאותם אנו יודעים לשרטט.
 3. דחיסה.
 
-### הפתרון
+## הפתרון לבעיית האופטימיזציה
 
 נתחיל בלהציג את הפתרון לבעיה.
 
@@ -139,14 +139,7 @@ $$
 
 #### פרשנות גיאומטרית
 
-ראשית נשים לב שה encoder מתחיל בלחסר את הממוצע של $\boldsymbol{x}$ וה decoder מסיים בלהוסיף אותו בחזרה. לשם הנוחות נסתכל על הגרסא של $\boldsymbol{x}$ מחוסרת הממוצע: $\boldsymbol{x}'=\boldsymbol{x}-\boldsymbol{\mu}$. הטרנספורמציות המתקבלות הינן:
-
-$$
-\begin{aligned}
-\boldsymbol{z}&=T^{\top}\boldsymbol{x}'\\
-\tilde{\boldsymbol{x}}'&=T\boldsymbol{z}=TT^{\top}\boldsymbol{x}'
-\end{aligned}
-$$
+ראשית נשים לב שה encoder מתחיל בלחסר את הממוצע של $\boldsymbol{x}$ וה decoder מסיים בלהוסיף אותו בחזרה. לשם הנוחות נסתכל על הגרסא של $\boldsymbol{x}$ מחוסרת הממוצע: $\boldsymbol{x}'=\boldsymbol{x}-\boldsymbol{\mu}$.
 
 נדגים זאת בעבור המקרה של $D=2$ ו $K=1$:
 
@@ -155,6 +148,15 @@ $$
 ![](./assets/pca_remove_mean.png)
 
 </div>
+
+הטרנספורמציות המתקבלות הינן:
+
+$$
+\begin{aligned}
+\boldsymbol{z}&=T^{\top}\boldsymbol{x}'\\
+\tilde{\boldsymbol{x}}'&=T\boldsymbol{z}=TT^{\top}\boldsymbol{x}'
+\end{aligned}
+$$
 
 נתייחס כעת לאילוץ של $T^{\top}T=I$. נציין רק שאילוץ זה הוא לא הכרחי בשביל שהפתרון יהיה אופטימאלי אך הוא לא מפשט מאד את הבעיה ומקיים ולא פוגע באופטימאליות של הפתרון. אילוץ זה אומר שהעמודות של $T$ צריכות להיות אורתו-נורמאליות (אורתוגונאליות ומנורמלות). נסמן את העמודות של $T$ ב $\boldsymbol{u}_j$:
 
@@ -377,6 +379,24 @@ T^*=\underset{T}{\arg\min}\quad&-\frac{1}{N}\sum_{i=1}^N\lVert\boldsymbol{z}^{(i
 $$
 
 ניתן להראות שהפתרון לבעיה זו הינה המטריצה $T$ שתוארה בפתרון על ידי שימוש באינדוקציה, כאשר מתחילים מ $K=1$ ומגדילים אותו כל פעם ב 1.
+
+### דוגמא
+
+נציג דוגמא לפירוק PCA של תמונות. נתייחס לתמונות בעל וקטור ארוך של פיקסלים. בדומא הבאה נסתכל על תמונות של 381 פיקסלים. 20 הכיוונים העיקריים (הוקטורים העצמיים המתאימים לערכים העצמיים הכי גדולים) הינם:
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/faces_pca_basis.png)
+
+</div>
+
+נציג כעת את התמונה המשוחזרת בעבור ערכים שונים של $K$:
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/faces_pca_reconstruction.png)
+
+</div>
 
 ## אשכול
 
