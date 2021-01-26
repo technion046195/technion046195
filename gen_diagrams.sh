@@ -147,3 +147,5 @@ gen_diag ./content/lecture12/assets/pca_project.png -f png -p0 -b20 -s3 ./conten
 gen_diag ./content/lecture12/assets/pca_transform.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca_transform.drawio
 gen_diag ./content/lecture12/assets/pca_recon_error.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca_recon_error.drawio
 gen_diag ./content/lecture12/assets/pca.png -f png -p0 -b20 -s3 ./content/lecture12/assets/pca.drawio
+
+gen_diag ./content/lecture13/assets/workflow.png -f png -p10 -b20 -s3 -t ./content/lecture13/assets/workflow.drawio
