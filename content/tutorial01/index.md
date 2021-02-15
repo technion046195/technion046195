@@ -488,8 +488,8 @@ $$
 \begin{aligned}
 \frac{d}{d\boldsymbol{c}}f(\boldsymbol{c},r)
 &=\frac{2}{n}\sum_{i=1}^n (\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})-r))
-\cdot\left(\frac{d}{dh(\boldsymbol{x}^{(i)})}\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})\right)
-\cdot\frac{d}{d\boldsymbol{x}}h(\boldsymbol{x}^{(i)})\\
+\cdot\left(\frac{d}{dh(\boldsymbol{x}^{(i)},\boldsymbol{c})}\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})\right)
+\cdot\frac{d}{d\boldsymbol{c}}h(\boldsymbol{x}^{(i)},\boldsymbol{c})\\
 &=\frac{2}{n}\sum_{i=1}^n (\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})-r))
 \frac{1}{\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})}
 (\boldsymbol{c}-\boldsymbol{x}^{(i)})\\
