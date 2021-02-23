@@ -531,13 +531,15 @@ $$
 ## תרגיל 2.4 - החזאים האופטימאלים של פונקציות הסיכון הנפוצות
 
 **1)** בעבור משתנה אקראי דיסקרטי $\text{x}$, עם misclassifiaction rate כפונקציית סיכון, הראו כי החזאי האופטימאלי הינו הערך הסביר ביותר:
+
 $$
 \hat{x}^*
-=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[I\{\hat{x}=\text{x}\}\right]
+=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[I\{\hat{x}\neq\text{x}\}\right]
 =\underset{\hat{x}}{\arg\max}\quad p_{\text{x}}\left(\hat{x}\right)
 $$
 
 **2)** בעבור משתנה אקראי רציף $\text{x}$ עם MAE כפונקציית סיכון, הראו כי החזאי האופטימאלי הינו הmedian:
+
 $$
 \begin{aligned}
 &\hat{x}^*

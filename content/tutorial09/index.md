@@ -514,3 +514,4 @@ $$
 ביצועים המודל על ה test set הינם 0.03 (לעומת 0.04 ב linear logistic regression).
 
 </div>
+

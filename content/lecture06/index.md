@@ -6,6 +6,7 @@ make_docx: true
 print_pdf: true
 ---
 
+
 <div dir="rtl" class="site-style">
 
 # הרצאה 6 - שיערוך פילוג בשיטות פרמטריות וסיווג גנרטיבי

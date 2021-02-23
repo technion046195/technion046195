@@ -374,7 +374,7 @@ $$
 בפועל ניתן לחשב את המשקלים של ה צעד ה $M$ כבר בסוף הצעד ה $M-1$. בנוסף ניתן להשתמש בעובדה ש:
 
 $$
-\tilde{w}_i^{(M)}=\tilde{w}_i^{(M-1)}\exp\left(-\alpha_M y^{(i)}\tilde{h}_M(\boldsymbol{x}^{(i)})\right)\\
+\tilde{w}_i^{(M)}=\tilde{w}_i^{(M-1)}\exp\left(-\alpha_M y^{(i)}\tilde{h}_M(\boldsymbol{x}^{(i)})\right)
 $$
 
 בכדי להמנע מלחשב את הסכום על $m$ ולקצר את החישוב.

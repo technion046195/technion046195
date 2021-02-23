@@ -6,6 +6,7 @@ make_docx: true
 print_pdf: true
 ---
 
+
 <div dir="rtl" class="site-style">
 
 # הרצאה 7 - גישה דיסקרימינטיבית הסתברותית

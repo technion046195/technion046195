@@ -57,13 +57,15 @@ $$
 
 | Common For | Loss Name | Risk Name | Loss Function | Optimal Predictor |
 |------------|-----------|-----------|---------------|-------------------|
-| Classification | Zero-One Loss | Misclassification Rate | $$l\left(y_1,y_2\right)=I\left\lbrace  y_1\neq y_2\right\rbrace$$ | $$h^*\left(x\right)=\underset{y}{\arg\max}\ f_{Y\mid X}\left(y\mid X=x\right)$$ |
-| Regression | $l_1$ | Mean Absolute Error| $$l\left(y_1,y_2\right)=\left\vert y_1-y_2\right\vert$$ | Median: $$h^*\left(x\right)=\hat{y}$$<br>$$s.t.\ F_{Y\mid X}\left(\hat{y}\mid X=x\right)=0.5$$ |
-| Regression | $l_2$ | Mean Squared Error (MSE) |$$l\left(y_1,y_2\right)=\left(y_1-y_2\right)^2$$ | $$h^*\left(x\right)=E_{Y\mid X}\left[y\right]$$ |
+| Classification | Zero-One Loss | Misclassification Rate | $l\left(y_1,y_2\right)=I\left\lbrace  y_1\neq y_2\right\rbrace$ | $h^*\left(x\right)=\underset{y}{\arg\max}\ p_{\text{y}\mid\mathbf{x}}\left(y\mid x\right)$ |
+| Regression | $L_1$ | Mean Absolute Error| $l\left(y_1,y_2\right)=\left\vert y_1-y_2\right\vert$ | Median: $h^*\left(x\right)=\hat{y}$<br>$s.t.\ F_{\text{y}\mid\mathbf{x}}\left(\hat{y}\mid x\right)=0.5$ |
+| Regression | $L_2$ | Mean Squared Error (MSE) |$l\left(y_1,y_2\right)=\left(y_1-y_2\right)^2$ | $h^*\left(x\right)=\mathbf{E}\left[\text{y}\mid\mathbf{x}\right]$ |
+
+</div>
 
 </section><section>
 
-## Discriminative vs. Genrative
+## Discriminative vs. Generative
 
 אנו מבחינים בין 3 גישות אשר משמשות לפתרון בעיות supervised learning:
 
