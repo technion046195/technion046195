@@ -1,6 +1,6 @@
 ---
 type: tutorial-slides
-index: 11
+index: 10
 template: slides
 slides_pdf: true
 ---
@@ -10,10 +10,10 @@ slides_pdf: true
 <section class="center">
 <section>
 
-# תרגול 11 - SVM ופונקציות גרעין (Kernels)
+# תרגול 10 - SVM ופונקציות גרעין (Kernels)
 
 <div dir="ltr">
-<a href="/assets/tutorial11_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/tutorial10_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 </section><section>
 
@@ -411,7 +411,7 @@ $$
 
 ### 
 
-## תרגיל 11.1 - 2 Support Vectors
+## תרגיל 10.1 - 2 Support Vectors
 
 עבור מדגם המכיל 2 נקודת, אחת מכל מחלקה, הפתרון של בעיית hard SVM מישור ההפרדה יעבור בדיוק במרכז בין 2 הנקודות, יהיה ניצב לוקטור המחבר את שתי הנקודות והשוליים של ה margin:
 
@@ -424,7 +424,7 @@ $$
 <div class="imgbox" style="max-width:400px">
 
 
-![](./assets/ex_11_1.png)
+![](./assets/ex_10_1.png)
 
 </div>
 
@@ -601,7 +601,7 @@ $$
 
 ### 
 
-## תרגיל 11.2 - Hard SVM
+## תרגיל 10.2 - Hard SVM
 
 נתון המדגם הבא:
 
@@ -621,7 +621,7 @@ $$
 
 <div class="imgbox" style="max-width:500px">
 
-![](./assets/ex_11_2.png)
+![](./assets/ex_10_2.png)
 
 </div>
 
@@ -700,7 +700,7 @@ $$
 
 <div class="imgbox" style="max-width:500px">
 
-![](./assets/ex_11_2.png)
+![](./assets/ex_10_2.png)
 
 </div>
 
@@ -713,7 +713,7 @@ $$
 
 <div class="imgbox" style="max-width:900px">
 
-![](./assets/ex_11_2_2_sv.png)
+![](./assets/ex_10_2_2_sv.png)
 
 </div>
 
@@ -732,7 +732,7 @@ $$
 <div class="imgbox" style="max-width:350px">
 
 
-![](./assets/ex_11_2.png)
+![](./assets/ex_10_2.png)
 
 </div>
 
@@ -753,7 +753,7 @@ $$
 <div class="imgbox" style="max-width:350px">
 
 
-![](./assets/ex_11_2.png)
+![](./assets/ex_10_2.png)
 
 </div>
 * נשים לב שפתרון שבו {3,5} הן SV מתאים לתת המדגם
@@ -770,7 +770,7 @@ $$
 
 <div class="imgbox" style="max-width:350px">
 
-![](./assets/ex_11_2_3_sv.png)
+![](./assets/ex_10_2_3_sv.png)
 
 </div>
 
@@ -831,7 +831,7 @@ $$
 
 ### 
 
-## תרגיל 11.3 - גרעין גאוסי
+## תרגיל 10.3 - גרעין גאוסי
 
 נתון מדגם המכיל 2 נקודות אחת מכל מחלקה:
 
@@ -850,7 +850,7 @@ $$
 
 ### 
 
-### פתרון 11.3
+### פתרון 10.3
 
 הבעיה הדואלית עם הגרעין הגאוסי הינה:
 

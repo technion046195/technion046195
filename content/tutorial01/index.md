@@ -8,7 +8,7 @@ print_pdf: true
 
 <div dir="rtl" class="site-style">
 
-# תרגול 1 - בעיות אופטימיזציה וגזירה וקטורית
+# תרגול 1 - חזרה על הסתברות וחיזוי
 
 <div dir="ltr">
 <a href="/assets/tutorial01.pdf" class="link-button" target="_blank">PDF</a>
@@ -17,525 +17,657 @@ print_pdf: true
 
 ## הקדמה
 
-מרבית הבעיות והשיטות בתחום של מערכות לומדות עוסקות בבעיה של התאמת מודל מתמטי כך שיתאר בצורה מיטבית תופעה או תהליך מסויים על סמך אוסף נתון של תצפיות / מדידות. בהרצאה הראשונה נציג את התחום באופן מפורט יותר, אך לעת אתה הגדרה זו תספק אותנו.
+בתרגול הזה נעבור על המושגים הרלוונטיים בתורת ההסתברות ונדבר על חזאיים.
 
-לצורך המחשה נסתכל על הדוגמא הבאה. נניח ונתונים לנו מספר מדידות של נקודות שיושבות על מעגל בעל מרכז ורדיוס לא ידועים. בנוסף נניח ותהליך המדידה עצמו רועש ואנו מקבלים גירסאות מורעשות של הנקודות כפי שמודגם בשרטוט הבא:
+השימוש במודלים הסתבורתיים נפוץ בתחומים רבים ככלי לתיאור תהליכים ותופעות מסויימות. השימוש העיקרי במודלים אלו הוא לצורך חקירת התכונות של אותה תופעה ולצורך ביצוע חיזוי של משתנים מסויימים על סמך משתנים אחרים.
+
+בתרגול זה, בתור דוגמא, נשתמש במודל הסתברותי אשר מתאר את התכונות של אנשים אשר מגיעים לקבל טיפול בבית חולים. בתור המשתנים האקראיים נגדיר דברים כגון הסימפוטים שאדם מסויים מדווח עליהם, הדופק שלו, לחץ הדם והמחלה/מחלות שמהם אותו אדם סובל. אנו נראה כיצד ניתן להשתמש במודל הסתברותי על מנת לתאר את הקשר בין אותם משתנים אקראיים. באופן כללי, בעזרת מודלים כאלה ניתן לנסות לחזות מהי ההסתברות שאדם חולה במחלה מסויימת בהינתן הסימפטומים והמדדים שלו.
 
 <div class="imgbox">
 
-![](./output/circle_dataset.png)
+![](./assets/stethoscope.jpg)
 
 </div>
 
-מקובל להשתמש בשם בשם **ground truth**, או בקיצור **GT**, כדי להתייחס למודל המקורי (הלא ידוע).
+בתרגול הקרוב אנו נעסוק במקרה שבו המודל ההסתברותי ידוע במלואו. זאת בשונה משאר כל שאר הקורס, שבו נעסוק במקרים שבהם המודל לא ידוע ונלמד כיצד ניתן להשתמש בשיטות חלופיות אשר מתבסות על אוסף של דגימות מתוך המודל כתחליף למודל עצמו.
 
-כעת נניח ואנו מעוניינים לשחזר את הפרמטרים של המעגל המקורי על פי הדגימות שבידינו.  הבעיה של התאמת בעיה כדוגמאת זו, של מעגל לאוסף נקודות, מופיעה באלגוריתמי eye-tracking אשר מנסים לעקוב אחרי המיקום של האישון על מנת להבין מהו הכיוון שאליו אדם מביט.
+## מושגים בסיסיים בהסתברות
 
-<div class="imgbox">
+נתחיל בתזכורת קצרה למושגים הבסיסיים בתורת ההסתברות. נסתכל לשם כך על התופעה האקראית הבאה:
 
-![](./assets/eye_tracking.png)
+> נניח ואנו לוקחים כוס מיץ, שופכים את תוכלתה על הרצפה ומסתכלים על הצורה של השלולית שנוצרה.
 
-</div>
+(חשוב לציין שזהו ניסוי מחשבתי ואין צורך לנסות את זה בבית).
 
-נציין שהבעיה הזו לא מאד מייצגת ונחשבת ליחסית פשוטה בהשוואה לבעיות הטיפוסיות שאותם מנסים לפתור בתחום של מערכות לומדות , אך עם זאת היא תשמש כדוגמא טובה לעקרונות שבהם נעסוק בתרגול הנוכחי.
+התופעה המתוארת אשר יוצרת בסופו של דבר את השלולית היא תופעה אקראית, שכן ישנו מגוון רחב של תוצאות שיכולות להתקבל מהתהליך הזה. נגדיר בטבלה הבאה את המושגים ההסתברותיים הרלוונטיים הקשורים לתופעה הזו ואת הסימונים המוקובלים (בהם נעשה שימוש בקורס). מתחת לטבלה תמצאו שרטוט אשר ממחיש את הקשר בין המושגים האלו.
 
-### פערים מתמטיים
+| המושג | סימון מקובל | הגדרה | בדוגמא שלנו |
+| :--- | --- | --- | --- |
+| **Random phenomenon**<br/>(תופעה אקראית) | -- | תופעה בעלת תוצר אקראי. | יצירת שלולית על הריצפה על ידי שפיכה של כוס מיץ |
+| **Sample**<br/>(דגימה) | $\omega$ | תוצר אפשרי של התופעה האקראית. | צורת שלולית מסויימת<br/>(לדוגמא שלושית בצורת ריבוע עם צלע באורך 10 ס"מ") |
+| **Sample space** <br/>(מרחב המדגם) | $\Omega$ | המרחב המכיל את כל התוצרים האפשריים של התופעה. $\Omega=\lbrace\forall\omega\rbrace$ | המרחב של כל צורות השלוליות הקיימות |
+| **Random Variables (RV)** <br/>(משתנה אקראי) | $\text{x}(\omega)$,$\text{y}(\omega)$,... | פונקציה $\text{x}:\Omega\rightarrow\mathbb{R}$ אשר משייכת לכל דגימה מספר. | פונקציה אשר מחזירה את ההיקף של כל שלולית:<br/>$\text{x}_1(\omega)$<br/>פונקציה אשר מחזירה את השטח של כל שלולית:<br/> $\text{x}_2(\omega)$ |
+| **Event**<br/>(מאורע) | $A$,$B$,... | אוסף של דגימות.<br/>זאת אומרת, תת קבוצה של מרחב המדגם $A\subseteq\Omega$.<br/>הדרך הנוחה ביותר להגדיר מאורעות היא על ידי תנאי על משתנה אקראי כל שהוא. | אוסף כל השלוליות שהרדיוס שלהם קטן מ 2<br/>$A=\lbrace\omega: \text{x}_1(\omega)<2 \rbrace$<br/>אוסף כל השלושיות שהשטח שלהם גדול מ 1<br/>$B=\lbrace\omega: \text{x}_2(\omega)>1 \rbrace$ |
+| **Event space**<br/>(מרחב המאורעות) | $\mathcal{F}$ | המרחב של כל המאורעות האפשריים שניתן להגדיר<br/>$A\in\mathcal{F}$. | -- |
+| **Probability measure**<br/>(הסתברות) | $\text{Pr}(A)$ | פונקציה $\text{Pr}:\mathcal{F}\rightarrow[0,1]$ אשר ממפה<br/>כל מאורע למספר בין 0 ו1 אשר מציין<br/>את הסיכוי שאותו מאורע יתרחש<br/>(זאת אומרת, הסיכוי שדגימה<br/>תהיה שייכת למאורע). | $\text{Pr}(A)=\text{Pr}(\text{x}_1<2)=0.1$<br/>$\text{Pr}(\text{x}_1<0)=\text{Pr}(\emptyset)=0$<br/>$\text{Pr}(0\leq \text{x}_1)=\text{Pr}(\Omega)=1$<br/>$\text{Pr}(A\cup B)=\text{Pr}(\text{x}_1<2\ \text{or}\ \text{x}_2>1)=0.6$<br/>$\text{Pr}(A\cap B)=\text{Pr}(\text{x}_1<2\ \text{and}\ \text{x}_2>1)=0.01$ |
+| **Conditional probability measure**<br/>(הסתברות מותנית) | $\text{Pr}(A\lvert B)$ | פונקציה $\text{Pr}:\mathcal{F}_1\times\mathcal{F}_2\rightarrow[0,1]$<br/>אשר מחזירה את ההסתברות שמאורע<br/>מסויים יקרה, תחת הידיעה שמאורע אחר קרה. | ההסתברות ששלולית תהיה בעלת היקף קטן מ 2 תחת הידיעה שהשטח שלה גדול מ 1: <br/> $\text{Pr}(A\lvert B)=\text{Pr}(\text{x}_1<2\lvert \text{x}_2>1)=0.02$ |
 
-לפני שנוכל לצלול לחומר העיקרי של הקורס עלינו להתחיל בהשלמה ורענון של הבסיס המתימטי אשר ישמש אותנו לתורך ניסוח הפתרון של הבעיות בהם נעסוק בקורס. ספציפית אנו נעשה שימוש ב:
+**שתי הערות לגבי הסימונים**:
 
-- *אלגברה לינארית*: על מנת לתאר את המידע שהמודלים שאיתם נעבוד.
-- *הסתברות*: על מנת לתאר את האופן שבו נוצרים המדידות ובכדי לתאר את מידת הסבירות שבה מודל מסווים מתאים לתצפיות.
-- *תורת האופטימיזציה*: על מנת למצוא את המודלים אשר מתאימים באופן מיטבי לדגימות שבידינו.
-
-בתרגול הנוכחי נתעסק בבעיות אופטימיזציה סקלריות ווקטוריות ובתרגול הבא נוסיף את לכך את ההיבט ההיסתברותי.
-
-### נוטציות
-
-בקרוס זה נצמד לנוטציות המתמטיות המופיעות בספר [Deep Learning (מאת I. Goodfellow, Y. Bengio & A. Courville)](https://www.deeplearningbook.org/). ניתן למצוא את הפירוט המלא ב[קישור הבא](https://www.deeplearningbook.org/contents/notation.html). (למתקדמים: ניתן למצוא את פקודות ה$LaTeX$ הרלוונטיות [כאן](https://github.com/goodfeli/dlbook_notation))
-
-### אלגברה לינארית
-
-בהתאם להגדרות אלו אנו נשתמש בסימונים הבאים בהקשר של אלגברה לינארית:
-
-- $x$ - אותיות סטנדרטיות (italic lower case) לועזיות או יווניות - סקלרים.
-
-<!-- -->
-
-- $\boldsymbol{x}$ - אותיות מודגשות - וקטורי **עמודה**
-- $\boldsymbol{x}^\top$ - וקטורי **שורה**
-- $x_i$ - האיבר ה$i$ בוקטור $\boldsymbol{x}$.
-- (בכתב יד נשתמש בחץ (במקום באותיות מדגשות) בכדי לסמן וקטורים: $\vec{x}$).
-
-<!-- -->
-
-- $\langle\boldsymbol{x},\boldsymbol{y}\rangle(=\boldsymbol{x}^\top\boldsymbol{y}=\sum_i x_iy_i)$ - המכפלה הפנימית הסטנדרטית בין $\boldsymbol{x}$ ל $\boldsymbol{y}$.
-- $\|\boldsymbol{x}\|_2(=\sqrt{\langle\boldsymbol{x},\boldsymbol{x}\rangle})$- הנורמה הסטנדרטית (נורמת $l2$) של הוקטור $\boldsymbol{x}$.
-- $\|\boldsymbol{x}\|_l(=\sqrt[l]{\sum_i x_i^l})$ - נורמת $l$ של $\boldsymbol{x}$
-
-<!-- -->
-
-- $\boldsymbol{A}$ - אותיות לועזיות גדולות מודגשות (bold capittal) - מטריצה
-- $\boldsymbol{A}^\top$ - המטריצה Transposed $\boldsymbol{A}$ (המטריצה המשוחלפת).
-- $A_{i,j}$ - האיבר ה$j$ שורה ה$i$ של $\boldsymbol{A}$.
-- $A_{i,:}$ - השורה ה$i$ של $\boldsymbol{A}$.
-- $A_{:,i}$ - העמודה ה$i$ של $\boldsymbol{A}$.
-
-### Sets (קבוצות)
-
-את סדרת התצפיות אנו נסמן כקבוצה (או סדרה) בעזרת הנוטציות הבאות:
-
-- $\{\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)},\ldots,\boldsymbol{x}^{(n)}\}$ - סדרה של $n$ וקטורים.
-
-## בעיית האופטימיזציה
-
-נחזור לדוגמא של התאמת המעגל. דרך אחת לגשת לבעיה מסוג זה הינה לחפש מבין כל המעגלים האפשריים את המעגל אשר המרחק הריבועי הממוצע (MSE - mean squered error) של הדגימות ממנו היא המינימאלית (בהמשך הקורס אנו ניתן הצדקה מתימטית לשימוש במדד שגיאה זה). נרשום זאת באופן מתמטי.
-
-נרשום תחילה את המרחק של נקודה בודדת $\boldsymbol{x}$ ממעגל בעל מרכז ב $\boldsymbol{c}$ ורדיוס $r$. מרחק זה שווה להפרש בין המרחק בין $\boldsymbol{x}$ ל $\boldsymbol{c}$ והרדיוס, כפי שמופיע בשרטוט הבא:
+1. בחרנו לסמן את המשתנים הקראיים באותיות לטיניות קטנות לא מוטות (non-italic) בכדי להישאר צמודים לנוטציות של הספר [Deep Learning](https://www.deeplearningbook.org/) (ראה תרגול או הרצאה קודמים). סימון מעט יותר נפוץ למשתנים אקראיים הוא אותיות לטיניות דגולות כגון $X$ ו $Y$. (אשר מתנגש הסימון של מטריצות).
+2. בכתב יד, נשתמש בקו עילי על מנת לסמן את המשתנים האקראיים (לדוגמא: $\bar{x}$, $\bar{\boldsymbol{x}}$ או $\bar{X}$)
+3. בשתי השורות האחרונות השתמשנו בסימונים מהצורה $\text{x}<2$ כקיצור ל $\lbrace\omega:\text{x}(\omega)<2\rbrace$. זוהי צורת כתיבה נפוצה ואנו נשתמש בה מכאן והלאה. (מבחינה מתמטית הסימון המקוצר חסר משמעות שכן הוא משווה בין פונקציה לבין מספר).
 
 <div class="imgbox">
-<div class="imgbox" style="max-width:370px">
+<div class="imgbox" style="max-width:810px">
 
-![](./assets/dist_from_circle.png)
+![](./assets/random_process_5.png)
 
 </div></div>
 
-נסמן את הריבוע של מרחק זה ב $e$:
+פונקציות של משתנים אקראיים:
+
+כאשר אנו מפעילים פונקציה נוספת על המוצא של משתנה אקראי (לדוגמא, להעלות את רדיוס השלולית בריבוע) אנו למעשה מרכיבים שני פונקציות ויוצאים משתנה אקראי חדש.
+
+### Realizations (ראליזציות) ושיבוש נפוץ
+
+מבחינת המינוח המדוייק, התוצאות שמתקבלות מהפעלה של המשתנים האקראיים, זאת אומרת המספרים שאנו מודדים בפועל, נקראים ריאלוזציות. בפועל, השימוש במושג זה לא מאד נפוץ ולרוב משתמשים בשם דגימות בכדי לתאר את הריאליזציות. לדוגמא: נתונות 20 **דגימות** של היקפים של שלוליות. בקורס זה, גם אנחנו נכנה את המדידות עצמם בשם דגימות.
+
+### סימונים
+
+### וקטורים אקראיים
+
+לרוב יעניין אותנו לעבוד עם יותר ממשנתה אקראי יחיד. במקרה כזה נוח לאחד את כל המשתנים האקראיים לוקטור המכונה וקטור אקראי:
 
 $$
-e=(\|\boldsymbol{x}-\boldsymbol{c}\|_2-r)^2
+\boldsymbol{x}=\mathbf{x}(\omega)=[\text{x}_1(\omega),\text{x}_2(\omega),\ldots,\text{x}_3(\omega)]^\top
 $$
 
-אם כן בעבור $n$ נקודות, $\{\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)},\ldots,\boldsymbol{x}^{(n)}\}$, המרחק הריבועי הממוצע (MSE) של הנקודות מהמעגל הינו:
+(ניתן באופן דומה להגדיר גם מטריצות וטנזורים אקראיים)
 
-$$
-\frac{1}{n}\sum_{i=1}^n e_i=\frac{1}{n}\sum_{i=1}^n (\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2-r)^2
-$$
+## דוגמא - מיון מקדים של חולים
 
-מצאנו אם כן למעשה מדד טיב אשר מאפשר לנו לתת "ציון" לכל מעגל כתלות ב $\boldsymbol{c}$ ו $r$. נסמן את הפונקציה הזו כ:
+נניח ואנו מועניינים לעזור בפיתוח של מערכת למיון מקדים של חולים לצורך המשך טיפול, לשם כך אנו רוצים להסתמך על מודל הסתברותי אשר מתאר את המאפיינים של האנשים אשר משתמשים במערכת. אנו נגדיר בתור דגימה בודדת $\omega$  משתמש יחיד (בעל מאפיינים מסויימים) אשר מגיע להשתמש במערכת.
 
-$$
-f(\boldsymbol{c},r)=\frac{1}{n}\sum_{i=1}^n (\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2-r)^2
-$$
+<div class="imgbox" style="width:50%">
 
-כעת, אם ברצונינו למצוא עלינו למצוא את המעגל ה**אופטימאלי**, עלינו למצוא את הפרמטרים $\boldsymbol{c}$ ו $r$ אשר מניבים את הערך הנמוך ביותר של $f$. מקובל לסמן את הפרמטרים האופטימאליים בעזרת $*$ באופן הבא: $\boldsymbol{c}^*$ ו$r^*$.
+![](./assets/temi.png)<br/>רובוט של חברת [temi](https://www.robotemi.com/) הישראלית אשר יכול לסייע להכוונת חולים להמשך טיפול.
 
-בעיות מסוג זה הם בדיוק סוגי הבעיות שתורת האופטימיזציה באה לפתור. לבנתיים נשים בצד את הפונקציה הזו ונחזור אליה לקראת סוף התרגול.
+</div>
 
-### המקרה הפשוט
+## תרגיל 1.1: תרגיל חימום בהסתברות
 
-בעיות אופטימיזציה עוסקות במציאת הארגומנט $\theta$ שבעבורו פונקציה נתונה $f(\theta)$ מחזירה את הערך המינימאלי או המקסימאלי שלה. לרוב מקובל לנסח בעיות אופטימיזציה כבעיות **minimization** (מזעור), כאשר ניתן כמובן לרשום כל בעיית **maximization** כבעיית minimization של $\tilde{f}(\theta)=-f(\theta)$. כמו כן, את פונקציה  $f(\theta)$ שאותה מנסים למזער (למקסם) נהוג לכנות ה**objective** או פונקציית המטרה. באופן פורמלי, בעיות אופטימיזציה נרשמות באופן הבא:
+**1)** בעבור המודל הנ"ל, תנו דוגמא/ות לגדלים הבאים:
 
-$$
-\theta^*=\underset{\theta}{\arg\min}\quad f(\theta)
-$$
+- 2 משתנים אקראיים דיסקרטים (בדידים)
 
-### פונקציות מרובות משתנים
+- 2 משתנים אקראיים רציפים.
 
- בעיות אופטימיזציה כמובן לא מוגבלות רק לפונקציות של משתנה יחיד וכמו בדוגמא של המעגל, ניתן להסתכל גם על הבעיה של מציאת סט הערכים האופטימאליים $\theta_1^*,\theta_2^*,\ldots,\theta_d^*$ שממזערים פונקציה של מספר משתנים $f(\theta_1,\theta_2,\ldots,\theta_d)$:
+- 2 מאורעות.
 
-$$
-\theta_1^*,\theta_2^*,\ldots,\theta_d^*=\underset{\theta_1,\theta_2,\ldots,\theta_d}{\arg\min}\quad f(\theta_1,\theta_2,\ldots,\theta_d)
-$$
+**2)** המציאו הסתברויות למאורעות שבחרתם.
 
-במקרים רבים נוח יותר לאגד את כל הארגומנטים של $f$ לוקטור אחד $\boldsymbol{\theta}=[\theta_1,\theta_2,\ldots,\theta_d]^\top$ ולרשום את בעיית האופטימזציה כ:
+**3)** המציאו הסתברות לחיתוך (intersaction) של שני המאורעות שבחרתם.
 
-$$
-\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\quad f(\boldsymbol{\theta})
-$$
+**4)** מה תהיה הסתברות של האיחוד (union) של המאורעות (על סמך סעיפים 2 ו 3)?
 
-### שיטות לפתרון בעיות אופטימיזציה
+**5)** מה תהיה ההסתברות של החיסור של המאורע השני מהמאורע הראשון?
 
- בעיות אופטימיזציה הם למעשה חלק מהתהליך של חקירת פונקציה אשר נלמד בחדו"א 1 ובתיכון, שם מצאנו נקודות הקיצון על ידי גזירה והשוואה ל-0. שיטה זו טובה למקרים פשוטים בהם המשוואה $\nabla f(\boldsymbol{\theta})=0$ ניתנת לפתרון באופן אנליטי, אך במקרים רבים זהו אינו המצב ויש צורך להשתמש בשיטות נומריות על מנת לפתור את הבעיה.
-
- התחום של תורת האופטימיזציה הוא רחב והוא מציע מגוון רחב של שיטות כאלה המתאימות לפונקציות מטרה שונות. בפועל בקורס זה לא נצלול לעומקו של תחום זה, ולמעשה נפתור בעיות מסוג זה בעזרת אחת משלושת השיטות הבאות::
-
-- **גזירה והשוואה ל0**: מתאים למקרים בהם ניתן לפתור את $\nabla f(\boldsymbol{\theta})=0$ באופן אנליטי.
-- **Brute force** (מעבר על כל האופציות): מתאים למקרים בהם הארגומנט של $f$ לקבל רק אחד מסט ערכים סופי וקטן, לדוגמא $\theta\in\{0,1,\ldots,10\}$.
-- **Gradient descent** (שיטת הגרדיאנט): זוהי אחת משיטות האופטימיזציה הבסיסיות ביותר. בשיטה זו מחפשים מינימום לוקאלי על ידי התקדמות בכיוון ההפוך מהגרדיאנט. בתרגול זה אנחנו נדגים כיצד להשתמש בה.
-
-### בעיית אופטימזציה עם אילוצים
-
-נשים לב שבדוגמא של התאמת המעגל, ישנו אילוץ מסויים על הפרמטרים של המעגל, רדיוס המעגל חייב להיות מספר חיובי. מגבלות מסוג זה מכונות אילוצים והם מופיעים בבעיות אופטימיזציה רבות. באופן כללי, בעיות אופטימיזציה יכולות להכיל איצלוצים משני סוגים:
-
-- אילוצי אי-שוויון מהצורה $g(\boldsymbol{\theta})\geq0$.<br/>
-  לדוגמא, האילוץ שכל הערכים של $\boldsymbol{\theta}$ יהיו קטנים מ$1$, יופיע בתור:
-
-  $$
-  g_i(\boldsymbol{\theta})=1-\theta_i\geq0\qquad i=1,\ldots,d
-  $$
-
-- אילוצי שוויון מהצורה $h(\boldsymbol{\theta})=0$.<br/>
-  לדוגמא האילוץ שהנורמה של $\boldsymbol{\theta}$ תהיה שווה ל1, יופיע בתור:
-
-  $$
-  h(\boldsymbol{\theta})=\|\boldsymbol{\theta}\|_2-1=0
-  $$
-
-אם כן הצורה הכללית ביותר של בעיית אופטימיזציה הינה:
-
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*=&\underset{\boldsymbol{\theta}}{\arg\min}\quad f(\boldsymbol{\theta}) \\
-&\begin{aligned}
-\text{subject to}\quad
-& g_i(\boldsymbol{\theta})\leq 0,\qquad i=1,\ldots,m \\
-& h_j(\boldsymbol{\theta})=0,\qquad j=1,\ldots,p
-\end{aligned}
-\end{aligned}
-$$
-
-בתרגיל הבא נראה כיצד ניתן להתמודד עם אילוצים פשוטים ובהמשך הקורס נתייחס גם למקרים בהם האילוצים נעשים מסובכים יותר.
-
-## תרגיל 1.1 - בעיית אופטימיזציה עם אילוצים
-
-נרצה למצוא את הערך המקסימאלי של הפונקציה
-
-$$
-f(\theta_1, \theta_2)=f(\boldsymbol{\theta})=e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)}
-$$
-
-תחת האילוץ ש $\boldsymbol{\theta}$ נמצא בתוך או על השפה של מעגל היחידה (במישור של $\theta_1-\theta_2$).
-
-רשמו את בעיית האופטימיזציה ומצאו את פתרונה.
+**6)** מה תהיה ההסתברות המותנית של המאורע הראשון בהינתן השני?
 
 ### פתרון 1.1
 
-##### רישום בעיית האופטימיזציה
+**1)** דוגמאות:
 
-הבעיה הנתונה הינה בעיית אופטימיזציה עם אילוץ אי-שיוון אחד. נרשום אותה באופן פורמלי:
+- משתנים אקראיים דיסקרטיים:
+  - הדופק של המשתמש: $\text{p}(\omega)$
+  - כמות הפעמים שהמשתמש השתעל בשעה האחרונה: $\text{c}(\omega)$.
+  - משתנה בולינאני (boolian) (בינארי) אשר מציין האם המשתמש חולה בשפעת (1 - חולה, 0 - לא):   $\text{f}(\omega)$.
+- משתנים אקראיים רציפים:
+  - החום של המשתמש במעלות: $\text{t}(\omega)$.
+  - לחץ הדם (הסיטולי) של המשתמש: $\text{p}(\omega)$
+- מאורעות:
+  - החום של המשתמש גבוהה מ39°: $\text{t}>39$
+  - המשתמש חולה בשפעת: $\text{f}=1$.
+
+**2)** נניח שאלו הם ההסברויות המתאימים למאורעות שבחרנו:
+
+   $\text{Pr}(\text{t}>39)=0.2$
+
+   $\text{Pr}(\text{f}=1)=0.1$
+
+**3)** נניח כי ההסתברות של החיתוך של שני המאורעות הינו: $\text{Pr}(\text{t}>39\cap\text{f}=1)=0.05$
+
+בכדי לענות על הסעיפים הבאים נשתמש בדיאגרמה הבאה (המכונה [דיאגרמת Venn](https://en.wikipedia.org/wiki/Venn_diagram))
+
+<div class="imgbox">
+<div class="imgbox" style="max-width:527px">
+
+![](./assets/ex_1_1_venn.png)
+
+</div></div>
+
+**4)** $\text{Pr}(\text{t}>39\cup\text{f}=1)=\text{Pr}(\text{t}>39)+\text{Pr}(\text{f}=1)-\text{Pr}(\text{t}>39\cap\text{f}=1)=0.2+0.1-0.05=0.25$
+
+**5)** $\text{Pr}((\text{t}>39)-(\text{f}=1))=\text{Pr}(\text{t}>39)-\text{Pr}(\text{t}>39\cap\text{f}=1)=0.2-0.05=0.15$
+
+**6)** **על פי הגדרה**, ההסתברות המותנית של המאורע הראשון בהינתן המאורע השני שווה ל:
+
+$$
+   \text{Pr}(\text{t}>39\lvert \text{f}=1)=\frac{\text{Pr}(\text{t}>39\cap\text{f}=1)}{\text{Pr}(\text{f}=1)}=\frac{0.05}{0.1}=0.5
+$$
+
+## פונקציות פילוג (Distributions)
+
+את הסתברויות נוח לתאר בעזרת פונקציות פילוג. נרשום את ההגדרה של פונקציות הפילוג בעבור וקטורים אקראיים (פונקציות הפילוג של סקלרים הם כמובן מקרה פרטי של פונקציות אלו)
+
+### Cumulative Distribtuion Function  - CDF (פונקציית הפילוג המצרפית)
+
+סימון מקובל לפונקציית הCDF של וקטור אקראי $\mathbf{x}$ הוא $F_{\mathbf{x}}(\boldsymbol{x})$ והוא מוגדר באופן הבא:
+
+$$
+F_{\mathbf{x}}(\boldsymbol{x})=\text{Pr}(\text{x}_1\leq x_1 \cap \text{x}_2\leq x_2 \ldots \cap \text{x}_n\leq x_n)
+$$
+
+### Pobability Mass Function - PMF (פונקציית ההסתברות)
+
+פונקציה המתארת את הפילוג של משתנים \ וקטורים אקראיים דיסקרטיים. סימון מקובל לPMF הוא  $f_{\mathbf{x}}(\boldsymbol{x})$ או $p_{\mathbf{x}}(\boldsymbol{x})$ והוא מוגדר באופן הבא:
+
+$$
+p_{\mathbf{x}}(\boldsymbol{x})=\text{Pr}(\text{x}=x_1 \cap \text{x}_2=x_2 \ldots \cap \text{x}_n=x_n)
+$$
+
+### Pobability Density Function - PDF (פונקציית צפיפות ההסתברות)
+
+זו המקבילה של הPMF למקרה הרציף. גם היא מסומנת לרוב על ידי  $f_{\mathbf{x}}(\boldsymbol{x})$ או $p_{\mathbf{x}}(\boldsymbol{x})$.
+
+במקרים בהם הCDF הוא גזיר, הPDF מוגדרת כ:
+
+$$
+p_{\mathbf{x}}(\boldsymbol{x})=\frac{\partial}{\partial x_1}\frac{\partial}{\partial x_3}\ldots\frac{\partial}{\partial x_n}F_{\mathbf{x}}(\boldsymbol{x})
+$$
+
+בשאר המקרים היא מוגדרת על ידי האינטגרל הבא:
+
+$$
+F_{\mathbf{x}}(\boldsymbol{x})=\int_{-\infty}^{x_1}\int_{-\infty}^{x_2}\ldots\int_{-\infty}^{x_n}p_{\mathbf{x}}(\boldsymbol{x})dx_n\ldots dx_2 dx_1
+$$
+
+### פונקציות פילוג מותנות
+
+באופן דומה, ניתן להגדיר גם את הגירסא המותנית של פונקציות הפילוג:
+
+#### CDF
+
+$$
+F_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \boldsymbol{y})=\text{Pr}(\text{x}_1\leq x_1\cap\text{x}_2\leq x_2 \ldots\cap\text{x}_n\leq x_n\lvert \mathbf{y}=\boldsymbol{y})
+$$
+
+#### PMF
+
+$$
+p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \boldsymbol{y})=\text{Pr}(\text{x}_1=x_1 \cap \text{x}_2=x_2 \ldots \cap \text{x}_n=x_n\lvert \mathbf{y}=\boldsymbol{y})
+$$
+
+#### PDF
+
+$$
+p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \boldsymbol{y})=\frac{\partial}{\partial x_1}\frac{\partial}{\partial x_3}\ldots\frac{\partial}{\partial x_n}F_{X}(\boldsymbol{x}\lvert \boldsymbol{y})
+$$
+
+### נוסחאות חשובות
+
+#### The law of total probability (נוסחאת ההסתברות השלמה)
+
+$$
+p_{\mathbf{x}}(\boldsymbol{x})=\underbrace{\sum_{\boldsymbol{y}\in\lbrace \mathbf{y}(\omega),\omega\in\Omega\rbrace}p_{\mathbf{x},\mathbf{y}}(\boldsymbol{x},\boldsymbol{y})}_{\text{For discrete RV}}=\underbrace{\int_{-\infty}^{\infty}p_{\mathbf{x},\mathbf{y}}(\boldsymbol{x},\boldsymbol{y})d\boldsymbol{y}}_{\text{For cont. RV}}
+$$
+
+(הסכום על $\boldsymbol{y}\in\lbrace \mathbf{y}(\omega),\omega\in\Omega\rbrace$ הוא פשוט סכום על כל הערכים האפשריים ש$\mathbf{y}$ יכול לקבל).
+
+במקרים בהם עוסקים בכמה משתנים אקראיים, אך מעוניינים להתייחס רק לפלוג של חלק מהם, מכנים את הפילוג החלקי **פילוג שולי (marginal distribution)**.
+
+#### פילוג מותנה (Conditional Distribtuion)
+
+הקשר הבא נובע ישירות מתוך ההגדרה של ההסברות המותנית:
+
+$$
+p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \boldsymbol{y})=\frac{p_{\mathbf{x},\mathbf{y}}(\boldsymbol{x},\boldsymbol{y})}{p_{\mathbf{y}}(\boldsymbol{y})}
+$$
+
+#### חוק בייס (Bayes' Theorem)
+
+מתוך שני החוקים הנ"ל אפשר להסיק את חוק בייס:
 
 $$
 \begin{aligned}
-&\underset{\boldsymbol{\theta}=[\theta_1,\theta_2]^\top}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
-&\text{subject to}\quad
-1-(\theta_1^2+\theta_2^2)\geq 0
+p_{\mathbf{y}\lvert \mathbf{x}}(\boldsymbol{y}\lvert \boldsymbol{x})
+&=\frac{p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \boldsymbol{y})p_{\mathbf{y}}(\boldsymbol{y})}{p_{\mathbf{x}}(\boldsymbol{x})}\\
+&=\underbrace{\frac{p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \boldsymbol{y})p_{\mathbf{y}}(\boldsymbol{y})}{\sum_{\tilde{\boldsymbol{y}}} p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \tilde{\boldsymbol{y}})p_{\mathbf{y}}(\tilde{\boldsymbol{y}})}}_{\text{For discrete RV}}\\
+&=\underbrace{\frac{p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \boldsymbol{y})p_{\mathbf{y}}(\boldsymbol{y})}{\int_{-\infty}^{\infty}p_{\mathbf{x}\lvert \mathbf{y}}(\boldsymbol{x}\lvert \tilde{\boldsymbol{y}})p_{\mathbf{y}}(\tilde{\boldsymbol{y}})d\tilde{\boldsymbol{y}}}}_{\text{For cont. RV}}
 \end{aligned}
 $$
 
-##### החלפת פונקציית המטרה
+## תרגיל 1.2 - פילוגים בדידים
 
-ראשית נשים לב כי ניתן לפשט את הבעיה על ידי השימוש בעובדה ש$e^x$ היא פונקציה מונוטונית עולה ולכן נוכל לבצע את ההחלפה הבאה מבלי לשנות את תוצאת בעיית האופטימיזציה:
+נתון לנו הפילוג המשותף הבא של הדופק $\text{p}$ ומספר השיעולים $\text{c}$ של המשתמשים במערכת.
 
-$$
-\begin{aligned}
-&\underset{\theta_1,\theta_2}{\arg\min}\quad -e^{-(3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34)} \\
-=&\underset{\theta_1,\theta_2}{\arg\min}\quad 3\theta_1^2+3\theta_2^2-18\theta_1-24\theta_2+34
-\end{aligned}
-$$
+לשם הפשטות נניח כי כמות השיעולים והדופק יכולים לקבל רק את הערכים המופעים בטבלה.
 
-באופן דומה נוכל גם להיפתר מהתוספת של הקבוע ($+34$) וגם לחלק את פונקציית המטרה 3, ולקבל את בעיית האופטימיזציה הבאה:
+<div style="direction:ltr;unicode-bidi:bidi-override">
 
-$$
-=\underset{\theta_1,\theta_2}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2
-$$
+| .             | $\text{c}=0$ | $\text{c}=1$ | $\text{c}=2$ | $\text{c}=3$ |
+| ------------- | :----------: | :----------: | :----------: | :----------: |
+| $\text{p}=50$ | 0            | 0.15         | 0.2          | 0.05         |
+| $\text{p}=60$ | 0.08         | 0.03         | ???          | 0.04         |
+| $\text{p}=70$ | 0.02         | 0.03         | 0.04         | 0.01         |
+| $\text{p}=80$ | 0.1          | 0.05         | 0.05         | 0.1          |
 
-##### טיפול באילוץ אי-השוויון
+</div>
 
-במקרים כגון זה, בהם מספר אילוצי אי-השוויון קטן (במקרה זה יש אילוץ בודד) נוכל לפרק כל אילוץ שוויון לשני מקרים פשוטים יותר.
+**1)** מהו המספר החסר בטבלה?
 
-1. המקרה בו המינימום נמצא על השפה של האילוץ (בתרגיל זה, זאת אומרת שהמינימום נמצאת ממש על מעגל היחידה). במקרה זה האילוץ הופך לאילוץ שוויון.
-2. המקרה זו המינימום לא נמצא על השפה של האילוץ. במקרה זה נחפש נקודות מינימום לוקאליות תוך התעלמות מהאילוץ ואחר כך נבדוק מי מהם מקיימת את האילוץ (אם בכלל יש נקודה כזו).
+**2)** מהי ההסתברות שדופק המנוחה של משתמש הוא 60 בהינתן שהוא לא השתעל בשעה האחרונה?
 
-הפתרון יהיה הפתרון הנמוך יותר מבין השתיים. (כאשר יש יותר מאילוץ אי-שוויון יחיד צריך לפרק את כל אילוצי אי השוויון לשני מקרים. זאת אומרת, שכמות המקרים שיש לבדוק הינה 2 בחזקת מספר אילוצי אי-השוויון).
-
-##### החיפוש בתוך מעגל היחידה
-
-נתחיל במציאת המינימום בחלקו הפנימי של העיגול. תחילה נתעלםמהאילוץ נחפש את כל נקודות המינימום (לוקאליות או גלובליות) של הבעיה. אחר כך נפסול את אלו שלא מקיימות את האילוץ. בעיית האופטימיזציה ללא האילוץ הינה:
-
-$$
-\underset{\theta_1,\theta_2}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2
-$$
-
-בעיה זו ניתנת לפתרון בקלות על ידי גזירה והשוואה ול0:
-
-$$
-\begin{aligned}
-&\left\{\begin{aligned}
-\frac{d}{d\theta_1}\theta_1^2+\theta_2^2-6\theta_1-8\theta_2=0 \\
-\frac{d}{d\theta_2}\theta_1^2+\theta_2^2-6\theta_1-8\theta_2=0 \\
-\end{aligned}\right.\\
-\Leftrightarrow&(\theta_1,\theta_2)=(3,4)
-\end{aligned}
-$$
-
-נקודה זו אומנם חשודה כנקודת קיצון אך היא לא מקיימת את האילוץ ולכן היא אינה יכול להיות פתרון לבעיה. נוכל להסיק אם כן שאין נקודות מינימום בתוך המעגל ולכן נקודת המינימום תהיה חייבת להימצא על השפה.
-
-##### החיפוש על מעגל היחידה
-
-על השפה אילוץ האי-השוויון הופך לשוויון:
-
-$$
-\begin{aligned}
-&\underset{{\theta}=[\theta_1,\theta_2]^\top}{\arg\min}\quad \theta_1^2+\theta_2^2-6\theta_1-8\theta_2 \\
-&\text{subject to}\quad
-1-(\theta_1^2+\theta_2^2)=0
-\end{aligned}
-$$
-
-בהמשך הקורס נלמד שיטה מסודרת לפתרון בעיות אופטימיזציה עם אילוצי שוויון כגון זו, אך לבנתיים נתאר כאן פתרון חליפי אשר משתמש בניסוח מחד של הבעיה (השיטה שמוצגת כאן לא רלוונטית להבנת החומר מופיעה פה רק לשם השלמות).
-
-הדרך בה נימצא את המינימום על המעגל הינה על ידי החלפת הבעיה הנתונה בבעיית אופטימיזציה של משתנה יחיד ללא אילוצים. אנו נשתמש באילוץ (התנאי שהנקודה תמצא על מעגל היחידה) על מנת לבטא את $\theta_2$ בעזרת $\theta_1$ ורישום מחדש של פונקציית המטרה כפונקציה של $\theta_1$ בלבד.
-
-מתוך האילוץ נקבל ש:
-
-$$
-\begin{aligned}
-&1-(\theta_1^2+\theta_2^2)=0 \\
-\Leftrightarrow&\theta_2=\pm\sqrt{1-\theta_1^2}
-\end{aligned}
-$$
-
-כאשר עלינו לבדוק את שני המקרים כאשר $\theta_2$ חיובי (החלק העליון של מעגל היחידה) וכשאר הוא שלילי (החלק התחתון). לאחר ההחלפה נקבל את שני בעיות האופטימיזציה הבאות (המקרה החיובי והשלילי):
-
-$$
-\begin{aligned}
-&\underset{\theta_1}{\arg\min}\quad \theta_1^2+(1-\theta_1^2)-6\theta_1\pm8\sqrt{1-\theta_1^2}\\
-=&\underset{\theta_1}{\arg\min}\quad 1-6\theta_1\pm8\sqrt{1-\theta_1^2}\\
-=&\underset{\theta_1}{\arg\min}\quad -3\theta_1\pm4\sqrt{1-\theta_1^2}
-\end{aligned}
-$$
-
-נפתור את את הבעיות האלה על יד גזירה והשוואה ל0:
-
-$$
-\begin{aligned}
-&\frac{d}{d\theta_1} -3\theta_1\pm4\sqrt{1-\theta_1^2}=0 \\
-\Leftrightarrow&-3\pm4\frac{\theta_1}{\sqrt{1-\theta_1^2}}=0 \\
-\Leftrightarrow&\pm\tfrac{4}{3}\theta_1=\sqrt{1-\theta_1^2} \\
-\Rightarrow&\tfrac{16}{9}\theta_1^2=1-\theta_1^2 \\
-\Leftrightarrow&\theta_1^2=\tfrac{9}{25} \\
-\Leftrightarrow&\theta_1=\pm\tfrac{3}{5} \\
-\Leftrightarrow&(\theta_1,\theta_2)=(\pm\tfrac{3}{5},\pm\tfrac{4}{5})
-\end{aligned}
-$$
-
-על ידי בדיקה של הערכים שמניבים ארבעת הנקודות האלה מוצאים כי המינימום הגלובלי של פונקציית המטרה מתקבל במקרה של $(\theta_1,\theta_2)=(\tfrac{3}{5},\tfrac{4}{5})$. 
-
-## סקלרים, וקטורים מטריצות ונגזרות
-
-במהלך הקורס אנו נתקל פעמים רבות בצורך לחשב נגזרות המערבות וקטורים ומטריצות. נזכיר / נסביר בקצרה של כיצד נזגרת אלו מחושבות. נתחיל במקרה המוכר של הגרדיאנט, בו אנו מבצעים גזירה של פונקציה סקלרית לפי וקטור. לאחר מכאן נראה כיצד הגדרה זו מורחבת גם למקרים נוספים בהם הפונקציה לא בהכרח סקלרית והגזירה היא לא בהכרח לפי וקטור.
-
-בעבור פונקציה $f(\boldsymbol{x})$ אשר מקבלת וקטור $\boldsymbol{x}$ באורך $d$ ומחזירה סקלר, פעולת הגרדיאנט מוגדרת באופן הבא:
-
-$$
-\nabla_{\boldsymbol{x}} f(\boldsymbol{x})
-=\frac{d}{d\boldsymbol{x}} f(\boldsymbol{x})
-=\begin{bmatrix}
-\frac{d}{dx_1}f(\boldsymbol{x}) \\ \frac{d}{dx_2}f(\boldsymbol{x}) \\ \vdots \\ \frac{d}{dx_d}f(\boldsymbol{x})
-\end{bmatrix}
-$$
-
-לדוגמא:
-
-$$
-\frac{d}{d\boldsymbol{x}}(\boldsymbol{a}^\top\boldsymbol{x})
-=\frac{d}{d\boldsymbol{x}}(\sum_{i=1}^d a_ix_i)
-=\begin{bmatrix}
-\frac{d}{dx_1}(\sum a_ix_i) \\ \frac{d}{dx_2}(\sum a_ix_i) \\ \vdots \\ \frac{d}{dx_d}(\sum a_ix_i)
-\end{bmatrix}
-=\begin{bmatrix}
-a_1 \\ a_2 \\ \vdots \\ a_d
-\end{bmatrix}
-=\boldsymbol{a}
-$$
-
-נסתכל כעת על מקרה מעט יותר מורכב בו אנו רוצים לגזור פונקציה וקטורית $\boldsymbol{f}(\boldsymbol{x})$ אשר מקבלת וקטור $\boldsymbol{x}$ באורך $d$ ומחזירה וקטור באורך $n$:
-
-$$
-\frac{d}{d\boldsymbol{x}} \boldsymbol{f}(\boldsymbol{x})=
-\begin{bmatrix}
-| && | && && | \\
-\frac{d}{dx_1}\boldsymbol{f}(\boldsymbol{x}) && \frac{d}{dx_2}\boldsymbol{f}(\boldsymbol{x}) && \cdots && \frac{d}{dx_d}\boldsymbol{f}(\boldsymbol{x}) \\
-| && | && && |
-\end{bmatrix}
-$$
-
-שימו לב שהתוצאה של הגזירה הינה מטריצה בגודל $n\times d$. באופן כללי, הגדול תוצאת פעולת הגזירה יהיה תמיד הגודל של האובייקט שאותו גוזרים בתוספת הגודל של האיבר שלפיו אנו מבצעים את הגזירה. דוגמאות:
-
-- תוצאת הגזירה של מטריצה בגודל $n\times m$ לפי וקטור באורך $d$ תהיה טנזור בגודל $n\times m\times d$.
-- תוצאת הגזירה של סקלאר לפי מטריצה בגודל $n\times m$ תהיה מטריצה בגודל $n \times m$.
-- תוצאת הגזירה של מטריצה בגודל $n\times m$ לפי מטריצה בגודל $o\times p$ תהיה טנזור בגודל $n\times m\times o\times p$.
-
-למורת חשוב להבין כיצד נגזרות אלו מודרות ומחושבות, בפועל אנחנו כמעט ולא ניתקל בצורך לחשב אותם על פי ההגדרה. במרבית המקרים, הנגזרות בהם ניתקל יבואו מתוך קבוצה מצומצמת של נגזרות מוכרות (או הרכבה שלהם עם פונקציות אחרות) ונוכל להשתמש בתוצאות מוכרות ולחסוך עבודה מיותרת. ניתן למצוא רשימה של נגזרות בדף הנוסחאות של הקורס.
-
-## תרגיל 1.2 - תרגיל בנגזרות
-
-חשבו את הנגזרות הבאות:
-
-**1)** $\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2^2$.
-
-**2)** $\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2$. הנחיה: השתמש בכלל השרשרת
-
-**3)** $\frac{d}{d\boldsymbol{x}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})$.
-
-**4)** $\frac{d}{d\boldsymbol{A}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})$.
+**3)** מהי ההסתברות ש10 חולים רצופים יהיה בעלי דופק גבוה או שווה ל 70?
 
 ### פתרון 1.2
 
 #### 1)
 
+נשתמש בעובדה שסכום כל הערכים בטבלה חייב להיות שווה ל 1, לכן המספר החסר חייב להיות:
+
 $$
-\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2^2
-=\frac{d}{d\boldsymbol{x}}(\boldsymbol{x}^\top\boldsymbol{x})
-=\frac{d}{d\boldsymbol{x}}(\sum_{i=1}^d x_i^2)
-=\begin{bmatrix}
-\frac{d}{dx_1}(\sum x_i^2) \\ \frac{d}{dx_2}(\sum x_i^2) \\ \vdots \\ \frac{d}{dx_d}(\sum x_i^2)
-\end{bmatrix}
-=\begin{bmatrix}
-2x_1 \\ 2x_2 \\ \vdots \\ 2x_d
-\end{bmatrix}
-=2\boldsymbol{x}
+p_{\text{p},\text{c}}(60,2) = 1 - \sum_{(p,c)\neq(60,2)} p_{\text{p},\text{c}}(p, c) = 0.05
 $$
 
 #### 2)
 
-נסמן $h(\boldsymbol{x})=\|\boldsymbol{x}\|_2^2$ ונשים לב ש $\|\boldsymbol{x}\|_2=\sqrt{h(\boldsymbol{x})}$. כמו כן נשתמש בעובדה שאת הנגזרת של $h(\boldsymbol{x})$ כבר חישבנו בסעיף הקודם:
+על פי ההגדרה של הפילוג המותנה:
 
 $$
-\frac{d}{d\boldsymbol{x}}\|\boldsymbol{x}\|_2
-=\frac{d}{d\boldsymbol{x}}\sqrt{h(\boldsymbol{x})}
-=\frac{1}{2\sqrt{h(\boldsymbol{x})}}\cdot\frac{d}{d\boldsymbol{x}}h(\boldsymbol{x})
-=\frac{\boldsymbol{x}}{\sqrt{h(\boldsymbol{x})}}
+p_{\text{p}\lvert \text{c}}(60\lvert 0)
+=\frac{p_{\text{p},\text{c}}(60,0)}{p_{\text{c}}(0)}
+=\frac{p_{\text{p},\text{c}}(60,0)}{\sum_{p=50}^{80} p_{\text{p},\text{c}}(p,0)}= \frac{0.08}{0+0.08+0.02+0.1} = 0.4
 $$
 
 #### 3)
 
-נגזור על פי הגדרה:
+מכיוון שהמאפיינים של המשתמשים הינם בלתי תלויים הסיכוי לקבל קומבינציה כל שהיא של מאורעות שווה למכפלת ההסתברויות של כל מאורע בנפרד. נתחיל בלחשב את ההסתברות שלמשתמש יחיד יהיה דופק גבוה או שווה ל70. לשם כך נחשב את הפילוג השולי של הדופק של משתמש, נעשה זאת בעזת נוחסאת ההסתברות השלמה:
+
+$$
+p_{\text{p}}(p)=\sum_c p_{\text{p},\text{c}}(p,c)=\begin{cases}
+0.4 & p=50 \\
+0.2 & p=60 \\
+0.1 & p=70 \\
+0.3 & p=80
+\end{cases}
+$$
+
+מכאן שההסתברות של משתמש יחיד יהיה דופק גבוה או שווה ל70 הינו $\text{Pr}(\text{p}\geq70)=0.1+0.3=0.4$.
+
+ההסתברות ש10 חולים רצופים יהיה בעלי דופק גבוה או שווה ל 70 שווה ל:
 
 $$
 \begin{aligned}
-\frac{d}{d\boldsymbol{x}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})
-&=\frac{d}{d\boldsymbol{x}}(\sum_{i,j} a_{i,j}x_ix_j)
-=\begin{bmatrix}
-\frac{d}{dx_1}(\sum_{i,j} a_{i,j}x_ix_j) \\ \frac{d}{dx_2}(\sum_{i,j} a_{i,j}x_ix_j) \\ \vdots \\ \frac{d}{dx_d}()\sum_{i,j} a_{i,j}x_ix_j
-\end{bmatrix}
-=\begin{bmatrix}
-\sum_i a_{i,1}x_i+\sum_j a_{1,j}x_j \\ \sum_i a_{i,2}x_i+\sum_j a_{2,j}x_j \\ \vdots \\ \sum_i a_{i,d}x_i+\sum_j a_{d,j}x_j
-\end{bmatrix} \\
-&=\begin{bmatrix}
-\boldsymbol{A}_{:,1}^\top\boldsymbol{x}+\boldsymbol{A}_{1,:}\boldsymbol{x} \\ \boldsymbol{A}_{:,2}^\top\boldsymbol{x}+\boldsymbol{A}_{2,:}\boldsymbol{x} \\ \vdots \\ \boldsymbol{A}_{:,d}^\top\boldsymbol{x}+\boldsymbol{A}_{d,:}\boldsymbol{x}
-\end{bmatrix}
-=\boldsymbol{A}^\top\boldsymbol{x}+\boldsymbol{A}\boldsymbol{x}
-=(\boldsymbol{A}^\top+\boldsymbol{A})\boldsymbol{x}
+\text{Pr}(\text{p}_1\geq70\cap\text{p}_2\geq70\cap\ldots\cap\text{p}_{10}\geq70)
+&=\text{Pr}(\text{p}_1\geq70)\text{Pr}(\text{p}_2\geq70)\cdot\ldots\cdot\text{Pr}(\text{p}_{10}\geq70)\\
+&=\prod_{i=1}^{10}\text{Pr}(\text{p}_i\geq70)
+=0.4^{10}
+=10^{-4}
 \end{aligned}
 $$
 
-#### 4)
+## תרגיל 1.3 - פילוגים מעורבים
 
-נגזור על פי הגדרה:
-
-$$
-\begin{aligned}
-\frac{d}{d\boldsymbol{A}}(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x})
-&=\frac{d}{d\boldsymbol{A}}(\sum_{i,j} a_{i,j}x_ix_j)\\
-&=\begin{bmatrix}
-\frac{d}{da_{1,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{1,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{1,d}}(\sum_{i,j} a_{i,j}x_ix_j) \\
-\frac{d}{da_{2,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{2,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{2,d}}(\sum_{i,j} a_{i,j}x_ix_j) \\
-\vdots && \vdots && \ddots && \vdots \\
-\frac{d}{da_{d,1}}(\sum_{i,j} a_{i,j}x_ix_j) && \frac{d}{da_{d,2}}(\sum_{i,j} a_{i,j}x_ix_j) && \cdots && \frac{d}{da_{d,d}}(\sum_{i,j} a_{i,j}x_ix_j)
-\end{bmatrix} \\
-&=\begin{bmatrix}
-x_1x_1 && x_1x_2 && \cdots && x_1x_d \\
-x_2x_1 && x_2x_2 && \cdots && x_2x_d \\
-\vdots && \vdots && \ddots && \vdots \\
-x_dx_1 && x_dx_2 && \cdots && x_dx_d
-\end{bmatrix}
-=\boldsymbol{x}\boldsymbol{x}^\top
-\end{aligned}
-$$
-
-## תרגיל 1.3 - בחזרה לבעיית המעגל
-
-נחזור לפונקציית ה"ציון" של מידת ההתאמה של מעגל לנקודות מהדוגמא בתחילת התרגול.
+נסתכל כעת על הפילוג המשותף של הדופק $\text{p}$ וחום הגוף $\text{t}$ של המשתמש. נתון לנו כי הפילוג המותנה של חום הגוף בהינתן הדופק הינו:
 
 $$
-f(\boldsymbol{c},r)=\frac{1}{n}\sum_{i=1}^n (\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2-r)^2
+\text{t}\lvert \text{p}=p\quad\sim N(32+0.1\cdot p,1)
 $$
-
-חשבו את הנגזרות של פונקציה זו: $\nabla_{\boldsymbol{c}}f$ ו $\frac{d}{dr}f$.
-(לצורך החישוב של $\nabla_{\boldsymbol{c}}f$ השתמשו בשיטה דומה לזו שהופיע בסעיף 2 של השאלה הקודמת)
-
-### פתרון 1.3
-
-נתחיל בגזירה לפי $r$:
-
-$$
-\frac{d}{dr}f(\boldsymbol{c},r)
-=\frac{2}{n}\sum_{i=1}^n (r-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2)
-$$
-
-על פי ההנחיה, לצורך הגזירה לפי $\boldsymbol{c}$ נסמן את פונקציית העזר $h(\boldsymbol{x},\boldsymbol{c})=\|\boldsymbol{x}-\boldsymbol{c}\|_2^2$ בעזרתה נוכל לרשום את $f$ כ:
-
-$$
-f(\boldsymbol{c},r)=\frac{1}{n}\sum_{i=1}^n (\sqrt{h(\boldsymbol{x^{(i)}},\boldsymbol{c})}-r)^2
-$$
-
-נחשב תחילה את הנגזרת של  $h(\boldsymbol{x},\boldsymbol{c})$:
-
-$$
-\begin{aligned}
-\frac{d}{d\boldsymbol{c}}h(\boldsymbol{x},\boldsymbol{c})
-&=\frac{d}{d\boldsymbol{c}}\|\boldsymbol{x}-\boldsymbol{c}\|_2^2 \\
-&=\frac{d}{d\boldsymbol{c}}(\boldsymbol{x}-\boldsymbol{c})^\top(\boldsymbol{x}-\boldsymbol{c}) \\
-&=\frac{d}{d\boldsymbol{c}}(\|\boldsymbol{x}\|_2^2-2\boldsymbol{c}^\top\boldsymbol{x}+\|\boldsymbol{c}\|_2^2) \\
-&=2(\boldsymbol{c}-\boldsymbol{x})
-\end{aligned}
-$$
-
-נשתמש כעת בתוצאה זו על מנת לחשב את הנגזרת הכוללת:
-
-$$
-\begin{aligned}
-\frac{d}{d\boldsymbol{c}}f(\boldsymbol{c},r)
-&=\frac{2}{n}\sum_{i=1}^n (\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})-r))
-\cdot\left(\frac{d}{dh(\boldsymbol{x}^{(i)},\boldsymbol{c})}\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})\right)
-\cdot\frac{d}{d\boldsymbol{c}}h(\boldsymbol{x}^{(i)},\boldsymbol{c})\\
-&=\frac{2}{n}\sum_{i=1}^n (\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})-r))
-\frac{1}{\sqrt{h(\boldsymbol{x}^{(i)},\boldsymbol{c}})}
-(\boldsymbol{c}-\boldsymbol{x}^{(i)})\\
-&=\frac{2}{n}\sum_{i=1}^n (r-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2)\frac{\boldsymbol{x}^{(i)}-\boldsymbol{c}}{\|\boldsymbol{x}^{(i)}-\boldsymbol{c}\|_2}
-\end{aligned}
-$$
-
-## Gradient descent (שיטת הגרדיאנט)
-
-כפי שציינו קודם, במקרים רבים לא נוכל פתור את בעיות האופטימיזציה על ידי גזירה והשוואה ל0 ונאלץ לעשות שימוש בשיטות נומריות. נתאר כאן בקצרה את שיטת ה**gradient descent** (שיטת הגרדיאנט) שהיא אחת השיטות הבסיסיות ביותר אשר מנסה לפתור את בעיות מסוג זה. אנו עוד נדון בהמשך הקורס בהרחבה בתכונות ובבעיות הקיימות בשיטה זו, אך בשלב זה נסתפק בלתאר את אופן פעולתה.
-
-הרעיון מאחורי שיטה זו הינו להתחיל בנקודה אקראית כל שהיא במרחב ולהתחיל לזוז בצעדים קטנים לכיוון שבו פונקציית המטרה קטנה באופן המהיר ביותר. הכיוון הזה הוא כמובן הכיוון ההפוך לגרדיאנט של הפונקציה. זהו אלגוריתם חמדן (greedy) אשר מנסה בכל צעד לשפר במעט את מצבו ביחס לשלב הקודם. אלגוריתמים מסוג זה מתכנסים לרוב למינימום לוקאלי ולא למינימום הגלובלי של הפונקציה. האלגוריתם זה רחוק מלתת מענה מושלם לבעיה, אך במקרים רבים הוא מצליח לספק פתרון סביר.
-
-### האלגוריתם
-
-- מאתחלים את $\boldsymbol{\theta}^{(0)}$ בנקודה אקראית כל שהיא
-- חוזרים על צעד העדכון הבא עד להתכנסות:
-
-  $$
-  \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}f(\boldsymbol{\theta}^{(t)})
-  $$
-
-הפרמטר $\eta$ אשר קובע את גודל הצעדים אשר נעשה בתהליך ההתכנסות. (את הדיון על קריטריון ההתכנסות ועל הבחירת של  $\eta$ נשאיר לשלב מאוחר יותר)
-
-## תרגיל 1.4 - Gradient descent for circle fitting
-
-רשומו את צעד העדכון של אלגורתם הgradient descent בעבור המקרה של התאמת העיגול.
-
-### פתרון 1.4
-
-על פי הנגזרת שחיבנו בתרגיל 1.3 נסיק כי צעד העדכון הוא:
-
-$$
-\begin{aligned}
-r^{(t+1)}&=r^{(t)}-\frac{2\eta}{n}\sum_{i=1}^n (r^{(t)}-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}\|_2)\\
-\boldsymbol{c}^{(t+1)}&=\boldsymbol{c}^{(t)}-\frac{2\eta}{n}\sum_{i=1}^n (r^{(t)}-\|\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}\|_2)\frac{\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}}{\|\boldsymbol{x}^{(i)}-\boldsymbol{c}^{(t)}\|_2}
-\end{aligned}
-$$
-
-### הרצה של האלגוריתם
-
-למטה מוצג תהליך ההתכנסות של אלגוריתם הגרדיאנט בעבור $\eta=0.01$ ו 500 צעדים כאשר מתחילים את התהליך ממעגל היחידה:
 
 <div class="imgbox">
 
-![](./output/circle_fitting_iterations.gif)
+![](./output/dist_t_given_p.png)
+
+</div>
+
+בהנתן שחום הגוף שמשתמש מסויים הינו 39°, מהו הפילוג השולי הצפוי של הדופק של אותו משתמש, $p_{\text{p}\lvert \text{t}}(p\lvert 39)$?
+
+### פתרון 1.3
+
+נשתמש בחוק בייס:
+
+$$
+p_{\text{p}\lvert \text{t}}(p\lvert 39)
+=\frac{p_{\text{t}\lvert \text{p}}(39\lvert p)p_{\text{p}}(p)}{p_{\text{t}}(39)}
+=\frac{p_{\text{t}\lvert \text{p}}(39\lvert p)p_{\text{p}}(p)}{p_{\text{t}}(39)}
+$$
+
+נתחיל בחישוב של המונה $p_{\text{t}\lvert \text{p}}(39\lvert p)p_{\text{p}}(p)$:
+
+$$
+\begin{aligned}
+p_{\text{t}\lvert \text{p}}(39\lvert p)p_{\text{p}}(p)
+& = \begin{cases}
+\frac{1}{\sqrt{2\pi}}\exp(-\tfrac{1}{2}(39-32-0.1\cdot 50)^2)\cdot0.4 & p=50 \\
+\frac{1}{\sqrt{2\pi}}\exp(-\tfrac{1}{2}(39-32-0.1\cdot 60)^2)\cdot0.2 & p=60 \\
+\frac{1}{\sqrt{2\pi}}\exp(-\tfrac{1}{2}(39-32-0.1\cdot 70)^2)\cdot0.1 & p=70 \\
+\frac{1}{\sqrt{2\pi}}\exp(-\tfrac{1}{2}(39-32-0.1\cdot 80)^2)\cdot0.3 & p=80
+\end{cases}\\
+& = \begin{cases}
+0.022 & p=50 \\
+0.048 & p=60 \\
+0.04 & p=70 \\
+0.072 & p=80
+\end{cases}\\
+\end{aligned}
+$$
+
+<div class="imgbox">
+
+![](./output/dist_tp.png)
+
+</div>
+
+את המכנה נוכל לחשב בקלות על ידי שימוש בעובדה ש $p_{\text{t}}(t)=\sum_{\tilde{p}} p_{\text{t}\lvert \text{p}}(t\lvert \tilde{p})p_{\text{p}}(\tilde{p})$ (נוסחאת ההסתברות השלמה), זאת אומרת שעלינו פשוט לסכום את התוצאות הנ"ל. התפקיד של המכנה הוא למעשה להיות קבוע נרמול (שאינו תלוי ב $\text{p}$) אשר דואג לכך שסכום ההסתברויות השלויות על פני $\text{p}$ תהיה 1.
+
+$$
+p_{\text{t}}(39)=\sum_{\tilde{p}} p_{\text{t}\lvert \text{p}}(39\lvert \tilde{p})p_{\text{p}}(\tilde{p})=0.182
+$$
+
+מכאן ש:
+
+$$
+p_{\text{p}\lvert \text{t}}(p\lvert 39)
+=\frac{1}{0.182}\begin{cases}
+0.022 & p=50 \\
+0.048 & p=60 \\
+0.04 & p=70 \\
+0.072 & p=80
+\end{cases}
+=\begin{cases}
+0.12 & p=50 \\
+0.27 & p=60 \\
+0.22 & p=70 \\
+0.4 & p=80
+\end{cases}
+$$
+
+<div class="imgbox">
+
+![](./output/dist_p_given_t_stack.png)
+
+</div>
+
+## תוחלות
+
+נזכיר כעת את ההגדרות של התוחלת והשונות
+
+### תוחלת (Expectation Value / Mean)
+
+התוחלת של וקטור אקראי $\mathbf{x}$ מוגדרת באופן הבא:
+
+$$
+\boldsymbol{\mu}_{\mathbf{x}}=\mathbb{E}[\mathbf{x}]
+=\underbrace{\sum_{\boldsymbol{x}\in\lbrace \mathbf{x}\omega),\omega\in\Omega\rbrace} \boldsymbol{x}\cdot p_{\mathbf{x}}(\boldsymbol{x})}_{\text{For discrete RV}}
+=\underbrace{\int_{-\infty}^\infty \boldsymbol{x}\cdot p_{\mathbf{x}}(\boldsymbol{x})d\boldsymbol{x}}_{\text{For cont. RV}}
+$$
+
+כאשר אינטרגל או סכימה על וקטור מתבצעים איבר איבר (זאת אומרת לכל איבר בנפרד).
+
+הגדרה זו תופסת גם לכל פונקציה של המשתנים / וקטורים האקראיים:
+
+$$
+\mathbb{E}\left[f(\mathbf{x})\right]
+=\int_{-\infty}^\infty f(\boldsymbol{x})\cdot p_{\mathbf{x}}(\boldsymbol{x})d\boldsymbol{x}
+$$
+
+### השונות (Variance)
+
+השונות של משתנה אקראי (סקלרי) $\text{x}$ מוגדרת באופן הבא:
+
+$$
+\sigma_{\text{x}}^2=\text{var}(\text{x})=\mathbb{E}\left[(\text{x}-\mu_{\text{x}})^2\right]=\mathbb{E}\left[\text{x}^2\right]-\mu_{\text{x}}^2
+$$
+
+כאשר השורש של השונות, $\sigma_{\text{x}}$, מכונה סטיית התקן (standard deviation - STD) של $\text{x}$.
+
+### Covariance
+
+הconariance של זוג משתנים אקראיים (סקלריים) $\text{x}_1$ ו $\text{x}_2$ מגדר באופן הבא:
+
+$$
+\text{cov}(\text{x}_1,\text{x}_2)=\mathbb{E}\left[(\text{x}_1-\mu_{\text{x}_1})(\text{x}_2-\mu_{\text{x}_2})\right]=\mathbb{E}\left[\text{x}_1\text{x}_2\right]-\mu_{\text{x}_1}\mu_{\text{x}_2}
+$$
+
+### מטריצת הCovariance
+
+בעבור וקטור אקראי $\mathbf{x}$ מגדירים את מטריצת הconvariance כאשר האיבר ה$i,j$ של המטריצה הוא הcovariance בין $\text{x}_i$ ל $\text{x}_j$. מקובל לסמן מטריצה זו באות $\Sigma$:
+
+$$
+\Sigma_{\mathbf{x},i,j}=\text{cov}\left(\text{x}_i,\text{x}_j\right)
+$$
+
+ניתן להראות כי את מטריצת הcovariance ניתן לכתוב גם כ:
+
+$$
+\Sigma_{\mathbf{x}}=\mathbb{E}\left[\mathbf{x}\mathbf{x}^\top\right]-\boldsymbol{\mu}_{\mathbf{x}}\boldsymbol{\mu}_{\mathbf{x}}^\top
+$$
+
+## וקטורים גאוסיים (Gaussian Vectors) -<br/>  Multivariate Normal Distribution
+
+בדומה למקרה החד מימדי, הפילוג הגאוסי ממשיך לשחק תפקיד מרכזי גם כאשר מגדילים את מספר המימדים. ההרחבה של הפילוג הגאוסי למספר מימדים נקרא פילוג multivariate normal distribution. וקטורים שמפולגים על פי פילוג זה מכונים וקטורים גאוסיים. בדומה לקרה החד מימדי, הפילוג הזה מוגדר על ידי וקטור התוחלות שלו $\boldsymbol{\mu}_{\mathbf{x}}$ ומטריצת הcovariance שלו $\Sigma_{\mathbf{x}}$:
+
+$$
+p_{\mathbf{x}}(\boldsymbol{x})=\frac{1}{(\sqrt{2\pi)^n\lvert \Sigma_{\mathbf{x}}\lvert }}\exp\left(-\tfrac{1}{2}\left(\boldsymbol{x}-\boldsymbol{\mu}_{\mathbf{x}}\right)^T\Sigma_{\mathbf{x}}^{-1}\left(\boldsymbol{x}-\boldsymbol{\mu}_{\mathbf{x}}\right)\right)
+$$
+
+כאשר $n$ הוא מספר המימדים (האורך של הוקטור הגאוסי).
+
+תנאי הכרחי ומספיק בשביל שוקטור אקראי יהיה גאוסי, הינו שכל כקומבינציה לינארית של איברי הוקטור יהיו בעלי פילוג גאוסי (סקלארי).
+
+## חזאיים (Predictions)
+
+בפעולת החיזוי אנו מנסים לחזות את ערכו של משתנה אקראי כל שהוא, לרוב על סמך משתנים אקראיים אחרים. מקובל לסמן חזאים בעזרת ^, למשל, את החזאי של המתנה האקראי $\text{x}$ נסמן ב $\hat{x}$.
+
+נקח בתור דוגמא את הנסיון לחזות מהו הדופק של משתמש מסויים על סמך חום הגוף שלו. ראינו קודם כיצד ניתן לחשב את הפילוג של הדופק בהינתן הטמפרטורה, קבינלו את הפילוג המותנה הבא:
+
+$$
+p_{\text{p}\lvert \text{t}}(p\lvert 39)
+=\begin{cases}
+0.12 & p=50 \\
+0.27 & p=60 \\
+0.22 & p=70 \\
+0.4 & p=80
+\end{cases}
+$$
+
+נשאלת השאלה אם כן מהו החזאי האופטימאלי של הדופק של המשתמש בהינתן שחום הגוף שלו היא 39°? לשם כך עלינו הגדיר קודם למה אנו מתכוונים ב"חזאי אופטימאלי". מסתבר שאין תשובה אחת לשאלה הזו. נסתכל על כמה אופציות להגדיר חזאי שכזה:
+
+**אופציה ראשונה**: נניח שמטרה שלנו היא להגדיל את ההסתברות שהחזאי שלנו יחזה את הדופק במדוייק. במקרה כזה כדאי לנו לבחור את החזאי $\hat{p}=80$, שכן הוא זו היא האופציה בעלת ההסתברות הכי גבוהה להתקבל.
+
+**אופציה שניה** נניח שהמטרה שלנו היא לדאוג שהשגיאה הממוצעת (הערך המוחלט של ההפרש בין החיזוי לדופק האמיתי) תהיה כמה שיותר קטנה. במקרה כזה כדאי לנו לבחור את החזאי $\hat{p}=70$, אשר יניב שגיאה ממוצעת של 9.
+
+**אופציה שלישית** נניח והמטרה שלנו היא דווקא למזער את הטעות המקסימאלית. במקרה כזה כדאי לנו לבחור את מרכז התחום שהוא $\hat{p}=65$ (אשר יבטיח לנו שגיאה מירבית של 15).
+
+כפי שניתן לראות, הבחירה של החזאי האופטימאלי תלויה במטרה אותה אנו רוצים להשיג. נראה כעת כיצד ניתן להגדיר את המטרה כבעיית אופטימיזציה שהחזאי האופטימאלי הוא הפתרון שלה.
+
+### פונקציית המחיר (Cost Function)
+
+ראשית נגדיר פונקציה המכונה **פונקציית המחיר (cost function)**. פונקציה זו מקבל חזאי ומחזירה את הציון של החזאי. לרוב הציון מוגדר כך שציון נמוך יותר הוא טוב יותר. לדוגמא, פונקציית המחיר הבאה מחזירה את השגיאת החיזוי הממוצעת של הדופק:
+
+$$
+C(\hat{p})=\mathbb{E}\left[\lvert \text{p}-\hat{p}\lvert \ \lvert\ t=39\right]
+$$
+
+בהינתן פונקציית מחיר שכזו, ניתן לרשום את החזאי האופטימאלי כחזאי אשר ממזער את פונקציית המחיר:
+
+$$
+\hat{p}^*=\underset{\hat{p}}{\arg\min}\quad C(\hat{p})
+$$
+
+#### פונקציית הסיכון (Risk Function)  וההפסד (Loss)
+
+דרך נפוצה להגדיר פונקציות מחיר הינה כתוחלת על מרחק כל שהוא בין תוצאת החיזוי לערך האמיתי של המשתנה האקראי (כמו בדוגמא למעלה). במקרים כאלה מקובל לקרוא לפונקציית המחיר **פונקציית סיכון (risk function)** ולפונקציית המרחק (שעליה מבצעים את התוחלת) **פונקציית ההפסד (loss function)**. סימונים מקובלים לפונקציות ההפסד ופונקציית הסיכון הינם  $\ell$ ו $R$ בהתאמה, כאשר:
+
+$$
+R(\hat{p})=\mathbb{E}\left[\ell(\hat{p},\text{p})\right]
+$$
+
+הטבלה הבאה מציגה את שלושת פונקציות הסיכון וההפסד הנפוצות ביותר:
+
+| המשמעות | פונקציית ההפסד | השם של<br/>פונקציית ההפסד | השם של<br/>פונקציית הסיכון |
+| --- | --- | --- | --- |
+| ההסתברות לעשות טעות | $$\ell\left(x,\hat{x}\right)=I\left\lbrace\hat{x}\neq x\right\rbrace$$ | Zero-one loss | Misclassification rate |
+| השגיאה הממוצעת | $$\ell\left(x,\hat{x}\right)=\left\lvert\hat{x}-x\right\rvert$$ | $$l_1$$ | MAE (mean absolute error) |
+| השיגאה הריבועית הממוצעת | $$\ell\left(x,\hat{x}\right)=\left(\hat{x}-x\right)^2$$ | $$l_2$$ | MSE (mean squared error) |
+
+- הסימון $I\{\cdot\}$ מציין פונקציית אינדיקטור (אשר שווה ל1 כאשר התנאי שבסוגריים מתקיים ו0 אחרת).
+- במקרים רבים משתשמים גם בשורש השגיאה הריבועית הממוצעת RMSE כפונקציית סיכון. מבחינת מעשית, אין הבדל בין השתיים שכן בעיית האופטימיזציה המתקבל היא שקולה (בגלל המונוטוניות של פונקציית השורש). זאת אומרת שלMSE וRMSE יש את אותו החזאי האופטימאלי.
+- פונקציית הסיכון הראשונה הינה הנפוצה ביותר למקרים בהם מנסים לחזות משתנה אקראי דיסקרטי.
+- פונקציית הסיכון האחרונה הינה הנפוצה ביותר למקרים בהם מנסים לחזות משתנה אקראי רציף.
+
+## תרגיל 1.4 - החזאים האופטימאלים של פונקציות הסיכון הנפוצות
+
+**1)** בעבור משתנה אקראי דיסקרטי $\text{x}$, עם misclassifiaction rate כפונקציית סיכון, הראו כי החזאי האופטימאלי הינו הערך הסביר ביותר:
+
+$$
+\hat{x}^*
+=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[I\{\hat{x}\neq\text{x}\}\right]
+=\underset{\hat{x}}{\arg\max}\quad p_{\text{x}}\left(\hat{x}\right)
+$$
+
+**2)** בעבור משתנה אקראי רציף $\text{x}$ עם MAE כפונקציית סיכון, הראו כי החזאי האופטימאלי הינו הmedian:
+
+$$
+\begin{aligned}
+&\hat{x}^*
+=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[\lvert \text{x}-\hat{x}\lvert \right]\\
+&\Rightarrow F_{\text{x}}\left(\hat{x}^*\right)=\tfrac{1}{2}
+\end{aligned}
+$$
+
+(בעבור המקרה הבדיד, ראו דוגמא בתרגיל 1.5)
+
+**3)** בעבור MSE (או RMSE) כפונקציית סיכון, הראו כי החזאי האופטימאלי הינו התוחלת:
+
+$$
+\hat{x}^*
+=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[(\text{x}-\hat{x})^2\right]
+=\mathbb{E}\left[\text{x}\right]
+$$
+
+### פתרון 1.4
+
+**1)**
+
+$$
+\hat{x}^*=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[I\{\hat{x}\neq \text{x}\}\right]
+$$
+
+נרשום את התוחלת באופן מפורש:
+
+$$
+=\underset{\hat{x}}{\arg\min}\quad \sum_xI\{\hat{x}\neq x\}p_{\text{x}}(x)
+$$
+
+הסכימה פה היא למעשה על כל הערכים של $\text{x}$ מלבד $\hat{x}$. נוכל לרשום את הסכום הזה כסכום על כל הערכים פחות הערך ב$\hat{x}$:
+
+$$
+\begin{aligned}
+&=\underset{\hat{x}}{\arg\min}\quad \underbrace{\left(\sum_x p_{\text{x}}(x)\right)}_{=1} - p_{\text{x}}(\hat{x}) \\
+& = \underset{\hat{x}}{\arg\max}\quad p_X\left(\hat{x}\right)
+\end{aligned}
+$$
+
+**2)**
+
+$$
+\begin{aligned}
+\hat{x}^*
+&=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[\lvert \text{x}-\hat{x}\lvert \right] \\
+&=\underset{\hat{x}}{\arg\min}\int_{-\infty}^{\infty}\lvert x-\hat{x}\lvert  p_{\text{x}}(x)dx \\
+\end{aligned}
+$$
+
+את בעיית האופטימיזציה הזו ניתן לפתור על ידי גזירה (לפי $\hat{x}$) והשוואה ל-0:
+
+$$
+\begin{aligned}
+&\frac{d}{d\hat{x}}\int_{-\infty}^{\infty}\lvert \hat{x}-x\lvert p_{\text{x}}(x)dx = 0 \\
+\Leftrightarrow&\int_{-\infty}^{\infty}\frac{d}{d\hat{x}}\lvert \hat{x}-x\lvert p_{\text{x}}(x)dx = 0 \\
+\Leftrightarrow&\int_{-\infty}^{\infty}\text{sign}(\hat{x}-x)p_{\text{x}}(x)dx = 0 \\
+\Leftrightarrow&
+\underbrace{\left(\int_{-\infty}^{\hat{x}}p_{\text{x}}(x)dx\right)}
+_{=F_{\text{x}}(\hat{x})}-
+\underbrace{\left(\int_{\hat{x}}^{\infty}p_{\text{x}}(x)dx\right)}
+_{=1 - F_{\text{x}}(\hat{x})}
+=0 \\
+\Leftrightarrow& 2F_{\text{x}}(\hat{x}) = 1 \\
+\Leftrightarrow& F_{\text{x}}(\hat{x}) = \tfrac{1}{2} \\
+\end{aligned}
+$$
+
+**3)**
+
+$$
+\hat{x}^*
+=\underset{\hat{x}}{\arg\min}\quad \mathbb{E}\left[(\text{x}-\hat{x})^2\right]
+$$
+
+גם כאן ניתן לפתור את בעיית האופטימיזציה על ידי גזירה (לפי $\hat{x}$) והשוואה ל-0:
+
+$$
+\begin{aligned}
+&\frac{d}{d\hat{x}}\mathbb{E}\left[(\text{x}-\hat{x})^2\right]=0 \\
+\Leftrightarrow&\mathbb{E}\left[\frac{d}{d\hat{x}}(\text{x}-\hat{x})^2\right]=0 \\
+\Leftrightarrow&\mathbb{E}\left[2(\hat{x}-\text{x})\right]=0 \\
+\Leftrightarrow&
+2\hat{x}\underbrace{\mathbb{E}\left[1\right]}_{=1}-
+2\mathbb{E}\left[\text{x}\right]=0 \\
+\Leftrightarrow&\hat{x} = \mathbb{E}\left[x\right]
+\end{aligned}
+$$
+
+## תרגיל 1.5 - חיזוי הדופק על פי חום הגוף
+
+השתמשו בתוצאות הסעיף הקודם על מנת לקבוע בעבור כל אחד מ3 פונקצות הסיכון הנפוצות מהטבלה מהו החזאי האופטימאלי של הדופק של המשתמש בהינתן שחום הגוף שלו הינו 39°.
+
+### פתרון 1.5
+
+$$
+p_{\text{p}\lvert \text{t}}(p\lvert 39)
+=\begin{cases}
+0.12 & p=50 \\
+0.27 & p=60 \\
+0.22 & p=70 \\
+0.4 & p=80
+\end{cases}
+$$
+
+- בעבור misclasification rate החזאי האופטימאלי הוא הערך הסביר ביותר:
+
+$$
+\hat{p}^*=\underset{\hat{p}}{\arg\max}\quad p_{\text{p}\lvert \text{t}}
+(\hat{p}\lvert 39)=80
+$$
+
+- בעבור MAE:
+
+  מכיוון שמדובר במשתנה אקראי דיסקרטי לא קיים לו median. במקרה החזאי האופטימאלי הוא המספר אשר ההסתברות לקבל ערך גדול ממנו וההסתברות לקבל ערך קטן ממנו, שניהם קטנים מ-0.5.
+
+  בדוגמא שלנו המספר הזה הוא $\hat{p}=70$. (עם הסתברות של $0.39$ לקבל ערך קטן ממנו והסתברות של $0.4$ לקבל ערך קטן ממנו)
+
+- בעבור MSE (או RMSE) החזאי האופטימאלי הינו התוחלת:
+
+  $$
+  \hat{p}^*=\mathbb{E}\left[\text{p}\lvert \text{t}=39\right]=50\cdot0.12 + 60\cdot0.27 + 70\cdot0.22 + 80\cdot0.4=68.96
+  $$
+
+<div class="imgbox">
+
+![](./output/p_predictors.png)
 
 </div>
 

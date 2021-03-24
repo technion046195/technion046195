@@ -8,511 +8,405 @@ print_pdf: True
 
 <div dir="rtl" class="site-style">
 
-# תרגול 8 - Logistic Regression and Gradient Descent
+# תרגול 8 - MLP and Back-propagetion
 
 <div dir="ltr">
-<!-- <a href="./slides/" class="link-button" target="_blank">Slides</a> -->
+<a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial08.pdf" class="link-button" target="_blank">PDF</a>
-<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## תקציר התיאוריה
 
-### הגישה הדיסקרימינטיבית הסתברותית
+### Artificial Neural Networks (ANN)
 
-בגישה זו ננסה ללמוד את מודל פרמטרי אשר ימדל ישירות את $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ (מבלי ללמוד את הפילוג של $\mathbf{x}$). גישה זו יעילה מאד לבעיות סיווג, בהם קל לבנות מודלים פרמטריים $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})$ שהם פונקציות הסתברות חוקיות (חיובית שהסכום עליה הוא 1). את הפרמטריים של המודל הפרמטרי נלמד לרוב בעזרת MLE או MAP.
-
-### הפונקציה הלוגיסטית (סיגמואיד)
-
-הפונקציה הלוגיסטית מקבלת מספר בתחום $[-\infty,\infty]$ ומחזירה מספר בין 0 ל 1. היא לרוב מסומנת ב $\sigma$:
-
-$$
-\sigma(z)=\frac{1}{1+e^{-z}}
-$$
-
-והיא נראית כך:
+רשתות ניורונים מלאכותיות (Artificial Neural Networks (ANN)) הינן שיטה לבניה של פונקציות פרמטריות בהשראת רשתות נוירונים ביולוגיות. בדומה לרשת נוירונים ביולוגית בה כל נוירון מבצע פעולה פשוטה אך שילוב של הרבה נוירונים מאפשר ללמוד פונקציות מורכבות, ברשתות נוירונים מלאכותיות נשלב הרבה פונקציות פרמטריות פשוטות על מנת לקבל מודל אשר יכול לייצג פונקציות מורכבות. הפונקציות הפשוטות הם המקבילה המלאכותית של הנויורונים הביולוגיים והם לרוב יקבלו מספר משתנים וחזירו סקלר:
 
 <div class="imgbox" style="max-width:600px">
 
-![](../lecture07/output/sigmoid.png)
+![](../lecture08/assets/ann.png)
 
 </div>
 
-פונקציה זו שימושית לצורך הגדרת מודלים הסתברותיים של משתנים בינארים.
-
-**הערה**: בתחום של מערכות לומדות מקובל לכנות את הפונקציה הזו **סיגמואיד (sigmoid)** למרות שמבחינה מתמטית השם הזה מתאר משפחה הרבה יותר רחבה של פונקציות בעלות צורה של S.
-
-#### תכונות
-
-- $\sigma(-z)=1-\sigma(z)$.
-- $\frac{\partial}{\partial z}\log(\sigma(z))=1-\sigma(z)$
-
-### פונקציית ה Softmax
-
-פונקציית ה softmax היא הרחבה של הפונקציה הלוגיסטית, והיא יכולה לשמש למידול פונקציית ההסתברות של משתנים דיסקרטיים לא בינאריים (אך סופיים). הפונקציית לוקחת וקטור כלשהו $\boldsymbol{z}$ באורך $C$ ומייצרת ממנו וקטור חדש חיובי שסכום האיברים שלו הוא 1. הפונקציה מוגדרת באופן הבא:
+בהשראת הנוירונים הביולוגיים אנו לרוב נבחר את הפונקציות הפשוטות להיות מהצורה של:
 
 $$
-\text{softmax}(\boldsymbol{z})=\frac{1}{\sum_{c=1}^C e^{z_c}}[e^{z_1},e^{z_2},\dots,e^{z_C}]^{\top}
+h(\boldsymbol{x};\boldsymbol{w},b)=\varphi(\boldsymbol{w}^{\top}\boldsymbol{x}+b)
 $$
 
-או לחילופין, הערך של האיבר ה $i$ של הפונקציה הינו:
+שבה פונקציה סקלארית לא לינארית $\varphi$, המכונה פונקציית ההפעלה, פועלת על קומבינציה לינרארית של הכניסה בתוספת קבוע (bias). אלא אם צויין אחרת, בקרוס זה אנו נניח כי הנויירונים ברשת בנויים בצורה זו. בחירות נפוצות של הפונקציית ההפעלה הינן:
 
-$$
-\text{softmax}(\boldsymbol{z})_i=\frac{e^{z_i}}{\sum_{c=1}^C e^{z_c}}
-$$
+- הפונקציה הלוגיסטית (סיגמואיד): $\varphi(x)=\sigma(x)=\frac{1}{1+e^{-x}}$
+- טנגנס היפרבולי: $\varphi(x)=\tanh\left(x/2\right)$
+- פונקציית ה ReLU (Rectified Linear Unit): אשר מוגדרת $\varphi(x)=\max(x,0)$
 
-#### תכונות
+מושגים:
 
-- אינווריאנטיות לתוספת של קבוע (לכל אברי הוקטור): $\text{softmax}(\boldsymbol{z} + a)_i=\text{softmax}(\boldsymbol{z})_i\ \forall i$.
-- $\frac{\partial}{\partial z_j} \log(\text{softmax}(\boldsymbol{z}))_i=\underbrace{\delta_{i,j}}_{=I\{i=j\}}-\text{softmax}(\boldsymbol{z})_j$
+- **יחידות נסתרות** (**hidden units**): הנוירונים אשר אינם מחוברים למוצא הרשת (אינם נמצאים בסוף הרשת).
+- **רשת עמוקה** (**deep network**): רשת אשר מכילה מסלולים מהכניסה למוצא, אשר עוברים דרך יותר מיחידה נסתרת אחת.
+- **ארכיטקטורה**: הצורה שבה הנוירונים מחוברים בתוך הרשת.
 
-### Logistic Regression
+רשתות נוירונים מלאכותיות יכול לשמש כפונקציה פרמטרית לכל דבר. בהקשר של הקרוס נוכל להשתמש בהם כדי לפתור בעיות סיווג בגישה הדסיקרימינטיבת הסתברותית או בכדי לפתור בעיות רגרסיה בשיטת ה ERM. לרוב אנו נפתור את בעיות האופטימיזציה של מציאת הפרמטרים בעזרת gradient descent כאשר אנו נעזר בשיטת ה back-propogation על מנת לחשב את הנגזרות של הרשת על פי הפרמטריים.
 
-בניגוד לשם, logistic regression היא שיטה לפתרון בעיות סיווג בגישה הדיסקרימינטיבית הסתברותית. בשיטה זו אנו נבחר $C$ פונקציות פרמטריות כל שהם $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$ ונשתמש בהם על מנת לבנות מודל פרמטרי. נסמן:
+בדומה לסימונים בשאר הקורס, גם כאן אנו נשתמש בוקטור $\boldsymbol{\theta}$ אשר יאגד את כל הפרמטרים של הרשת (הפרמטרים של כל הנוירונים).
 
-- את הוקטור $\boldsymbol{\theta}$ כוקטור אשר כולל את כל $C$ וקטורי הפרמטרים: $\boldsymbol{\theta}=[\boldsymbol{\theta}_1^{\top},\boldsymbol{\theta}_2^{\top},\dots,\boldsymbol{\theta}_C^{\top}]^{\top}$.
-- את הפונקציה $\boldsymbol{f}$ כפונקציה המאגדת את כל $C$ הפונקציות הפרמטריות: $\boldsymbol{f}=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
+#### הערה לגבי השם loss
 
-את הפילוג המותנה נמדל באופן הבא:
+עד כה השתמשנו בשם loss בהקשר של פונקציות risk (הקנס שמקבלים על שגיאת חיזוי בודדת מסויימת). בהקשר של רשתות נוירונים משתמשים לרוב במושג זה על מנת לתאר את הפונקציית המטרה (ה objective) שאותו רוצים למזער בבעיית האופטימיזציה. (לדוגמא, ב MLE לרוב ה loss יתייחס למינוס של ה log-likelihood).
 
-$$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-=\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
-=\frac{e^{f_y(\boldsymbol{x};\boldsymbol{\theta}_y)}}{\sum_{c=1}^C e^{f_c(\boldsymbol{x};\boldsymbol{\theta}_c)}}
-$$
+בכדי למנוע בלבול, בקורס זה נשתדל להיצמד להגדרה המקורית של פונקציית ה loss (שמגדירה את פונקציית ה risk) ונמשיך להשתמש בשם פונקציית מטרה או objective בכדי לתאר את הביטוי שאותו אנו רוצים למזער.
 
-לבעיות ה MLE וה MAP של מודל זה אין פתרון סגור ואנו נחפש את הפתרון לבעיית האופטימיזציה בעזרת gradient descent.
+### Back-Propagation
 
-#### ביטול היתירות של המודל
+Back-propogation עושה שימוש בכלל השרשת של הנגזרת על מנת לחשב את הנגזרות של רשת נוירונים.
 
-בגלל האינווריאנטיות של פונקציית ה softmax המודל הפרמטרי המוגדר על ידי הפונקציות $f_c$ יהיה אינווריאנטי לשינויים מהצורה של: $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)\rightarrow f_c(\boldsymbol{x};\boldsymbol{\theta}_c)+g(\boldsymbol{x})$.
- דרך נפוצה לבטל יתירות זו הינה על ידי קיבוע של אחת הפונקציות הפרמטריות, לרוב הראשונה $c=1$, להיות שווה זהותית ל 0: $f_1(\boldsymbol{x};\boldsymbol{\theta}_1)=0$.
-
-#### המקרה הבינארי
-
-במקרה הבינארי ישנם רק שתי מחלקות ($C=2$), אותם נסמן ב 0 ו 1. נקבע את הפונקציה הפרמטרית של המחלקה של $\text{y}=0$ להיות זהותית 0. נקבל את המודל הפרמטרי הבא:
-
-$$
-p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})
-=\frac{1}{1+e^{f(\boldsymbol{x};\boldsymbol{\theta})}}
-=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
-$$
-
-$$
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})
-=\frac{e^{f(\boldsymbol{x};\boldsymbol{\theta})}}{e^{f(\boldsymbol{x};\boldsymbol{\theta})}+1}
-=\frac{1}{1+e^{-f(\boldsymbol{x};\boldsymbol{\theta})}}
-=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
-$$
-
-#### רגרסיה לוגיסטית לינארית
-
-הגרסא הלינארית של הרגרסיה הלוגיסטית היא המקרה שבו בוחרים את הפונקציות הפרמטריות להיות פונקציות לינאריות:
-
-$$
-f_c(\boldsymbol{x};\boldsymbol{\theta}_c)=\boldsymbol{\theta}_c^{\top}\boldsymbol{x}
-$$
-
-במקרה זה פונקציית ה objective שיש למזער היא קמורה (convex) ולכן מובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום גלובלי.
-
-### Gradient descent (שיטת הגרדיאנט)
-
-בעבור בעיית המינמיזציה:
-
-$$
-\underset{\boldsymbol{\theta}}{\arg\min}\quad g(\boldsymbol{\theta})
-$$
-
-Gradient descent מנסה למצוא מינימום לוקאלי של $g(\boldsymbol{\theta})$ על ידי כך שהוא מתחיל בנקודה אקראית כל שהיא במרחב ואז מתקדם בצעדים קטנים בכיוון ההפוך מהגרדיאנט, שהוא הכיוון שבו ה objective קטן בקצב המהיר ביותר. זהו אלגוריתם חמדן (greedy) אשר מנסה בכל צעד לשפר במעט את מצבו ביחס לשלב הקודם.
-
-#### האלגוריתם
-
-- מאתחלים את $\boldsymbol{\theta}^{(0)}$ בנקודה אקראית כל שהיא.
-- חוזרים על צעד העדכון הבא עד שמתקיים תנאי עצירה כל שהוא:
-
-    $$
-    \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
-    $$
-
-הפרמטר $\eta$ קובע את גודל הצעדים שהאלגוריתם יעשה.
-
-#### תנאי עצירה
-
-ישנם מספר דרכים להגדיר תנאי עצירה לאגוריתם:
-
-- הגעה למספר צעדי עדכון שנקבע מראש: $t>\text{max-iter}$.
-- כאשר הנורמה של הגרדיאנט קטנה מתחת לערך סף מסויים שנקבע מראש: $\lVert\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})\rVert_2<\epsilon$
-- כאשר השיפור ב objective קטן מערך סף מסויים שנקבע מראש: $g(\boldsymbol{\theta}^{(t-1)})-g(\boldsymbol{\theta}^{(t)})<\epsilon$
-- שימוש בעצירה מוקדמת על מנת להתמודד עם overfitting (נרחיב על כך בהרצאה הבאה)
-
-#### בעיית הבחירה של גודל הצעד
-
-בכדי לגרום לאלגוריתם להתכנס (ולא להתבדר) אנו נאלץ לבחור גודל צעד שהוא לא גדול מידי. בפועל, בצורתו הפשוטה אלגוריתם ה gradient descent הוא מאד בעייתי משום שבכדי למנוע התבדרות גודל הצעד צריך להיות מאד קטן שידרוש מספר לא פרקטי של צעדים לצורך התכנסות.
-
-## תרגיל 8.1 - אלגוריתם הגרדיאנט
-
-נתונה בעיית האופטימיזציה הבאה:
-
-$$
-\underset{\theta}{\arg\min}\ \tfrac{1}{2}\theta^2+5\sin(\theta)
-$$
-
-**1)** נסו לפתור את הבעיה על ידי גזירה והשוואה ל-0. הגיעו למשוואה (סתומה) אשר מגדירה את נקודות המינימום האפשריות.
-
-**2)** רשמו את צעד העידכון של אלגוריתם הגרדיאנט.
-
-**3)** חשבו את שלושת צעדי העדכון הראשונים עבור אתחול של $\theta^{(0)}=0$, וצעד לימוד של $\eta=0.1$.
-
-**4)** חשבו את שלושת צעדי העדכון הראשונים עבור אתחול של $\theta^{(0)}=2.5$, וצעד לימוד של $\eta=0.1$. מודע האלגוריתם יתכנס כעת לפתרון אחר מבסעיף הקודם? 
-
-**5)** הגרפים הבאים מציגים עשר איטרציות של gradient descent בעבור ארבעה ערכים שונים של גודל צעד: $\eta=\{0.003, 0.03,0.3,3\}$. התאם בין גודל הצעד לגרפים.
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/ex_8_1_5.png)
-
-</div>
-
-### פתרון 8.1
-
-#### 1)
-
-נסמן את ה objective (פונקציית המטרה) של בעיית האופטימיזציה ב:
-
-$$
-t(\theta)=\tfrac{1}{2}\theta^2+5\sin(\theta)
-$$
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/ex_8_1_objective.png)
-
-</div>
-
-נגזור אותו ונשווה אותו ל-0:
+תזכורת לכלל השרשרת:
 
 $$
 \begin{aligned}
-\frac{\partial}{\partial\theta}t(\theta)&=0 \\
-\Leftrightarrow \theta+5\cos(\theta)&=0 \\
-\Leftrightarrow \theta&=-5\cos(\theta)
+\frac{d}{dx} f(z_1(x),z_2(x),z_3(x))
+=& &\left(\frac{d}{dz_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
+ &+&\left(\frac{d}{dz_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
+ &+&\left(\frac{d}{dz_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
 \end{aligned}
 $$
 
-בפועל זה אומר שעלינו למצוא את נקודות החיתוך של הפונקציות הבאות:
+#### דוגמא (מההרצאה)
 
-<div class="imgbox" style="max-width:600px">
+נסתכל על הרשת הבאה:
 
-![](./output/ex_8_1_1_analytic_solution.png)
+<div class="imgbox" style="max-width:900px">
+
+![](../lecture08/assets/back_prop.png)
 
 </div>
 
-למשוואה זו אין פתרון אנליטי.
+בעבור ערכים נתונים מסויימים של $\boldsymbol{x}$ ו $\boldsymbol{\theta}$ נרצה לחשב את הנזרות של המוצא ל הרשת $\boldsymbol{y}$ לפי הפרמטרים $\boldsymbol{\theta}$.
+
+נסתכל לדוגמא על הנזגרת של $y_1$ לפי $\theta_3$. לשם הנוחות נסמן ב $z_i$ את המוצא של הניורון $h_i$.
+
+נוכל לפרק את $\frac{dy}{d\theta_3}$ על פי כלל השרשת:
+
+$$
+\frac{dy_1}{d\theta_3}
+=\frac{dy_1}{dz_3}\frac{dz_3}{d\theta_3}
+=\frac{dy_1}{dz_3}\frac{dh_3}{d\theta_3}
+$$
+
+נוכל לפרק גם את $\frac{dy_1}{dz_3}$ על פי כלל השרשרת:
+
+$$
+\frac{dy_1}{dz_3}
+=\frac{dy_1}{dz_6}\frac{dz_6}{dz_3}
+=\frac{dy_1}{dz_6}\frac{dh_6}{dz_3}
+$$
+
+ונוכל להמשיך ולפרק את $\frac{dy_1}{dz_6}$:
+
+$$
+\frac{dy_1}{dz_6}
+=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}
+=\frac{dh_8}{dz_7}\frac{dh_7}{dz_6}
+$$
+
+זאת אומרת שאם נדע לחשב את הנגזרות של $\frac{dh_i}{dz_i}$ ו $\frac{dh_i}{d\theta_i}$ נוכל לחשב את הגזרות לפי כל הפרמטרים. נסתכל לדוגמא על הנגזרת:
+
+$$
+\frac{d}{d\theta_6}h_6(z_3,z_4;\theta_6)
+$$
+
+עלינו ראשית לגזור את הפונקציה $h_6$ ואז להציב את הערכים של $z_3$, $z_4$ ו $\theta_6$. בכדי לחשב את הערכים של $z_i$ עלינו להעביר את $\boldsymbol{x}$ דרך הרשת ולשמור את כל ערכי הביניים $z_i$. חישוב זה של ערכי הביניים נקרא ה **forward pass**.
+
+לאחר שחישבנו את ערכי הביניים $z_i$, נוכל להתחיל לחשב את כל הנגזרות של הרשת מהמוצא לכיוון הכניסה. זאת אומרת:
+
+1. נחשב את: $\frac{dy_1}{d\theta_8}$, $\frac{dy_1}{dz_7}$.
+2. נשתמש ב $\frac{dy_1}{dz_7}$ בכדי לחשב את $\frac{dy_1}{d\theta_7}$, $\frac{dy}{dz_5}$, $\frac{dy}{dz_6}$.
+3. נשתמש ב $\frac{dy_1}{dz_6}$ בכדי לחשב את $\frac{dy_1}{d\theta_6}$, $\frac{dy}{dz_3}$, $\frac{dy}{dz_4}$.
+
+וכן הלאה. מכיוון שבשלב זה אנו מחשבים את הנזגרות מהמוצא לכיוון הכניסה שלב זה נקרא ה **backward pass** ומכאן גם מקבלת השיטה את שמה.
+
+### MultiLayer Perceptron (MLP)
+
+ארכיטקטורה פשוטה ומאד נפוצה לרשת נוירונים הינה ארכיטקטורת ה **MultiLayer Perceptron (MLP)**. במודל זה הנוירונים מסודרים בשתייים או יותר שכבות (layers) של נוירונים. השכבות ב MLP הם שכבות שמכונות **Fully Connected (FC)** שבהם כל נוירון מוזן מ**כל** הנוריונים שבשכבה שלפניו.
+
+<div class="imgbox" style="max-width:800px">
+
+![](../lecture08/assets/mlp.png)
+
+</div>
+
+כאשר הניורונים הם מהצורה של:
+
+$$
+h_{i,j}(\boldsymbol{z}_{i-1};\boldsymbol{w}_{i,j},b_{i,j})=\varphi(\boldsymbol{w}_{i,j}^T\boldsymbol{z}_{i-1}+b_{i,j})
+$$
+
+והפרמטרים הנלמדים הינם המשקולות $\boldsymbol{w}_{i,j}$ ואברי היסט $b_{i,j}$ בקומבינציה הלניארית שמכיל כל נוירון $h_{i,j}$.
+
+ה Hyperparameters של MLP הינם:
+
+- מספר השכבות
+- מספר הנוירונים בכל שכבה
+- פונקציית האקטיבציה
+
+## תרגיל 8.1 - Back propagation in MLP
+
+נרצה לפתור בעיית רגרסיה בעזרת ERM ורשת ה MLP הבאה בעלת כניסה באורך 2 ויציאה באורך 1 (מוצא סקלרי) ושכבה נסתרת אחת ברוחב 2:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/ex8_1.png)
+
+</div>
+
+כאשר ב $h_{1,1}$ ו $h_{1,2}$ יש פונקציית אקטיבציה מסוג ReLU וב $h_2$ אין פונקציה אקטיבציה. זאת אומרת:
+
+$$
+\begin{aligned}
+h_{1,1}(\boldsymbol{x};\boldsymbol{w}_{1,1},b_1)&=\max(\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1,0)\\
+h_{1,2}(\boldsymbol{x};\boldsymbol{w}_{1,2},b_1)&=\max(\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1,0)\\
+h_2(\boldsymbol{z};\boldsymbol{w}_2,b_2)&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2
+\end{aligned}
+$$
+
+**שימו לב:** שאיבר ההיסט בשכבה הראשונה $b_1$ משותף לשתי הנוירונים בשכבה זו (זאת אומרת ששתיהם משתמשים באותו פרמטר).
+
+לשם פשטות, נרכז את כל הפרמטרים של הרשת לוקטור פרמטרים אחד:
+
+$$
+\boldsymbol{\theta}=[\boldsymbol{w}_{1,1}^{\top},\boldsymbol{w}_{1,2}^{\top},b_1,\boldsymbol{w}_2^{\top},b_2]^{\top}
+$$
+
+ונסמן את הפונקציה שאותה הרשת מממשת ב $\hat{\boldsymbol{y}}=f(\boldsymbol{x};\boldsymbol{\theta})$.
+
+**1)** בעבור מדגם נתון $\mathcal{D}=\{\boldsymbol{x}^{(i)},y^{(i)}\}_{i=1}^N$ ופונקציית מחיר מסוג RMSE רשמו את בעיית האופטימיזציה שיש לפתור. בטאו את תשובתכם בעזרת הפונקציה $f$.
+
+**2)** נפתור את בעיית האופטימיזציה בעזרת gradient descent עם גדול קצב לימוד $\eta$. רשמו את כלל העדכון של הפרמטרים של המודל $\boldsymbol{\theta}$ על ידי שימוש בגרדיאנט של הרשת לפי הפרמטרים, $\nabla_{\boldsymbol{\theta}}f(\boldsymbol{x};\boldsymbol{\theta})$.
+
+**3)** נתון המדגם הבא באורך 2:
+
+$$
+\begin{aligned}
+\boldsymbol{x}^{(1)}&=[1,2]^{\top}\qquad &y^{(1)}=70\\
+\boldsymbol{x}^{(2)}&=[0,-1]^{\top}\qquad &y^{(2)}=50\\
+\end{aligned}
+$$
+
+כמו כן, נתון כי בצעד מסויים $t$ הערכים של הפרמטרים הינם:
+
+$$
+\begin{aligned}
+b_1^{(t)}&=1\\
+\boldsymbol{w}_{1,1}^{(t)}&=[2,3]^{\top}\\
+\boldsymbol{w}_{1,2}^{(t)}&=[4,-5]^{\top}\\
+b_2^{(t)}&=6\\
+\boldsymbol{w}_{2}^{(t)}&=[7,8]^{\top}\\
+\end{aligned}
+$$
+
+חשבו את הערך של $b_1^{(t+1)}$ בעבור $\eta=0.01$.
+
+### תרגיל 8.1 - פתרון
+
+#### 1)
+
+פונקציית המחיר (סיכון) של RMSE נתונה על ידי:
+
+$$
+\sqrt{\mathbb{E}\left[(\hat{\text{y}}-\text{y})^2\right]}
+=\sqrt{\mathbb{E}\left[(f(\mathbf{x};\boldsymbol{\theta})-\text{y})^2\right]}
+$$
+
+הסיכון האמפירי מתקבל על ידי החלפה של התחולת בממוצע על המדגם:
+
+$$
+\sqrt{\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2}
+$$
+
+בעיית האופטימיזציה שנרצה לפתור הינה למצוא את הפרמטרים שימזערו את הסיכון האמפירי:
+
+$$
+\underset{\boldsymbol{\theta}}{\arg\min}\sqrt{\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2}
+=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
+$$
 
 #### 2)
 
-צעד העדכון של הגרדיאנט יהיה:
+נסמן את ה objective שאותו נרצה למזער ב:
 
 $$
-\theta^{(t+1)}=\theta^{(t)}-\eta\frac{\partial}{\partial\theta}t(\theta)=\theta^{(t)}-\eta\left(\theta^{(t)}+5\cos(\theta^{(t)})\right)
+g(\boldsymbol{\theta})=\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
+$$
+
+כלל העדכון של הפרמטרים הינו:
+
+$$
+\begin{aligned}
+\boldsymbol{\theta}^{(t+1)}
+&=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}g(\boldsymbol{x};\boldsymbol{\theta}^{(t)})\\
+&=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})^2\\
+&=\boldsymbol{\theta}^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\\
+\end{aligned}
 $$
 
 #### 3)
 
-נאתחל את האלגוריתם עם $\theta^{(0)}=0$ ונבצע שלושה צעדים (עם $\eta=0.1$):
+נרצה לחשב את:
 
 $$
-\theta^{(1)}
-=\theta^{(0)}-\eta\left(\theta^{(0)}+5\cos(\theta^{(0)})\right)
-=0-0.1\left(0+5\cos(0)\right)=-0.5
+\boldsymbol{b}_1^{(t+1)}
+=\boldsymbol{b}_1^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
+$$
+
+נחשב את $\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})$ בעזרת back-propogation.
+
+##### $i=1$
+
+נתחיל בעבור הדגימה הראשונה $i=1$. נחשב את ה forward-pass בשביל למצוא את משתני הביניים ואת המוצא:
+
+$$
+\begin{aligned}
+z_1&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([1,2][2,3]^{\top}+1,0)=\max(9,0)=9\\
+z_2&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([1,2][4,-5]^{\top}+1,0)=\max(-5,0)=0\\
+y&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2=[9,0][7,8]^{\top}+6=69
+\end{aligned}
+$$
+
+נחשב את הנגזרות ב backward-pass. נתחיל בחישוב של $\frac{d\hat{y}}{dz_1}$ ו $\frac{d\hat{y}}{dz_1}$:
+
+$$
+\begin{aligned}
+\frac{d\hat{y}}{dz_1}&=\frac{d}{dz_1}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,1}=7\\
+\frac{d\hat{y}}{dz_2}&=\frac{d}{dz_2}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,2}=8\\
+\end{aligned}
+$$
+
+נשתמש בחישוב זה בכדי לחשב את $\frac{d}{db_1}f(\boldsymbol{x};\boldsymbol{\theta})=\frac{d\hat{y}}{db_1}$, נשים לב ש $b_1$ מופיע פעמים ברשת, ב $h_{1,1}$ וב $h_{1,2}$:
+
+(נשתמש בעובדה ש $\frac{d}{dx}\max(x,0)=I\{x>0\}$)
+
+$$
+\begin{aligned}
+\frac{d\hat{y}}{db_1}
+  &= \frac{d\hat{y}}{dz_1}\frac{dz_1}{db_1}
+    +\frac{d\hat{y}}{dz_2}\frac{dz_2}{db_1}\\
+  &= 7\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1>0\}
+    +8\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1>0\}
+   =7
+\end{aligned}
+$$
+
+##### $i=2$
+
+נחשב באופן דומה את הנגזרת בעבור הדגימה השניה $i=2$. Forward-pass:
+
+$$
+\begin{aligned}
+z_1&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([0,-1][2,3]^{\top}+1,0)=\max(-2,0)=0\\
+z_2&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([0,-1][4,-5]^{\top}+1,0)=\max(6,0)=6\\
+y&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2=[0,6][7,8]^{\top}+6=54
+\end{aligned}
+$$
+
+Backward-pass:
+
+$$
+\begin{aligned}
+\frac{d\hat{y}}{dz_1}&=\frac{d}{dz_1}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,1}=7\\
+\frac{d\hat{y}}{dz_2}&=\frac{d}{dz_2}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,2}=8\\
+\end{aligned}
 $$
 
 $$
-\theta^{(2)}
-=\theta^{(1)}-\eta\left(\theta^{(1)}+5\cos(\theta^{(1)})\right)
-=-0.5-0.1\left(-0.5+5\cos(-0.5)\right)=-0.889
+\begin{aligned}
+\frac{d\hat{y}}{db_1}
+  &= \frac{d\hat{y}}{dz_1}\frac{dz_1}{db_1}
+    +\frac{d\hat{y}}{dz_2}\frac{dz_2}{db_1}\\
+  &= 7\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1>0\}
+    +8\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1>0\}
+   =8
+\end{aligned}
 $$
 
+##### חישוב צעד העדכון
+
+נציב את התוצאות שקיבלנו ואת $\eta=0.01$:
+
 $$
-\theta^{(3)}
-=\theta^{(2)}-\eta\left(\theta^{(2)}+5\cos(\theta^{(2)})\right)
-=-0.889-0.1\left(-0.889+5\cos(-0.889)\right)=-1.115
+\begin{aligned}
+\boldsymbol{b}_1^{(t+1)}
+  &=\boldsymbol{b}_1^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\\
+  &=1-0.01\left(
+      (f(\boldsymbol{x}^{(1)};\boldsymbol{\theta}^{(t)})-y^{(1)})\frac{d}{db_1}f(\boldsymbol{x}^{(1)};\boldsymbol{\theta}^{(t)})
+      +(f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})-y^{(2)})\frac{d}{db_1}f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})
+    \right)\\
+  &=1-0.01\left((69-70)\cdot7+(54-50)\cdot8\right)
+   =1-0.01\cdot25=-0.75
+\end{aligned}
 $$
+
+## תרגיל 8.2
+
+**1)** הראו כיצד ניתן לייצג את הפונקציה הבאה בעזרת רשת MLP עם פונקציית אקטיבציה מסוג ReLU.
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/ex_8_1_3.png)
+![](./assets/ex8_3.png)
 
 </div>
 
-(נקודת האופטימום האמיתי הינה $\theta=-1.30644$)
+שרטטו את הרשת ורשמו את הערכים של פרמטרי הרשת.
 
-#### 4)
-
-נחזור על הפתרון עם אתחול של $\theta^{(0)}=2.5$ ונבצע שלושה צעדים:
-
-$$
-\theta^{(1)}=2.65
-$$
-
-$$
-\theta^{(2)}=2.83
-$$
-
-$$
-\theta^{(2)}=3.02
-$$
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/ex_8_1_4.png)
-
-</div>
-
-בעבור האתחול הזה אלגוריתם יתכנס לפתרון אחר מאשר הפתרון בסעיף הקודם. זאת כמובן משום ש gradient descent מתכנס למינימום לוקאלי, לכן בעבור איתחולים שונים האלגוריתם עלול להתכנס לפתרונות שונים.
-
-#### 5)
-
-הפרמטר $\eta$ קובע כאמור את גדול הצעד.
-
-- גודל צעד גדול מידי עשוי להרחיק בכל צעד את האלגוריתם מנקודת המינימום, כפי שקורה במקרה של $\eta_1$. גודל הצעד שמתאים למקרה זה הינו הערך הגדול ביותר, זאת אומרת 3.
-
-- גודל הצעד השני הכי גדול הינו 0.3 והוא מתאים ל $\eta_3$. במקרה זה הצעדים עושים "over shoot" ועוברים במרבית הפעמים את המינימום אך עדיין מתקרבים אליו בכל צעד.
-
-- גודל הצעד השלישי הכי גדול הינו 0.03 הוא מתאים ל $\eta_4$. כאן האופטימיזציה מתקדמת לאט לאט באופן עקבי לכיוון המינימים.
-
-- גודל הצעד הקטן ביות הינו $0.003$ והוא מתאים ל $\eta_2$ במקרה זה ההתקדמות היא מאד איטית ויקח לאלגוריתם מספר רב של צעדים על מנת להתקרב למינימום.
-
-## תרגיל 8.2 - צעד העדכון של logistic regression
-
-**1)** בעבור המקרה של רגרסיה לוגיסטית בינארית, הראו כי ניתן לרשום את המודל של פונקציית ההסתברות המותנית באופן הבא:
-
-$$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})=\sigma\left((-1)^{y+1} f(\boldsymbol{x};\boldsymbol{\theta})\right)
-$$
-
-**2)** נסתכל על אלגוריתם gradient descent אשר מנסה למצוא פיתרון לבעיית ה MLE בעבור רגרסיה לוגיסטית בינארית. הראו שניתן לרשום את צעד העדכון של האלגוריתם באופן הבא:
-
-$$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
-$$
-
-**3)** ננסה לתת פרשנות אינטואיטיבית לתפקיד של האיברים השונים בצעד העדכון מהסעיף הקודם.
-
-נתחיל בכך שנתעלם מהביטוי $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. ונקבל את צעד העדכון הבא:
-
-$$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
-$$
-
-הסבירו כיצד ישפיע כל צעד עידכון על הפונקציה $f(\boldsymbol{x};\boldsymbol{\theta})$. ספציפית הסבירו מה יקרה לערך של הפונקציה בנקודות $\boldsymbol{x}^{(i)}$? התייחסו להשפעה השונה יש לדגימות עם $y=1$ ולדגימות עם $y=0$ מהמדגם.
-
-**4)** נחזיר כעת את האיבר $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. למה שווה איבר זה במקרים בהם המודל הפרמטרי נותן הסתברות גבוהה לדגימה כל שהיא $\{\boldsymbol{x}^{(i)},y^{(i)}\}$? ולמה הוא שווה במקרים בהם המודל נותן הסתברות נמוכה לדגימה כל שהיא?
-
-התייחסו לאיבר זה כאל איבר מישקול, אשר נותן משקל שונה לכל דגימה מהמדגם. הסבירו מה תהיה ההשפעה של משקול זה על צעד העדכון.
-
-**5)** (לקריאה עצמית) נרחיב את הדוגמא למקרה הלא בינארי. הראו שניתן לכתוב את צעד העדכון של אלגוריתם ה gradient discent במקרה הלא בינארי באופן הבא:
-
-$$
-\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
-$$
-
-הסבירו את התפקיד של $\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x};\boldsymbol{\theta}^{(t)})$ ושל $\left(\delta_{y,c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)$ בצעד העדכון.
+**2)** האם ניתן לייצג **במדוייק** את הפונקציה $f(x)=x^2+\lvert x\rvert$ בעזרת רשת MLP עם אקטיבציה מסוג ReLU? הסבירו ו/או הדגימו.
 
 ### פתרון 8.2
 
 #### 1)
 
-נשחק מעט עם הצורה של המודל הפרמטרי בכדי להגיע לצורה אותה בקשו בשאלה:
+בעזרת נויירונים בעלי פונקציית אקטיבציה מסוג ReLU הפועלים על קומבינציה לינארית של הכניסות, נוכל לבנות פונקציות רציפות ולינאריות למקוטעין, בעלות מספר סופי של קטעים, כמו זו בשבשאלה זו.
+
+נבנה פונקציה זו בעזרת MLP בעל שיכבה נסתרת אחת אשר דואגת לייצג את המקטעים השונים ושיכבת מוצא אשר דואגת לשיפוע בכל מקטע. נבנה את השכבה הנסתרת כך שאנו מתאימים נוירון לכל נקודה בה משתנה השיפוע של פונקציית המטרה. נקבע את קבוע הbias בכל נוירון כך שהשינוי בשיפוע של ה ReLU (ב $x=0$) יהיה ממוקם על נקודה בה משתנה השיפוע של הפונקציה המקורית:
+
+<div class="imgbox" style="max-width:400px">
+
+![](./assets/ex8_3_1.png)
+
+</div>
 
 $$
 \begin{aligned}
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-&=\begin{cases}
-    \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=1 \\
-    1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=0 \\
-\end{cases}\\
-&=\begin{cases}
-    \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=1 \\
-    \sigma(-f(\boldsymbol{x};\boldsymbol{\theta})) & y=0 \\
-\end{cases}\\
-&=\sigma\left((-1)^{y+1} f(\boldsymbol{x};\boldsymbol{\theta})\right)
+h_{1,1}(x)=\max(x+1,0) \\
+h_{1,2}(x)=\max(x,0) \\
+h_{1,3}(x)=\max(x-1,0) \\
 \end{aligned}
 $$
+
+כעת נדאג לשיפועים. נסתכל על מקטעים משמאל לימין.
+
+- המקטע השמאלי ביותר הינו בעל שיפוע 0 ולכן הוא כבר מסודר, שכן כל הפונקציות אקטיבציה מתאפסות באיזור זה.
+- המקטע $[-1,0]$ מושפע רק מן הנוירון הראשון. השיפוע במקטע זה הינו 1 ולכן ניתן משקל של 1 לנירון זה.
+- המקטע $[0,1]$ מושפע משני הנוירונים הראשונים. הנוירון הראשון כבר תורם שיפוע של 1 במקטע זה ולכן עלינו להוסיף לו עוד שיפוע של $-2$ על מנת לקבל את השיפוע של $-1$ הנדרש. ולכן ניתן משקל של $-2$ לנירון השני.
+- באופן דומה ניתן לנוירון השלישי משקל של $2$.
+
+סה"כ קיבלנו כי $h_2(z_1,z_2,z_3)=z_1-2z_2+2z_3$
 
 #### 2)
 
-נציב את המודל הפרמטרי כפי שרשמנו אותו בסעיף הקודם:
+מכיוון ש:
 
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
-\underbrace{
-    -\sum_{i=1}^{N}\log\left(\sigma\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)
-}_{\overset{\Delta}{=}t(\boldsymbol{\theta})}
-\end{aligned}
-$$
+1. נוירון בעל פונקציית הפעלה מסוג ReLU מייצג פונקציה רציפה ולינארית למקוטעין.
+2. כל הרכבה או סכימה של פונקציות רציפות ולינאריות למקוטעין יצרו תמיד פונקציה חדשה שגם היא רציפה ולינארית למקוטעין.
 
-לשם הנוחות, סימנו את ה objective של בעיית האופטימיזציה ב $t(\boldsymbol{\theta})$. נחשב את הגרדיאנט של ה objective וננסה להביא אותו לצורה דומה לזו שבקשו בשאלה:
+בעזרת נוירונים מסוג ReLU נוכל רק לייצג פונקציות רציפות ולנאריות למקוטעין. מכיוון ש$$x^2$$ אינה לינארית אנו נוכל רק לקרב אותה, אך לא לייצג אותה במדוייק.
 
-$$
-\begin{aligned}
-\nabla_{\boldsymbol{\theta}}t(\boldsymbol{\theta})
-&=-\sum_{i=1}^{N}\nabla_{\boldsymbol{\theta}}\log\left(\sigma\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)\\
-&=-\sum_{i=1}^{N}\left(1-\sigma\left((-1)^{y^{(i)}+1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)\nabla_{\boldsymbol{\theta}}\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\\
-\end{aligned}
-$$
-
-צעד העדכון של אלגוריתם ה gradient descent יהיה אם כן:
-
-$$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
-$$
-
-#### 3)
-
-נתייחס לצעד עדכון מהצורה של:
-
-$$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
-$$
-
-נסתכל על התרומה של הדגימות מהמדגם ששייכים למחלקה $y=1$ (אשר גורר: $(-1)^y=-1$). איברים אלו ינסו לשנות את $\boldsymbol{\theta}$ בכיוון הגרדיאנט בנקודות $\boldsymbol{x}^{(i)}$ ששיכות למחלקה. זאת אומרת, שהם ינסו לגרום לשינוי של הפרמטריים כך שהערך של הפונקציה הפרמטרית $f(\boldsymbol{x};\boldsymbol{\theta})$ בנקודות $\boldsymbol{x}^{(i)}$ יהיה גדול יותר.
-
-באופן הפוך, התרומה של הדגימות מהמחלקה $y=0$ (ו $(-1)^y=1$) תהיה לנסות ולעדכן את $\boldsymbol{\theta}$ בכיוון ההפוך מהגרדיאנט. זאת אומרת, שהם ינסו להקטין את הערך של $f(\boldsymbol{x};\boldsymbol{\theta})$ בנקודות $\boldsymbol{x}^{(i)}$ מהמחלקה $y=0$.
-
-בסה"כ הכל נקבל שהאלגוריתם ינסה בכל צעד לשנות את  $f(\boldsymbol{x};\boldsymbol{\theta})$ כך שיניב ערכים גבוהים על הנקודות $\boldsymbol{x}$ שמתאימות ל $y=1$ וערכים נמוכים על הנקודות שמתאימות ל $y=0$. התנהגות זו הגיונית משום שזה בדיוק מה שאנחנו רוצים מהמודל שלנו, שאמור לחזות את ההסתברות ש $\text{y}=1$ בהינתן $\mathbf{x}$. משום שהסתברות זו שווה ל $\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))$ אנו רוצים רוצים ש $f$ יניב ערכים גבוהים באיזורים שבהם $\text{y}=1$ בסבירות גבוהה בהינתן $\mathbf{x}$ וערכים נמוכים בשאר המקומות.
-
-#### 4)
-
-נסתכל על הביטוי $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. נזכור שההסתברות $p_{\text{y}|\mathbf{x}}$ היא מספר בין 0 ל 1.האיבר כולו יהיה לכן קרוב ל-0 כאשר הסתברות של $y$ מסויים בהינתן $\boldsymbol{x}$ היא גבוהה והוא יהיה קרוב ל-1 כאשר ההסתברות נמוכה.
-
-נזכור גם כי $p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ היא אינה ההסתברות האמיתית של $\mathbf{x}$ ו $\text{y}$ אלא ההסתברות שהמודל שלנו נותן לדגימה כל שהיא מהמדגם. (אנו רוצים שבסופו של דבר שמודל זה יהיה קרוב להסתברות האמיתית). היינו מעניינים שככל שנעשה יותר צעדי עדכון המודל יגדיל לאט לאט את ההסתברות שהוא נותן לדגימות במדגם (זו בעצם המטרה של MLE ו MAP).
-
-נסתכל על איבר זה כעל משקל בין 0 ל 1 שמשוייך לכל דגימה במדגם. לדגימות שהמודל חושב הם סבירות הוא נותן משקל קרוב ל 0 ולדגימות שהמודל נותן להם סבירות נמוכה הוא נותן משקל 1. מה שאיבר זה עושה לצעד העידכון הוא לגרום לו יחסית להתעלם מדגימות שכבר מקבלות סבירות גבוהה ולהתמקד בדגימות שהוא עדיין "טועה" עליהם, זאת אומרת, שהוא נותן להם הסתברות נמוכה.
-
-#### 5)
-
-בעיית ה MLE הינה:
-
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
-\underbrace{
-    -\sum_{i=1}^N \log\left(\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}\right)
-}_{\overset{\Delta}{=}t(\boldsymbol{\theta})}
-\end{aligned}
-$$
-
-נחשב את הגרדיאנט של ה objective:
-
-$$
-\begin{aligned}
-\nabla_{\boldsymbol{\theta}_c}t(\boldsymbol{\theta})
-&=-\sum_{i=1}^{N}\nabla_{\boldsymbol{\theta}_c}
-\log\left(\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}\right)\\
-&=-\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_c\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\\
-&=-\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
-\end{aligned}
-$$
-
-צעד העדכון יהיה:
-
-$$
-\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
-$$
-
-האיבר $\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)$ הוא חיובי כאשר $c=y^{(i)}$ ושלילי אחרת. איבר זה גורם לכך שבעבור כל דגימה מהמדגם צעד העדכון ינסה לגדיל את הפונקציה הפרמטרית $f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)$ שבה $c=y^{(i)}$ ויקטין את הפונקציות הפרמטריות שבהם $c\neq y^{(i)}$.
-
-בדומה למקרה הבינארי ככל שהסבירות של הדגימה במדגם $p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ כך ההשפעה של הדגימה על העדכון יהיה קטן יותר.
-
-## תרגיל 8.3 - MLE and KL divergence
-
-בתרגיל זה נציג דרך ארחת לפתח את בעיית האופטימיזציה של משערך ה MLE.
-
-נתון לנו מדגם של $N$ דגימות i.i.d. של משתנה אקראי כל שהוא $\text{x}$:
-
-$$
-\mathcal{D}=\{x^{(i)}\}_{i=1}^N
-$$
-
-ומודל פרמטרי כל שהוא $p_{\text{x}}(x;\boldsymbol{\theta})$. נרצה לבחור את הפרמטרים של המודל $\boldsymbol{\theta}$ כך שהמודל יתאר בצורה טובה את הדגימות במדגם.
-
-לשם כך נשתמש במדד הבא אשר מודד עד כמה פונקציית צפיפות הסתברות כל שהיא $q_{\text{x}}(x)$ תהיה טובה בכדי לתאר דגימות המגיעות מצפיפות הסתברות אחרת $p_{\text{x}}(x)$. המדד נקרא Kullback-Leibler divergence והוא מוגד באופן הבא:
-
-$$
-D_{\text{KL}}(p_{\text{x}}(x)||q_{\text{x}}(x))
-=\int p_{\text{x}}(x)\log\left(\frac{p_{\text{x}}(x)}{q_{\text{x}}(x)}\right)
-=\mathbb{E}_{(p)}\left[\log\left(\frac{p_{\text{x}}(x)}{q_{\text{x}}(x)}\right)\right]
-$$
-
-הסימון $\mathbb{E}_{(p)}$ הוא תוחלת לפי הפילוג $p_{\text{x}}$. מדד זה מגיע מתורת האינפורמציה ואנו לא ניכנס למשמעות ולמקור של מדד זה. ככל שהמדד נמוך יותר כך הפילוגים קרובים יותר.
-
-השתמשו במדד זה על מנת להגדיר בעיית אופטימיזציה שבוחרת את הפרמטרים של המודל כפרמטרים כך שהם ממזערים את ה Kullback-Leibler divergence בין המודל הפרמטרי לפילוג האמיתי. בכדי להיפתר מהתוחלת על הפילוג הלא ידוע החליפו אותו בתוחלת אמפירית על המדגם. הראו כי בעיית האופטימיזציה המתקבלת זהה לזו של משערך ה MLE.
-
-### פתרון 8.3
-
-נסמן את הפילוג האמיתי (הלא ידוע) של $\text{x}$ ב $p_{\text{x}}(x)$ (בלי $\boldsymbol{\theta}$). בעיית האופטימיזציה שהיינו רוצים לפתור הינה:
-
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ D_{\text{KL}}(p_{\text{x}}(x)||p_{\text{x}}(x;\boldsymbol{\theta})) \\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ \mathbb{E}_{(p)}\left[\log\left(\frac{p_{\text{x}}(x)}{p_{\text{x}}(x;\boldsymbol{\theta})}\right)\right] \\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ \mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x))\right]
-                                          - \mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x;\boldsymbol{\theta}))\right] \\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x;\boldsymbol{\theta}))\right] \\
-\end{aligned}
-$$
-
-נחליף את התוחלת בתוחלת אמפירית על המדגם:
-
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\frac{1}{N}\sum_{i=1}^N \log(p_{\text{x}}(x^{(i)};\boldsymbol{\theta})) \\
-\end{aligned}
-$$
-
-שזה בדיוק המינימיזציה של ה log-likelihood עד כדי החלוקה ב $N$ שלא משנה את בעיית האופטימיזציה.
-
-## תרגיל מעשי - איבחון סרטן שד
+## תרגיל מעשי - איבחון סרטן שד עם MLP
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
-שיטה נפוצה כיום לאבחון של סרטן הינה בשיטת Fine-needle aspiration. בשיטה זו נלקחת דגימה של רקמה בעזרת מחט ומבוצעת אנליזה בעזרת מיקרוסקופ על מנת לאבחן שני מקרים:
+נסתכל שוב על הבעיה של איבחון סרטן שד על סמך תצלום מיקרוסקופי של ריקמה.
 
-- Malignant - רקמה סרטנית
-- or Benign - רקמה בריאה
-
-להלן דוגמא לתמונת מיקרוסקופ של דגימה שכזו:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/fna.jpg)
-
-</div>
-
-בתרגול זה נעבוד עם מדגם בשם **Breast Cancer Wisconsin Diagnostic** אשר נאסף על ידי חוקרים מאוניברסיטת ויסקונסין. הוא כולל 30 ערכים מספריים, כגון שטח התא הממוצע והרדיוס ההמוצע, אשר חושבו בעבור 569 דגימות שונות. בנוסף יש לכל דגימה במדגם תווית של האם הדגימה הינה סרטנית או לא.
-
-את המדגם המקורי ניתן למצוא פה: [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29), אנחנו נשתמש בגרסא מעט מעובדת שלו הנמצאת [פה](https://technion046195.netlify.app/datasets/wdbc.csv).
-
-נציג כמה עמודות ושורות מייצגות מהמדגם:
+נציג שוב את את המדגם:
 
 <div dir="ltr">
 
@@ -531,16 +425,7 @@ $$
 
 </div>
 
-רק לשם המחשה נתחיל בניסיון לחזות האם הרקמה סרטנית או לא רק על פי שתי השדות הראשונים:
-
-- **radius_mean** - רדיוס התא הממוצא בדגימה.
-- **texture_mean** - סטיית התקן הממוצעת של רמת האפור בצבע של כל תא בדגימה.
-
-השל התוויות $\text{y}$ הינו:
-
-- **diagnosis** - התווית של הדגימה: M = malignant (סרטני), B = benign (בריא)
-
-(בחרנו להתחיל עם 2 שדות משום שמעבר לכך כבר לא נוכל לשרטט את הפילוג של הדגימות ואת החיזוי).
+נתחיל שוב בביצוע איבחון על סמך שתי העמודות הראשונות בלבד. אנו עושים זאת כמובן רק בכדי שנוכל להציג את הבעיה בגרף דו מימדי.
 
 <div class="imgbox" style="max-width:600px">
 
@@ -548,128 +433,85 @@ $$
 
 </div>
 
-נרצה למצוא חזאי אשר יפריד בין הנקודות הכתומות לנקודות הכחולות. לשם כך נפצל את המדגם ל 60% train / 20% validation / 20% test. להתאים שלושה מודלים: LDA, QDA, linear logistic regression.
-
-### LDA
-
-נחשב את פרמטרים של המודל:
-
-$$
-p_{\text{y}}(0)=\frac{|\mathcal{I}_0|}{N}=0.37
-$$
-
-$$
-p_{\text{y}}(1)=\frac{|\mathcal{I}_1|}{N}=0.63
-$$
-
-$$
-\boldsymbol{\mu}_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\boldsymbol{x}^{(i)}=[12.3,17.9]^{\top}
-$$
-
-$$
-\boldsymbol{\mu}_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\boldsymbol{x}^{(i)}=[17.5,21.3]^{\top}
-$$
-
-$$
-\Sigma = \frac{1}{N}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
-=\begin{bmatrix}
-5.8 & 0.67 \\
-0.67 & 13.5
-\end{bmatrix}
-$$
-
-פרמטרים אלו יתנו את החיזוי הבא:
+נפצל אותו שוב ל 60% train / 20% validation / 20% test. וננסה להתאים לו את המודל הבא:
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/breast_cancer_lda.png)
+![](./assets/example_mlp1.png)
 
 </div>
 
-נזכיר כי החזאי המתקבל ממודל ה LDA הינו חזאי אשר מחלק את המרחב לשני חלקים על ידי משטח לינארי (במקרה זה קו ישר).
+כאשר FC 2x10 מציין שכבה של fully connected שבכניסה אליה יש וקטור באורך 2 וביציאה יש וקטור ברוחב 10 (זאת אומרת 10 נוירונים).
 
-ביצועי חזאי זה על ה valudation set (במובן של misclassification rate) הינם: 0.09. זאת אומרת שאנו צפויים לצדוק באבחון ב 91% מהמקרים.
-
-### QDA
-
-נחשב את פרמטרים של המודל. הפרמטרים של $p_{\text{y}}(y)$ ו $\boldsymbol{\mu}_c$ לא ישתנו. נחשב לכן רק את מטריצות הקווריאנס:
-
-$$
-\Sigma_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)^T
-=\begin{bmatrix}
-3.3 & -0.13 \\
--0.13 & 13.8
-\end{bmatrix}
-$$
-
-$$
-\Sigma_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_1\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_1\right)^T
-=\begin{bmatrix}
-10.2 & 2 \\
-2 & 13.2
-\end{bmatrix}
-$$
-
-פרמטרים אלו יתנו את החיזוי הבא:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/breast_cancer_qda.png)
-
-</div>
-
-החזאי המתקבל ממודל ה QDA מחלק את המרב על ידי משטח ריבועי. בשרטוט זה המשטח אומנם נראה כמעט ישר אך אם נגדיל טיפה את השרטוט נראה שהוא אכן ריבועי:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/breast_cancer_qda_zoom_out.png)
-
-</div>
-
-ביצועי חזאי זה על ה valudation set הינם: 0.08. זהו שיפור של 1% מביצועיו של מודל ה LDA.
-
-### שימוש בכל 30 העמודות במדגם
-
-אם נחזור על החישוב של מודל ה QDA רק עם כל 30 העמודות שבמדגם נקבל miscalssification rate של 0.02.
-
-### Linear Logistic Regression
-
-ננסה כעת להתאים מודל של linear logistic regression מהצורה:
-
-$$
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})
-=\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}))
-$$
-
-בעיית האופטימיזציה של MLE תהיה:
-
-$$
-\boldsymbol{\theta}^*
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-I\{y^{(i)}=0\}\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-+I\{y^{(i)}=1\}\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-$$
-
-נשתמש ב gradient descent על מנת למצוא את הפרמטרים של המודל. בכדי לבחור את גודל הצעד ננסה כמה ערכים שונים ונריץ את האלגוריתם למספר קטן של צעדים (1000) ונבחר את גודל הצעד הגדול אשר גודם למודל להתכנס. בדוגמא זו נציג את התוצאות בעבור 4 ערכים של גודל הצעד:
+בכדי לבחור את קצב הלימוד $\eta$ נריץ את אלגוריתם ה gradient descent למספר קטן של צעדים:
 
 <div class="imgbox" style="max-width:800px">
 
-![](./output/breast_cancer_logistic_select_eta.png)
+![](./output/breast_cancer_mlp1_select_eta.png)
 
 </div>
 
-בגרפים האלה רואים את החישוב של ה objective על ה train set ועל ה validation set כפונקציה של מספר הצעדים. נשים לב שבעבור בחירה של $\eta=0.1$ או $\eta=1$ המודל מתבדר לערכים מאד גדולים וזה ימנע ממנו להתכנס למינימום של הפונקציית המטרה. נבחר אם כן את גודל הצעד להיות $\eta=0.01$ ונריץ את האלגוריתם מספר רב של צעדים (1000000):
+בדומה לתרגול הקודם, אנו נבחר את הערך הגדול ביותר שבו הגרף יורד בצורה מונוטונית שבמקרה זה הינו $\eta=0.03$.
+
+נריץ כעת האלגוריתם למספר גדול של צעדים:
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/breast_cancer_logistic_train.png)
+![](./output/breast_cancer_mlp1_train.png)
 
 </div>
 
-נראה אם כן שגם אחרי מליון צעדים הארלגוריתם עדיין לא התכנס. כפי שציינו זוהי אחת הבעיות העיקריות של אלגוריתם הגרדיאנט בצורתו הפשוטה. למזלנו, ישנם מספר שיטות פשוטות לשפר את האלגוריתם בכדי לפתור בעיה זו אך אנו לא נפרט עליהם בקורס זה.
+נשים לב שהחל מנקודה מסויימת בריצה של אלגוריתם ה gradient descent החישוב של ה objective על ה validation set מתחיל לעלות. הסיבה לכך היא כמובן תופעת ה overfitting. נוכל להוריד את כמות ה overfitting על ידי כך שנעצור את האלגוריתם לפני שהוא מתכנס. פעולה זו מכונה early stopping. ניקח אם כן את הפרמטרים מהצעד עם הערך של ה objective הנמוך ביותר על ה validation, במקרה זה זהו הצעד ה 25236.
 
-הביצועים של המודל עם הפרמטרים המתקבלים אחרי מיליון צעדים נותנים miscalssification rate של 0.02 שזה דומה לתוצאה שקיבלנו על ידי שימוש ב QDA.
+החזאי המתקבל ממודל זה הינו:
 
-ביצועי המודל על ה test set הינם: 0.04.
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_mlp1.png)
 
 </div>
+
+נשרטט גרף זה ללא הדגימות על מנת לראות את קו ההפרדה בין שני השטחים
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_mlp1_no_samples.png)
+
+</div>
+
+ניתן לראות כי הרשת מצליחה לייצר חזאי עם קו הםרה יחסית מורכב בהשוואה ל LDA, QDA ו linear logistic regression.
+
+ביצועי חזאי זה על ה valudation set הינם: 0.08. ביצועים אלו דומים לביצועים של QDA ו linear logistic regresssion.
+
+### שימוש בכל 30 העמודות במדגם
+
+נעבור כעת להשתמש בכל 30 העמודות במדגם. לשם כך נשתמש ברשת הבאה:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/example_mlp2.png)
+
+</div>
+
+נחפש שוב את הערך המתאים ביותר של $\eta$:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_mlp2_select_eta.png)
+
+</div>
+
+במקרה זה נבחר את $\eta=0.003$. האימון המלא נראה כך:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/breast_cancer_mlp2_train.png)
+
+</div>
+
+הביצועים הטובים ביותר על ה validation set מתקבלים בצעד ה 107056. החזאי המתקבל בצעד זה מניב miscalssifiaction rate של 0.01 על ה validation set.
+
+ביצועים המודל על ה test set הינם 0.03 (לעומת 0.04 ב linear logistic regression).
+
+</div>
+

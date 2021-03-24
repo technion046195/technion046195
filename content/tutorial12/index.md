@@ -8,738 +8,683 @@ print_pdf: true
 
 <div dir="rtl" class="site-style">
 
-# תרגול 12 - Bagging and AdaBoost
+# תרגול 12 - PCA and K-means
 
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial12.pdf" class="link-button" target="_blank">PDF</a>
-<!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
-## תקציר התיאוריה
+## תקציר התיאוריה - PCA
 
-Bagging ו Boosting הן שיטות אשר עושות שימוש במכלול (ensemble) של חזאים בכדי לקבל חזאי עם ביצועים טובים יותר.
+PCA הוא אלגוריתם מאד נפוץ אשר משמש במוקומות רבים על מנת למצוא יצוג נוח יותר לוקטורים על סמך מדגם נתון. אחד השימושים העיקריים של האלגוריתם הינו בכדי לבצע **הורדת מימד** של הוקטורים. (לייצג את וקטורים בעזרת וקטור ממימד נמוך יותר).
 
-### Bagging
+### הגדרות
 
-Bagging (Bootstrap + Aggregating) הינה שיטה להקטין את ה **variance** (ובכך את ה **overfitting**) של חזאי על ידי הרכבה של מספר חזאים אשר אומנו על מדגמים מעט שונים.
+בעבור מדגם נתון $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}_{i=1}^N$ של $N$ וקטורים באורך $D$ נגדיר את הגדלים הבאים:
 
-<div class="imgbox" style="max-width:700px">
-
-![](../lecture11/assets/bagging.png)
-
-</div>
-
-בשלב ה bootstraping נייצר את המדגמים לכל מדגם נבנה חזאי ובשלב ה aggregation נאחד את כל החזאים לחזאי יחיד.
-
-#### Bootstraping
-
-ב Bootstraping נקח מדגם נתון בגודל $N$ ונייצר ממנו $p$ מדגמים בגודל $\tilde{N}$ על ידי הגרלה של ערכים מתוך המדגם עם חזרות (כך שניתן להגריל כל ערך מספר פעמים). ב bagging נבחר לרוב את $\tilde{N}$ להיות שווה ל $N$.
-
-#### Aggregation
-
-בשלב הראשון נבנה באופן בלתי תלוי מתוך כל אחד מהמגדמים שייצרנו חזאי $\tilde{h}_i(\boldsymbol{x})$. בשלב השני נרכיב את כל החזאים שייצרנו לחזאי אחד כולל.
-
-- **בעבור בעיות רגרסיה**: נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{p}\sum_{i=1}^p \tilde{h}_i(\boldsymbol{x})$
-- **בעבור בעיות סיווג**: נבצע majority voting, זאת אומרת: $h(\boldsymbol{x})=\text{majority}(\{\tilde{h}_1(\boldsymbol{x}),\tilde{h}_2(\boldsymbol{x}),\dots,\tilde{h}_p(\boldsymbol{x})\})$
-
-### AdaBoost
-
-AdaBoost (Adaptive Boosting) מתייחס לבעיות סיווג בינאריות, שיטה זו מנסה להקטין את ה **bias** (ובכך להקטין את ה **underfitting**) של מסווג על ידי הרכבה של מסווגים שונים.
-
-ב AdaBoost נסמן את המחלקות ב $\text{y}=\pm1$.
-
-בהיתן אוסף של מסווגים בינארים, אלגוריתם ה AdaBoost מנסה לבחור סט של $t$ מסווגים ומקדמים $\{\alpha_k,\tilde{h}_k\}_{k=1}^t$ ולבנות קומבינציה לינארית $\sum_{k=1}^t\alpha_k \tilde{h}_k(\boldsymbol{x})$ שתמזער את בעיית האופטימיזציה הבאה:
-
-$$
-\underset{\{\alpha_k,\tilde{h}_k\}_k}{\arg\min}\quad
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{k=1}^t\alpha_k y^{(i)}\tilde{h}_k(\boldsymbol{x}^{(i)})\right)
-$$
-
-האלגוריתם בונה את הקומבינציה הלינארית בצורה חמדנית על ידי הוספת איבר איבר לקומבינציה (והגדלה של $t$) ועצירה כאשר ביצועי המסווג מספקים או שהאלגוריתם מתחיל לעשות overfitting על ה validation set.
-
-#### אלגוריתם
-
-ב $t=0$ נאתחל וקטור משקלים $w_i^{(t)}=\frac{1}{N}$.
-
-בכל צעד $t$ נבצע את הפעולות הבאות:
-
-1. נבחר את המסווג אשר ממזער את ה misclassification rate הממושקל:
+- הממוצע של המדגם: $\bar{\boldsymbol{x}}=\frac{1}{N}\sum_{i=1}^N \boldsymbol{x}^{(i)}$.
+- מטריצת הדגמות:
 
     $$
-    \tilde{h}_t=\underset{\tilde{h}}{\arg\min}\ \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
+    X=\begin{pmatrix}
+      - & (\boldsymbol{x}^{(1)}-\boldsymbol{\mu})^{\top} & -\\
+      - & (\boldsymbol{x}^{(2)}-\boldsymbol{\mu})^{\top} & -\\
+        & \vdots &  \\
+      - & (\boldsymbol{x}^{(N)}-\boldsymbol{\mu})^{\top} & -\\
+    \end{pmatrix}
     $$
 
-2. נחשב את המקדם $\alpha_{t+1}$ של המסווג:
+- הקווריאנס האמפירי של המדגם: $P=X^{\top}X$.
 
-    $$
-    \begin{aligned}
-    \varepsilon_t&=\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
-    \alpha_t&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)
-    \end{aligned}
-    $$
-
-3. נעדכן את וקטור המשקלים:
-
-    $$
-    \begin{aligned}
-    \tilde{w}_i^{(t)}&=w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
-    w_i^{(t)}&=\frac{\tilde{w}_i^{(t)}}{\sum_{j=1}^N \tilde{w}_j^{(t)}}
-    \end{aligned}
-    $$
-
-#### המסווג הסופי
-
-הסיווג הסופי נעשה על ידי קומבינציה לינארית של כל מסווגים והמשקל שלהם.
+נתייחס לפירוק (ליכסון) הבא: $P=U\Lambda U^{\top}$ כאשר $U$ היא מטריצה אורתונורמלית אשר העמודות שלה הם וקטורים עצמיים של $P$:
 
 $$
-h(\boldsymbol{x})=\text{sign}\left(\sum_{t=1}^T\alpha_t \tilde{h}_t(\boldsymbol{x})\right)
+U=\begin{pmatrix}
+  | & |  &  & | \\
+  \boldsymbol{u}_1 & \boldsymbol{u}_2 & \dots & \boldsymbol{u}_3 \\
+  | & |  &  & |
+\end{pmatrix}
 $$
 
-#### חסם
-
-נסתכל על מסווג אשר התקבל מאלגוריתם AdaBoost שעבורו בכל צעד $t$ שגיאת ה misclassification error הממושקלת קטנה מ $\tfrac{1}{2}-\gamma_t$. בעבור מסווג זה מתקיים ש:
+ו $\Lambda$ היא מטריצה אלכסונית אשר מכילה את הערכים העצמיים של $P$:
 
 $$
-\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
-\leq
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
-\leq
-\exp\left(-2\sum_{t=1}^T\gamma_t^2\right)
+\Lambda=\begin{pmatrix}
+  \lambda_1 & 0 & \dots & 0 \\
+  0 & \lambda_2 & & 0 \\
+  \vdots & & \ddots & \vdots \\
+  0 & 0 & \dots & \lambda_D \\
+\end{pmatrix}
 $$
 
-## תרגיל 12.1: דוגמא חד מימדית
+כך שהערך העצמי $\lambda_j$ מתאים לוקטור העצמי $\boldsymbol{u}_j$ והערכים העצמיים מסודרים מהגדול לקטן: $\lambda_1\geq\lambda_2\geq\dots\geq\lambda_D$.
 
-נתבונן בבעיית סיווג חד מימדית עבור סט דוגמאות האימון:
+### הטרנספורמציה אותה מבצע PCA
+
+PCA מייצר מתוך מדגם נתון $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}_{i=1}^N$ טרנספורמציה אפינית (affine = linear + offset) אשר ממפה וקטור $\boldsymbol{x}$ באורך $D$ לוקטור $\boldsymbol{z}$ באורך $K\leq D$. כאשר $K$ הוא קבוע אשר נבחר מראש. הטרנפורמציה הינה:
 
 $$
-\mathcal{D}=\{\{1,-1\}, \{3,1\}, \{5,-1\}\}.
+\boldsymbol{z}=T^{\top}(\boldsymbol{x}-\bar{\boldsymbol{x}})
 $$
 
-<div class="imgbox" style="max-width:600px">
+כאשר $T$ הינה מטריצה המכילה את $K$ העמודות הראשונות של $U$ (זאת אומרת הוקטורים העצמיים המתאימים ל $K$ הערכים העצמיים הגדולים ביותר).
 
-![](./assets/ex_12_1.png)
+האיברים של $\boldsymbol{z}$ נקראים ה**רכיבים הראשיים (principal components)** של $\boldsymbol{x}$.
+
+### פרשנות גיאומטרית
+
+הפעולה שאותה מבצעת הטרנספורמציה הינה:
+
+1. להזיז את הנקודות של המדגם כך שהמרכז שלהם יהיה בראשית.
+2. הטלה של הנקודות המוזזות על תת-המרחב שמוגדרת על ידי הוקטורים $\{\boldsymbol{u}_j\}$.
+
+<div class="imgbox" style="max-width:900px">
+
+![](../lecture12/assets/pca.png)
 
 </div>
 
-נרצה להשתמש במסווגים לינארים מסוג $\tilde{h}(x)=\pm\text{sign}(x-b)$ וב AdaBoost בכדי לבנות מסווג. רשמו את ארבעת האיטרציות הראשונות של האלגוריתם ואת החזאי המתקבל אחרי כל צעד. הניחו כי: $b\in\{0, 2, 4\}$.
+### מוטיבציה ראשונה: מקסימום שונות
+
+תחת האילוץ ש $T$ הינה מטריצה בגודל $D\times K$ **בעלת עמודות אורתו-נורמאליות**, הבחירה הנוכחית של $T$ ממקסמת את הגודל:
+
+$$
+\frac{1}{N}\sum_{i=1}^N\lVert\boldsymbol{z}^{(i)}\rVert_2^2
+$$
+
+אשר מכונה לרוב השונות של אוסף הוקטורים $\{\boldsymbol{z}^{(i)}\}_{i=1}^N$ (בפועל זה שווה ל $\text{trace}(Z^{\top}Z)$, כאשר $Z$ מוגדרת בדומה ל $X$ רק עם הוקטורים $\boldsymbol{z}^{(i)}$).
+
+### מוטיבציה שניה: מזעור שגיאת השחזור הריבועית
+
+נסתכל על זוג טרנספורמציות אפיניות כלליות מ $\boldsymbol{x}$ ל $\boldsymbol{z}$ באורך $K$, ומ $\boldsymbol{z}$ ל $\tilde{\boldsymbol{x}}$:
+
+$$
+\begin{aligned}
+\boldsymbol{z}=A\boldsymbol{x}+\boldsymbol{b}\\
+\tilde{\boldsymbol{x}}=C\boldsymbol{z}+\boldsymbol{d}
+\end{aligned}
+$$
+
+נסמן את שגיאת השיחזור הריבועית באופן הבא: $\sum_{i=1}^N(\tilde{\boldsymbol{x}}^{(i)}-\boldsymbol{x}^{(i)})^2$.
+
+הטרנצפורמציות שימזערו את שיגאת השיחזור הריבועית הינם:
+
+$$
+\begin{aligned}
+\boldsymbol{z}=U(\boldsymbol{x}-\boldsymbol{\mu})\\
+\tilde{\boldsymbol{x}}=U^T\boldsymbol{z}+\boldsymbol{\mu}
+\end{aligned}
+$$
+
+## תקציר התיאוריה - K-Means
+
+K-Means הוא אלגוריתם אשכול אשר מנסה לחלק את הדגימות במדגם ל $K$ קבוצות על סמך המרחק בין הדגימות.
+
+### סימונים
+
+- $K$ - מספר האשכולות (גודל אשר נקבע מראש).
+- $\mathcal{I}_k$ - אוסף האינדקסים של האשכול ה-$k$. לדוגמא: $\mathcal{I}_5=\left\lbrace3, 6, 9, 13\right\rbrace$
+- $|\mathcal{I}_k|$ - גודל האשכול ה-$k$ (מספר הפרטים בקבוצה)
+- $\{\mathcal{I}_k\}_{k=1}^K$ - חלוקה מסויימת לאשכולות
+
+### בעיית האופטימיזציה
+
+בהינתן מדגם $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}_{i=1}^N$, K-Means מנסה למצוא את החלוקה לאשכולות אשר תמזער את המרחק הריבועי הממוצע בין כל דגימה לכל שאר הדגימות שאיתו באותו האשכול. זאת אומרת, K-means מנסה לפתור את בעיית האופטימיזציה הבאה:
+
+$$
+\underset{\{\mathcal{I}_j\}_{k=1}^K}{\arg\min}\frac{1}{N}\sum_{k=1}^K\frac{1}{2|\mathcal{I}_k|}\sum_{i,j\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(j)}-\boldsymbol{x}^{(i)}\rVert_2^2
+$$
+
+### הבעיה השקולה
+
+נגדיר את מרכז המסה של כל אשכול כממוצע של כל הוקטורים באשכול:
+
+$$
+\boldsymbol{\mu}_k=\frac{1}{|\mathcal{I}_k|}\sum_{i\in\mathcal{I}_k}\boldsymbol{x}^{(i)}
+$$
+
+ניתן להראות כי בעיית האופטימיזציה המקורית, שקולה לבעיה של מיזעור המרחק הממוצע של הדגימות ממרכז המסה של האשכול:
+
+$$
+\underset{\{\mathcal{I}_j\}_{k=1}^K}{\arg\min}\frac{1}{N}\sum_{k=1}^K\sum_{i\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_k\rVert_2^2
+$$
+
+### האלגוריתם
+
+K-mean הוא אלגוריתם חמדן אשר בכל פעם משייך מחדש את הדגימות ומעדכן את המרכזים.
+
+האלגוריתם מאותחל בצעד $t=0$ על ידי בחירה אקראית של $K$ מרכזי מסה: $\{\mu_k\}_{k=1}^K$.
+
+בכל צעד $t$ מבצעים את שתי הפעולות הבאות:
+
+1. עדכון מחדש את החלוקה לאשכולות $\{\mathcal{I}_k\}_{k=1}^K$ כך שכל דגימה משוייכת למרכז המסה הקרוב עליה ביותר. כלומר אנו נשייך את כל דגימה $\boldsymbol{x}$ לפי:
+
+    $$
+    k=\underset{k\in[1,K]}{\arg\min} \lVert\boldsymbol{x}-\boldsymbol{\mu}_k\rVert_2^2
+    $$
+
+    (במקרה של שני מרכזים במרחק זהה נבחר בזה בעל האינדקס הנמוך יותר).
+
+2. עדכון של מרכזי המסה המסה על פי:
+
+    $$
+    \boldsymbol{\mu}_k=\frac{1}{|\mathcal{I}_k|}\sum_{i\in\mathcal{I}_k}\boldsymbol{x}^{(i)}
+    $$
+
+    (אם $|\mathcal{I}_k|=0$ אז משאירים אותו ללא שינוי)
+
+תנאי העצירה של האלגוריתם הינו כשהאשכולות מפסיקות להשתנות.
+
+אחת הדרכים הנפוצות לאיתחול של $\{\mu_k\}_{k=1}^K$ היא לבחור $k$ נקודות מתוך המדגם.
+
+### תכונות
+
+- מובטח כי פונקציית המטרה (סכום המרחקים מהממוצעים) תקטן בכל צעד.
+- מובטח כי האלגוריתם יעצר לאחר מספר סופי של צעדים.
+- **לא** מובטח כי האלגוריתם יתכנס לפתרון האופטימאלי, אם כי בפועל במרבית המקרים האלגוריתם מתכנס לפתרון אשר קרוב מאד לאופטימאלי.
+- אתחולים שונים יכולים להוביל לתוצאות שונות.
+
+## תרגיל 12.1 - PCA
+
+עבוד מדגם נתון של וקטורים ב $\mathbb{R}^2$ חושבו וקטור הממוצע ומטריצת הקוואריאנס הבאים:
+
+$$
+\bar{\boldsymbol{x}}=\begin{pmatrix}0\\0\end{pmatrix}
+$$
+
+$$
+P=\begin{pmatrix}
+  3 & 2 \\
+  2 & 6
+\end{pmatrix}
+$$
+
+**1)** איזה מהוקטורים הבאים מייצג את הכיוון הראשון $\boldsymbol{u}_1$ במטריצת ההטלה של PCA?
+
+$$
+\frac{1}{\sqrt{5}}\begin{pmatrix}
+  -2 \\
+  1
+\end{pmatrix},\qquad
+\frac{1}{\sqrt{2}}\begin{pmatrix}
+  1 \\
+  1
+\end{pmatrix},\qquad
+\frac{1}{\sqrt{5}}\begin{pmatrix}
+  1 \\
+  2
+\end{pmatrix},\qquad
+$$
+
+**2)** חשבו את שני ה principal componnents של $x=(1,0)^{\top}$.
 
 ### פתרון 12.1
 
-נאתחל את וקטור המשקלים:
+#### 1)
+
+נשתמש בעובדה ש $\boldsymbol{ו}_1$ צריך להיות וקטור עצמי של $P$ ולכן מקיים $P\boldsymbol{u}_1=\lambda_1\boldsymbol{u}_1$. בדוק ממה וקטורים הבאים מקיים זאת:
 
 $$
-\boldsymbol{w}^{(0)}=\left[\tfrac{1}{3},\tfrac{1}{3},\tfrac{1}{3}\right]^{\top}
+P\boldsymbol{u}_1
+=\frac{1}{\sqrt{5}}\begin{pmatrix}
+  3 & 2 \\
+  2 & 6
+\end{pmatrix}
+\begin{pmatrix}
+  -2 \\
+  1
+\end{pmatrix}
+=\frac{1}{\sqrt{5}}\begin{pmatrix}
+  -4 \\
+  2
+\end{pmatrix}
+=2\boldsymbol{u}_1
 $$
 
-#### צעד 1
-
-נבחר מבין המסווגים הנתונים את המסווג אשר ממזער את ה objective שהוא ה misclassification rate הממושקל.
+$$
+P\boldsymbol{u}_1
+=\frac{1}{\sqrt{2}}\begin{pmatrix}
+  3 & 2 \\
+  2 & 6
+\end{pmatrix}
+\begin{pmatrix}
+  1 \\
+  1
+\end{pmatrix}
+=\frac{1}{\sqrt{2}}\begin{pmatrix}
+  5 \\
+  8
+\end{pmatrix}
+\neq \alpha\boldsymbol{u}_1
+$$
 
 $$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}
+P\boldsymbol{u}_1
+=\frac{1}{\sqrt{5}}\begin{pmatrix}
+  3 & 2 \\
+  2 & 6
+\end{pmatrix}
+\begin{pmatrix}
+  1 \\
+  2
+\end{pmatrix}
+=\frac{1}{\sqrt{5}}\begin{pmatrix}
+  7 \\
+  14
+\end{pmatrix}
+=7\boldsymbol{u}_1
 $$
 
-נבחן את ארבעת הערכים האפשריים של $b$:
+מכאן שגם הוקטור הראשון וגם השלישי הם וקטורים עצמיים. הוקטור הראשון בהטלה של PCA יהיה השלישי שכן הוא מתאים לערך עצמי גדול יותר:
 
-##### $b=0$
+$$
+\boldsymbol{u}_1=
+\frac{1}{\sqrt{5}}\begin{pmatrix}
+  1 \\
+  2
+\end{pmatrix},\qquad
+$$
 
-במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
+#### 2)
 
-<div class="imgbox" style="max-width:600px">
+הרכיב העיקרי (principal componant) הראשון יהיה נתון על ידי:
 
-![](./assets/ex_12_1_b_0.png)
+$$
+z_1=\boldsymbol{u}_1^{\top}(\boldsymbol{x}-\mu)
+=\frac{1}{\sqrt{5}}\begin{pmatrix}
+  1 & 2
+\end{pmatrix}
+\begin{pmatrix}
+  1 \\
+  0
+\end{pmatrix}
+=\frac{1}{\sqrt{5}}
+$$
+
+והרכיב השני יהיה:
+
+$$
+z_2=\boldsymbol{u}_2^{\top}(\boldsymbol{x}-\mu)
+=\frac{1}{\sqrt{5}}\begin{pmatrix}
+  -2 & 1
+\end{pmatrix}
+\begin{pmatrix}
+  1 \\
+  0
+\end{pmatrix}
+=\frac{-2}{\sqrt{5}}
+$$
+
+בעבור PCA עם $k=2$ נקבל:
+
+$$
+\boldsymbol{z}=\frac{1}{\sqrt{5}}(1,-2)^{\top}
+$$
+
+## תרגיל 12.2
+
+נתונות $\left(1+3\alpha\right)n$ נקודות שונות:
+
+- $n$ נקודות בקואורדינאטות $A=\left(-6,6\right)$
+- $\alpha n$ נקודות בכל אחת מהקואורדינאטות $B=\left(6,6\right),C=\left(8,6\right),D=\left(1,-6\right)$
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/ex_12_2_dataset.png)
 
 </div>
 
-חזאי זה יטעה רק על הנקודה השניה $i=2$ ולכן נקבל:
+(הנקודות יושבות אחת על השניה בכל קואורדינטה, ומצויירות כעיגולים רק לצורך השרטוט). רוצים לבצע אשכול של הנקודות ל3 אשכולות בעזרת K-Means.
 
-$$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\tfrac{1}{3}
-$$
+**1)** מאתחלים את המרכזים על ידי בחירה אקראית של 3 מתוך ארבעת הנקודות A,B,C,D. לאילו חלוקות יתכנס האלגוריתם בעבור כל אחת מארבעת האתחולים האפשריים.
 
-##### $b=2$
+**2)** מהו האשכול האופטימאלי (הממזער של פונקציית המטרה)? רשמו את הפתרון כתלות בפרמטר $\alpha$. (ניתן להניח כי בפתרון האופטימאלי כל הנקודות שנמצאות באותו המקום משוייכות לאותו האשכול)
 
-במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=\text{sign}(x-2)$ (עם סימון חיובי) בכדי מזער את misclassification rate.
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/ex_12_1_b_2.png)
-
-</div>
-
-חזאי זה יטעה רק על הנקודה השלישית $i=3$ ולכן נקבל:
-
-$$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\tfrac{1}{3}
-$$
-
-##### $b=3$
-
-במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x-4)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/ex_12_1_b_4.png)
-
-</div>
-
-חזאי זה יטעה רק על הנקודה השלישית $i=1$ ולכן נקבל:
-
-$$
-\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\tfrac{1}{3}
-$$
-
-מכיוון שכל שלושת החזאים מניבים את אותו objective נבחר את אחד מהם באקראי. נבחר אם כן את המסווג הראשון של האלגוריתם להיות $\tilde{h}_1=-\text{sign}(x)$.
-
-נחשב את $\alpha_1$:
-
-$$
-\begin{aligned}
-\varepsilon_1&=\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}_1(\boldsymbol{x}^{(i)})\}=\frac{1}{3}\\
-\alpha_1&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_1}{\varepsilon_1}\right)=\frac{1}{2}\ln(2)=0.347
-\end{aligned}
-$$
-
-נעדכן את וקטור המשקלים:
-
-$$
-\tilde{\boldsymbol{w}}^{(1)}
-=\begin{bmatrix}
-    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
-    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
-    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)
-\end{bmatrix}
-=\frac{1}{3}\begin{bmatrix}
-    \exp\left(-\frac{1}{2}\ln(2)\cdot1\right)\\
-    \exp\left(-\frac{1}{2}\ln(2)\cdot(-1)\right)\\
-    \exp\left(-\frac{1}{2}\ln(2)\cdot1\right)
-\end{bmatrix}
-=\frac{1}{3}\begin{bmatrix}
-    2^{-\frac{1}{2}}\\
-    2^{\frac{1}{2}}\\
-    2^{-\frac{1}{2}}
-\end{bmatrix}
-=\frac{1}{3\sqrt{2}}\begin{bmatrix}
-    1\\
-    2\\
-    1
-\end{bmatrix}
-$$
-
-אחרי הנרמול נקבל:
-
-$$
-\boldsymbol{w}^{(1)}
-=\frac{1}{4}\begin{bmatrix}
-    1\\
-    2\\
-    1
-\end{bmatrix}
-$$
-
-החזאי שקיבלנו עד כה הינו:
-
-$$
-\begin{aligned}
-h(x)
-&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)\right)\\
-&=\text{sign}\left(-0.347\text{sign}(x)\right)\\
-&=\begin{cases}
-\text{sign}(0.347)&x<0\\
-\text{sign}(-0.347)&0<x
-\end{cases}\\
-&=\begin{cases}
-1&x<0\\
--1&0<x\\
-\end{cases}
-\end{aligned}
-$$
-
-#### צעד 2
-
-נמצא את החזאי האופטימאלי:
-
-- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל:
-
-    $$
-    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\frac{2}{4}
-    $$
-
-- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל:
-
-    $$
-    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\frac{1}{4}
-    $$
-
-- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל:
-
-    $$
-    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\frac{1}{4}
-    $$
-
-המסווג השני והשלישי נותנים את אותם הביצועים נבחר באופן אקראי את המסווג השני $\tilde{h}_2=\text{sign}(x-2)$.
-
-נחשב את $\alpha_2$:
-
-$$
-\begin{aligned}
-\varepsilon_2&=\frac{1}{4}\\
-\alpha_2&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_2}{\varepsilon_2}\right)=\frac{1}{2}\ln(3)=0.549
-\end{aligned}
-$$
-
-נעדכן את וקטור המשקלים:
-
-$$
-\tilde{\boldsymbol{w}}^{(2)}
-=\frac{1}{4}\begin{bmatrix}
-    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
-    2\exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
-    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)
-\end{bmatrix}
-=\begin{bmatrix}
-    \exp\left(-\frac{1}{2}\ln(3)\cdot1\right)\\
-    2\exp\left(-\frac{1}{2}\ln(3)\cdot1\right)\\
-    \exp\left(-\frac{1}{2}\ln(3)\cdot(-1)\right)
-\end{bmatrix}
-=\frac{1}{4}\begin{bmatrix}
-    3^{-\frac{1}{2}}\\
-    2\cdot3^{-\frac{1}{2}}\\
-    3^{\frac{1}{2}}
-\end{bmatrix}
-=\frac{1}{4\sqrt{3}}\begin{bmatrix}
-    1\\
-    2\\
-    3
-\end{bmatrix}
-$$
-
-אחרי הנרמול נקבל:
-
-$$
-\boldsymbol{w}^{(2)}
-=\frac{1}{6}\begin{bmatrix}
-    1\\
-    2\\
-    3
-\end{bmatrix}
-$$
-
-החזאי שקיבלנו עד כה הינו:
-
-$$
-\begin{aligned}
-h(x)
-&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)\right)\\
-&=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)\right)\\
-&=\begin{cases}
-\text{sign}(-0.203)&x<0\\
-\text{sign}(-0.896)&0<x<2\\
-\text{sign}(0.203)&2<x
-\end{cases}\\
-&=\begin{cases}
--1&x<2\\
-1&2<x\\
-\end{cases}
-\end{aligned}
-$$
-
-#### צעד 3
-
-נמצא את החזאי האופטימאלי:
-
-- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{6}$
-- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{6}$
-- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{1}{6}$
-
-המסווג השלישי הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_3=-\text{sign}(x-4)$.
-
-נחשב את $\alpha_3$:
-
-$$
-\begin{aligned}
-\varepsilon_3&=\frac{1}{6}\\
-\alpha_3&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_3}{\varepsilon_3}\right)=\frac{1}{2}\ln(5)=0.805
-\end{aligned}
-$$
-
-נעדכן את וקטור המשקלים:
-
-$$
-\tilde{\boldsymbol{w}}^{(3)}
-=\frac{1}{6}\begin{bmatrix}
-    \exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
-    2\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
-    3\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)
-\end{bmatrix}
-=\frac{1}{6}\begin{bmatrix}
-    5^{\frac{1}{2}}\\
-    2\cdot5^{-\frac{1}{2}}\\
-    3\cdot5^{-\frac{1}{2}}
-\end{bmatrix}
-=\frac{1}{6\sqrt{5}}\begin{bmatrix}
-    5\\
-    2\\
-    3
-\end{bmatrix}
-$$
-
-אחרי הנרמול נקבל:
-
-$$
-\boldsymbol{w}^{(3)}
-=\frac{1}{10}\begin{bmatrix}
-    5\\
-    2\\
-    3
-\end{bmatrix}
-$$
-
-החזאי שקיבלנו עד כה הינו:
-
-$$
-\begin{aligned}
-h(x)
-&=\text{sign}\left(\alpha_1 h_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)\right)\\
-&=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
-&=\begin{cases}
-\text{sign}(0.602)&x<0\\
-\text{sign}(-0.091)&0<x<2\\
-\text{sign}(1.007)&2<x<4\\
-\text{sign}(-0.602)&4<x\\
-\end{cases}\\
-&=\begin{cases}
-1&x<0\\
--1&0<x<2\\
-1&2<x<4\\
--1&4<x\\
-\end{cases}
-\end{aligned}
-$$
-
-נשים לב שבשלב זה כבר קיבלנו סיווג מושלם
-
-#### צעד 4
-
-נמצא את החזאי האופטימאלי:
-
-- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{10}$
-- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{10}$
-- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{5}{10}$
-
-המסווג השני הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_4=-\text{sign}(x)$.
-
-נחשב את $\alpha_4$:
-
-$$
-\begin{aligned}
-\varepsilon_4&=\frac{2}{10}\\
-\alpha_4&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_4}{\varepsilon_4}\right)=\frac{1}{2}\ln(4)=0.693
-\end{aligned}
-$$
-
-נעדכן את וקטור המשקלים:
-
-$$
-\tilde{\boldsymbol{w}}^{(4)}
-=\frac{1}{10}\begin{bmatrix}
-    5\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
-    2\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
-    3\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)
-\end{bmatrix}
-=\frac{1}{10}\begin{bmatrix}
-    5\cdot4^{-\frac{1}{2}}\\
-    2\cdot4^{\frac{1}{2}}\\
-    3\cdot4^{-\frac{1}{2}}
-\end{bmatrix}
-=\frac{1}{20}\begin{bmatrix}
-    5\\
-    8\\
-    3
-\end{bmatrix}
-$$
-
-אחרי הנרמול נקבל:
-
-$$
-\boldsymbol{w}^{(4)}
-=\frac{1}{16}\begin{bmatrix}
-    5\\
-    8\\
-    3
-\end{bmatrix}
-$$
-
-החזאי שקיבלנו עד כה הינו:
-
-$$
-\begin{aligned}
-h(x)
-&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)+\alpha_4 \tilde{h}_4(x)\right)\\
-&=\text{sign}\left(-1.04\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
-&=\begin{cases}
-\text{sign}(1.295)&x<0\\
-\text{sign}(-0.784)&0<x<2\\
-\text{sign}(0.314)&2<x<4\\
-\text{sign}(-1.295)&4<x\\
-\end{cases}\\
-&=\begin{cases}
-1&x<0\\
--1&0<x<2\\
-1&2<x<4\\
--1&4<x\\
-\end{cases}
-\end{aligned}
-$$
-
-הסיווג אומנם לא השתנה, אך ככל שנריץ עוד צעדים של האלגוריתם הוא ימשיך לנסות למזער את $\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)$. במקרים רבים כאשר נמשיך להריץ את האלגוריתם יכולת ההכללה של האלגוריתם תמשיך להשתפר גם אחרי שהאלגוריתם מתכנס לסיווג מושלם על ה train set. (זה לא יקרה במקרה המנוון הזה).
-
-## תרגיל 12.2 - שאלות תיאורטיות
-
-מלבד סעיפים 3 ו 4 שתלויים אחד בשני, הסעיפים הבאות לא תלויים אחד בשני.
-
-**1)** מדוע נעדיף ב AdaBoost להשתמש במסווגים בעלי יכולת ביטוי חלשה? לדוגמא מדוע נעדיף להשתמש בעצים בעומק 1 מאשר עצים מאד עמוקים?
-
-**2)** נניח כי בעבור מדגם כל שהוא בגודל $N$, מובטח לנו שבאלגוריתם ה AdaBoost נוכל תמיד למצוא מסווג כזה אשר יתן לנו שגיאת misclassification rate קטנה מ $\tfrac{1}{2}-\gamma$. מצאו חסם עליון על כמות הצעדים של AdaBoost שיש לבצע בכדי לקבל סיווג מושלם.
-
-**רמז**: מהי השגיאת ה misclassification rate (הלא ממושקל) במצב בו המסווג טועה רק על דגימה אחת?
-
-**3)** הראו שאם באלגוריתם AdaBoost ננסה להשתמש באותו המסווג בשני צעדים רצופים בצעד השני נקבל misclassification rate ממושקל ששווה לחצי.
-
-הדרכה (תחת הסימונים שמופיעים בתחילת התרגול)
-
-1. הראו ש: $\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}$.
-2. הראו שקבוע הנרמול של המשקלים נתון על ידי: $\sum_{i=1}^N\tilde{w}_i^{(t)}=2\sqrt{\varepsilon_t(1-\varepsilon_t)}$.
-3. חשבו את ה misclassification rate הממושקל עם משקלים $\boldsymbol{w}^{t}$ והחזאי $\tilde{h}_t$ (מהצעד ה $t$). עשו זאת על ידי הצבה של $w_i^{(t)}$ ושל קבוע הנרמול שלו.
+**3)** האם קיים אתחול אשר בעבורו האלגוריתם לא יתכנס לפתרון האופטימאלי שמצאתם בסעיף הקודם? הדגימו.
 
 ### פתרון 12.2
 
 #### 1)
 
-AdaBoost מגדיל את ההתאמה של חזאי למדגם על ידי בניית קומבינציה של חזאים. האלגוריתם מקטין את ה underfitting על חשבון ה overfitting. אם נתחיל אם ניקח מודלים בעלי יכולת ביטוי גדולה מידי המודלים יעשו overfitting ושאותו האלגוריתם לא יוכל להקטין.
+נחשב את תוצאת האלגוריתם בעבור כל אחת מארבעת האתחולים:
 
-בפועל מה שיקרה עם ניקח מודלים בעלי יכולת ביטוי גדולה הוא שנמצא בצעד הראשון מודל שיסווג בצורה טובה את המדגם (אך גם כנראה יעשה הרבה overfitting) לו הוא יתן את מרבית המשקל.
+**מרכזים ב A,B ו C**:
+
+<div class="imgbox" style="max-width:100%">
+<div class="imgbox no-shadow" style="max-width:25%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_1_0a.png)
+
+</div><div class="imgbox no-shadow" style="max-width:25%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_1_0b.png)
+
+</div><div class="imgbox no-shadow" style="max-width:25%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_1_1a.png)
+
+</div><div class="imgbox no-shadow" style="max-width:25%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_1_1b.png)
+
+</div>
+</div>
+
+- שיוך התחלתי (0a): נקודות בA,B ו C ישוייכו למרכז אשר הנמצא עליהם, והנקודות בD ישוייכו למרכז שבB.
+- עדכון מרכזים (0b): המרכז שב B יזוז לאמצע הדרך שבין הנקודות B ו D.
+- עדכון אשכולות (1a): הנקודת שבB ישוייכו כעת למרכז שבC.
+- עדכון מרכזים (1b): המרכז שבין B ל D יזוז לD, והמרכז שבC יזוז למחצית הדרך שבין B לC.
+
+**מרכזים ב A,B ו D**:
+
+<div class="imgbox" style="max-width:600px">
+<div class="imgbox no-shadow" style="max-width:50%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_2_0a.png)
+
+</div><div class="imgbox no-shadow" style="max-width:50%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_2_0b.png)
+
+</div>
+</div>
+
+- שיוך התחלתי (0a): נקודות בA,B ו D ישוייכו למרכז אשר נמצא עליהם, והנקודות בC ישוייכו למרכז שבB.
+- עדכון מרכזים (0b): המרכז שב B יזוז לאמצע הדרך שבין הנקודות B ו C.
+  
+**מרכזים ב A,C ו D**:
+
+<div class="imgbox" style="max-width:600px">
+<div class="imgbox no-shadow" style="max-width:50%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_3_0a.png)
+
+</div><div class="imgbox no-shadow" style="max-width:50%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_3_0b.png)
+
+</div>
+</div>
+
+- שיוך התחלתי (0a): נקודות בA,C ו D ישוייכו למרכז אשר נמצא עליהם, והנקודות בB ישוייכו למרכז שבC.
+- עדכון מרכזים (0b): המרכז שב C יזוז לאמצע הדרך שבין הנקודות B ו C.
+
+**מרכזים ב B,C ו D**:
+
+<div class="imgbox" style="max-width:300px">
+
+![](./output/ex_12_2_a_case_4_0a.png)
+
+</div>
+
+- שיוך התחלתי (0a): נקודות בB,C ו D ישוייכו למרכז אשר נמצא עליהם, והנקודות בA ישוייכו למרכז שבB.
+- עדכון מרכזים (0b): המרכז שב B יזוז לנקודה שהיא המרכז של הנקודות A ו B. (משום שכמות הנקודות בשתי הקבוצות שונה, נקודה זו היא לא אמצע הדרך בניהם).
+
+השלב הבא של עידכון האשכולות תלוי במיקום של המרכז החדש.
+
+**מקרה 1**: הנקודות ב-B קרובות יותר למרכז החדש מאשר למרכז שב-C ולכן האלגוריתם מסתיים.
+
+<div class="imgbox" style="max-width:300px">
+
+![](./output/ex_12_2_a_case_4_1_0b.png)
+
+</div>
+
+**מקרה 2**, המרכז החדש **רחוק** יותר לנקודה B מאשר הנקודה C, אזי הנקודות בB יהיו מושייכות כעת למרכז בנקודה C, והמשך האלגוריתם יהיה:
+
+<div class="imgbox" style="max-width:100%">
+<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_4_2_0b.png)
+
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_4_2_1a.png)
+
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+
+![](./output/ex_12_2_a_case_4_2_1b.png)
+
+</div>
+</div>
+
+נמצא את התנאי על $\alpha$ שבעבורו מתרחש מקרה 2. נסמן ב $\boldsymbol{\mu}_1$ את המרכז שבין A לB לאחר עדכון המרכזים הראשון. המיקום של $\boldsymbol{\mu}_1$ נתון על ידי הממוצע המשוכלל של הקואורדיאנטות A ו B:
+
+$$
+\boldsymbol{\mu}_1=\frac{n\vec{A}+\alpha n\vec{B}}{\left(1+\alpha\right)n}=\frac{\left(-6\hat{x}_1 + 6\hat{x}_2\right)+\alpha\left(6\hat{x}_1 + 6\hat{x}_2\right)}{1+\alpha}=\frac{\alpha-1}{\alpha+1}6\hat{x}_1 + 6\hat{x}_2
+$$
+
+על מנת שיתרחש עידכון על המרחק בין המרכז החדש נקודה B גדול מ2:
+
+$$
+\begin{aligned}
+\left\lVert\left(6\hat{x}_1 + 6\hat{x}_2\right)-\left(\frac{\alpha-1}{\alpha+1}6\hat{x}_1 + 6\hat{x}_2\right)\right\rVert>2 \\
+\Leftrightarrow 6-\frac{\alpha-1}{\alpha+1}6>2 \\
+\Leftrightarrow \frac{\alpha-1}{\alpha+1}6<4 \\
+\Leftrightarrow\alpha<5
+\end{aligned}
+$$
 
 #### 2)
 
-בעבור מדגם בגודל $N$ וחזאי עם שגיאת חיזוי אחת על המדגם נקבל שגיאת misclassification rate של $\frac{1}{N}$. נמצא בעזרת החסם את כמות הצעדים שיש לעשות בכדי להגיע לשגיאה קטנה מזו. על פי החסם על השגיאה של AdaBoost אנו יודעים כי:
+ב) אנו מועניינים למצוא את האשכול אשר מביא למינימום את הפונקציית המטרה הבאה:
 
 $$
-\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
-\leq
-\exp\left(-2\sum_{t=1}^T\gamma^2\right)
-=\exp\left(-2T\gamma^2\right)
+\sum_{k=1}^K\frac{1}{2|\mathcal{I}_k|}\sum_{i,j\in \mathcal{I}_k}\lVert\boldsymbol{x}^{(j)}-\boldsymbol{x}^{(i)}\rVert_2^2
 $$
 
-נמצא את מספר הצעדים המינימאלי $T$ אשר מקיים:
-נדרוש ש:
+נוכל לפסול פתרונות בהן ישנו אשכול ריק, משום שבמקרה זה נוכל לשייך אליו נקודות כלשהן על מנת להקטין את פונקציית המטרה. לכן הפתרון האופטימאלי חייב להיות אחד מששת האישכולים הבאים:
+
+- (A,B), (C), (D)
+- (A,C), (B), (D)
+- (A,D), (B), (C)
+- (B,C), (A), (D)
+- (B,D), (A), (C)
+- (C,D), (A), (B)
+
+התרומה של האשכולות שמכילים נקודה בודדת לפונקציית המטרה הינה 0, ולכן יש לחשב רק את התרומה של האשכול שמכיל זוג נקודות. למשל, עבור האשכול (A,B), (C), (D) נקבל:
 
 $$
-\begin{aligned}
-\exp\left(-2T\gamma^2\right)&\leq\frac{1}{N}\\
-\Leftrightarrow -2T\gamma^2&\leq\ln\left(\frac{1}{N}\right)\\
-\Leftrightarrow T&\geq\frac{1}{2\gamma^2}\ln(N)
-\end{aligned}
+\sum_{k=1}^K\sum_{i\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(j)}-\boldsymbol{\mu}^{(i)}\rVert_2^2
+=n\left(-6-6\frac{\alpha-1}{\alpha+1}\right)^2 + \alpha n\left(6-6\frac{\alpha-1}{\alpha+1}\right)^2=n\cdot \frac{36}{\left(\alpha+1\right)^2}\left(4\alpha^2+4\alpha\right)=\frac{144\alpha n}{\alpha+1}
 $$
 
-מכאן שבעבור $T=\left\lceil\frac{1}{2\gamma^2}\ln(N)\right\rceil+1$ מובטח לנו שנקבל שגיאת misclassification rate קטנה מ $\frac{1}{N}$, זאת אומרת שיש אפס שגיאות סיווג.
-
-#### 3)
-
-נפעל על פי ההדרכה. נתחיל עם השלב הראשון. נשתמש בעובדה ש $\alpha_t=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)$ ונראה ש:
-
+ועבור האשכול (B,C), (A), (D) נקבל:
 $$
-\begin{aligned}
-\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
-&=\exp\left(-\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
-&=\exp\left(\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)\right)^{-\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
-&=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}
-\end{aligned}
+\sum_{i=1}^K\sum_{j\in G_i}\left\lVert \boldsymbol{x}_j-\boldsymbol{\mu}_i \right\rVert^2
+=\alpha n\left(1\right)^2 + \alpha n\left(1\right)^2=2\alpha n
 $$
 
-נמשיך ונחשב את קבוע הנרמול:
+נחשב את הערך של פונקצייות המטרה בעבור כל אחד מששת האשכולים:
 
-$$
-\begin{aligned}
-\sum_{i=1}^N\tilde{w}_i^{(t)}
-&=\sum_{i=1}^N w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
-&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
-&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\left(I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)\\
-&=
-  \left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}
-  +\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{-\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
-&=
-  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}\left(1-I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)
-  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
-&=
-  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(
-    \underbrace{
-      \sum_{i=1}^N w_i^{(t-1)}
-    }_{=1}
-    -\underbrace{
-      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
-    }_{=\varepsilon_t}
-  \right)
-  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}
-    \underbrace{
-      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
-    }_{=\varepsilon_t}\\
-&=
-  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(1-\varepsilon_t\right)
-  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\varepsilon_t\\
-&=2\sqrt{\varepsilon_t(1-\varepsilon_t)}
-\end{aligned}
-$$
+<div style="direction=ltr">
 
-נחשב את ה misclassification rate הממושקל $\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}$. נציב את ההגדרה של $w_i^{(t)}$:
+| Clusters | Objective |
+| -------- | --------- |
+| (A,B), (C), (D) | $$144\frac{\alpha n}{\alpha+1}$$ |
+| (A,C), (B), (D) | $$193\frac{\alpha n}{\alpha+1}$$ |
+| (A,D), (B), (C) | $$196\frac{\alpha n}{\alpha+1}$$ |
+| (B,C), (A), (D) | $$2\alpha n$$ |
+| (B,D), (A), (C) | $$30.5\alpha n$$ |
+| (C,D), (A), (B) | $$42.5\alpha n$$ |
+
+</div>
+
+נשים לב כי הפתרון האופטימאלי יהיה חייב להיות (A,B),(C),(D) או (B,C),(A),(D) (משום שכל השאר בהכרח גדולים מהם). נבדוק בעבור אלו ערכים של $\alpha$ האשכול הראשון הינו האופטימאלי:
 
 $$
 \begin{aligned}
-\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
-&=\sum_{i=1}^N \frac{\tilde{w}_i^{(t)}}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
-&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
-&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
-&=\frac{\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\underbrace{\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}}_{=\varepsilon_t}\\
-&=\frac{\varepsilon_t}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\exp\left(\alpha_t\right)\\
-&=\frac{1}{2}\sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\\
-&=\frac{1}{2}
+144\frac{\alpha n}{\alpha+1}<2\alpha n \\
+\Leftrightarrow \alpha>71
 \end{aligned}
 $$
 
-שגיאת misclassification rate של חצי היא שקולה להטלת מטבע. מכאן שבחירה של אותו המסווג פעמים ברצף לא תשפר את החיזוי ולכן אין טעם במהלך הריצה של האלגוריתם לעשות כן.
+אם כן, בעבור $\alpha>71$ הפתרון האופטימאלי הינו (A,B),(C),(D) ובעבור $\alpha<71$ הפתרון האופטימאלי הינו  (B,C),(A),(D).
 
-## חלק מעשי - הטיטניק
+נסכם כי עבור אתחול המרכזים בנקודות B,C ו-D נקבל:
+
+- עבור $\alpha<5$  האלגוריתם ישדך את B ו-C וזהו הפתרון האופטימאלי גלובלית.
+- עבור $\alpha>71$  האלגוריתם ישדך את A ו-B וזה הפתרון האופטימאלי גלובלית.
+- עבור $5<\alpha<71$  האלגוריתם ישדך את A ו-B אולם זהו אינו הפתרון הגלובלי.
+
+נבדוק בעבור האתחולים מהסעיף הקודם, מהם המקרים שבהם האלגוריתם אינו מתכנס לפתרון האופטימאלי:
+
+- בעבור $\alpha>71$ הפתרון האופטימאלי הינו (A,B),(C),(D), אך עבור 3 מתוך 4 האיחולים שבדקנו האלגוריתם התכנס לפתרון של  (B,C),(A),(D).
+- בעבור $\alpha<71$ הפתרון האופטימאלי הינו  (B,C),(A),(D), אך במקרה של $\alpha>5$ ואתחול של מרכזים ב B,C ו D מתקבל הפתרון של (A,B),(C),(D).
+
+ג) כל מקרים שצויינו בסעיף הקודם. בנוסף,ניתן לדוגמא לאתחל שניים מתוך שלושת המרכזים בנקודות מאד רחוקות, ואז כל הנקודות ישוייכו למרכז השלישי.
+
+## חלק מעשי - מיקום חיניונים בניו יורק
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
-<div class="imgbox" style="max-width:800px">
+### תזכורת: מדגם נסיעות המונית ב New York
 
-![](../tutorial05/assets/titanic.jpg)
+נחזור למדגם של נסיעות מונית בניו-יורק בו השתמשנו בתרגולים הראשונים לחיזוי זמן הנסיעה. נציג את 10 הדגימות הראשונות במדגם (סה"כ במדגם זה 100,000 נסיעות).
 
-</div>
+<div style="direction=ltr">
 
-נחזור לבעיה מהתרגול על עצי החלטה של חיזוי אלו מהנוסעים על ספינת הטיטניק שרדו על פי הנתונים שלהם ברישמת הנוסעים. המדגם נראה כך:
-
-<div dir="ltr">
-
-|    |   pclass |   survived | name                                            | sex    |   age |   sibsp |   parch | ticket   |     fare | cabin   | embarked   | boat   |   body | home.dest                       |
-|---:|---------:|-----------:|:------------------------------------------------|:-------|------:|--------:|--------:|:---------|---------:|:--------|:-----------|:-------|-------:|:--------------------------------|
-|  0 |        1 |          1 | Allen, Miss. Elisabeth Walton                   | female |    29 |       0 |       0 | 24160    | 211.338  | B5      | S          | 2      |    nan | St Louis, MO                    |
-|  1 |        1 |          0 | Allison, Miss. Helen Loraine                    | female |     2 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    nan | Montreal, PQ / Chesterville, ON |
-|  2 |        1 |          0 | Allison, Mr. Hudson Joshua Creighton            | male   |    30 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    135 | Montreal, PQ / Chesterville, ON |
-|  3 |        1 |          0 | Allison, Mrs. Hudson J C (Bessie Waldo Daniels) | female |    25 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    nan | Montreal, PQ / Chesterville, ON |
-|  4 |        1 |          1 | Anderson, Mr. Harry                             | male   |    48 |       0 |       0 | 19952    |  26.55   | E12     | S          | 3      |    nan | New York, NY                    |
-|  5 |        1 |          1 | Andrews, Miss. Kornelia Theodosia               | female |    63 |       1 |       0 | 13502    |  77.9583 | D7      | S          | 10     |    nan | Hudson, NY                      |
-|  6 |        1 |          0 | Andrews, Mr. Thomas Jr                          | male   |    39 |       0 |       0 | 112050   |   0      | A36     | S          | nan    |    nan | Belfast, NI                     |
-|  7 |        1 |          1 | Appleton, Mrs. Edward Dale (Charlotte Lamson)   | female |    53 |       2 |       0 | 11769    |  51.4792 | C101    | S          | D      |    nan | Bayside, Queens, NY             |
-|  8 |        1 |          0 | Artagaveytia, Mr. Ramon                         | male   |    71 |       0 |       0 | PC 17609 |  49.5042 | nan     | C          | nan    |     22 | Montevideo, Uruguay             |
-|  9 |        1 |          0 | Astor, Col. John Jacob                          | male   |    47 |       1 |       0 | PC 17757 | 227.525  | C62 C64 | C          | nan    |    124 | New York, NY                    |
+|    |   passenger count |   trip distance |   payment type |   fare amount |   tip amount |   pickup easting |   pickup northing |   dropoff easting |   dropoff northing |   duration |   day of week |   day of month |   time of day |
+|---:|------------------:|----------------:|---------------:|--------------:|-------------:|-----------------:|------------------:|------------------:|-------------------:|-----------:|--------------:|---------------:|--------------:|
+|  0 |                 2 |        2.76806  |              2 |           9.5 |         0    |          586.997 |           4512.98 |           588.155 |            4515.18 |   11.5167  |             3 |             13 |      12.8019  |
+|  1 |                 1 |        3.21868  |              2 |          10   |         0    |          587.152 |           4512.92 |           584.85  |            4512.63 |   12.6667  |             6 |             16 |      20.9614  |
+|  2 |                 1 |        2.57494  |              1 |           7   |         2.49 |          587.005 |           4513.36 |           585.434 |            4513.17 |    5.51667 |             0 |             31 |      20.4128  |
+|  3 |                 1 |        0.965604 |              1 |           7.5 |         1.65 |          586.649 |           4511.73 |           586.672 |            4512.55 |    9.88333 |             1 |             25 |      13.0314  |
+|  4 |                 1 |        2.46229  |              1 |           7.5 |         1.66 |          586.967 |           4511.89 |           585.262 |            4511.76 |    8.68333 |             2 |              5 |       7.70333 |
+|  5 |                 5 |        1.56106  |              1 |           7.5 |         2.2  |          585.926 |           4512.88 |           585.169 |            4511.54 |    9.43333 |             3 |             20 |      20.6672  |
+|  6 |                 1 |        2.57494  |              1 |           8   |         1    |          586.731 |           4515.08 |           588.71  |            4514.21 |    7.95    |             5 |              8 |      23.8419  |
+|  7 |                 1 |        0.80467  |              2 |           5   |         0    |          585.345 |           4509.71 |           585.844 |            4509.55 |    4.95    |             5 |             29 |      15.8314  |
+|  8 |                 1 |        3.6532   |              1 |          10   |         1.1  |          585.422 |           4509.48 |           583.671 |            4507.74 |   11.0667  |             5 |              8 |       2.09833 |
+|  9 |                 6 |        1.62543  |              1 |           5.5 |         1.36 |          587.875 |           4514.93 |           587.701 |            4513.71 |    4.21667 |             3 |             13 |      21.7831  |
 
 </div>
 
-### השדות
+### הבעיה: מציאת חניונים
 
-בדומה למקרה שלהעצי החלטה נשתמש בשדות האים:
+חברת מוניות רוצה לשכור $K$ מגרשי חניה ברחבי העיר NYC בהם יוכלו לחכות המוניות שלה בין הנסיעות.
 
-- **pclass**: מחלקת הנוסע: 1, 2 או 3
-- **sex**: מין הנוסע
-- **age**: גיל הנוסע
-- **sibsp**: מס' של אחים ובני זוג של כל נוסע על האוניה
-- **parch**: מס' של ילדים או הורים של כל נוסע על האונייה
-- **fare**: המחיר שהנוסע שילם על הכרטיס
-- **embarked**: הנמל בו עלה הנוסע על האונייה (C = Cherbourg; Q = Queenstown; S = Southampton)
-- **survived**: התיוג, האם הנוסע שרד או לא
+לשם כך היא מעוניינת לבחור באופן אופטימאלי את המיקומים של מגרשי החניות האלו כך שהמרחק הממוצע מנקודת הורדת הנוסע למרגש החניה הקרוב יהיה מינימאלי.
 
-### הפילוג של ערכים
+#### שדות רלוונטיים
 
-הפילוג של כל אחד מהשדות בעבור האנשים ששרדו והאנשים שלא:
+הפעם נתמקד בשתי השדות הבאים מהמדגם:
+
+- **dropoff_easting** - הקואורדינאטה האורכית (מזרח-מערב) של סיום הנסיעה
+- **dropoff_northing** - הקואורדינאטה הרוחבית (צפון-דרום) של סיום הנסיעה
+
+(למתעניינים: הקואורדינאטות נתונות בUTM-WGS84, היחידות הן בקירוב קילומטר).
+
+#### ויזואליזציה של נקודות ההורדה
 
 <div class="imgbox" style="max-width:800px">
 
-![](./output/titanic_data_slices.png)
+![](./output/pickups.png)
 
 </div>
 
-### סט המסווגים - Stumps
+### הגדרה פורמאלית של הבעיה
 
-המסווגים בהם נשתמש הינם stumps (עצים בעומק 1). למשתנים הקטגוריים נעבור על כל האפשרויות לחלק את הקטגוריות.
+נשתמש בסימונים הבאים:
 
-### בניית המסווג
+- $\mathbf{x}$ הוקטור האקראי של מיקום סיום הנסיעה
+- $N$: מספר הנסיעות במדגם.
+- $\boldsymbol{x}^{(i)}$ הוקטור של מיקום סיום הנסיעה ה $i$.
+- $\boldsymbol{c}_k$: המיקום של מגרש החניה ה $k$.
 
-אחרי שנחלק את המדגם ל train-validation-test נשתמש ב train בשביל לבנות את הקומבינציה של המסווגים.
-
-גודל ה train set הוא 599. נאתחל את וקטור המשקלים $\boldsymbol{w}^{(0)}$ להיות וקטור שמכיל את הערך $\frac{1}{599}$.
-
-### צעד 1
-
-נעבור על כל ה stumps האפשריים ונחפש את זה שממזער את ה misclassification rate הממושקל. נקבל שה stump האופטימאלי הוא זה שמפצל לפי המגדר וחוזה שהנשים שרדו והגברים לא. המסווג שנקבל יהיה:
+המטרה: למצוא את מיקומי החניונים האופטימאליים אשר ממזערים את הגודל הבא
 
 $$
-h(\boldsymbol{x})=\text{sign}\left(0.598 \cdot I\{\text{sex}=\text{female}\}\right)
+\{c_k\}_{k=1}^{K*}=
+\underset{\{c_k\}_{k=1}^{K}}{\arg\min}\quad
+\mathbb{E}\left[\min_{k}\lVert\mathbf{x}-\boldsymbol{c}_k\rVert_2\right]
 $$
 
-הציון על ה train set יהיה: 0.232
+מכיוון שהפילוג האמיתי של $\mathbf{x}$ לא ידוע ננסה למזער את התוחלת האמפירית:
 
-הציון על ה validation set יהיה: 0.226
+$$
+\{c_k\}_{k=1}^{K*}=
+\underset{\{c_k\}_{k=1}^{K}}{\arg\min}\quad
+\frac{1}{N}\sum_{i}\min_{k}\lVert\boldsymbol{x}^{(i)}-\boldsymbol{c}_k\rVert_2
+$$
 
-### צעד 2
+נרשום את הבעיה על ידי חלוקת המדגם לאשכולות. נגדיר את האשכול $\mathcal{I}_k$ כאוסף של כל הנסיעות שהחניון ה $k$ הוא הקרוב ביותר לנקודת הסיום שלהן. באופן זה נוכל לרשום את בעיית האופטימיזציה באופן הבא:
 
-נצייר את הפילוג את הדגימות ממושקלים על ידי המשקלים המעודכנים:
+$$
+\{c_k\}_{k=1}^{K*}=
+\underset{\{c_k\}_{k=1}^{K}}{\arg\min}\quad
+\frac{1}{N}\sum_{k=1}^K\sum_{i\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(i)}-\boldsymbol{c}_k\rVert_2
+$$
 
-<div class="imgbox" style="max-width:800px">
+### פתרון באמצעות K-Means
 
-![](./output/titanic_adaboost_step_02.png)
+נשים לב כי הבעיה שקיבלנו דומה מאד לבעיה אותה K-Means מנסה לפתור, עם הבדל משמעותי אחד. K-Means ממזער את המרחק ה**ריבועי** הממוצע בעוד שאנו מחפשים למזער את המרחק האוקלידי. ישנם אלגוריתמים מורכבים יותר אשר פותרים את הבעיה שלנו, אך לבינתיים נשאר עם K-Means.
+
+*נציין שזהו מצב נפוץ שבו איננו מסוגלים לפתור בעיה מסויימת באופן ישיר אז אנו פותרים בעיה דומה לה בתקווה לקבל תוצאות מספקות, אך לא בהכרח אופטמאליות.*
+
+נשתמש באלגוריתם K-means על מנת לבחור את המיקום של 10 מגרשי חניה.
+
+<div class="imgbox" style="max-width:900px">
+
+![](./output/taxis_k_means.png)
 
 </div>
 
-ה stump האופטימאלי כעת יהיה זה שמפצל לפי המחלקה של הנוסעים וחוזה שנוסעים ממחלקה ראשונה שרדו והאחרים לא. המסווג שנקבל יהיה:
+המרחק נסיעה הממוצע המתקבל הינו:
 
 $$
-h(\boldsymbol{x})=\text{sign}\left(
-    0.598 \cdot I\{\text{sex}=\text{female}\}
-    +0.31 \cdot I\{\text{class}=1\}
-\right)
+\frac{1}{N}\sum_{k=1}^K\sum_{i\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(i)}-\boldsymbol{c}_k\rVert_2=700m
 $$
 
-הציון על ה train set וה validation set ישאר זהה.
+חושב לציין שהפתרון הזה הוא לא בהכרח הפתרון האופטימאלי משתי סיבות:
+
+1. K-Mean לא מבטיח התכנסות למינימום הגלובלי. דרך אחת לשפר את תוצאות האלגוריתם הינה להריץ אותו מספר פעמים עם איתחולים שונים.
+
+2. כפי שציינו קודם K-Mean ממזערת את השגיאה הריבועית הממוצעת. ניתן אם כן לשפר קלות את התוצאות על ידי שמירה על האשכולות אך תיקון המרכז לנקודה אשר ממזערת את המרחק עצמו.
+
+**הערה** הנקודה אשר ממזערת את המרחק האוקלידי (בלי הריבוע) בינה לבין כל הנקודות באשכול נקראת החציון הגיאומטרי *The Geometric Median* ([wiki](https://en.wikipedia.org/wiki/Geometric_median)). ניתן למצוא נקודה זו על ידי שימוש באלגוריתם המוכונה *Weiszfeld's algorithm*.
+
+### מציאת מספר החניונים האופטימאלי
+
+עד כה השתמשנו ב10 חניונים, נרצה כעת לבחור גם מספר זה בצורה מיטבית. באופן כללי ככל שנגדיל את מספר החניונים מרחק הנסיעה לחניונים יקטן, אך מנגד התחזוקה של כל חניון עולה כסף.
+
+נניח כי:
+
+1. עלות האחזקה של חניון הינה 10k$ לחודש.
+2. בכל חודש יהיו בדיוק 100k נסיעות.
+3. עלות הנסיעה של מונית בדרך לחניון הינה 3$ לקילומטר.
+
+נרשום תחת הנחות אלו את העלות החודשית של אחזקת החניונים והנסיעה אליהם:
+
+$$
+10\cdot K+100\cdot3\cdot\mathbb{E}\left[\min_{k}\lVert\boldsymbol{x}-\boldsymbol{c}_k\rVert_2\right]
+$$
+
+והמקבילה האמפירית:
+
+$$
+10\cdot K+100\cdot3\cdot\frac{1}{N}\sum_{k=1}^K\sum_{i\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(i)}-\boldsymbol{c}_k\rVert_2
+$$
+
+### מספר החניונים כ Hyper parameter
+
+כעת עלינו לבצע אופטימיזציה גם על מספר החניונים וגם המיקום שלהם. ראינו כיצד ניתן למצוא פתרון בעבור $K$ נתון, אך אין לנו דרך פשוטה להכליל את זה ל $K$ כלשהו. כן נוכל אבל לעבור על כל ערכי $K$ הרלוונטים, לפתור את הבעיה עבורם ולבסוף לקחת את הפתרון הטוב ביותר. $K$ הוא למעשה hyper-parameter של הבעיה.
+
+נריץ את אלגוריתם ה K-Means בעבור כל ערך של $K\in[1,25]$, נשרטט את עלות הנסיעה, עלות אחזקת החניונים והעלות הכוללת:
+
+<div class="imgbox" style="max-width:900px">
+
+![](./output/taxis_scan_for_k.png)
 
 </div>
 
-### צעד 3
+נקבל כי:
 
-נצייר את הפילוג את הדגימות ממושקלים על ידי המשקלים המעודכנים:
-
-<div class="imgbox" style="max-width:800px">
-
-![](./output/titanic_adaboost_step_03.png)
-
-</div>
-
-ה stump האופטימאלי כעת יהיה זה שמפצל לפי הגיל וחוזה שנוסעים מתחת לגיל 35.5 שרדו. המסווג שנקבל יהיה:
-
-$$
-h(\boldsymbol{x})=\text{sign}\left(
-    0.598 \cdot I\{\text{sex}=\text{female}\}
-    +0.31 \cdot I\{\text{class}=1\}
-    +0.162 \cdot I\{\text{age}<35.5\}
-\right)
-$$
-
-הציון על ה train set וה validation set ישאר זהה.
-
-### המשך
-
-אם נמשיך כך עוד 20 צעדים נקבל את המסווג הכולל אשר נותן את הביצועיים הבאים:
-
-הציון על ה train set יהיה: 0.209
-
-הציון על ה validation set יהיה: 0.201
-
-הציון על ה test set יהיה: 0.189
-
-(זה בהשוואה ל 0.205 שקיבלנו בעזרת עצי החלטה)
+- מספר החניונים האופטימאלי הינו: 12.
+- מרחק הנסיעה הממוצע יהיה 630 מ'.
+- העלות הכוללת תהיה 308.12k$ לחודש.
 
 </div>

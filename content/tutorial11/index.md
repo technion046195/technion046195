@@ -8,7 +8,7 @@ print_pdf: true
 
 <div dir="rtl" class="site-style">
 
-# תרגול 11 - SVM ופונקציות גרעין (Kernels)
+# תרגול 11 - Bagging and AdaBoost
 
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
@@ -18,259 +18,102 @@ print_pdf: true
 
 ## תקציר התיאוריה
 
-**הערה**: בפרק זה נעסוק בסיווג בינארי ונסמן את התוויות של שתי המחלקות ב $1$ ו $-1$.
+Bagging ו Boosting הן שיטות אשר עושות שימוש במכלול (ensemble) של חזאים בכדי לקבל חזאי עם ביצועים טובים יותר.
 
-### תזכורת - גאומטריה של המישור
+### Bagging
 
-<div class="imgbox" style="max-width:700px">
-
-![](../lecture10/assets/plain_geometry.png)
-
-</div>
-
-דרך נוחה לתאר מישור במרחב (ממימד כלשהו) היא על ידי משוואה מהצורה $\boldsymbol{w}^{\top}\boldsymbol{x}+b=0$. מישור שכזה מחלק את המרחב לשנים ומגדיר צד חיובי ושלילי של המרחב. נתאר מספר תכונות של הצגה זו:
-
-- $\boldsymbol{w}$ הוא הנורמל למישור אשר מגדיר את את האוריינטציה שלו וגם את הצד החיובי.
-- המרחק של המישור מהראשית הינו $\frac{b}{\lVert\boldsymbol{w}\rVert}$. הסימן של גודל זה מציין איזה צד של המישור נמצאת הראשית.
-- המרחק של נקודה כל שהיא $\boldsymbol{x}_0$ מהמישור הינה $\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}_0+b)$. הסימן של גודל זה מציין את הצד של המישור בו נמצאת הנקודה.
-- בעבור מישור נתון כל שהוא $\boldsymbol{w}$ ו $b$ מוגדרים עד כדי קבוע. זאת אומרת שהמישור אינווריאנטי (לא משתנה) תחת שינוי של פרמטרים מהצורה של: $\boldsymbol{w}\rightarrow \alpha\boldsymbol{w},b\rightarrow \alpha b$.
-
-### מסווג לינארי
-
-מסווג לינארי הוא מסווג מהצורה של
-
-$$
-h(\boldsymbol{x})=
-\text{sign}(\boldsymbol{w}^{\top}\boldsymbol{x}+b)
-=\begin{cases}
-1 & \boldsymbol{w}^{\top}\boldsymbol{x}+b>0\\
--1 & \text{else}
-\end{cases}
-$$
-
-עם $\boldsymbol{w}$ ן $b$ כל שהם.
-
-זאת אומרת שמסווג מחלק את המרחב לשני צידיו של המישור $\boldsymbol{w}^{\top}\boldsymbol{x}+b=0$ המכונה מישור ההפרדה.
-
-### Signed distance (מרחק מסומן)
-
-נסתכל על בעיית סיווג בינארית עם תוויות $\text{y}=\pm1$. בעבור משטח הפרדה כל שהוא נגדיר את ה signed distance של דגימה כל שהיא ממשטח ההפרדה באופן הבא:
-
-$$
-d=\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}+b)y
-$$
-
-זהו המרחק של נקודה ממהמישור כאשר המרחק של נקודות עם תווית $y=1$ הם חיוביות כאשר הם בצד החיובי של המיושר ושליליות אחרת והפוך לגבי נקודות עם תווית $y=-1$. 
-
-<div class="imgbox" style="max-width:500px">
-
-![](../lecture10/assets/signed_distance.png)
-
-</div>
-
-### פרידות לינארית (linear separability)
-
-בבעיות של סיווג בינארי, אנו נאמר על המדגם שהוא פריד לינארית אם קיים מסווג לינארי אשר מסווג את המדגם בצורה מושלמת (בלי טעויות סיווג).
-
-כאשר המדגם פריד לינארית יהיו יותר ממסווג לינארי אחד אשר יכול לסווג בצורה מושלמת את המדגם.
+Bagging (Bootstrap + Aggregating) הינה שיטה להקטין את ה **variance** (ובכך את ה **overfitting**) של חזאי על ידי הרכבה של מספר חזאים אשר אומנו על מדגמים מעט שונים.
 
 <div class="imgbox" style="max-width:700px">
 
-![](../lecture10/assets/linear_separable.png)
+![](../lecture11/assets/bagging.png)
 
 </div>
 
-### Support Vector Machine (SVM)
+בשלב ה bootstraping נייצר את המדגמים לכל מדגם נבנה חזאי ובשלב ה aggregation נאחד את כל החזאים לחזאי יחיד.
 
-SVM הוא אלגוריתם דיסקרימינטיבי לסיווג בינארי אשר מחפש מסווג לינארי אשר יסווג בצורה טובה את המדגם.
+#### Bootstraping
 
-#### Hard SVM
+ב Bootstraping נקח מדגם נתון בגודל $N$ ונייצר ממנו $p$ מדגמים בגודל $\tilde{N}$ על ידי הגרלה של ערכים מתוך המדגם עם חזרות (כך שניתן להגריל כל ערך מספר פעמים). ב bagging נבחר לרוב את $\tilde{N}$ להיות שווה ל $N$.
 
-Hard SVM מתייחס למקרה שבו המדגם הוא פריד לינארית. באלגוריתם זה נחפש את המסווג הלינארי אשר בעבורו ה signed distance המינימאלי על ה train set הוא המקסימאלי:
+#### Aggregation
 
-$$
-\boldsymbol{w}^*,b^*=\underset{\boldsymbol{w},b}{\arg\max}\quad \underset{i}{\min}\left\{\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}
-$$
+בשלב הראשון נבנה באופן בלתי תלוי מתוך כל אחד מהמגדמים שייצרנו חזאי $\tilde{h}_i(\boldsymbol{x})$. בשלב השני נרכיב את כל החזאים שייצרנו לחזאי אחד כולל.
 
-ניתן להראות כי במקרה שבו המדגם פריד לינארי, בעיה זו שקולה לבעיית האופטימיזציה הבאה:
+- **בעבור בעיות רגרסיה**: נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{p}\sum_{i=1}^p \tilde{h}_i(\boldsymbol{x})$
+- **בעבור בעיות סיווג**: נבצע majority voting, זאת אומרת: $h(\boldsymbol{x})=\text{majority}(\{\tilde{h}_1(\boldsymbol{x}),\tilde{h}_2(\boldsymbol{x}),\dots,\tilde{h}_p(\boldsymbol{x})\})$
 
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*=
-\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1\quad\forall i
-\end{aligned}
-$$
+### AdaBoost
 
-בעיית אופטימיזציה זו מכונה הבעיה הפרימאלית.
+AdaBoost (Adaptive Boosting) מתייחס לבעיות סיווג בינאריות, שיטה זו מנסה להקטין את ה **bias** (ובכך להקטין את ה **underfitting**) של מסווג על ידי הרכבה של מסווגים שונים.
 
-##### Margin
+ב AdaBoost נסמן את המחלקות ב $\text{y}=\pm1$.
 
-בכדי להבין את המשמעות של בעיית האופטימיזציה שקיבלנו נגדיר את המושג השוליים (margin) של המסווג. האיזור של ה margin מוגדר כאיזור כאיזור סביב משטח ההפרדה אשר נמצא בתחום:
+בהיתן אוסף של מסווגים בינארים, אלגוריתם ה AdaBoost מנסה לבחור סט של $t$ מסווגים ומקדמים $\{\alpha_k,\tilde{h}_k\}_{k=1}^t$ ולבנות קומבינציה לינארית $\sum_{k=1}^t\alpha_k \tilde{h}_k(\boldsymbol{x})$ שתמזער את בעיית האופטימיזציה הבאה:
 
 $$
-1\geq\boldsymbol{w}^{\top}\boldsymbol{x}+b\geq-1
+\underset{\{\alpha_k,\tilde{h}_k\}_k}{\arg\min}\quad
+\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{k=1}^t\alpha_k y^{(i)}\tilde{h}_k(\boldsymbol{x}^{(i)})\right)
 $$
 
-<div class="imgbox" style="max-width:700px">
+האלגוריתם בונה את הקומבינציה הלינארית בצורה חמדנית על ידי הוספת איבר איבר לקומבינציה (והגדלה של $t$) ועצירה כאשר ביצועי המסווג מספקים או שהאלגוריתם מתחיל לעשות overfitting על ה validation set.
 
-![](../lecture10/assets/margin.png)
+#### אלגוריתם
 
-</div>
+ב $t=0$ נאתחל וקטור משקלים $w_i^{(t)}=\frac{1}{N}$.
 
-הרוחב של איזור זה נקבע על פי הגודל של הוקטור $\boldsymbol{w}$ ושווה ל $\frac{2}{\lVert\boldsymbol{w}\rVert}$.
+בכל צעד $t$ נבצע את הפעולות הבאות:
 
-האילוץ $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1$, אשר מופיע בבעיית האופטימיזציה הפרימאלית, דורש למעשה שכל הנקודות יסווגו נכונה ו**ימצאו מחוץ ל margin**. בעיית האופטימיזציה מחפשת את הפרמטרים של המישור בעל ה margin הגדול ביותר אשר מקיים תנאי זה.
+1. נבחר את המסווג אשר ממזער את ה misclassification rate הממושקל:
 
-##### Support Vectors
+    $$
+    \tilde{h}_t=\underset{\tilde{h}}{\arg\min}\ \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
+    $$
 
-בעבור פתרון מסויים של בעיית האופטימיזציה, ה support vectors מוגדרים כנקודות אשר יושבות על השפה של ה margin, נקודות אלו מקיימות במדגם אשר מקיימים $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$. אלו הנקודות אשר ישפיעו על הפתרון של בעיית האופטימיזציה, זאת אומרת שהסרה או הזזה קטנה של נקודות שאינם support vectors לא תשנה את הפתרון.
+2. נחשב את המקדם $\alpha_{t+1}$ של המסווג:
 
-##### הבעיה הדואלית
+    $$
+    \begin{aligned}
+    \varepsilon_t&=\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+    \alpha_t&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)
+    \end{aligned}
+    $$
 
-דרך שקולה נוספת לרישום בעיית האופטימיזציה הינה על ידי הגדרת $N$ משתני עזר נוספים $\{\alpha_i\}_{i=1}^N$. בעזרת משתנים אלו ניתן לרשום את בעיית האופטימיזציה באופן הבא:
+3. נעדכן את וקטור המשקלים:
 
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
+    $$
+    \begin{aligned}
+    \tilde{w}_i^{(t)}&=w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+    w_i^{(t)}&=\frac{\tilde{w}_i^{(t)}}{\sum_{j=1}^N \tilde{w}_j^{(t)}}
+    \end{aligned}
+    $$
 
-מתוך המשתנים $\{\alpha_i\}_{i=1}^N$ ניתן לשחזר את $\boldsymbol{w}$ אופן הבא:
+#### המסווג הסופי
 
-$$
-\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\boldsymbol{x}^{(i)}
-$$
-
-תכונות:
-
-| .                                      | .                                                      | .               |
-| -------------------------------------- | ------------------------------------------------------ | --------------- |
-| נקודות רחוקות מה margin                   | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ | $\alpha_i=0$    |
-| נקודות על ה margin (שהם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ | $\alpha_i\geq0$ |
-
-- אם $\alpha_i>0$ אז $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ (אבל לא להיפך)
-- אם $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ אז $\alpha_i=0$ (אבל לא להיפך)
-
-את $b$ ניתן לחשב על ידי בחירת support vעל ידי בחירת support vector אחד ולחלץ את $b$ מתוך $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$.
-
-### Soft SVM
-
-Soft SVM מתייחס למקרה שבו המדגם אינו פריד לינארית. במקרה זה עדיין מגדירים את ה margin בצורה דומה אך מאפשרים למשתנים להיכנס לתוך ה margin ואף לחצות אותה לצד הלא נכון של מישור ההפרדה. על כל חריגה כזו משלמים קנס ב objective שאותו מנסים למזער. את החריגה של הדגימה ה $i$ נסמן ב $\frac{1}{\lVert\boldsymbol{w}\rVert}\xi_i$. לנקודות שהם בצד הנכון של המישור ומחוץ ל margin $xi_i$ יהיה 0.
-
-<div class="imgbox" style="max-width:500px">
-
-![](../lecture10/assets/svm_xi.png)
-
-</div>
-
-המשתנים $\xi_i$ נקראים **slack variables** ובעיית האופטימיזציה הפרימאלית תהיה:
+הסיווג הסופי נעשה על ידי קומבינציה לינארית של כל מסווגים והמשקל שלהם.
 
 $$
-\begin{aligned}
-\boldsymbol{w}^*,b^*,\{\xi_i\}^*=
-\underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
-\text{s.t.}\quad
-    &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
-    &\xi_i\geq0\quad\forall i
-\end{aligned}
+h(\boldsymbol{x})=\text{sign}\left(\sum_{t=1}^T\alpha_t \tilde{h}_t(\boldsymbol{x})\right)
 $$
 
-כאשר $C$ הוא hyper-parameter אשר קובע את גודל הקנס שאותו ה objective נותן על כל חריגה.
+#### חסם
 
-הבעיה הדואלית הינה:
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &0\leq\alpha_i\leq C\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-ה support vectors מוגדרות להיות הנקודות שמקיימות $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
-
-תכונות:
-
-| .                                         | .                                                            | .                     |
-| ----------------------------------------- | ------------------------------------------------------------ | --------------------- |
-| נקודות שמסווגות נכון ורחוקות מה margin            | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$       | $\alpha_i=0$          |
-| נקודות על ה margin (שהם support vectors)    | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$       | $0\leq\alpha_i\leq C$ |
-| נקודות שחורגות מה margin (גם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1-\xi_i$ | $\alpha_i=C$          |
-
-## פונקציות גרעין
-
-### מאפיינים: תזכורת
-
-נוכל תמיד לחליף את וקטור המשתנים $\boldsymbol{x}$ שעליו פועל האלגוריתם בוקטור חדש $\boldsymbol{x}_{\text{new}}=\Phi(\boldsymbol{x})$, כאשר $\Phi$ היא פונקציה אשר נבחרה מראש ונקראת פונקציית המאפיינים שכן היא מחלצת מאפיינים רלוונטים מתוך $\boldsymbol{x}$ שבהם נשתמש.
-
-### פונקציות גרעין
-
-במקרים רבים החישוב של $\Phi(\boldsymbol{x})$ יכול להיות מסובך אך קיימת דרך לחשב בצורה יעילה את הפונקציה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\Phi(\boldsymbol{x}_1)^{\top}\Phi(\boldsymbol{x}_2)$ אשר נקראת פונקציית גרעין. ישנם מקרים שבהם הוקטור המאפיינים יהיו אין סופיים.
-
-ישנם קריטריונים תחתם פונקציה מסויימת $K(\boldsymbol{x}_1,\boldsymbol{x}_2)$ היא פונקציית גרעין בעבור וקטור מאפיינים מסויים. בקורס זה לא נכנס לתאים אלו. נציג שתי פונקציות גרעין נפוצות:
-
-- גרעין גאוסי: $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\frac{\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert_2^2}{2\sigma^2}\right)$ כאשר $\sigma$ פרמטר שיש לקבוע.
-- גרעין פולינומיאלי: $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=(1+\boldsymbol{x}_1^{\top}\boldsymbol{x}_2)^p$ כאשר $p\geq1$ פרמטר שיש לקבוע.
-
-פונקציית המאפיינים שמתאימות לגרעינים אלו הם מסורבלות לכתיבה ולא נציג אותם כאן.
-
-### Kernel Trick in SVM
-
-הרעיון ב kernel trick הינו להשתמש ב SVM עם מאפיינים מבלי להחשב את $\Phi$ באופן ישיר על ידי שימוש בפונקציית גרעין. בעבור פונקציית מאפיינים $\Phi$ עם פונקציית גרעין $K$ הבעיה הדואלית של SVM הינה:
+נסתכל על מסווג אשר התקבל מאלגוריתם AdaBoost שעבורו בכל צעד $t$ שגיאת ה misclassification error הממושקלת קטנה מ $\tfrac{1}{2}-\gamma_t$. בעבור מסווג זה מתקיים ש:
 
 $$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_jK(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)}) \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
+\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
+\leq
+\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
+\leq
+\exp\left(-2\sum_{t=1}^T\gamma_t^2\right)
 $$
 
-בעיית אופטימיזציה זו מגדירה את המשתנים $\{\alpha_i\}$ בלי צורך לחשב את $\Phi$ באופן מפורש בשום שלב.
+## תרגיל 11.1: דוגמא חד מימדית
 
-הפרמטר $\boldsymbol{w}$ נתון על ידי:
-
-$$
-\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})
-$$
-
-בכדי לחשב את $\boldsymbol{w}$ באופן מפורש יש לחשב את $\Phi$ אך ניתן להמנע מכך עם מציבים את הנוסחא ל $\boldsymbol{w}$ ישירות לתוך המסווג:
-בכדי להמנע מהחישוב של $\Phi$ גם במסווג נשתמש בעובדה ש:
+נתבונן בבעיית סיווג חד מימדית עבור סט דוגמאות האימון:
 
 $$
-\begin{aligned}
-h(\boldsymbol{x})
-&=\text{sign}(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}(\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}(\sum_i\alpha_iy^{(i)}K(\boldsymbol{x}^{(i)},\boldsymbol{x})+b)\\
-\end{aligned}
-$$
-
-כך שגם בשלב החיזוי ניתן להשתמש בפונקציית הגרעין בלי לחשב את $\Phi$ באופן מפורש.
-
-## תרגיל 11.1 - 2 Support Vectors
-
-בשאלה זו נראה שבעבור מדגם המכיל 2 נקודת, אחת מכל מחלקה, הפתרון של בעיית hard SVM מישור ההפרדה יעבור בדיוק במרכז בין 2 הנקודות, יהיה ניצב לוקטור המחבר את שתי הנקודות והשוליים של ה margin.
-
-בפועל נראה ש:
-
-$$
-\boldsymbol{w}=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right)
-$$
-
-ו
-
-$$
-b=-\frac{1}{2}\left(\boldsymbol{x}^{(1)}+\boldsymbol{x}^{(2)}\right)^{\top}\boldsymbol{w}
+\mathcal{D}=\{\{1,-1\}, \{3,1\}, \{5,-1\}\}.
 $$
 
 <div class="imgbox" style="max-width:600px">
@@ -279,507 +122,624 @@ $$
 
 </div>
 
-**1)** הראו זאת על ידי פתרון הבעיה הדואלית.
-
-**2)** הראו זאת על ידי פתרון הבעיה הפרימאלית.
+נרצה להשתמש במסווגים לינארים מסוג $\tilde{h}(x)=\pm\text{sign}(x-b)$ וב AdaBoost בכדי לבנות מסווג. רשמו את ארבעת האיטרציות הראשונות של האלגוריתם ואת החזאי המתקבל אחרי כל צעד. הניחו כי: $b\in\{0, 2, 4\}$.
 
 ### פתרון 11.1
 
-#### 1)
-
-הבעיה הדואלית הינה:
+נאתחל את וקטור המשקלים:
 
 $$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
+\boldsymbol{w}^{(0)}=\left[\tfrac{1}{3},\tfrac{1}{3},\tfrac{1}{3}\right]^{\top}
 $$
 
-נניח בלי הגבלת הכלליות ש $y^{(1)}=1$ ו $y^{(2)}=-1$.
+#### צעד 1
 
-נסתכל על האילוץ בשורה האחרונה:
-
-$$
-\begin{aligned}
-\sum_{i=1}^2\alpha_i y^{(i)}=0\\
-\Leftrightarrow\alpha_1-\alpha_2=0\\
-\Leftrightarrow\alpha_1=\alpha_2=\alpha
-\end{aligned}
-$$
-
-מכאן שהמשתנה היחד בביעה הינו $\alpha$. בעיית האופטימיזציה (ללא האילוצים) תהיה:
+נבחר מבין המסווגים הנתונים את המסווג אשר ממזער את ה objective שהוא ה misclassification rate הממושקל.
 
 $$
-\begin{aligned}
-\alpha
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\sum_{i,j}y^{(i)}y^{(j)}\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad &\alpha\geq0\\
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\left(
-  \lVert\boldsymbol{x}^{(1)}\rVert_2^2
-  -\boldsymbol{x}^{(1)\top}\boldsymbol{x}^{(2)}
-  -\boldsymbol{x}^{(2)\top}\boldsymbol{x}^{(1)}
-  +\lVert\boldsymbol{x}^{(2)}\rVert_2^2
-  \right)\\
-\text{s.t.}\quad &\alpha\geq0\\
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2\\
-\text{s.t.}\quad &\alpha\geq0\\
-\end{aligned}
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}
 $$
 
-ניתן לפתור את הבעיה על ידי גזירה והשוואה ל0:
+נבחן את ארבעת הערכים האפשריים של $b$:
 
-$$
-\begin{aligned}
-&\frac{d}{d\alpha}2\alpha-\frac{\alpha^2}{2}\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2=0\\
-\Leftrightarrow&2=\alpha\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2\\
-\Leftrightarrow&\alpha=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\\
-\end{aligned}
-$$
+##### $b=0$
 
-את $\boldsymbol{w}$ נמצא על ידי:
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
 
-$$
-\boldsymbol{w}
-=\sum_i\alpha_iy^{(i)}\boldsymbol{x}^{(i)}
-=\alpha(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})
-=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right)
-$$
+<div class="imgbox" style="max-width:600px">
 
-את $b$ מוצאים על ידי בחירת support vector אחד מתוך המשוואה $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$. נסתכל על הנקודה הראשונה:
-
-$$
-\begin{aligned}
-&y^{(1)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b\right)=1\\
-\Leftrightarrow&\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b=1\\
-\Leftrightarrow&b=1-\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}
-=\frac{\boldsymbol{w}^{\top}\boldsymbol{w}}{\lVert\boldsymbol{w}\rVert_2^2}-\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}
-=\boldsymbol{w}^{\top}\left(\frac{\boldsymbol{w}}{\lVert\boldsymbol{w}\rVert_2^2}-\boldsymbol{x}^{(1)}\right)\\
-\Leftrightarrow&b=\boldsymbol{w}^{\top}\left(\frac{1}{2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right)-\boldsymbol{x}^{(1)}\right)\\
-\Leftrightarrow&b=-\frac{1}{2}\left(\boldsymbol{x}^{(1)}+\boldsymbol{x}^{(2)}\right)^{\top}\boldsymbol{w}
-\end{aligned}
-$$
-
-#### 2)
-
-הבעיה הפרימלית הינה:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*=
-\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1\quad\forall i
-\end{aligned}
-$$
-
-במקרה שבו יש רק שתי נקודות אחת מכל מחלקה שניהם בהכרח יהיו support vectors ויקיימו $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$. נניח בלי הגבלת הכלליות ש $y^{(1)}=1$ ו $y^{(2)}=2$, שני האילוצים שהנקודות אלו מגדירות הם:
-
-$$
-\begin{aligned}
-&\begin{cases}
-    y^{(1)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b\right)=1\\
-    y^{(2)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(2)}+b\right)=1
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-    \left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b\right)=1\\
-    -\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(2)}+b\right)=1
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-    \boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b=1\\
-    \boldsymbol{w}^{\top}\boldsymbol{x}^{(2)}+b=-1
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-    b=-\frac{1}{2}\left(\boldsymbol{x}^{(1)}+\boldsymbol{x}^{(2)}\right)^{\top}\boldsymbol{w}\\
-    \boldsymbol{w}^{\top}(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})=2
-\end{cases}\\
-\end{aligned}
-$$
-
-נוכל להשתמש באילוץ השני ולכתוב בעזרתו את בעיית האופטימיזציה רק על $\boldsymbol{w}$:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^*=
-\underset{\boldsymbol{w}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&\boldsymbol{w}^{\top}(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})=2
-\end{aligned}
-$$
-
-בעיה זו מחפשת את ה $\boldsymbol{w}$ בעל האורך המינימאלי כך שהמכפלה הוקטורית שלו עם $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ היא 2. הוקטור הזה יהיה וקטור בכיוון של $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ ובאורך של $2/\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2$ ולכן $\boldsymbol{w}$ הינו:
-
-$$
-\boldsymbol{w}
-=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right)
-$$
-
-## תרגיל 11.2 - Hard SVM
-
-נתון המדגם הבא:
-
-<div dir="ltr">
-
-| .            | 1  | 2  | 3  | 4  | 5  | 6  |
-| ------------ | -- | -- | -- | -- | -- | -- |
-| $\text{y}$   | -1 | -1 | -1 | 1  | 1  | 1  |
-| $\text{x}_1$ | 1  | 1  | 4  | 6  | 7  | 10 |
-| $\text{x}_2$ | 6  | 10 | 11 | 1  | 6  | 4  |
+![](./assets/ex_11_1_b_0.png)
 
 </div>
 
-<div class="imgbox" style="max-width:500px">
+חזאי זה יטעה רק על הנקודה השניה $i=2$ ולכן נקבל:
 
-![](./assets/ex_11_2.png)
+$$
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\tfrac{1}{3}
+$$
+
+##### $b=2$
+
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=\text{sign}(x-2)$ (עם סימון חיובי) בכדי מזער את misclassification rate.
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/ex_11_1_b_2.png)
 
 </div>
 
-**1)** מצא את מסווג ה soft SVM המתאים למדגם זה. מי הם וקטורי התמיכה?
+חזאי זה יטעה רק על הנקודה השלישית $i=3$ ולכן נקבל:
 
-**2)** מבלי לפתור את הבעיה הדואלית. אלו ערכים של $\{\alpha_i\}$ בהכרח יתאפסו?
+$$
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\tfrac{1}{3}
+$$
 
-**3)** מהו הרוחב של ה margin של הפתרון?
+##### $b=3$
+
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x-4)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/ex_11_1_b_4.png)
+
+</div>
+
+חזאי זה יטעה רק על הנקודה השלישית $i=1$ ולכן נקבל:
+
+$$
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\tfrac{1}{3}
+$$
+
+מכיוון שכל שלושת החזאים מניבים את אותו objective נבחר את אחד מהם באקראי. נבחר אם כן את המסווג הראשון של האלגוריתם להיות $\tilde{h}_1=-\text{sign}(x)$.
+
+נחשב את $\alpha_1$:
+
+$$
+\begin{aligned}
+\varepsilon_1&=\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}_1(\boldsymbol{x}^{(i)})\}=\frac{1}{3}\\
+\alpha_1&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_1}{\varepsilon_1}\right)=\frac{1}{2}\ln(2)=0.347
+\end{aligned}
+$$
+
+נעדכן את וקטור המשקלים:
+
+$$
+\tilde{\boldsymbol{w}}^{(1)}
+=\begin{bmatrix}
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)
+\end{bmatrix}
+=\frac{1}{3}\begin{bmatrix}
+    \exp\left(-\frac{1}{2}\ln(2)\cdot1\right)\\
+    \exp\left(-\frac{1}{2}\ln(2)\cdot(-1)\right)\\
+    \exp\left(-\frac{1}{2}\ln(2)\cdot1\right)
+\end{bmatrix}
+=\frac{1}{3}\begin{bmatrix}
+    2^{-\frac{1}{2}}\\
+    2^{\frac{1}{2}}\\
+    2^{-\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{3\sqrt{2}}\begin{bmatrix}
+    1\\
+    2\\
+    1
+\end{bmatrix}
+$$
+
+אחרי הנרמול נקבל:
+
+$$
+\boldsymbol{w}^{(1)}
+=\frac{1}{4}\begin{bmatrix}
+    1\\
+    2\\
+    1
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)\right)\\
+&=\text{sign}\left(-0.347\text{sign}(x)\right)\\
+&=\begin{cases}
+\text{sign}(0.347)&x<0\\
+\text{sign}(-0.347)&0<x
+\end{cases}\\
+&=\begin{cases}
+1&x<0\\
+-1&0<x\\
+\end{cases}
+\end{aligned}
+$$
+
+#### צעד 2
+
+נמצא את החזאי האופטימאלי:
+
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל:
+
+    $$
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\frac{2}{4}
+    $$
+
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל:
+
+    $$
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\frac{1}{4}
+    $$
+
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל:
+
+    $$
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\frac{1}{4}
+    $$
+
+המסווג השני והשלישי נותנים את אותם הביצועים נבחר באופן אקראי את המסווג השני $\tilde{h}_2=\text{sign}(x-2)$.
+
+נחשב את $\alpha_2$:
+
+$$
+\begin{aligned}
+\varepsilon_2&=\frac{1}{4}\\
+\alpha_2&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_2}{\varepsilon_2}\right)=\frac{1}{2}\ln(3)=0.549
+\end{aligned}
+$$
+
+נעדכן את וקטור המשקלים:
+
+$$
+\tilde{\boldsymbol{w}}^{(2)}
+=\frac{1}{4}\begin{bmatrix}
+    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
+    2\exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
+    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)
+\end{bmatrix}
+=\begin{bmatrix}
+    \exp\left(-\frac{1}{2}\ln(3)\cdot1\right)\\
+    2\exp\left(-\frac{1}{2}\ln(3)\cdot1\right)\\
+    \exp\left(-\frac{1}{2}\ln(3)\cdot(-1)\right)
+\end{bmatrix}
+=\frac{1}{4}\begin{bmatrix}
+    3^{-\frac{1}{2}}\\
+    2\cdot3^{-\frac{1}{2}}\\
+    3^{\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{4\sqrt{3}}\begin{bmatrix}
+    1\\
+    2\\
+    3
+\end{bmatrix}
+$$
+
+אחרי הנרמול נקבל:
+
+$$
+\boldsymbol{w}^{(2)}
+=\frac{1}{6}\begin{bmatrix}
+    1\\
+    2\\
+    3
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)\right)\\
+&=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)\right)\\
+&=\begin{cases}
+\text{sign}(-0.203)&x<0\\
+\text{sign}(-0.896)&0<x<2\\
+\text{sign}(0.203)&2<x
+\end{cases}\\
+&=\begin{cases}
+-1&x<2\\
+1&2<x\\
+\end{cases}
+\end{aligned}
+$$
+
+#### צעד 3
+
+נמצא את החזאי האופטימאלי:
+
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{6}$
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{6}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{1}{6}$
+
+המסווג השלישי הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_3=-\text{sign}(x-4)$.
+
+נחשב את $\alpha_3$:
+
+$$
+\begin{aligned}
+\varepsilon_3&=\frac{1}{6}\\
+\alpha_3&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_3}{\varepsilon_3}\right)=\frac{1}{2}\ln(5)=0.805
+\end{aligned}
+$$
+
+נעדכן את וקטור המשקלים:
+
+$$
+\tilde{\boldsymbol{w}}^{(3)}
+=\frac{1}{6}\begin{bmatrix}
+    \exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
+    2\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
+    3\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)
+\end{bmatrix}
+=\frac{1}{6}\begin{bmatrix}
+    5^{\frac{1}{2}}\\
+    2\cdot5^{-\frac{1}{2}}\\
+    3\cdot5^{-\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{6\sqrt{5}}\begin{bmatrix}
+    5\\
+    2\\
+    3
+\end{bmatrix}
+$$
+
+אחרי הנרמול נקבל:
+
+$$
+\boldsymbol{w}^{(3)}
+=\frac{1}{10}\begin{bmatrix}
+    5\\
+    2\\
+    3
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 h_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)\right)\\
+&=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
+&=\begin{cases}
+\text{sign}(0.602)&x<0\\
+\text{sign}(-0.091)&0<x<2\\
+\text{sign}(1.007)&2<x<4\\
+\text{sign}(-0.602)&4<x\\
+\end{cases}\\
+&=\begin{cases}
+1&x<0\\
+-1&0<x<2\\
+1&2<x<4\\
+-1&4<x\\
+\end{cases}
+\end{aligned}
+$$
+
+נשים לב שבשלב זה כבר קיבלנו סיווג מושלם
+
+#### צעד 4
+
+נמצא את החזאי האופטימאלי:
+
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{10}$
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{10}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{5}{10}$
+
+המסווג השני הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_4=-\text{sign}(x)$.
+
+נחשב את $\alpha_4$:
+
+$$
+\begin{aligned}
+\varepsilon_4&=\frac{2}{10}\\
+\alpha_4&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_4}{\varepsilon_4}\right)=\frac{1}{2}\ln(4)=0.693
+\end{aligned}
+$$
+
+נעדכן את וקטור המשקלים:
+
+$$
+\tilde{\boldsymbol{w}}^{(4)}
+=\frac{1}{10}\begin{bmatrix}
+    5\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
+    2\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
+    3\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)
+\end{bmatrix}
+=\frac{1}{10}\begin{bmatrix}
+    5\cdot4^{-\frac{1}{2}}\\
+    2\cdot4^{\frac{1}{2}}\\
+    3\cdot4^{-\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{20}\begin{bmatrix}
+    5\\
+    8\\
+    3
+\end{bmatrix}
+$$
+
+אחרי הנרמול נקבל:
+
+$$
+\boldsymbol{w}^{(4)}
+=\frac{1}{16}\begin{bmatrix}
+    5\\
+    8\\
+    3
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)+\alpha_4 \tilde{h}_4(x)\right)\\
+&=\text{sign}\left(-1.04\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
+&=\begin{cases}
+\text{sign}(1.295)&x<0\\
+\text{sign}(-0.784)&0<x<2\\
+\text{sign}(0.314)&2<x<4\\
+\text{sign}(-1.295)&4<x\\
+\end{cases}\\
+&=\begin{cases}
+1&x<0\\
+-1&0<x<2\\
+1&2<x<4\\
+-1&4<x\\
+\end{cases}
+\end{aligned}
+$$
+
+הסיווג אומנם לא השתנה, אך ככל שנריץ עוד צעדים של האלגוריתם הוא ימשיך לנסות למזער את $\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)$. במקרים רבים כאשר נמשיך להריץ את האלגוריתם יכולת ההכללה של האלגוריתם תמשיך להשתפר גם אחרי שהאלגוריתם מתכנס לסיווג מושלם על ה train set. (זה לא יקרה במקרה המנוון הזה).
+
+## תרגיל 11.2 - שאלות תיאורטיות
+
+מלבד סעיפים 3 ו 4 שתלויים אחד בשני, הסעיפים הבאות לא תלויים אחד בשני.
+
+**1)** מדוע נעדיף ב AdaBoost להשתמש במסווגים בעלי יכולת ביטוי חלשה? לדוגמא מדוע נעדיף להשתמש בעצים בעומק 1 מאשר עצים מאד עמוקים?
+
+**2)** נניח כי בעבור מדגם כל שהוא בגודל $N$, מובטח לנו שבאלגוריתם ה AdaBoost נוכל תמיד למצוא מסווג כזה אשר יתן לנו שגיאת misclassification rate קטנה מ $\tfrac{1}{2}-\gamma$. מצאו חסם עליון על כמות הצעדים של AdaBoost שיש לבצע בכדי לקבל סיווג מושלם.
+
+**רמז**: מהי השגיאת ה misclassification rate (הלא ממושקל) במצב בו המסווג טועה רק על דגימה אחת?
+
+**3)** הראו שאם באלגוריתם AdaBoost ננסה להשתמש באותו המסווג בשני צעדים רצופים בצעד השני נקבל misclassification rate ממושקל ששווה לחצי.
+
+הדרכה (תחת הסימונים שמופיעים בתחילת התרגול)
+
+1. הראו ש: $\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}$.
+2. הראו שקבוע הנרמול של המשקלים נתון על ידי: $\sum_{i=1}^N\tilde{w}_i^{(t)}=2\sqrt{\varepsilon_t(1-\varepsilon_t)}$.
+3. חשבו את ה misclassification rate הממושקל עם משקלים $\boldsymbol{w}^{t}$ והחזאי $\tilde{h}_t$ (מהצעד ה $t$). עשו זאת על ידי הצבה של $w_i^{(t)}$ ושל קבוע הנרמול שלו.
 
 ### פתרון 11.2
 
 #### 1)
 
-בעיית האופטימיזציה הפרימאלית אותה נרצה לפתור הינה:
+AdaBoost מגדיל את ההתאמה של חזאי למדגם על ידי בניית קומבינציה של חזאים. האלגוריתם מקטין את ה underfitting על חשבון ה overfitting. אם נתחיל אם ניקח מודלים בעלי יכולת ביטוי גדולה מידי המודלים יעשו overfitting ושאותו האלגוריתם לא יוכל להקטין.
 
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*=
-\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1\quad\forall i
-\end{aligned}
-$$
-
-באופן כללי לפתור בעיות מסוג זה באופן ידני הוא קשה, אך בעבור מקרים פשוטים נוכל לפתור זאת תוך שימוש בעיקרון הבא:
-
-*במידה ומצאנו את הפיתרון האופטימאלי על תת מדגם מתוך המדגם המלא, ומתקיים שבעבור הפתרון שמצאנו, הנקודות שאינם חלק מתת המדגם נמצאות מחוץ ל margin, אז הפתרון הוא בהכרח הפתרון האופטימאלי בעבור המדגם כולו.*
-
-(עקרון זה נכון בגלל העבדה שהוספה של אילוצים לבעיית מינימיזציה יכולה רק להגדיל את ה objective המינימאלי).
-
-המשמעות של עיקרון זה הינה שנוכל לנחש מי הם ה support vectors ולפתור את הבעיה רק בעבור נקודות אלו תוך התעלמות משאר הנקודות. לאחר שנפתור את הבעיה על הנקודות שניחשנו יהיה עלינו לבדוק אם שאר נקודות במדגם מחוץ ל margin. אם אכן שאר הנקודות מחוץ ל margin אז פתרנו את הבעיה ואם לאף אז עלינו לנחש נקודות אחרות. בעבור ה support vectors האילוצים של $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1$ הופכים להיות איצולי שיוון שאיתם הרבה יותר קל לעבוד.
-
-ננסה לנחש מהם ה support verctors. נתחיל ב 0 ונגדיל בהדרגה את כמות ה support vectors.
-
-##### <span dir="ltr">0 or 1 Support Vectors</span>
-
-באופן כללי בעבור מדגם "נורמלי" אשר מכיל נקודות משני המחלקות שאותם יש לסווג, מקרים אלו לא יכול להתקיים.
-
-(באופן תיאורטי במקרה המוונן שבו המדגם מכיל רק תוויות מסוג אחד אז ניתן להגדיר את בצורות שונות את כמות ה support vectors, אך מקרים אלו לא מאד רלוונטיים)
-
-##### <span dir="ltr">2 Support Vectors</span>
-
-על פי התוצאה של התרגיל הקודם אנו יודעים שבעבור שני support vectors שמישור ההפרדה יעבור בדיוק במרכז בין 2 הנקודות, יהיה ניצב לוקטור המחבר את שתי הנקודות והשוליים של ה margin יעברו דרך הנקודות. אם נסתכל על המדגם וננסה לחפש 2 נקודות שיכולות להיות support vectors נראה שכל בחירה של זוג נקודות יצור איזור של margin שמכיל נקודה אחרת ולכן לא מקיים את האילוצים. לכן הפתרון לא יכול להכיל רק שני support vectors.
-
-<div class="imgbox" style="max-width:900px">
-
-![](./assets/ex_11_2_2_sv.png)
-
-</div>
-
-##### <span dir="ltr">3 Support Vectors</span>
-
-ישנם שתי שלשות שיתכן שיהיו ה support vectors של הפתרון:
-
-- $\{1,3,5\}$
-- $\{3,4,5\}$
-
-בעבור מדגם הכולל את $\{3,4,5\}$ ה support vectors יהיו הנקודות 3 ו 5 וכבר ראינו כי נקודות אלו יוצרות פתרון שלא מקיים את האילוצים. לעומת זאת השלשה של $\{1,3,5\}$ מגדירה איזור margin שאינו מכיל נקודות אחרות ולכן מקיים את האילוצים:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/ex_11_2_3_sv.png)
-
-</div>
-
-לכן נקודות אלו יהיו שלושת ה support vectors שיגדיר את הפתרון לבעיה. נחשב את הפתרון המתקבל משלושת הנקודות האלה.
-
-בעבור שלוש support vectors נקבל מתוך האילוצים 3 משוואות ב3 נעלמים. בעבור הנקודות $\{1,3,5\}$ משוואות אלו יהיו:
-
-$$
-\begin{aligned}
-\begin{cases}
--\left((1,6)\boldsymbol{w}+b\right)=1\\
--\left((4,11)\boldsymbol{w}+b\right)=1\\
-\left((7,6)\boldsymbol{w}+b\right)=1
-\end{cases}\\
-\Leftrightarrow\begin{cases}
-w_1+6w_2+b=-1\\
-4w_1+11w_2+b=-1\\
-7w_1+6w_2+b=1
-\end{cases}
-\end{aligned}
-$$
-
-הפתרון של מערכת המשוואות הזו הינה $\boldsymbol{w}=\frac{1}{15}(5,-3)^{\top}$ ו $b=-\frac{2}{15}$
+בפועל מה שיקרה עם ניקח מודלים בעלי יכולת ביטוי גדולה הוא שנמצא בצעד הראשון מודל שיסווג בצורה טובה את המדגם (אך גם כנראה יעשה הרבה overfitting) לו הוא יתן את מרבית המשקל.
 
 #### 2)
 
-אנו יודעים כי בעבור נקודת שאינם support vectors $\alpha_i$ בהכרח יתאפס. בבעיה זו הנקודות שאינם support vectors הם $\{2,4,6\}$ ולכן $\alpha_2=\alpha_4=\alpha_6=6$.
+בעבור מדגם בגודל $N$ וחזאי עם שגיאת חיזוי אחת על המדגם נקבל שגיאת misclassification rate של $\frac{1}{N}$. נמצא בעזרת החסם את כמות הצעדים שיש לעשות בכדי להגיע לשגיאה קטנה מזו. על פי החסם על השגיאה של AdaBoost אנו יודעים כי:
+
+$$
+\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
+\leq
+\exp\left(-2\sum_{t=1}^T\gamma^2\right)
+=\exp\left(-2T\gamma^2\right)
+$$
+
+נמצא את מספר הצעדים המינימאלי $T$ אשר מקיים:
+נדרוש ש:
+
+$$
+\begin{aligned}
+\exp\left(-2T\gamma^2\right)&\leq\frac{1}{N}\\
+\Leftrightarrow -2T\gamma^2&\leq\ln\left(\frac{1}{N}\right)\\
+\Leftrightarrow T&\geq\frac{1}{2\gamma^2}\ln(N)
+\end{aligned}
+$$
+
+מכאן שבעבור $T=\left\lceil\frac{1}{2\gamma^2}\ln(N)\right\rceil+1$ מובטח לנו שנקבל שגיאת misclassification rate קטנה מ $\frac{1}{N}$, זאת אומרת שיש אפס שגיאות סיווג.
 
 #### 3)
 
-ה margin תלוי בגודל של הוקטור $\boldsymbol{w}$ והוא שווה ל:
-
-$$
-\frac{2}{\lVert\boldsymbol{w}\rVert}=\frac{2\cdot15}{\sqrt{5^2+3^2}}=5.145
-$$
-
-## תרגיל 11.3 - גרעין גאוסי
-
-נתון מדגם המכיל 2 נקודות אחת מכל מחלקה:
+נפעל על פי ההדרכה. נתחיל עם השלב הראשון. נשתמש בעובדה ש $\alpha_t=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)$ ונראה ש:
 
 $$
 \begin{aligned}
-&x^{(1)}=(1,1)^{\top},\quad & y^{(1)}=+1 \\
-&x^{(2)}=(-1,-1)^{\top},\quad &y^{(2)}=-1 \\
+\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
+&=\exp\left(-\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+&=\exp\left(\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)\right)^{-\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
+&=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}
 \end{aligned}
 $$
 
-חשבו את המסווג המתקבל מ soft SVM עם בגרעין גאוסי מהצורה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert^2\right)$.
-
-### פתרון 11.3
-
-הבעיה הדואלית עם הגרעין הגאוסי הינה:
+נמשיך ונחשב את קבוע הנרמול:
 
 $$
 \begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_jK(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)})\\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
+\sum_{i=1}^N\tilde{w}_i^{(t)}
+&=\sum_{i=1}^N w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\left(I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)\\
+&=
+  \left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}
+  +\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{-\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}\left(1-I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(
+    \underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}
+    }_{=1}
+    -\underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
+    }_{=\varepsilon_t}
+  \right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}
+    \underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
+    }_{=\varepsilon_t}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(1-\varepsilon_t\right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\varepsilon_t\\
+&=2\sqrt{\varepsilon_t(1-\varepsilon_t)}
 \end{aligned}
 $$
 
-בדומה לתרגיל הראשון נקבל ש:
-
-$$
-\alpha_1=\alpha_2=\alpha
-$$
-
-נחשב את הערכים של $K(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)})$:
+נחשב את ה misclassification rate הממושקל $\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}$. נציב את ההגדרה של $w_i^{(t)}$:
 
 $$
 \begin{aligned}
-K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})=\exp(0)=1\\
-K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(2)})=\exp(0)=1\\
-K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)})=\exp(-(2^2+2^2))=e^{-8}
+\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
+&=\sum_{i=1}^N \frac{\tilde{w}_i^{(t)}}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\frac{\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\underbrace{\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}}_{=\varepsilon_t}\\
+&=\frac{\varepsilon_t}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\exp\left(\alpha_t\right)\\
+&=\frac{1}{2}\sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\\
+&=\frac{1}{2}
 \end{aligned}
 $$
 
-בעיית האופטימיזציה הינה:
+שגיאת misclassification rate של חצי היא שקולה להטלת מטבע. מכאן שבחירה של אותו המסווג פעמים ברצף לא תשפר את החיזוי ולכן אין טעם במהלך הריצה של האלגוריתם לעשות כן.
 
-$$
-\begin{aligned}
-\alpha^*
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\left(
-  K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})
-  -2K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)})
-  +K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(2)})
-\right)\\
-\text{s.t.}\quad &\alpha_i\geq0\quad\forall i\\
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\alpha^2(1-e^{-8})\\
-\text{s.t.}\quad &\alpha_i\geq0\quad\forall i\\
-\end{aligned}
-$$
-
-נגזור ונשווה ל-0:
-
-$$
-\begin{aligned}
-&\frac{d}{d\alpha}2\alpha-\alpha^2(1-e^{-8})=0\\
-\Leftrightarrow&1=\alpha(1-e^{-8})\\
-\Leftrightarrow&\alpha=\frac{2}{1-e^{-8}}
-\end{aligned}
-$$
-
-הוקטור $\boldsymbol{w}$ נתון על ידי: $\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})$. נכתוב את הביטוי $\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})$ בעבור נקודה כל שהיא $\boldsymbol{x}$:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})
-&=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})^{\top}\Phi(\boldsymbol{x})\\
-&=\sum_i\alpha_iy^{(i)}K(\boldsymbol{x}^{(i)},\boldsymbol{x})\\
-&=\frac{1}{1-e^{-4}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)
-\end{aligned}
-$$
-
-נחשב את $b$ על ידי שימוש בנקודה הראשונה:
-
-$$
-\begin{aligned}
-1&=y^{(1)}\left(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})+b\right)\\
-\Leftrightarrow b&=1-\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})\\
-\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})-K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(1)})\right)\\
-\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(1-e^{-4}\right)=0
-\end{aligned}
-$$
-
-המסווג יהיה:
-
-$$
-\begin{aligned}
-h(\boldsymbol{x})
-&=\text{sign}(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}\left(\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)\right)\\
-&=\text{sign}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)\\
-&=\text{sign}\left(
-  \exp\left(-\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}\rVert^2\right)
-  -\exp\left(-\lVert\boldsymbol{x}^{(2)}-\boldsymbol{x}\rVert^2\right)
-\right)\\
-&=\text{sign}\left(
-  \lVert\boldsymbol{x}^{(2)}-\boldsymbol{x}\rVert^2
-  -\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}\rVert^2
-\right)\\
-&=\text{sign}\left((x_1+1)^2+(x_2+1)^2-(x_1-1)^2-(x_2-1)^2\right)\\
-&=\text{sign}\left(2x_1+2x_2\right)\\
-&=\text{sign}\left(x_1+x_2\right)\\
-\end{aligned}
-$$
-
-## חלק מעשי: זיהוי מין הדובר
+## חלק מעשי - הטיטניק
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
+<div class="imgbox" style="max-width:800px">
 
-בחלק זה, ננסה להשתמש ב- SVM כדי לזהות את מינו של הדובר באמצעות קולו. מוטיבציה למערכת כזאת יכולה להיות עוזר וירטואלי שרוצה לפנות לדובר לפי מינו. הרחבה לניסיון זה יכולה להיות זיהוי דובר על סמך קולו וכו'.
+![](../tutorial05/assets/titanic.jpg)
 
-הרעיון וה- DATA נלקחו מ- Dataset והערכת ביצועים של קורי בקר, אשר נמצאים [באתר הבא](http://www.primaryobjects.com/2016/06/22/identifying-the-gender-of-a-voice-using-machine-learning/). בפרוייקט זה נאספו 3168 דגימות קול מתוייגות מהמקורות הבאים:
+</div>
 
-- [The Harvard-Haskins Database of Regularly-Timed Speech](http://www.nsi.edu/~ani/download.html)
-- [Telecommunications & Signal Processing Laboratory (TSP) Speech Database at McGill University](http://www-mmsp.ece.mcgill.ca/Documents../Data/index.html)
-- [VoxForge Speech Corpus](http://www.repository.voxforge1.org/downloads/SpeechCorpus/Trunk/Audio/Main/8kHz_16bit/)
-- [Festvox CMU_ARCTIC Speech Database at Carnegie Mellon University](http://festvox.org/cmu_arctic/)
-
-כל רצועת קול עברה עיבוד באמצעות כלי בשם [WarbleR](https://cran.r-project.org/web/packages/warbleR/warbleR.pdf) בכדי לייצר 20 Features לכל דגימה:
+נחזור לבעיה מהתרגול על עצי החלטה של חיזוי אלו מהנוסעים על ספינת הטיטניק שרדו על פי הנתונים שלהם ברישמת הנוסעים. המדגם נראה כך:
 
 <div dir="ltr">
 
-- **label**: The label of each track: male/female
-- **meanfreq**: mean frequency (in kHz)
-- **sd**: standard deviation of frequency
-- **median**: median frequency (in kHz)
-- **Q25**: first quantile (in kHz)
-- **Q75**: third quantile (in kHz)
-- **IQR**: interquantile range (in kHz)
-- **skew**: skewness (see note in specprop description)
-- **kurt**: kurtosis (see note in specprop description)
-- **sp.ent**: spectral entropy
-- **sfm**: spectral flatness
-- **mode**: mode frequency
-- **centroid**: frequency centroid (see specprop)
-- **meanfun**: average of fundamental frequency measured across acoustic signal
-- **minfun**: minimum fundamental frequency measured across acoustic signal
-- **maxfun**: maximum fundamental frequency measured across acoustic signal
-- **meandom**: average of dominant frequency measured across acoustic signal
-- **mindom**: minimum of dominant frequency measured across acoustic signal
-- **maxdom**: maximum of dominant frequency measured across acoustic signal
-- **dfrange**: range of dominant frequency measured across acoustic signal
-- **modindx**: modulation index. Calculated as the accumulated absolute difference between
+|    |   pclass |   survived | name                                            | sex    |   age |   sibsp |   parch | ticket   |     fare | cabin   | embarked   | boat   |   body | home.dest                       |
+|---:|---------:|-----------:|:------------------------------------------------|:-------|------:|--------:|--------:|:---------|---------:|:--------|:-----------|:-------|-------:|:--------------------------------|
+|  0 |        1 |          1 | Allen, Miss. Elisabeth Walton                   | female |    29 |       0 |       0 | 24160    | 211.338  | B5      | S          | 2      |    nan | St Louis, MO                    |
+|  1 |        1 |          0 | Allison, Miss. Helen Loraine                    | female |     2 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    nan | Montreal, PQ / Chesterville, ON |
+|  2 |        1 |          0 | Allison, Mr. Hudson Joshua Creighton            | male   |    30 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    135 | Montreal, PQ / Chesterville, ON |
+|  3 |        1 |          0 | Allison, Mrs. Hudson J C (Bessie Waldo Daniels) | female |    25 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    nan | Montreal, PQ / Chesterville, ON |
+|  4 |        1 |          1 | Anderson, Mr. Harry                             | male   |    48 |       0 |       0 | 19952    |  26.55   | E12     | S          | 3      |    nan | New York, NY                    |
+|  5 |        1 |          1 | Andrews, Miss. Kornelia Theodosia               | female |    63 |       1 |       0 | 13502    |  77.9583 | D7      | S          | 10     |    nan | Hudson, NY                      |
+|  6 |        1 |          0 | Andrews, Mr. Thomas Jr                          | male   |    39 |       0 |       0 | 112050   |   0      | A36     | S          | nan    |    nan | Belfast, NI                     |
+|  7 |        1 |          1 | Appleton, Mrs. Edward Dale (Charlotte Lamson)   | female |    53 |       2 |       0 | 11769    |  51.4792 | C101    | S          | D      |    nan | Bayside, Queens, NY             |
+|  8 |        1 |          0 | Artagaveytia, Mr. Ramon                         | male   |    71 |       0 |       0 | PC 17609 |  49.5042 | nan     | C          | nan    |     22 | Montevideo, Uruguay             |
+|  9 |        1 |          0 | Astor, Col. John Jacob                          | male   |    47 |       1 |       0 | PC 17757 | 227.525  | C62 C64 | C          | nan    |    124 | New York, NY                    |
 
 </div>
 
-נציג מספר עמודות ושורות מן המדגם:
+### השדות
 
-<div dir="ltr">
+בדומה למקרה שלהעצי החלטה נשתמש בשדות האים:
 
-|    | label   |   meanfreq |        sd |    median |        Q25 |       Q75 |       IQR |     skew |       kurt |
-|---:|:--------|-----------:|----------:|----------:|-----------:|----------:|----------:|---------:|-----------:|
-|  0 | male    |  0.059781  | 0.0642413 | 0.0320269 | 0.0150715  | 0.0901934 | 0.075122  | 12.8635  |  274.403   |
-|  1 | male    |  0.0660087 | 0.06731   | 0.0402287 | 0.0194139  | 0.0926662 | 0.0732523 | 22.4233  |  634.614   |
-|  2 | male    |  0.0773155 | 0.0838294 | 0.0367185 | 0.00870106 | 0.131908  | 0.123207  | 30.7572  | 1024.93    |
-|  3 | male    |  0.151228  | 0.0721106 | 0.158011  | 0.0965817  | 0.207955  | 0.111374  |  1.23283 |    4.1773  |
-|  4 | male    |  0.13512   | 0.0791461 | 0.124656  | 0.0787202  | 0.206045  | 0.127325  |  1.10117 |    4.33371 |
-|  5 | male    |  0.132786  | 0.0795569 | 0.11909   | 0.067958   | 0.209592  | 0.141634  |  1.93256 |    8.3089  |
-|  6 | male    |  0.150762  | 0.0744632 | 0.160106  | 0.0928989  | 0.205718  | 0.112819  |  1.53064 |    5.9875  |
-|  7 | male    |  0.160514  | 0.0767669 | 0.144337  | 0.110532   | 0.231962  | 0.12143   |  1.39716 |    4.76661 |
-|  8 | male    |  0.142239  | 0.0780185 | 0.138587  | 0.0882063  | 0.208587  | 0.120381  |  1.09975 |    4.07028 |
-|  9 | male    |  0.134329  | 0.08035   | 0.121451  | 0.07558    | 0.201957  | 0.126377  |  1.19037 |    4.78731 |
+- **pclass**: מחלקת הנוסע: 1, 2 או 3
+- **sex**: מין הנוסע
+- **age**: גיל הנוסע
+- **sibsp**: מס' של אחים ובני זוג של כל נוסע על האוניה
+- **parch**: מס' של ילדים או הורים של כל נוסע על האונייה
+- **fare**: המחיר שהנוסע שילם על הכרטיס
+- **embarked**: הנמל בו עלה הנוסע על האונייה (C = Cherbourg; Q = Queenstown; S = Southampton)
+- **survived**: התיוג, האם הנוסע שרד או לא
 
-</div>
+### הפילוג של ערכים
 
-הפילוג של התוויות (גברים נשים) במדגם הינו:
+הפילוג של כל אחד מהשדות בעבור האנשים ששרדו והאנשים שלא:
 
-<div class="imgbox" style="max-width:400px">
+<div class="imgbox" style="max-width:800px">
 
-![](./output/voices_labels_dist.png)
+![](./output/titanic_data_slices.png)
 
 </div>
 
-נציג את ההיסטוגרמה של כל אחד מהמאפיינים בעבור כל אחד מתוויות:
+### סט המסווגים - Stumps
 
-<div class="imgbox" style="max-width:900px">
+המסווגים בהם נשתמש הינם stumps (עצים בעומק 1). למשתנים הקטגוריים נעבור על כל האפשרויות לחלק את הקטגוריות.
 
-![](./output/voices_distributions.png)
+### בניית המסווג
 
-</div>
+אחרי שנחלק את המדגם ל train-validation-test נשתמש ב train בשביל לבנות את הקומבינציה של המסווגים.
 
-### Soft SVM
+גודל ה train set הוא 599. נאתחל את וקטור המשקלים $\boldsymbol{w}^{(0)}$ להיות וקטור שמכיל את הערך $\frac{1}{599}$.
 
-ננסה לפתור את בעיית הסיווג של מין הדובר בעזרת soft SVM. נרצה לשם כך לפתור את בעיית האופטימיזציה הבאה (הבעיה הדואלית):
+### צעד 1
+
+נעבור על כל ה stumps האפשריים ונחפש את זה שממזער את ה misclassification rate הממושקל. נקבל שה stump האופטימאלי הוא זה שמפצל לפי המגדר וחוזה שהנשים שרדו והגברים לא. המסווג שנקבל יהיה:
 
 $$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &0\leq\alpha_i\leq C\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
+h(\boldsymbol{x})=\text{sign}\left(0.598 \cdot I\{\text{sex}=\text{female}\}\right)
 $$
 
-את $\boldsymbol{w}$ נמצא בעזרת:
+הציון על ה train set יהיה: 0.232
 
-$$
-\boldsymbol{w}=\sum_i\alpha_iy_i\boldsymbol{x}_i
-$$
+הציון על ה validation set יהיה: 0.226
 
-את $b$ ניתן לחשב על ידי בחירה של נקודה שעבורה $0<\alpha_i$ ולהשתמש במשוואה: $y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right)=1-\xi_i$.
+### צעד 2
 
-בכדי לפתור את הבעיה נצטרך לבחור פרמטר משקל $C$ אשר קובע את גודל הקנס לנקודות שחורגות מה margin. נתחיל ב $C=1$ ואחר כך ננסה למצוא את הערך המיטבי.
+נצייר את הפילוג את הדגימות ממושקלים על ידי המשקלים המעודכנים:
 
-#### חלוקת המדגם
+<div class="imgbox" style="max-width:800px">
 
-כרגיל נחלק את המדגם ל 80%-20%-20% שהם train-validation-test.
-
-#### נרמול
-
-חשוב לנרמל את העמודות של המדגם לפני הרצת האלגוריתם משתי סיבות עיקריות:
-
-1. המדגם מכיל מאפיינים ביחידות וסקלות שונות.
-2. האלגוריתם מנסה למזער objective אשר מבוסס מרחק, מה שהופך אותו לרגיש לגודל של כל מאפיין. לדוגמא, אם נכפיל מאפיין מסויים בקבוע גדול מ-1 אנו ניתן לו חשיבות יתרה ב objective.
-
-### תוצאות
-
-שנשתמש באופטימיזציה נומרית על מנת למצוא את הפרמטרים של משטח ההפרדה. לשם המחשה נשרטט את הפילוג של ה signed distance של הנקודות בכל אחת מהמחלקות
-
-<div class="imgbox" style="max-width:900px">
-
-![](./output/voices_signed_dist.png)
+![](./output/titanic_adaboost_step_02.png)
 
 </div>
 
-ניתן לראות כי המשטח באמת מצליח לחלק את המדגםעד כדי כמה נקודות שחורגות.
+ה stump האופטימאלי כעת יהיה זה שמפצל לפי המחלקה של הנוסעים וחוזה שנוסעים ממחלקה ראשונה שרדו והאחרים לא. המסווג שנקבל יהיה:
 
-ה miscalssification rate שמתקבל על ה test set הינו 0.028.
+$$
+h(\boldsymbol{x})=\text{sign}\left(
+    0.598 \cdot I\{\text{sex}=\text{female}\}
+    +0.31 \cdot I\{\text{class}=1\}
+\right)
+$$
 
-### מציאת ה $C$ האופטימאלי
-
-נבחן סדרה של ערכי $C$ בתחום $10^{-3}$ עד $10^3$. כרגיל, בעבור כל ערך נבנה מסווג ונבחן אותו על ה validation set. נקבל את התוצאה הבאה:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/voices_selecting_c.png)
+הציון על ה train set וה validation set ישאר זהה.
 
 </div>
 
-קיבלנו כי הערך שאיתו התחלנו של $C=1$ הוא האופטימאלי מבין הערכים שבחרנו.
+### צעד 3
+
+נצייר את הפילוג את הדגימות ממושקלים על ידי המשקלים המעודכנים:
+
+<div class="imgbox" style="max-width:800px">
+
+![](./output/titanic_adaboost_step_03.png)
+
+</div>
+
+ה stump האופטימאלי כעת יהיה זה שמפצל לפי הגיל וחוזה שנוסעים מתחת לגיל 35.5 שרדו. המסווג שנקבל יהיה:
+
+$$
+h(\boldsymbol{x})=\text{sign}\left(
+    0.598 \cdot I\{\text{sex}=\text{female}\}
+    +0.31 \cdot I\{\text{class}=1\}
+    +0.162 \cdot I\{\text{age}<35.5\}
+\right)
+$$
+
+הציון על ה train set וה validation set ישאר זהה.
+
+### המשך
+
+אם נמשיך כך עוד 20 צעדים נקבל את המסווג הכולל אשר נותן את הביצועיים הבאים:
+
+הציון על ה train set יהיה: 0.209
+
+הציון על ה validation set יהיה: 0.201
+
+הציון על ה test set יהיה: 0.189
+
+(זה בהשוואה ל 0.205 שקיבלנו בעזרת עצי החלטה)
 
 </div>
