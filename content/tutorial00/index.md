@@ -440,7 +440,7 @@ x_2x_1 && x_2x_2 && \cdots && x_2x_d \\
 \vdots && \vdots && \ddots && \vdots \\
 x_dx_1 && x_dx_2 && \cdots && x_dx_d
 \end{bmatrix}
-=\bol0symbol{x}\boldsymbol{x}^\top
+=\boldsymbol{x}\boldsymbol{x}^\top
 \end{aligned}
 $$
 
