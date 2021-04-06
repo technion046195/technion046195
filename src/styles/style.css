@@ -455,9 +455,13 @@ a.link-button {
 
 /* Moodle page */
 /* =========== */
-.moodle-data ,
-.moodle-data table {
+.moodle-data{
   font-size: 1.1rem;
+}
+
+.moodle-data table {
+  font-size: 0.8rem;
+  table-layout: auto !important;
 }
 
 /* Notebooks */
