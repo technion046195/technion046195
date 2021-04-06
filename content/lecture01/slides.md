@@ -100,7 +100,7 @@ slides_pdf: true
 <li class="fragment">לרוב נחפש את מודל מתוך אוסף של מודלים מוכרים.</li>
 <li class="fragment">יתכן יותר ממודל אחד מתאים.</li>
 <li class="fragment">נעדיף מודל פשוט על פני מודל מסובך (<a href="https://en.wikipedia.org/wiki/Occam%27s_razor">התער של אוקאם</a>).</li>
-<li class="fragment">מודל יכול להכיל פרמטר שיש לקבוע על פי המספרים <br/>(למשל ה2 וה3 בדוגמא הראשונה).</li>
+<li class="fragment">מודל יכול להכיל פרמטר שיש לקבוע על פי הדוגמאות <br/>(למשל ה2 וה3 בדוגמא הראשונה).</li>
 <li class="fragment">לרוב, ככל שהמודל "מסובך יותר" נצטרך יותר דוגמאות.</li>
 </ul>
 
@@ -330,11 +330,11 @@ $$
 
 </div><div class="imgbox" style="width:225px">
 
-![](./output/drive_prediction_poly_3.png)
+![](./output/drive_prediction_poly_2.png)
 
 </div><div class="imgbox" style="width:225px">
 
-![](./output/drive_prediction_poly_5.png)
+![](./output/drive_prediction_poly_4.png)
 
 </div><div class="imgbox" style="width:225px">
 
@@ -352,7 +352,7 @@ $$
 
 <br/>
 
-מבין האופציות הנ"ל, פולינום מסדר 5 הוא הפשרה הטובה ביותר בין ההתאמה לדוגמאות והידע הקודם.
+מבין האופציות הנ"ל, פולינום מסדר 4 הוא הפשרה הטובה ביותר בין ההתאמה לדוגמאות והידע הקודם.
 
 </section><section>
 
@@ -461,7 +461,7 @@ DeepMind's AlphaStar
 <br/><br/><br/>
 <a href="https://adolos.substack.com/archive?sort=new" target="_blank">
 Nothing but Words by Liam Porr<br/>
-(and OnerAI's GPT-3)
+(and Open AI's GPT-3)
 </a>
 
 </center></section><section><center>
@@ -493,6 +493,11 @@ Nothing but Words by Liam Porr<br/>
 ![](./assets/fake_person4.jpeg)
 
 </div>
+</div>
+
+<br>
+<div style="direction:ltr">
+<a href="https://thispersondoesnotexist.com/" target="_blank">https://thispersondoesnotexist.com/</a>
 </div>
 
 </center></section><section><center>
@@ -628,9 +633,8 @@ Nothing but Words by Liam Porr<br/>
 <br/>
 
 - 13 הרצאות ותרגולים שבועיים.
-- 6 תרגלי בית (5 להגשה) יבש + רטוב. 25% מהציון.
-- מבחן סופי 75% מהציון.
-- (אולי יהיו תרגילי הכנה - רשות).
+- 5 תרגלי בית (4 להגשה) יבש + רטוב. 20% מהציון.
+- מבחן סופי 80% מהציון.
 
 </section><section>
 
@@ -663,10 +667,15 @@ Nothing but Words by Liam Porr<br/>
 
 ## למה בטכניון?
 
+<div style="direction:ltr;text-align:center">
+<a href="http://csrankings.org/#/index?mlmining&world">
 <div class="imgbox" style="max-width:100%">
 
-[![](./assets/csranking.png)CSRenking (2010-2020)](http://csrankings.org/#/index?mlmining&world)
+![](./assets/csranking.png)
 
+</div>
+CSRenking (2010-2020)
+</a>
 </div>
 
 </section><section class="center">
