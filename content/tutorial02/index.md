@@ -393,7 +393,7 @@ $$
 
 <div class="imgbox">
 
-![](./output/ex_3_2_1.png)
+![](./output/ex_2_2_1.png)
 
 </div>
 
@@ -434,7 +434,7 @@ $$
 
 <div class="imgbox">
 
-![](./output/ex_3_2_2.png)
+![](./output/ex_2_2_2.png)
 
 </div>
 
