@@ -22,63 +22,33 @@ slides_pdf: true
 ![](./assets/course_diagram.png)
 
 </div>
-</section><section>
-
-## הגדרות
-
-- $\text{y}$ - ה labels - המשתנה האקראי שאותו אנו מנסים לחזות.
-- $\mathbf{x}$ - ה measuments - הוקטור הארקאי שלפיו מנסים לחזות.
-- $\mathcal{D}=\{\boldsymbol{x}^{(i)}, y^{(i)}\}_{i=0}^N$ - המדגם (dataset).
-- $\hat{y}$ - תוצאת חיזוי כל שהיא.
-- $\hat{y}=h(\boldsymbol{x})$ - פונקציית החיזוי.
-- $C(h)$ - פונקציית המחיר אשר נותנת "ציון" לכל חזאי.
-
-דרך הנפוצה להגדיר את פונקציית המחיר:
-
-$$
-C(h)=R(h)=\mathbb{E}[l(h(\mathbf{x}),y)]
-$$
 
 </section><section>
 
-## החזאי האופטימאלי ו ERM
+## LLS בעבור פולינומים מסדרים שונים
 
-<br/>
+<div style="direction:ltr;
+            text-align:center;
+            align-items: center;
+            display:grid;
+            grid-template-columns: 1fr 1fr">
+<div class="imgbox" style="width:450px" >
 
-$$
-h^*=\underset{h}{\arg\min}\ C(h)\left(=\underset{h}{\arg\min}\ \mathbb{E}[l(h(\mathbf{x}),\text{y})]\right)
-$$
+![](../lecture01/output/drive_prediction_linear.png)
 
-בעיה: תוחלת על פילוג לא ידוע.
+</div><div class="imgbox" style="width:450px">
 
-<br/>
+![](../lecture01/output/drive_prediction_poly_2.png)
 
-פיתרון אפשרי: שימוש ב ERM:
+</div><div class="imgbox" style="width:450px">
 
-$$
-h^*_{\mathcal{D}}=\underset{h}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}^{(i)}),y^{(i)})
-$$
+![](../lecture01/output/drive_prediction_poly_4.png)
 
-</section><section>
+</div><div class="imgbox" style="width:450px">
 
-## שימוש במודל פרמטרי
+![](../lecture01/output/drive_prediction_poly_15.png)
 
-- נגביל את עצמו למשפחה מצומצמת של חזאיים.
-- נשתמש במודל פרמטרי $h(\boldsymbol{x};\boldsymbol{\theta})$.
-- בעיית האופטימיזציה תהיה:
-
-$$
-\boldsymbol{\theta}^*_{\mathcal{D}}=\underset{\boldsymbol{\theta}}{\arg\min}\ \frac{1}{N}\sum_i l(h(\boldsymbol{x}^{(i)};\boldsymbol{\theta}),y^{(i)})
-$$
-
-</section><section>
-
-## בהרצאה זו
-
-- נדון בבעית ה overfitting הנובעת מבחירת החזאי על סמך המדגם.
-- נסביר את החשיבות של השימוש במודל פרמטרי לצורך ההתמודדות עם הבעיה.
-- נציג שיטה נוספת להתמודדות עם הבעיה בשם רגולריזציה.
-
+</div></div>
 </section><section>
 
 ## הכללה (generalization)
@@ -143,7 +113,73 @@ $$
 
 </section><section>
 
-### Overfitting (התאמת יתר)
+## התלות בסדר הפולינום
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_0_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_1_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_2_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_3_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_4_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_5_train_test.png)
+
+</div>
+</div>
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_6_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_7_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_8_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_9_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_10_train_test.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_11_train_test.png)
+
+</div>
+</div>
+
+<div class="imgbox" style="max-width:450px">
+
+![](./output/drive_prediction_train_test.png)
+
+</div>
+
+</section><section>
+
+## Overfitting (התאמת יתר)
 
 > תופעת ה overfitting מתארת את המצב שבו המודל הנלמד לומד מאפיינים מסויימים אשר מופיעים רק במדגם ואינם הם אינם מייצגים את התכונות של הפילוג האמיתי שלפיו מפולגים המשתנים האקראיים אשר מהם נוצר המדגם במדגם. תופעה זו פוגעת ביכולת ההכללה של המודל.
 
@@ -155,7 +191,7 @@ $$
 
 </section><section>
 
-### Overfitting (התאמת יתר)
+## Overfitting (התאמת יתר)
 
 <div class="imgbox" style="max-width:600px;background-color:white">
 
@@ -165,26 +201,13 @@ $$
 
 </section><section>
 
-## דוגמא: overfitting
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/drive_prediction_overfitting.png)
-
-</div>
-
-- Train score (RMSE): 0.66 min
-- Test scroe (RMSE): 103.77 min
-
-</section><section>
-
 ## הגבלת המודל
 
 - חזאי לא מוגבל יכול לקבל כל צורה כל עוד הוא עובר בין הנקודות של המדגם.
 - בכדי לשלוט בצורה שבה הוא מתנהג נוכל להגביל את המרחב שבו אנו מחפשים.
 - נעשה זאת על ידי שימוש במודל פרמטרי.
 
-תזכורת:
+נסמן:
 
 - $h^*(\boldsymbol{x};\boldsymbol{\theta})$: החזאי ה**פרמטרי** האופטימאלי.
 
@@ -202,7 +225,7 @@ $$
 
 </section><section>
 
-### יכולת הביטוי של מודל פרמטרי
+## יכולת הביטוי של מודל פרמטרי
 
 **יכולת הביטוי (expressiveness)** של מודל מתייחסת לגודל של מרחב הפונקציות שאותו יכול המודל פרמטרי מסויים לייצג.
 
@@ -213,6 +236,140 @@ $$
 
 - מצד אחד אנו נרצה מודל עם יכולת ביטוי גבוה על מנת שיוכל לקרב את החזאי האידאלי.
 - מצד שני יכולת יצוג גבוה תאפשר הרבה overfitting.
+
+</section><section>
+
+## Hyper-parameters
+
+Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים בשיטה או במודל הפרמטרי ואך אנו לא מבצעים את האופטימיזציה על-פיהם.
+
+<br/>
+
+דוגמאות:
+
+- סדר הפולינום שבו אנו משתמשים.
+- הפרמטר $\eta$ אשר קובע את גודל הצעד באלגוריתם ה gradient descent.
+- פרמטרים אשר קובעים את המבנה של רשת נוירונים.
+
+</section><section>
+
+## סדר המודל
+
+<br/>
+<br/>
+<br/>
+
+כאשר hyper-parameter מסויים שולט ביכולת הביטוי של המודל הפרמטרי, כדוגמאת המקרה של סדר הפולינום, נכנה פרמטר זה **הסדר של המודל**.
+
+</section><section>
+
+## בחירת hyper-parameters <br/> בעזרת validation set
+
+- hyper-parameters אינם חלק מבעיית האופטימיזציה.
+- אנו צריכים דרך אחרת לקבוע אותם.
+- לרוב לנאלץ לקבוע אותם בעזרת ניסוי וטעיה.
+- לא נוכל להשתמש ב test set לצורך זה.
+- נצטרך לייצר מדגם ניפרד חדש.
+- נפצל עוד את ה train set ל:
+  - train set חדש.
+  - validation set
+
+</section><section>
+
+## שלבי הבחירה של hyper-prameters
+
+- נפצל את ה train set ל train ו validation.
+- נחזור על הפעולות הבאות בעבור ערכים שונים של hyper-parameters:
+  - נבנה את המודל על סמך ה train.
+  - נשערך את ביצועי המודל על הvalidation
+- נבחר את הפרמטרים עם הביצועים הטובים ביותר על ה validation.
+- נאחד בחזרה את ה train וה validation.
+- נבנה את המודל הסופי על סמך ה hyper-parameters שנבחרו.
+
+</section><section>
+
+## דוגמא: פיצול train-validation-test
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_train_val_test.png)
+
+</div>
+
+</section><section>
+
+## התלות בסדר הפולינום
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_0.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_1.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_2.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_3.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_4.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_5.png)
+
+</div>
+</div>
+
+<div class="imgbox" style="max-width:900px;direction:ltr">
+<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_6.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_7.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_8.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_9.png)
+
+</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
+
+![](./output/drive_prediction_k_10.png)
+
+</div>
+</div>
+
+<div class="imgbox" style="max-width:450px">
+
+![](./output/drive_prediction_selecting_order.png)
+
+</div>
+
+</section><section>
+
+## דוגמא: Retrain
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_prediction_final.png)
+
+</div>
+
+- Train score (RMSE): 2.53 min
+- Test scroe (RMSE): 6.88 min
 
 </section><section>
 
@@ -357,140 +514,6 @@ $$
 ![](./assets/bias_variance_tradeoff.png)
 
 </div>
-
-</section><section>
-
-## Hyper-parameters
-
-Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים בשיטה או במודל הפרמטרי ואך אנו לא מבצעים את האופטימיזציה על-פיהם.
-
-<br/>
-
-דוגמאות:
-
-- סדר הפולינום שבו אנו משתמשים.
-- הפרמטר $\eta$ אשר קובע את גודל הצעד באלגוריתם ה gradient descent.
-- פרמטרים אשר קובעים את המבנה של רשת נוירונים.
-
-</section><section>
-
-## סדר המודל
-
-<br/>
-<br/>
-<br/>
-
-כאשר hyper-parameter מסויים שולט ביכולת הביטוי של המודל הפרמטרי, כדוגמאת המקרה של סדר הפולינום, נכנה פרמטר זה **הסדר של המודל**.
-
-</section><section>
-
-## בחירת hyper-parameters <br/> בעזרת validation set
-
-- hyper-parameters אינם חלק מבעיית האופטימיזציה.
-- אנו צריכים דרך אחרת לקבוע אותם.
-- לרוב לנאלץ לקבוע אותם בעזרת ניסוי וטעיה.
-- לא נוכל להשתמש ב test set לצורך זה.
-- נצטרך לייצר מדגם ניפרד חדש.
-- נפצל עוד את ה train set ל:
-  - train set חדש.
-  - validation set
-
-</section><section>
-
-## שלבי הבחירה של hyper-prameters
-
-- נפצל את ה train set ל train ו validation.
-- נחזור על הפעולות הבאות בעבור סטים שונים של hyper-parameters:
-  - נבנה את המודל על סמך ה train.
-  - נשערך את ביצועי המודל על הvalidation
-- נבחר את הפרמטרים עם הביצועים הטובים ביותר על ה validation.
-- נאחד בחזרה את ה train וה validation.
-- נבנה את המודל הסופי על סמך ה hyper-parameters שנבחרו.
-
-</section><section>
-
-## דוגמא: פיצול train-validation-test
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/drive_prediction_train_val_test.png)
-
-</div>
-
-</section><section>
-
-## דוגמא: בחירת סדר המודל
-
-<div class="imgbox" style="max-width:900px;direction:ltr">
-<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_0.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_1.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_2.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_3.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_4.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_5.png)
-
-</div>
-</div>
-
-<div class="imgbox" style="max-width:900px;direction:ltr">
-<div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_6.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_7.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_8.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_9.png)
-
-</div><div class="imgbox no-shadow" style="max-width:150px;display:inline-block;margin:0">
-
-![](./output/drive_prediction_k_10.png)
-
-</div>
-</div>
-
-<div class="imgbox" style="max-width:450px">
-
-![](./output/drive_prediction_selecting_order.png)
-
-</div>
-
-</section><section>
-
-## דוגמא: Retrain
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/drive_prediction_final.png)
-
-</div>
-
-- Train score (RMSE): 2.53 min
-- Test scroe (RMSE): 6.88 min
 
 </section><section>
 
