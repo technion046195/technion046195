@@ -279,7 +279,7 @@ exports.onPostBuild = async () => {
     })
   });
 
-  await printToPDF(pagesToPrintList, 3);
+  await printToPDF(pagesToPrintList);
   
   server.close();
   console.log('Server down')
