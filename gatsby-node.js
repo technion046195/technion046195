@@ -413,7 +413,7 @@ const printToPDF = async (pagesToPrintList, nWorkers=1, continuos=false) => {
     while (true) {
       if (pagesToPrintList.length == 0) {
         if (continuos) {
-          await new Promise(resolve => setTimeout(resolve, 5000))
+          await new Promise(resolve => setTimeout(resolve, 3000))
           continue;
         } else {
           break;
@@ -427,7 +427,7 @@ const printToPDF = async (pagesToPrintList, nWorkers=1, continuos=false) => {
       while(true) {
         try {
           await page.goto(url, { waitUntil: 'networkidle2' });
-          await new Promise(resolve => setTimeout(resolve, 5000))
+          await new Promise(resolve => setTimeout(resolve, 3000))
           if (args.profile == 'slides') {
             await page.pdf({
               width: "9.75in",

@@ -833,7 +833,7 @@ $$
 
 <div class="imgbox" style="max-width:250px">
 
-![](../tutorial03/assets/taxis.jpg)
+![](../tutorial02/assets/taxis.jpg)
 
 </div>
 

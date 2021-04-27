@@ -617,7 +617,7 @@ $$
 
 <div class="imgbox" style="max-width:800px">
 
-![](../tutorial05/assets/titanic.jpg)
+![](../tutorial04/assets/titanic.jpg)
 
 </div>
 
