@@ -15,7 +15,7 @@ var pagesToPrintList = [];
 
 exports.onCreateDevServer = ({ app }) => {
     app.use(express.static('public'));
-    printToPDF(pagesToPrintList, 3, true);
+    printToPDF(pagesToPrintList, 5, true);
 }
 
 exports.onPreInit = async () => {
