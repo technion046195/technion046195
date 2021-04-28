@@ -69,7 +69,10 @@ slides_pdf: true
   - 0 - העסקה לגיטימית.
   - 1 - חשד להונאה.
 
-<div class="fragment">
+</section><section>
+
+### דוגמאות
+
 
 - **מערכת לעיבוד כתב יד (OCR):**
   
@@ -82,7 +85,6 @@ slides_pdf: true
   - 3: c
   - ...
 
-</div>
 
 </section><section>
 
@@ -98,6 +100,12 @@ slides_pdf: true
 
 - לכן, נפוץ להשתמש ב- misclassification rate כפונ' המחיר
 
+</div>
+
+</section><section>
+
+#### Misclassification rate
+
 * פונקציית ה- loss המתאימה:
 
 $$
@@ -107,7 +115,7 @@ $$
 * ה- Risk:
 
 $$
-l(\hat{y},y)=I\{\hat{y}\neq y\}
+l(\hat{y},y)=\mathbb{E} I\{\hat{y}\neq y\}
 $$
 
 החזאי האופטימאלי של הינו זה אשר מחזיר את ה $\text{y}$ הכי סביר:
@@ -115,7 +123,6 @@ $$
 h^*(\boldsymbol{x})=\underset{y}{\arg\max}\ p(y|\mathbf{x}=\boldsymbol{x})
 $$
 
-</div>
 
 </section><section>
 
@@ -326,7 +333,7 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 
 </div><div class="fragment">
 
-*  מקרים שבהם יש במדגם שתי דגימות עם אותו ה $\boldsymbol{x}$ אך $y$ שונה, יהיה ניתן להגיע למדד חוסר הומוגניות 0.
+*  מקרים שבהם יש במדגם שתי דגימות עם אותו ה $\boldsymbol{x}$ אך $y$ שונה, לא ניתן להגיע למדד חוסר הומוגניות 0.
 
 </section><section>
 
