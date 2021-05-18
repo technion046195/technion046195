@@ -175,9 +175,7 @@ exports.createPages = async ({ cache, graphql, actions }) => {
       tasks.push(async () => {
         const src = node.absolutePath;
         const dist = node.fields.code_copy_filename;
-        const cacheKey = `code_to_copy-${src}`;
-        const hash = objectHash({src, dist}) + (await getChecksum(src));
-        await cacheAndRun(cache, cacheKey, hash, async () => {await copyFile({src, dist});})
+        await copyFileCache({src, dist, cache});
       });
     }
   }
@@ -189,9 +187,7 @@ exports.createPages = async ({ cache, graphql, actions }) => {
       tasks.push(async () => {
         const codeFilename = node.absolutePath;
         const codeHTMLFilename = node.fields.code_html_filename;
-        const cacheKey = `code_to_html-${codeHTMLFilename}`;
-        const hash = objectHash({codeFilename, codeHTMLFilename}) + (await getChecksum(codeFilename));
-        await cacheAndRun(cache, cacheKey, hash, async () => {await codeToHTML({codeFilename, codeHTMLFilename});})
+        await codeToHTML({codeFilename, codeHTMLFilename, cache});
       });
     }
   }
@@ -203,34 +199,25 @@ exports.createPages = async ({ cache, graphql, actions }) => {
       tasks.push(async () => {
         const mdFilename = node.fileAbsolutePath;
         const docxFilename = node.fields.docx_filename;
-        const cacheKey = `md_to_docx-${docxFilename}`;
-        const hash = objectHash({mdFilename, docxFilename}) + (await getChecksum(mdFilename));
-        await cacheAndRun(cache, cacheKey, hash, async () => {await mdToDocx({mdFilename, docxFilename});})
+        await mdToDocx({mdFilename, docxFilename, cache});
       });
     }
   }
   await runJobsQueue(tasks, nWorkers=5);
 
-  let args;
   for (const node of data.md_pages.nodes){ 
     if (node.fields != null) {
       if (node.fields.print_pdf_filename != null) {
         const args = {'slug': node.fields.slug, 'pdfFilename': node.fields.print_pdf_filename, 'profile': 'page'};
-        const cacheKey = `print_pdf-${args.pdfFilename}`;
-        const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
-        await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
+        addPageToPrint(args, node.fileAbsolutePath , cache);
       }
       if (node.fields.slides_pdf_filename != null) {
         const args = {'slug': node.fields.slug + '?print-pdf', 'pdfFilename': node.fields.slides_pdf_filename, 'profile': 'slides'};
-        const cacheKey = `print_pdf-${args.pdfFilename}`;
-        const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
-        await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
+        addPageToPrint(args, node.fileAbsolutePath , cache);
       }
       if (node.fields.slides_compact_pdf_filename != null) {
         const args = {'slug': node.fields.slug + '?print-pdf&compact', 'pdfFilename': node.fields.slides_compact_pdf_filename, 'profile': 'slides'};
-        const cacheKey = `print_pdf-${args.pdfFilename}`;
-        const hash = objectHash(args) + (await getChecksum(node.fileAbsolutePath));
-        await cacheAndRun(cache, cacheKey, hash, async () => {await pagesToPrintList.push(args);})
+        addPageToPrint(args, node.fileAbsolutePath , cache);
       }
     }
   }
@@ -304,9 +291,9 @@ const getChecksum = (path) => {
   });
 }
 
-const cacheAndRun = async (cache, key, hash, func) => {
+const cacheAndRun = async (cache, key, hash, force=True, func) => {
   let obj = await cache.get(key);
-  if ((obj == null) || (obj.hash != hash)) {
+  if (force || (obj == null) || (obj.hash != hash)) {
     await func();
     await cache.set(key, {hash})
   }
@@ -333,44 +320,61 @@ const copyFile = async ({src, dist}) => {
   fs.copyFile(src, dist, (err) => {if (err) throw err});
 }
 
+const copyFileCache = async ({src, dist, cache}) => {
+  const cacheKey = `code_to_copy-${src}`;
+  const hash = objectHash({src, dist}) + (await getChecksum(src));
+  const force = !fs.existsSync(dist);
+  await cacheAndRun(cache, cacheKey, hash, force, async () => {await copyFile({src, dist})});
+}
+
 const setJupyterCSS = async () => {
   copyFile({'src': `${__dirname}/src/styles/style.css`, 'dist': `${os.homedir()}/.jupyter/custom/custom.css`});
 }
 
-const codeToHTML = async ({codeFilename, codeHTMLFilename}) => {
+const codeToHTML = async ({codeFilename, codeHTMLFilename, cache}) => {
   console.log(`-> Converting: ${codeFilename} -> ${codeHTMLFilename}`);
-  fs.mkdirSync(path.dirname(codeHTMLFilename), { recursive: true });
-  const cmd_args = [
-    'nbconvert',
-    '--to=html_embed',
-    '--template=classic',
-    '--log-level=WARN',
-    '--output-dir=public',
-    `--output=${codeHTMLFilename}`,
-    codeFilename]
-  await new Promise(resolve => {
-    const run = spawn('jupyter', cmd_args)
-    run.stdout.on('data', (data) => {console.log(`  ${data}`);});
-    run.stderr.on('data', (data) => {console.log(`  !! error: ${data}`);});
-    run.on('close', (code) => {resolve(code);})
-  });
+  const cacheKey = `code_to_html-${codeHTMLFilename}`;
+  const hash = objectHash({codeFilename, codeHTMLFilename}) + (await getChecksum(codeFilename));
+  const force = !fs.existsSync(codeHTMLFilename);
+  await cacheAndRun(cache, cacheKey, hash, force, async () => {
+    fs.mkdirSync(path.dirname(codeHTMLFilename), { recursive: true });
+    const cmd_args = [
+      'nbconvert',
+      '--to=html_embed',
+      '--template=classic',
+      '--log-level=WARN',
+      '--output-dir=public',
+      `--output=${codeHTMLFilename}`,
+      codeFilename]
+    await new Promise(resolve => {
+      const run = spawn('jupyter', cmd_args)
+      run.stdout.on('data', (data) => {console.log(`  ${data}`);});
+      run.stderr.on('data', (data) => {console.log(`  !! error: ${data}`);});
+      run.on('close', (code) => {resolve(code);})
+    });
+  })
 }
 
-const mdToDocx = async ({mdFilename, docxFilename}) => {
+const mdToDocx = async ({mdFilename, docxFilename, cache}) => {
   console.log(`-> Converting: ${mdFilename} -> ${docxFilename}`);
-  fs.mkdirSync(path.dirname(docxFilename), { recursive: true });
-  const cmd_args = [
-    mdFilename,
-    `--resource-path=${path.dirname(mdFilename)}`,
-    '-f', 'markdown+tex_math_dollars',
-    '-t', 'docx',
-    '-o', docxFilename]
-  await new Promise(resolve => {
-    const run = spawn('pandoc', cmd_args)
-    run.stdout.on('data', (data) => {console.log(`  ${data}`);});
-    run.stderr.on('data', (data) => {console.log(`  !! error: ${data}`);});
-    run.on('close', (code) => {resolve(code);})
-  });
+  const cacheKey = `md_to_docx-${docxFilename}`;
+  const hash = objectHash({mdFilename, docxFilename}) + (await getChecksum(mdFilename));
+  const force = !fs.existsSync(docxFilename);
+  await cacheAndRun(cache, cacheKey, hash, force, async () => {
+    fs.mkdirSync(path.dirname(docxFilename), { recursive: true });
+    const cmd_args = [
+      mdFilename,
+      `--resource-path=${path.dirname(mdFilename)}`,
+      '-f', 'markdown+tex_math_dollars',
+      '-t', 'docx',
+      '-o', docxFilename]
+    await new Promise(resolve => {
+      const run = spawn('pandoc', cmd_args)
+      run.stdout.on('data', (data) => {console.log(`  ${data}`);});
+      run.stderr.on('data', (data) => {console.log(`  !! error: ${data}`);});
+      run.on('close', (code) => {resolve(code);})
+    });
+  })
 }
 
 const mdToPDF = async ({mdFilename, pdfFilename}) => {
@@ -394,6 +398,13 @@ const mdToPDF = async ({mdFilename, pdfFilename}) => {
     run.stderr.on('data', (data) => {console.log(`  !! error: ${data}`);});
     run.on('close', (code) => {resolve(code);})
   });
+}
+
+const addPageToPrint = async (args, sourceFilename , cache) => {
+  const cacheKey = `print_pdf-${args.pdfFilename}`;
+  const hash = objectHash(args) + (await getChecksum(sourceFilename));
+  const force = !fs.existsSync(args.pdfFilename);
+  await cacheAndRun(cache, cacheKey, hash, force, async () => {await pagesToPrintList.push(args);})
 }
 
 const printToPDF = async (pagesToPrintList, nWorkers=1, continuos=false) => {
