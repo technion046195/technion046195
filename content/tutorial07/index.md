@@ -646,8 +646,8 @@ $$
 $$
 \boldsymbol{\theta}^*
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-I\{y^{(i)}=0\}\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-+I\{y^{(i)}=1\}\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+I\{y^{(i)}=1\}\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
++I\{y^{(i)}=0\}\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
 $$
 
 נשתמש ב gradient descent על מנת למצוא את הפרמטרים של המודל. בכדי לבחור את גודל הצעד ננסה כמה ערכים שונים ונריץ את האלגוריתם מספר קטן של צעדים (1000) ונבחר את גודל הצעד הגדול ביותר אשר גורם למודל להתכנס. בדוגמא זו נציג את התוצאות בעבור 4 ערכים של גודל הצעד:
