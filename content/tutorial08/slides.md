@@ -1,18 +1,17 @@
 ---
 type: tutorial-slides
-index: 9
+index: 8
 template: slides
 slides_pdf: true
 ---
 
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
-<section>
 
-# תרגול 9 - MLP and Back-propagetion
+# תרגול 8 - MLP and Back-propagetion
 
 <div dir="ltr">
-<a href="/assets/tutorial09_slides.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/tutorial08_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 </section><section>
 
@@ -215,7 +214,7 @@ $$
 
 
 
-## תרגיל 9.1 - Back propagation in MLP
+## תרגיל 8.1 - Back propagation in MLP
 
 נפתור בעיית רגרסיה בעזרת ERM ורשת ה MLP הבאה:
 
@@ -225,7 +224,7 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](../tutorial09/assets/ex9_1.png)
+![](../tutorial08/assets/ex8_1.png)
 
 </div>
 
@@ -241,7 +240,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](../tutorial09/assets/ex9_1.png)
+![](../tutorial08/assets/ex8_1.png)
 
 </div>
 
@@ -490,14 +489,14 @@ $$
 
 
 
-## תרגיל 9.2
+## תרגיל 8.2
 
 **1)** הראו כיצד ניתן לייצג את הפונקציה הבאה בעזרת רשת MLP עם פונקציית אקטיבציה מסוג ReLU.
 
 <div class="imgbox" style="max-width:600px">
 
 
-![](../tutorial09/assets/ex9_3.png)
+![](../tutorial08/assets/ex8_3.png)
 
 </div>
 
@@ -519,7 +518,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](../tutorial09/assets/ex9_3_1.png)
+![](../tutorial08/assets/ex8_3_1.png)
 
 </div>
 
@@ -603,7 +602,7 @@ $$
 <div class="imgbox" style="max-width:600px">
 
 
-![](../tutorial09/output/breast_cancer_2d_dataset.png)
+![](../tutorial08/output/breast_cancer_2d_dataset.png)
 
 </div>
 
@@ -616,7 +615,7 @@ $$
 <div class="imgbox" style="max-width:600px">
 
 
-![](../tutorial09/assets/example_mlp1.png)
+![](../tutorial08/assets/example_mlp1.png)
 
 </div>
 
@@ -630,7 +629,7 @@ $$
 
 
 
-![](../tutorial09/output/breast_cancer_mlp1_select_eta.png)
+![](../tutorial08/output/breast_cancer_mlp1_select_eta.png)
 
 </div>
 
@@ -644,7 +643,7 @@ $$
 
 
 
-![](../tutorial09/output/breast_cancer_mlp1_train.png)
+![](../tutorial08/output/breast_cancer_mlp1_train.png)
 
 </div>
 
@@ -665,7 +664,7 @@ $$
 
 
 
-![](../tutorial09/output/breast_cancer_mlp1.png)
+![](../tutorial08/output/breast_cancer_mlp1.png)
 
 </div>
 
@@ -677,7 +676,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](../tutorial09/output/breast_cancer_mlp1_no_samples.png)
+![](../tutorial08/output/breast_cancer_mlp1_no_samples.png)
 
 </div>
 
@@ -698,7 +697,7 @@ $$
 <div class="imgbox" style="max-width:600px">
 
 
-![](../tutorial09/assets/example_mlp2.png)
+![](../tutorial08/assets/example_mlp2.png)
 
 </div>
 
@@ -713,7 +712,7 @@ $$
 <div class="imgbox" style="max-width:600px">
 
 
-![](../tutorial09/output/breast_cancer_mlp2_select_eta.png)
+![](../tutorial08/output/breast_cancer_mlp2_select_eta.png)
 
 </div>
 
@@ -729,7 +728,7 @@ $$
 
 
 
-![](../tutorial09/output/breast_cancer_mlp2_train.png)
+![](../tutorial08/output/breast_cancer_mlp2_train.png)
 
 </div>
 
