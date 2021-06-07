@@ -374,7 +374,7 @@ $$
 \end{aligned}
 $$
 
-במקרה שבו יש רק שתי נקודות, אחת מכל מחלקה, שתיהן בהכרח יהיו support vectors ויקיימו $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$. נניח בלי הגבלת הכלליות ש $y^{(1)}=1$ ו $y^{(2)}=2$. שני האילוצים שנקודות אלו מגדירות הם:
+במקרה שבו יש רק שתי נקודות, אחת מכל מחלקה, שתיהן בהכרח יהיו support vectors ויקיימו $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$. נניח בלי הגבלת הכלליות ש $y^{(1)}=1$ ו $y^{(2)}=-1$. שני האילוצים שנקודות אלו מגדירות הם:
 
 $$
 \begin{aligned}
@@ -593,7 +593,7 @@ $$
 \begin{aligned}
 &\frac{d}{d\alpha}2\alpha-\alpha^2(1-e^{-8})=0\\
 \Leftrightarrow&1=\alpha(1-e^{-8})\\
-\Leftrightarrow&\alpha=\frac{2}{1-e^{-8}}
+\Leftrightarrow&\alpha=\frac{1}{1-e^{-8}}
 \end{aligned}
 $$
 
@@ -604,7 +604,7 @@ $$
 \boldsymbol{w}^{\top}\Phi(\boldsymbol{x})
 &=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})^{\top}\Phi(\boldsymbol{x})\\
 &=\sum_i\alpha_iy^{(i)}K(\boldsymbol{x}^{(i)},\boldsymbol{x})\\
-&=\frac{1}{1-e^{-4}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)
+&=\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)
 \end{aligned}
 $$
 
