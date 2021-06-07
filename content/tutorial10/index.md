@@ -615,7 +615,7 @@ $$
 1&=y^{(1)}\left(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})+b\right)\\
 \Leftrightarrow b&=1-\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})\\
 \Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})-K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(1)})\right)\\
-\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(1-e^{-4}\right)=0
+\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(1-e^{-8}\right)=0
 \end{aligned}
 $$
 
