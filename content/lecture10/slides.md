@@ -39,7 +39,7 @@ slides_pdf: true
     \end{cases}
     $$
 
-- מחלקים את המרחב לשני משני צידיו של על-מישור (hyperplane):
+- מחלק את המרחב לשני צידיו של על-מישור (hyperplane):
 
     $$
     \boldsymbol{w}^{\top}\boldsymbol{x}+b=0
@@ -187,7 +187,7 @@ $$
 </div>
 
 - נרצה למצוא מישור הפרדה אשר יכליל בצורה טובה.
-- הנחה סבירה הינה שהפילוג של הנקודות יתרכז סביב הנקודת מהמדגם.
+- הנחה סבירה הינה שהפילוג של הנקודות יתרכז סביב הנקודות מהמדגם.
 - Hard SVM מנסה למצוא מישור הפרדה אשר יהיה רחוק ככל האפשר מהנקודות שבמדגם.
 - או: נרצה שהמרחק מהמישור לנקודה הקרובה אליו ביותר יהיה מקסימאלי.
 
@@ -243,7 +243,7 @@ $$
 \boldsymbol{w}^*,b^*
 =\underset{\boldsymbol{w},b}{\arg\max}\quad&\underset{i}{\min}\left\{\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}\\
 \text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
-=\underset{\boldsymbol{w},b}{\arg\max}\quad&\underset{i}\frac{1}{\lVert\boldsymbol{w}\rVert}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}\\
+=\underset{\boldsymbol{w},b}{\arg\max}\quad&\frac{1}{\lVert\boldsymbol{w}\rVert}\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}\\
 \text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
 =\underset{\boldsymbol{w},b}{\arg\max}\quad&\frac{1}{\lVert\boldsymbol{w}\rVert}\\
 \text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
@@ -460,13 +460,15 @@ $$
 
 ## Soft SVM
 
-<div class="imgbox" style="max-width:400px">
+<div class="imgbox" style="max-width:300px">
 
 ![](../lecture10/assets/svm_xi.png)
 
 </div>
 
-ה support vectors הן הנקודות שבעבורן $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
+בעבור ה support vectors מתקיים: $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
+
+<br>
 
 תכונות:
 
