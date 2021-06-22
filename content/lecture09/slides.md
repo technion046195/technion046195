@@ -7,7 +7,7 @@ slides_pdf: true
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# הרצאה 8 - CNN
+# הרצאה 9 - CNN
 
 <div dir="ltr">
 <a href="/assets/lecture09_slides.pdf" class="link-button" target="_blank">PDF</a>
