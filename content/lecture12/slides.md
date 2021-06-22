@@ -73,7 +73,7 @@ $\tilde{\boldsymbol{x}}$ נקרא השחזור של $\boldsymbol{x}$. בחלק �
 
 ## Principle Component Analysis (PCA)
 
-$D$ האורך של $\boldsymbol{x}$, $K$ האורך של הוקטור $\boldsymbol{z}$
+$D$ האורך של $\boldsymbol{x}$ ו $K$ האורך של הוקטור $\boldsymbol{z}$
 
 נרצה למצוא encoder:
 
@@ -434,7 +434,7 @@ $$
 
 </section><section>
 
-## תקציר התיאוריה - K-Means
+## K-Means
 
 K-Means הוא אלגוריתם אשכול אשר מנסה לחלק את הדגימות במדגם ל $K$ קבוצות על סמך המרחק בין הדגימות.
 
