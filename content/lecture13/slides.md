@@ -198,7 +198,7 @@ $$
 
 </section><section style="direction:ltr">
 
-## Least Absolute Shrinkage and Selection Operator (LASSO)<br/>(LLS with $l_2$ Regularization)
+## Least Absolute Shrinkage and Selection Operator (LASSO)<br/>(LLS with $l_1$ Regularization)
 
 - Problem type:
   <span class="fragment" style="color:#006992">
@@ -244,7 +244,7 @@ $$
 - Properties:
   <div class="fragment" style="color:#006992">
 
-  - Required amount of data is exponential in the dimension. Good for low dimensions with a lot of data.
+  - Required amount of data that is exponential in the dimension. Good for low dimensions with a lot of data.
   - Slow runtime.
 
   </div>
@@ -272,7 +272,7 @@ $$
 - Optimization:
   <div class="fragment" style="color:#006992">
 
-  - Classification: Minimize entrophy or the Gini index.
+  - Classification: Minimize entropy or the Gini index.
   - Regression: Minimize RMSE.
 
   </div>
@@ -317,7 +317,7 @@ $$
 - Properties:
   <div class="fragment" style="color:#006992">
 
-  - Not very usefull for supervised learning.
+  - Not very useful for supervised learning.
   - Required amount of data is exponential in the dimension.
   - Great for quick visualization.
 
@@ -373,9 +373,9 @@ $$
 - Properties:
   <div class="fragment" style="color:#006992">
 
-  - Linear separetion lines.
-  - Good when each class is consentrated in a different area of the feature space.
-  - Can deal with classes with very few eaxmples (even 1).
+  - Linear separation lines.
+  - Good when each class is concentrated in a different area of the feature space.
+  - Can deal with classes with very few examples (even 1).
 
   </div>
 
@@ -407,7 +407,7 @@ $$
   <div class="fragment" style="color:#006992">
 
   - Quadric separetion lines.
-  - Good when each class is consentrated in a different area of the feature space.
+  - Good when each class is concentrated in a different area of the feature space.
 
   </div>
 
@@ -458,7 +458,7 @@ $$
   </span>
 - Hyper-parameter:
   <span class="fragment" style="color:#006992">
-  The functions $f_y(\boldsymbol{x};\boldsymbol{\theta}_y)$.
+  The matrix $\Theta$.
   </span>
 - Optimization:
   <span class="fragment" style="color:#006992">
@@ -479,7 +479,7 @@ $$
   </span>
 - Approach:
   <span class="fragment" style="color:#006992">
-  Probabilistic Discriminative
+  Probabilistic Discriminative / Discriminative
   </span>
 - Model:
   <span class="fragment" style="color:#006992">
@@ -516,7 +516,7 @@ $$
   </span>
 - Approach:
   <span class="fragment" style="color:#006992">
-  Probabilistic Discriminative
+  Probabilistic Discriminative / Discriminative
   </span>
 - Model:
   <span class="fragment" style="color:#006992">
@@ -667,7 +667,7 @@ $$
 - מאד דינמי ומשתנה בקצב גבוה.
 - משתנה מבעיה לבעיה.
 - הכי טוב זה לקחת בעיה ולראות מה השיטות בהם משתמשים כיום בכדי לפתור אותה.
-- המון Google.
+- Google is your friend ...
 
 </section><section>
 
@@ -682,18 +682,19 @@ $$
 
 ## חברי סגל בתחום
 
-- נחום שימקין (דיקן הפקולטה)
-- שי מנור
-- רון מאיר
-- קובי קרמר
-- תומר מכאלי
 - אביב תמרי
 - דניאל סודרי
+- יניב רומנו
 - כפיר לוי
+- נחום שימקין (דיקן הפקולטה)
+- קובי קרמר
+- רון מאיר
+- שי מנור
+- תומר מכאלי
 
 </section><section class="center">
 
-# מקווה שנהנתם...
+# מקווה שנהנתם ...
 
 </section>
 </div>
