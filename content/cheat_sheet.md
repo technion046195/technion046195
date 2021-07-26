@@ -1,5 +1,6 @@
 ---
 type: cheat-sheet
+template: page
 make_docx: true
 print_pdf: true
 ---
@@ -9,6 +10,9 @@ print_pdf: true
 # דף נוסחאות
 
 ## נוטציות
+
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-column-gap: 3rem;">
+<div style="border-left: 2px solid #DEDEDE;margin-left:-1.5rem;padding-left:1.5rem;">
 
 ### אלגברה לינארית
 
@@ -29,6 +33,8 @@ print_pdf: true
 - $A_{i,:}$ - השורה ה$i$ של $\boldsymbol{A}$.
 - $A_{:,i}$ - העמודה ה$i$ של $\boldsymbol{A}$.
 
+</div><div>
+
 ### משתנים אקראיים
 
 - $\text{x}$ - אותיות לא מוטות לועזיות או יווניות - משתנים אקראיים.
@@ -40,7 +46,14 @@ print_pdf: true
 
 - $\{\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)},\ldots,\boldsymbol{x}^{(n)}\}$ - סדרה של $n$ וקטורים.
 
-## נגזרות וקטוריות שימושיות
+</div></div>
+
+## נגזרות
+
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-column-gap: 3rem;">
+<div style="border-left: 2px solid #DEDEDE;margin-left:-1.5rem;padding-left:1.5rem;">
+
+### נגזרות וקטוריות שימושיות
 
 $$
 \frac{\partial}{\partial\boldsymbol{x}} \boldsymbol{a}^{\top}\boldsymbol{x}=\boldsymbol{a}
@@ -58,11 +71,16 @@ $$
 \frac{\partial}{\partial\boldsymbol{x}} \lVert\boldsymbol{A}\boldsymbol{x}+b\rVert_2^2=2\boldsymbol{A}^{\top}(\boldsymbol{A}\boldsymbol{x}+b)
 $$
 
-## נגזרת מטריצית שימושית
+</div><div>
+
+### נגזרת מטריצית שימושית
 
 $$
 \frac{\partial}{\partial\boldsymbol{A}} \boldsymbol{x}^{\top}\boldsymbol{A}\boldsymbol{x}=\boldsymbol{x}\boldsymbol{x}^{\top}
 $$
+
+</div></div>
+<div style="page-break-after: always;"></div>
 
 ## בעיית אופטימיזציה
 
@@ -122,17 +140,18 @@ $$
 | Regression | $L_2$ | Mean Squared Error (MSE) |$l\left(y_1,y_2\right)=\left(y_1-y_2\right)^2$ | $h^*\left(x\right)=\mathbf{E}\left[\text{y}\mid\mathbf{x}\right]$ |
 
 </div>
+<div style="page-break-after: always;"></div>
 
 ## Supervised learning
 
 בעיות חיזוי בהם הפילוג של המשתנים לא ידוע אך יש בידינו מדגם: $\mathcal{D}=\{x^{(i)}, y^{(i)}\}_{i=1}^N$.
 
-### סוגי supervised learing:
+### סוגי supervised learning
 
 - **בעיות סיווג (classification)**: $\text{y}$ דיסקרטי וסופי.
 - **בעיות רגרסיה (regression)**: $\text{y}$ רציף.
 
-### גישות לפתרון בעיות supervised learing
+### גישות לפתרון בעיות supervised learning
 
 ניתן להבחין בין 3 גישות לפתרון בעיות supervised learning:
 
@@ -140,7 +159,7 @@ $$
 - **גישה גנרטיבית**: $\mathcal{D}$ -> $p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)$ -> $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ -> $h(\boldsymbol{x})$.
 - **גישה דיסקרימינטיבית הסתברותית**: $\mathcal{D}$ -> $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ -> $h(\boldsymbol{x})$.
 
-## שיטות דיסקרימינטיביות
+## גישה דיסקרימינטיביות
 
 ### Empirical Risk Minimization
 
@@ -151,6 +170,9 @@ h^* = \underset{h}{\arg\min} \frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}^{(i)};\bo
 $$
 
 כאשר המודל הפרמטרי יכול להיות כל מודל, לדוגמא, מודל לינארי או רשת נוירונים.
+
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-column-gap: 3rem;">
+<div style="border-left: 2px solid #DEDEDE;margin-left:-1.5rem;padding-left:1.5rem;">
 
 #### Linear Least Squares (LLS)
 
@@ -182,6 +204,8 @@ $$
 \boldsymbol{y}=(y^{(1)},y^{(2)},\dots,y^{(N)})^{\top}
 $$
 
+</div><div>
+
 #### Ridge Regression
 
 בעיית LLS אשר מוסיפים לה איבר רגולריזציית $L_2$:
@@ -205,6 +229,9 @@ $$
 $$
 
 אין פתרון סגור אך ניתן לפתרון באופן יעיל על ידי שיטות איטרטיביות כגון gradient descent.
+
+</div></div>
+<div style="page-break-after: always;"></div>
 
 ### K-NN (K-Nearest Neighbours)
 
@@ -230,9 +257,9 @@ K-NN הינו אלגוריתם דיסקרימינטיבי לפתרון בעיו�
 
 שיטה לבניית העץ הינה באופן חמדני אשר בכל שלב מוסיף את הפיצול הטוב ביותר תחת קריטריון מסויים.
 
-הגדרות בעבור עלה מסווים $j$ בעץ נגדיר:
+נמספר את העלים של עץ נתון על ידי $j=1,2,\dots$.  בעבור עלה מסווים $j$ בעץ נגדיר:
 
-- מספר התוויות בעלה מסויים בעץ: $N-j$.
+- מספר התוויות אשר משוייכות לעלה מסויים בעץ: $N_j$.
 - הפילוג האמפירי של התוויות בעלה מסויים:
 
     $$
@@ -259,9 +286,16 @@ $$
 Q_{\text{total}}=\sum_j \frac{N_j}{N}Q_j
 $$
 
-### Hard-SVM
+<div style="page-break-after: always;"></div>
 
-#### בעיה פרימאלית
+### SVM
+
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-column-gap: 1rem;">
+<div style="border-left: 2px solid #DEDEDE;margin-left:-.5rem;padding-left:.5rem;">
+
+#### Hard-SVM
+
+##### בעיה פרימאלית
 
 $$
 \begin{aligned}
@@ -271,12 +305,12 @@ $$
 \end{aligned}
 $$
 
-#### בעיה דואלית
+##### בעיה דואלית
 
 $$
 \begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+\left\lbrace\alpha_i\right\rbrace^*=\\
+\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
 \text{s.t.}\quad
     &\alpha_i\geq0\quad\forall i\\
     &\sum_i\alpha_iy^{(i)}=0
@@ -291,20 +325,22 @@ $$
 
 את $b$ מוצאים על ידי בחירת upport vector והצבה לאילוץ של הבעיה הפרימאלית.
 
-#### תכונות
+##### תכונות
 
 | .                                      | .                                                      | .               |
 | -------------------------------------- | ------------------------------------------------------ | --------------- |
-| נקודות רחוקות מה margin                   | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ | $\alpha_i=0$    |
-| נקודות על ה margin (שהם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ | $\alpha_i\geq0$ |
+| נקודות רחוקות</br>מה margin                   | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ | $\alpha_i=0$    |
+| נקודות על ה margin</br>(support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ | $\alpha_i\geq0$ |
 
-### Soft SVM
+</div><div>
 
-#### בעיה פרימאלית
+#### Soft SVM
+
+##### בעיה פרימאלית
 
 $$
 \begin{aligned}
-\boldsymbol{w}^*,b^*,\{\xi_i\}^*=
+\boldsymbol{w}^*,b^*,\{\xi_i\}^*=\\
 \underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
 \text{s.t.}\quad
     &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
@@ -312,25 +348,28 @@ $$
 \end{aligned}
 $$
 
-#### בעיה דואלית
+##### בעיה דואלית
 
 $$
 \begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+\left\lbrace\alpha_i\right\rbrace^*=\\
+\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
 \text{s.t.}\quad
     &0\leq\alpha_i\leq C\quad\forall i\\
     &\sum_i\alpha_iy^{(i)}=0
 \end{aligned}
 $$
 
-#### תכונות
+##### תכונות
 
 | .                                         | .                                                            | .                     |
 | ----------------------------------------- | ------------------------------------------------------------ | --------------------- |
-| נקודות שמסווגות נכון ורחוקות מה margin            | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$       | $\alpha_i=0$          |
-| נקודות על ה margin (שהם support vectors)    | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$       | $0\leq\alpha_i\leq C$ |
-| נקודות שחורגות מה margin (גם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1-\xi_i$ | $\alpha_i=C$          |
+| נקודות שמסווגות נכון</br>ורחוקות מה margin            | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$       | $\alpha_i=0$          |
+| נקודות על ה margin</br>(support vectors)    | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$       | $0\leq\alpha_i\leq C$ |
+| נקודות שחורגות</br>מה margin</br>(גם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1-\xi_i$ | $\alpha_i=C$          |
+
+</div></div>
+<div style="page-break-after: always;"></div>
 
 ## גישה גנרטיבית
 
@@ -389,6 +428,8 @@ $$
 
 כלל אצבע לבחירת רוחב הגרעין במקרה הגאוסי הסקלרי הינו $\sigma=\left(\frac{4\cdot\text{std}(\text{x})^5}{3N}\right)^\frac{1}{5}\approx1.06\ \text{std}(\text{x})N^{-\tfrac{1}{5}}$, כאשר $\text{std}(\text{x})$ הינה הסטיית תקן של $\text{x}$ (אשר לרוב תהיה משוערכת גם היא מתוך המדגם)
 
+<div style="page-break-after: always;"></div>
+
 ### שיטות פרמטריות
 
 בשיטה הפרמטרית נציע מודל פרמטרי לפילוג **המושתף** של $\mathbf{x}$ ו $\text{y}$. שתי שיטות נפוצות למציאת הפרמטרים הינם:
@@ -415,6 +456,9 @@ $$
 =\underset{\boldsymbol{\theta}}{\arg\max}\ p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)-\sum_i \log\left(p_{\mathbf{x},\text{y}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)},y^{(i)}|\boldsymbol{\theta})\right)
 $$
+
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-column-gap: 1rem;">
+<div style="border-left: 2px solid #DEDEDE;margin-left:-.5rem;padding-left:.5rem;">
 
 #### Linear Discriminant Analysis (LDA)
 
@@ -460,6 +504,8 @@ $$
 b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{p_\text{y}\left(1\right)}{p_\text{y}\left(0\right)}\right)
 $$
 
+</div><div>
+
 #### Quadric Discriminant Analysis (QDA)
 
 QDA דומה ל LDA רק שכאן ישנה מטריצה $\Sigma_c$ לכל מחלקה:
@@ -498,7 +544,10 @@ $$
 b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma_0^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma_1^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{\sqrt{|\Sigma_0|}p_\text{y}(1)}{\sqrt{|\Sigma_1|}p_\text{y}(0)}\right)
 $$
 
-### גישה דיסקרימינטיבית הסתברותית
+</div></div>
+<div style="page-break-after: always;"></div>
+
+## גישה דיסקרימינטיבית הסתברותית
 
 #### Logistic Regression
 
@@ -529,7 +578,7 @@ $$
 - $\frac{\partial}{\partial z}\log(\sigma(z))=1-\sigma(z)$
 - $\frac{\partial}{\partial z_j} \log(\text{softmax}(\boldsymbol{z}))_i=\underbrace{\delta_{i,j}}_{=I\{i=j\}}-\text{softmax}(\boldsymbol{z})_j$
 
-## Gradient Decent
+## Gradient Descent
 
 בעבור בעיית המינמיזציה:
 
@@ -544,6 +593,8 @@ $$
     \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
     $$
 
+<div style="page-break-after: always;"></div>
+
 ## Bagging
 
 מקטין את ה variance לרוב בלי לפגוע הרבה ב bias.
@@ -557,14 +608,11 @@ $$
 
 ## AdaBoost
 
-מקטין את ה bias, לרוב ללא פגיעה גדולה ב variance.
-
-AdaBoost מתייחס לסיווג בינארי.
+בעבור סיווג בינארי מקטין את ה bias, לרוב ללא פגיעה גדולה ב variance.
 
 ### אלגוריתם
 
 ב $t=0$ נאתחל וקטור משקלים $w_i^{(t)}=\frac{1}{N}$.
-
 בכל צעד $t$ נבצע את הפעולות הבאות:
 
 1. נבחר את המסווג אשר ממזער את ה misclassification rate הממושקל:
@@ -611,7 +659,122 @@ $$
 \exp\left(-2\sum_{t=1}^T\gamma_t^2\right)
 $$
 
-## PCA
+<div style="page-break-after: always;"></div>
+
+## רשתות נוירונים
+
+שיטה לבניית מודלים פרמטריים בעלי יכולת ייצוג גבוה בהשראת רשתות נוירונים ביוליגיות. רשתות נוירונים מתקבלות על ידי שירשור של מספר נוירונים כאשר כל נוירון מבצע פעולה מטמתית פשוטה.
+
+### נוריון בודד
+
+:כל נוירון ברשת מבצע את הפעולה הבאה
+
+<div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
+
+![](./lecture08/assets/neuron_scheme2.png)
+
+</div>
+
+כאשר $\boldsymbol{w}$ ו $b$ הם הפרמטרים של הנוירון ו $\varphi(\cdot)$, היא פונקציה שאותה יש לקבוע מראש והיא מכונה **פונקציית ההפעלה (activation function)**. בחירות נפוצות של פונקציית ההפעלה כוללות את
+
+- הפונקציה הלוגיסטית (סיגמואיד): $\varphi(x)=\sigma(x)=\frac{1}{1+e^{-x}}$
+- טנגנס היפרבולי: $\varphi(x)=\tanh\left(x/2\right)$
+- פונקציית ה ReLU (Rectified Linear Unit): אשר מוגדרת $\varphi(x)=\max(x,0)$ (זוהי פונקציית ההפעלה נפוצה ביותר כיום).
+
+### רשתות נוירונים
+
+מושגים:
+
+- **ארכיטקטורה**: המבנה של הרשת (האופן בו הנוירונים מחוברים)
+- **יחידות נסתרות** (**hidden units**): הנוירונים אשר אינם מחוברים למוצא הרשת (אינם נמצאים בסוף הרשת).
+- **רשת עמוקה** (**deep network**): רשת אשר מכילה מסלולים מהכניסה למוצא אשר עוברים דרך יותר מיחידה נסתרת אחת.
+
+### Multi-Layer Perceptron (MLP)
+
+רשת שבה:
+- הנוירונים מסודרים בשתייים או יותר שכבות (layers).
+- השכבות הם **Fully Connected (FC) layers** (כל נוירון מוזן מ**כל** הנוריונים שבשכבה שלפניו).
+
+<div class="imgbox no-shadow" style="max-width:500px;margin-top:0px;margin-bottom:0px">
+
+![](./lecture08/assets/mlp.png)
+
+</div>
+
+<div style="page-break-after: always;"></div>
+
+### Convolutional Neural Network (CNN)
+
+רשתות אשר מכילות שכבות קונבולוציה. שכבת קונבולוציה נבדלת משכבת FC בשני מובנים:
+
+1. כל נוירון בשכבה זו מוזן רק מכמות מוגבלת של ערכים הנמצאים בסביבתו הקרובה.
+2. כל הנוירונים בשכבה מסויימת זהים, זאת אומרת שהם משתמשים באותם הפרמטרים (תכונה המכונה **weight sharing**).
+
+<div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
+
+![](./lecture09/assets/conv.gif)
+
+</div>
+
+וקטור המשקלים אשר מכפיל את הערכים בכניסה לנוירונים בשכבת הקונבולוציה נראה גרעין הקונבולוציה.
+
+#### שכבות קונבולוציה עם מספר ערצים
+
+שכבת קונבולוציה תכיל לרוב מספר ערוצים בכניסה ומספר ערוצים ביציאה. במקרה זה יהיה נוירון שונה (עם גרעין קונבולוציה שונה) בעבור כל ערוץ ביציאה וכל אחד מהנוירונים יפעל על כל ערוצי הכניסה
+
+<div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
+
+![](./lecture09/assets/conv_multi_chan.gif)
+
+</div>
+
+מספר הפרמטרים בשכבת כזאת היינו:  $\underbrace{C_\text{in}\times C_\text{out}\times K}_\text{the weights}+\underbrace{C_\text{out}}_\text{the bias}$.
+
+כאשר:
+
+- $C_\text{in}$ - מספר ערוצי קלט.
+- $C_\text{out}$ - מספר ערוצי פלט.
+- $K$ - גודל הגרעין.
+
+#### תכונות נוספות
+
+<table style="width:100%; table-layout:fixed;">
+  <tr>
+    <td><center>Padding</center></td>
+    <td><center>Stride</center></td>
+    <td><center>Dilation</center></td>
+  </tr>
+  <tr>
+    <td><center><img width="250px" src="./lecture09/assets/padding.gif"></center></td>
+    <td><center><img width="250px" src="./lecture09/assets/stride.gif"></center></td>
+    <td><center><img width="250px" src="./lecture09/assets/dilation.gif"></center></td>
+  </tr>
+</table>
+
+<div style="page-break-after: always;"></div>
+
+### שכבות Pooling
+
+שכבות אשר משמשות להקטנת המספר האיברים שעליהם הרשת עובדת. שתי שכבות pooling נפוצות הינן:
+
+1. **Average pooling**: אשר פועל כל פעם על חלון מסויים ומחזיר את הממוצע שלו.
+1. **Max pooling**: אשר פועל כל פעם על חלון מסויים ומחזיר את הערך המקסימאלי בחלון הנתון.
+
+שכבות pooling מוגדרות על ידי שני פרמטרים, גודל החלון וה stride (גודל הצעד שבו הם זזות). (לרוב ה-stride יהיה זהה לגודל החלון).
+
+<div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
+
+![](./lecture09/assets/max_pooling.gif)
+
+</div>
+
+בשכבה זאת אין פרמטרים נלמדים.
+
+<div style="page-break-after: always;"></div>
+
+## Usupervised Learning
+
+### PCA
 
 PCA הוא אלגוריתם לינארי להורדת המימד של הוקטור $\boldsymbol{x}$ לוקטור קצר יותר באורך $K$, אשר ממזער את שיגאת השיחזור הריבועית הממוצעת:
 
@@ -621,13 +784,13 @@ PCA הוא אלגוריתם לינארי להורדת המימד של הוקטו
 כאשר:
 
 - $\bar{\boldsymbol{x}}=\frac{1}{N}\sum_{i=1}^N \boldsymbol{x}^{(i)}$.
-- $\boldsymbol{T}$ היא מטריצה אשר עמודותיה מכילות את $K$ הוקטורים העצמיים של המטריצה $\boldsymbol{X}^{\top}\boldsymbol{X}$ אשר מתאימים ל $K$ הערכים העצמיים הגדולים ביותר.
+- $\boldsymbol{X}$ היא מטריצת המדידות אשר מוגדרת:  $\boldsymbol{X}=(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)},\dots,\boldsymbol{x}^{(N)})^{\top}$
 
-## K-Means
+- $\boldsymbol{T}$ היא מטריצה אשר עמודותיה הן $K$ הוקטורים העצמיים של המטריצה $\boldsymbol{X}^{\top}\boldsymbol{X}$ אשר מתאימים לערכים העצמיים הגדולים ביותר.
 
-אלגוריתם אשכול אשר מבצע אישכול ל $K$ קבוצות.
+### K-Means
 
-סימונים:
+אלגוריתם אשכול אשר מבצע אישכול ל $K$ קבוצות. סימונים:
 
 - $K$ - מספר האשכולות (גודל אשר נקבע מראש).
 - $\mathcal{I}_k$ - אוסף האינדקסים של האשכול ה-$k$. לדוגמא: $\mathcal{I}_5=\left\lbrace3, 6, 9, 13\right\rbrace$
@@ -653,6 +816,9 @@ $$
 
 בכל צעד $t$ מבצעים את שתי הפעולות הבאות:
 
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-column-gap: 3rem;">
+<div style="border-left: 2px solid #DEDEDE;margin-left:-1.5rem;padding-left:1.5rem;">
+
 1. עדכון מחדש את החלוקה לאשכולות $\{\mathcal{I}_k\}_{k=1}^K$ כך שכל דגימה משוייכת למרכז המסה הקרוב עליה ביותר. כלומר אנו נשייך את כל דגימה $\boldsymbol{x}$ לפי:
 
     $$
@@ -660,6 +826,8 @@ $$
     $$
 
     (במקרה של שני מרכזים במרחק זהה נבחר בזה בעל האינדקס הנמוך יותר).
+
+</div><div>
 
 2. עדכון של מרכזי המסה המסה על פי:
 
@@ -669,8 +837,9 @@ $$
 
     (אם $|\mathcal{I}_k|=0$ אז משאירים אותו ללא שינוי)
 
-תנאי העצירה של האלגוריתם הינו כשהאשכולות מפסיקות להשתנות.
+</div></div>
 
+תנאי העצירה של האלגוריתם הינו כשהאשכולות מפסיקים להשתנות.
 אחת הדרכים הנפוצות לאיתחול של $\{\mu_k\}_{k=1}^K$ היא לבחור $k$ נקודות מתוך המדגם.
 
 </div>
