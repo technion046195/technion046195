@@ -484,7 +484,7 @@ $$
 
 את הפילוג של $p_{\text{y}}$ לומדים מתוך הפילוג האמפירי של $\text{y}$ במדגם.
 
-במקרה של סיווג בינארי, המשערך נתון על ידי:
+במקרה של misclassification rate בינארי, המשערך נתון על ידי:
 
 $$
 h\left(x\right)=
@@ -520,7 +520,7 @@ $$
 \Sigma_c = \frac{1}{|\mathcal{I}_c|}\sum_{i\in \mathcal{I}_c}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
 $$
 
-במקרה של סיווג הבנארי המסווג יהיה:
+במקרה של misclassification rate בינארי, המשערך נתון על ידי:
 
 $$
 h\left(x\right)
@@ -537,7 +537,7 @@ C=\frac{1}{2}(\Sigma^{-1}_0-\Sigma^{-1}_1)
 $$
 
 $$
-\boldsymbol{a}=\Sigma^{-1}\boldsymbol{\mu}_1-\Sigma^{-1}_0\boldsymbol{\mu}_0
+\boldsymbol{a}=\Sigma^{-1}_1\boldsymbol{\mu}_1-\Sigma^{-1}_0\boldsymbol{\mu}_0
 $$
 
 $$
@@ -779,12 +779,12 @@ $$
 PCA הוא אלגוריתם לינארי להורדת המימד של הוקטור $\boldsymbol{x}$ לוקטור קצר יותר באורך $K$, אשר ממזער את שיגאת השיחזור הריבועית הממוצעת:
 
 - Encoding (קידוד): $\boldsymbol{z}=\boldsymbol{T}^{\top}(\boldsymbol{x}-\bar{\boldsymbol{x}})$
-- Decoding (שיחזור): $\tilde{\boldsymbol{x}}=\boldsymbol{T}\boldsymbol{z}+\bar{\boldsymbol{x}})$
+- Decoding (שיחזור): $\tilde{\boldsymbol{x}}=\boldsymbol{T}\boldsymbol{z}+\bar{\boldsymbol{x}}$
 
 כאשר:
 
 - $\bar{\boldsymbol{x}}=\frac{1}{N}\sum_{i=1}^N \boldsymbol{x}^{(i)}$.
-- $\boldsymbol{X}$ היא מטריצת המדידות אשר מוגדרת:  $\boldsymbol{X}=(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)},\dots,\boldsymbol{x}^{(N)})^{\top}$
+- $\boldsymbol{X}$ היא מטריצת המדידות אשר מוגדרת:  $\boldsymbol{X}=(\boldsymbol{x}^{(1)}-\bar{\boldsymbol{x}},\boldsymbol{x}^{(2)}-\bar{\boldsymbol{x}},\dots,\boldsymbol{x}^{(N)}-\bar{\boldsymbol{x}})^{\top}$
 
 - $\boldsymbol{T}$ היא מטריצה אשר עמודותיה הן $K$ הוקטורים העצמיים של המטריצה $\boldsymbol{X}^{\top}\boldsymbol{X}$ אשר מתאימים לערכים העצמיים הגדולים ביותר.
 
