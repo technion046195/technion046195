@@ -502,4 +502,27 @@ $$
 
 באותו אופן ניתן כמובן להשתמש במודל הלינארי בכדי לייצג מגוון רחב של פונקציות כגון פולינומים או קומבינציה של גאוסיאנים, כפי שיודגם בתרגול 3.
 
+<div style="direction:ltr;
+            text-align:center;
+            align-items: center;
+            display:grid;
+            grid-template-columns: 1fr 1fr">
+<div class="imgbox" style="width:450px" >
+
+![](../lecture01/output/drive_prediction_linear.png)
+
+</div><div class="imgbox" style="width:450px">
+
+![](../lecture01/output/drive_prediction_poly_2.png)
+
+</div><div class="imgbox" style="width:450px">
+
+![](../lecture01/output/drive_prediction_poly_4.png)
+
+</div><div class="imgbox" style="width:450px">
+
+![](../lecture01/output/drive_prediction_poly_15.png)
+
+</div></div>
+
 </div>
