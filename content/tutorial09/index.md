@@ -2,807 +2,674 @@
 type: tutorial
 index: 9
 template: page
-make_docx: true
-print_pdf: true
+make_docx: True
+print_pdf: True
 ---
 
 <div dir="rtl" class="site-style">
 
-# תרגול 9 - CNN ואתחול
+# תרגול 9 - Logistic Regression and Gradient Descent
 
 <div dir="ltr">
-<a href="./slides/" class="link-button" target="_blank">Slides</a>
+<!-- <a href="./slides/" class="link-button" target="_blank">Slides</a> -->
 <a href="/assets/tutorial09.pdf" class="link-button" target="_blank">PDF</a>
 <a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## תקציר התיאוריה
 
-### Convolutional Neural Networks (CNN) - רשתות קונבולוציה
+### הגישה הדיסקרימינטיבית הסתברותית
 
-אחת התכונות של מודל MLP (Fully Connected (FC) network) הינה חוסר רגישות לסדר בכניסות לרשת. תכונה זו נובעת מכך שכל היחידות בכל שכבה מחוברות לכל היחידות בשכבה העוקבת. במקרים רבים תכונה זו הינה תכונה רצויה, אך היא באה במחיר של מספר רב של פרמטרים.
-במקרים בהם למידע אשר מוזן לרשת יש מבנה או תלות מרחבית, כלומר יש משמעות לסדר של הכניסות, נרצה לנצל את ההיתרון המרחבי של הכניסות בעת תכנון ארכיטקטורת הרשת. דוגמא לסוג כזה של מידע הן תמונות.
-רשתות קונבולציה הינו סוג אחד של רשתות feed-forward בעלת ארכיטקטורה אשר מנצלת את התלות המרחבית בכניסות לכל שכבה.
+בגישה זו ננסה ללמוד מודל פרמטרי אשר ימדל ישירות את $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ (מבלי ללמוד את הפילוג של $\mathbf{x}$). גישה זו יעילה מאד לבעיות סיווג, בהם קל לבנות מודלים פרמטריים $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})$ שהם פונקציות הסתברות חוקיות (חיובית שהסכום עליה הוא 1). את הפרמטרים של המודל הפרמטרי נלמד לרוב בעזרת MLE או MAP.
 
-#### 1D Convolutional Layer
+### הפונקציה הלוגיסטית (סיגמואיד)
 
-שכבת קונבולוציה חד-ממדית הינה שכבה ברשת אשר מבצעת את הפעולות הבאות:
-
-1. פעולת קרוס-קורלציה (ולא קונבולוציה) בין וקטור הכניסה של אותה שכבה $\boldsymbol{z_{i-1}}$ ווקטור משקולות $\boldsymbol{w}$ באורך $K$.
-2. הוספת היסט $b$ (אופציונלי).
-3. הפעלה של פונקציית הפעלה על וקטור המוצא איבר איבר.
-
-פעולת הקרוס-קורלציה מוגדרת באופן הבא:
+הפונקציה הלוגיסטית מקבלת מספר בתחום $[-\infty,\infty]$ ומחזירה מספר בין 0 ל 1. היא לרוב מסומנת ב $\sigma$:
 
 $$
-z_{i+1,j}=\sum_{m=1}^K z_{i,j+m-1}w_m
+\sigma(z)=\frac{1}{1+e^{-z}}
 $$
 
-באופן סכימתי, השכבה נראית כך:
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv.png)
-
-</div>
-
-כאשר $h(\boldsymbol{u};\boldsymbol{w},b)=\varphi(\boldsymbol{u}^{\top}\boldsymbol{w}+b)$ (הפונקציה $\varphi$ היא ההפעלה). שימו לב שבכל השכבה משתמשים באותו הוא $h_i$, זאת אומרת שמשתמשים באותם $\boldsymbol{w}_i$ ו $b_i$.
-
-דרך נוספת להצגת שכבת קונבולוציה (לשם הפשטות נשתמש ב $\boldsymbol{x}$ לקלט ו $\boldsymbol{y}$ לפלט).
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv.gif)
-
-</div>
-
-וקטור המשקולות של שכבת הקונבולציה $\boldsymbol{w}$ נקרא **גרעין הקונבולוציה (convolution kernel)**.
-
-גדול המוצא של שכבת הקונבולוציה הוא קטן יותר מהכניסה והוא נתון על ידי $D_{\text{out}}=D_{\text{in}}-K+1$.
-
-שכבת קונבולוציה מורידה באופן דרסטי את מס' המשקולות לעומת שכבת FC. בעוד שבשכבת FC קיימות $D_{\text{in}}\times D_{\text{out}}$ משקולות ועוד $D_{\text{out}}$ איברי היסט, בשכבת קונבולציה יש $K$ משקולות ואיבר היסט בודד.
-
-#### קלט רב-ערוצי
-
-במקרים רבים נרצה ששכבת הקונבולציה תקבל קלט רב ממדי, לדוגמא, תמונה בעלת שלושה ערוצי צבע או קלט שמע ממספר ערוצי הקלטה. מבנה זה מאפשר לאזור מרחבי בקלט להכיל אינפורמציה ממספר ערוצי כניסה.
-
-במקרים אלו הנוירון $h$ יהיה פונקציה של כל ערוצי הקלט:
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv_multi_input.gif)
-
-</div>
-
-הפונקציה $h$ היינה קומבינציה לינארית של כל ערוצי הקלט, לרוב מסיפים איבר הסט $b$ ופונקציית אקטיבציה.
-
-#### פלט רב-ערוצי
-
-בנוסף, נרצה לרוב להשתמש ביותר מגרעין קונבולוציה אחד, במקרים אלו נייצר מספר ערוצים ביציאה בעבור כל אחד מגרעיני הקונבולוציה.
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv_multi_chan.gif)
-
-</div>
-
-בשכבות אלו אין שיתוף של משקולות בין ערוצי הפלט השונים, כלומר כל גרעין קונבולציה הוא בעל סט משקולות יחודי הפועל על כל הערוצי הכניסה על מנת להוציא פלט יחיד.
-מספר הפרמטרים בשכבת כזאת היינו:  $\underbrace{C_\text{in}\times C_\text{out}\times K}_\text{the weights}+\underbrace{C_\text{out}}_\text{the bias}$.
-
-כאשר:
-
-- $C_\text{in}$ - מספר ערוצי קלט.
-- $C_\text{out}$ - מספר ערוצי פלט.
-- $K$ - גודל הגרעין.
-
-<!-- **דגש:** שימו לב, יש להבדיל בין מס' הערוצים לממד הקלט/פלט. נגיד עבור ערוץ אחד אנחנו יכולים לקבל קלט רב ממדי (נגיד תמונה) ועבור פלט רב ערוצי, עבור כל ערוץ אנחנו יכולים לקבל מס' ממדים עבור כל ערוץ -->
-
-#### היפר-פרמטרים של שכבות קונבולוציה
-
-בנוסף לפרמטרים של **גודל הגרעין** ו **מספר ערוצי הפלט**, שהינם היפר-פרמטרים של שכבת הקונבולוציה, מקובל להגדיר גם את הפרמטרים הבאים:
-
-##### Padding - ריפוד
-
-משום שפעולת קונבולציה היינה מרחבית, בקצוות הקלט ישנה בעיה שאין ערכים חוקיים שניתן לבצע עליהם פעולות, לכן נהוג לרפד את שולי הקלט (באפסים או שכפול של אותו ערך בקצה)
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/padding.gif)
-
-</div>
-
-##### Stride - גודל צעד
-
-ניתן להניח שלרוב הקשר המרחבי נשמר באזורים קרובים, לכן על מנת להקטין בחישוביות ניתן לדלג על הפלט ולהפעיל את פעולת הקונבולציה באופן יותר דליל. בפשטות: מדלגים על היציאות בגודל הצעד. לרוב גודל הצעד מסומן ב $s$, בדוגמא הבאה גודל הצעד היינו $s=2$. אלא אם רשום אחרת, גודל הצעד של השכבה הוא 1.
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/stride.gif)
-
-</div>
-
-##### Dilation - התרחבות
-
-שוב על מנת להקטין בחישובית, אפשר לפעול על אזורים יותר גדולים תוך הנחה שערכים קרובים גיאוגרפית הם בעלי ערך זהה, על כן נרחיב את פעולת הקונבולציה תוך השמטה של ערכים קרובים. לרוב נסמן את ההתרחבות ב $d$ בדוגמא הבאה $d=2$. אלא אם רשום אחרת, ההתרחבות היא 1.
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/dilation.gif)
-
-</div>
-
-#### Max / Average Pooling
-
-שיכבות נוספת אשר מופיעה במקרים רבים ברשתות CNN הם שכבות מסוג pooling. שכבות אלו מחליפות את פעולת הקונבולוציה בפונקציה קבועה אשר מייצרת סקלר מתוך הקלט של הנוירון. שתי שכבות pooling נפוצות הן max pooling ו average pooling, שכבה זו לוקחת את הממוצע והמקסימום של ערכי הכניסה.
-
-דוגמא זו מציגה max pooling בגודל 2 עם גודל צעד (stride) גם כן של 2:
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/max_pooling.gif)
-
-</div>
-
-בשכבה זאת אין פרמטרים נלמדים, אך גודל הגרעין וגודל הצעד הינם היפר-פרמטרים של השכבה.
-
-#### 2D Convolutional Layer
-
-עבור קלט דו-ממדי (תמונות), הקלט מסודר כמטריצה. ופעולת הקונבולוציה (קרוס-קורלציה כפי שאתם מכירים) נראית כך:
-
-כאשר השכבה הכחולה היא הקלט והשכבה הירוקה היא הפלט
-
-<table style="width:100%; table-layout:fixed;">
-  <tr>
-    <td><center>kernel size=3<br>padding=0<br>stride=1<br>dilation=1</center></td>
-    <td><center>kernel size=4<br>padding=2<br>stride=1<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=1<br>stride=1<br>dilation=1<br>(Half padding)</center></td>
-    <td><center>kernel size=3<br>padding=2<br>stride=1<br>dilation=1<br>(Full padding)</center></td>
-  </tr>
-  <tr>
-    <td><img width="150px" src="../lecture09/assets/no_padding_no_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/arbitrary_padding_no_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/same_padding_no_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/full_padding_no_strides.gif"></td>
-  </tr>
-  <tr>
-    <td><center>kernel size=3<br>padding=0<br>stride=2<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=1<br>stride=2<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=1<br>stride=2<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=0<br>stride=1<br>dilation=2</center></td>
-  </tr>
-  <tr>
-    <td><img width="150px" src="../lecture09/assets/no_padding_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/padding_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/padding_strides_odd.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/dilation_2d.gif"></td>
-  </tr>
-</table>
-
-- \[1\] Vincent Dumoulin, Francesco Visin - [A guide to convolution arithmetic for deep learning](https://arxiv.org/abs/1603.07285)([BibTeX](https://gist.github.com/fvisin/165ca9935392fa9600a6c94664a01214))
-  
-## תרגיל 9.1
-
-נתונה רשת קונבולוציה קטנה, הממירה תמונה בגודל 13×13 לווקטור מוצא בגודל 4×1. הרשת מורכבת מהפעולות הבאות:
-
-<div class="imgbox" style="max-width:700px">
-
-![](./assets/ex_9_1_network.png)
-
-</div>
-
-- שכבת קונבולוציה עם 3 פילטרים (גרעינים) בגודל 4x4.
-- פונקציית אקטיבציה Relu.
-- Average pooling 2x2 עם stride=2.
-- שכבת Fully-connected (FC).
-
-ברשת זאת אין שימוש ב bias.
-
-**1)** רשמו את הגדלים של שני משתני הבניים ברשת.
-
-**2)** כמה פרמטרים נלמדים יש בשכבת הקונבולוציה?
-
-**3)** כמה משקולות יש בכל הרשת?
-
-**4)** כמה כפלים מבצעת הרשת בעבור כל תמונה שעוברת ברשת?
-
-**5)** האם רשת MLP (רשת בקישוריות מלאה - FC) יכולה לייצג את הפונקציה שאותה ממשת הרשת הנתונה?
-
-**6)** מה ההבדל העיקרי בין רשת CNN ורשת MLP שמסוגלת לתאר את אותן הפונקציות?
-
-### תרגיל 9.1 - פתרון
-
-#### 1)
-
-בשכבה הראשונה אנו מתחילים מתמונה 13 על 13 ומפעילים עליה קונבולוציה דו מימדית עם גרעין בגדול 4x4. הקונבולוציה אוכלת מהקצוות של התמונת כניסה $4-1=3$ פיקסלים בכל ציר, ולכן במוצא של השכבה נקבל מטריצה 10 על 10. השיכבה מייצרת 3 ערוצים במוצא ולכן יש לנו 3 מטריצות של 10 על 10 (או במילים אחרות, טנזור 10x10x3):
+והיא נראית כך:
 
 <div class="imgbox" style="max-width:600px">
 
-![](./assets/ex_9_1_1_1.png)
+![](../lecture09/output/sigmoid.png)
 
 </div>
 
-השכבה הבאה היא שכבת pooling בגודל 2 על 2 ועם צעד של 2. זאת אומרת שהיא הופכת כל ריבוע של 2 על 2 לערך יחיד, ולכן היא למעשה מצמצמת ב2 כל ציר. הכניסה של 3 ערוצים של 10 על 10 תהפוך ל 3 ערוצים של 5 על 5:
+פונקציה זו שימושית לצורך הגדרת מודלים הסתברותיים של משתנים בינארים.
 
-<div class="imgbox" style="max-width:500px">
+**הערה**: בתחום של מערכות לומדות מקובל לכנות את הפונקציה הזו **סיגמואיד (sigmoid)** למרות שמבחינה מתמטית השם הזה מתאר משפחה הרבה יותר רחבה של פונקציות בעלות צורה של S.
 
-![](./assets/ex_9_1_1_2.png)
+#### תכונות
+
+- $\sigma(-z)=1-\sigma(z)$.
+- $\frac{\partial}{\partial z}\log(\sigma(z))=1-\sigma(z)$
+
+### פונקציית ה Softmax
+
+פונקציית ה softmax היא הרחבה של הפונקציה הלוגיסטית, והיא יכולה לשמש למידול פונקציות הסתברות של משתנים דיסקרטיים לא בינאריים (אך סופיים). הפונקציה לוקחת וקטור כלשהו $\boldsymbol{z}$ באורך $C$ ומייצרת ממנו וקטור חדש חיובי שסכום האיברים שלו הוא 1. הפונקציה מוגדרת באופן הבא:
+
+$$
+\text{softmax}(\boldsymbol{z})=\frac{1}{\sum_{c=1}^C e^{z_c}}[e^{z_1},e^{z_2},\dots,e^{z_C}]^{\top}
+$$
+
+או לחילופין, הערך של האיבר ה $i$ של הפונקציה הינו:
+
+$$
+\text{softmax}(\boldsymbol{z})_i=\frac{e^{z_i}}{\sum_{c=1}^C e^{z_c}}
+$$
+
+#### תכונות
+
+- אינווריאנטיות לתוספת של קבוע (לכל אברי הוקטור): $\text{softmax}(\boldsymbol{z} + a)_i=\text{softmax}(\boldsymbol{z})_i\ \forall i$.
+- $\frac{\partial}{\partial z_j} \log(\text{softmax}(\boldsymbol{z}))_i=\underbrace{\delta_{i,j}}_{=I\{i=j\}}-\text{softmax}(\boldsymbol{z})_j$
+
+### Logistic Regression
+
+בניגוד לשם, logistic regression היא שיטה לפתרון בעיות סיווג בגישה הדיסקרימינטיבית הסתברותית. בשיטה זו אנו נבחר $C$ פונקציות פרמטריות כלשהן $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$ ונשתמש בהן על מנת לבנות מודל פרמטרי. נסמן:
+
+- את הוקטור $\boldsymbol{\theta}$ כוקטור אשר כולל את כל $C$ וקטורי הפרמטרים: $\boldsymbol{\theta}=[\boldsymbol{\theta}_1^{\top},\boldsymbol{\theta}_2^{\top},\dots,\boldsymbol{\theta}_C^{\top}]^{\top}$.
+- את הפונקציה $\boldsymbol{f}$ כפונקציה המאגדת את כל $C$ הפונקציות הפרמטריות: $\boldsymbol{f}=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
+
+את הפילוג המותנה נמדל באופן הבא:
+
+$$
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
+=\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
+=\frac{e^{f_y(\boldsymbol{x};\boldsymbol{\theta}_y)}}{\sum_{c=1}^C e^{f_c(\boldsymbol{x};\boldsymbol{\theta}_c)}}
+$$
+
+לבעיות ה MLE וה MAP של מודל זה אין פתרון סגור ואנו נחפש את הפתרון לבעיית האופטימיזציה בעזרת gradient descent.
+
+#### ביטול היתירות של המודל
+
+בגלל האינווריאנטיות של פונקציית ה softmax המודל הפרמטרי המוגדר על ידי הפונקציות $f_c$ יהיה אינווריאנטי לשינויים מהצורה של: $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)\rightarrow f_c(\boldsymbol{x};\boldsymbol{\theta}_c)+g(\boldsymbol{x})$.
+ דרך נפוצה לבטל יתירות זו הינה על ידי קיבוע של אחת הפונקציות הפרמטריות, לרוב הראשונה $c=1$, להיות שווה זהותית ל 0: $f_1(\boldsymbol{x};\boldsymbol{\theta}_1)=0$.
+
+#### המקרה הבינארי
+
+במקרה הבינארי ישנם רק שתי מחלקות ($C=2$), אותן נסמן ב 0 ו 1. נקבע את הפונקציה הפרמטרית של המחלקה $\text{y}=0$ להיות זהותית 0. נקבל את המודל הפרמטרי הבא:
+
+$$
+p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})
+=\frac{1}{1+e^{f(\boldsymbol{x};\boldsymbol{\theta})}}
+=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
+$$
+
+$$
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})
+=\frac{e^{f(\boldsymbol{x};\boldsymbol{\theta})}}{e^{f(\boldsymbol{x};\boldsymbol{\theta})}+1}
+=\frac{1}{1+e^{-f(\boldsymbol{x};\boldsymbol{\theta})}}
+=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
+$$
+
+#### רגרסיה לוגיסטית לינארית
+
+הגרסא הלינארית של הרגרסיה הלוגיסטית היא המקרה שבו בוחרים את הפונקציות הפרמטריות להיות פונקציות לינאריות:
+
+$$
+f_c(\boldsymbol{x};\boldsymbol{\theta}_c)=\boldsymbol{\theta}_c^{\top}\boldsymbol{x}
+$$
+
+במקרה זה פונקציית ה objective שיש למזער היא קמורה (convex) ולכן מובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום גלובלי.
+
+### Gradient descent (שיטת הגרדיאנט)
+
+בעבור בעיית המינימיזציה:
+
+$$
+\underset{\boldsymbol{\theta}}{\arg\min}\quad g(\boldsymbol{\theta})
+$$
+
+Gradient descent מנסה למצוא מינימום לוקאלי של $g(\boldsymbol{\theta})$ על ידי כך שהוא מתחיל בנקודה אקראית כלשהי במרחב ואז מתקדם בצעדים קטנים בכיוון ההפוך מהגרדיאנט, שהוא הכיוון שבו ה objective קטן בקצב המהיר ביותר. זהו אלגוריתם חמדן (greedy) אשר מנסה בכל צעד לשפר במעט את מצבו ביחס לשלב הקודם.
+
+#### האלגוריתם
+
+- מאתחלים את $\boldsymbol{\theta}^{(0)}$ בנקודה אקראית כלשהי.
+- חוזרים על צעד העדכון הבא עד שמתקיים תנאי עצירה כל שהוא:
+
+    $$
+    \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
+    $$
+
+הפרמטר $\eta$ קובע את גודל הצעדים שהאלגוריתם יעשה.
+
+#### תנאי עצירה
+
+ישנם מספר דרכים להגדיר תנאי עצירה לאגוריתם:
+
+- הגעה למספר צעדי עדכון שנקבע מראש: $t>\text{max-iter}$.
+- כאשר הנורמה של הגרדיאנט קטנה מתחת לערך סף מסויים שנקבע מראש: $\lVert\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})\rVert_2<\epsilon$
+- כאשר השיפור ב objective קטן מערך סף מסויים שנקבע מראש: $g(\boldsymbol{\theta}^{(t-1)})-g(\boldsymbol{\theta}^{(t)})<\epsilon$
+- שימוש בעצירה מוקדמת על מנת להתמודד עם overfitting (נרחיב על כך בהרצאה הבאה)
+
+#### בעיית הבחירה של גודל הצעד
+
+בכדי לגרום לאלגוריתם להתכנס (ולא להתבדר) אנו נאלץ לבחור גודל צעד שהוא לא גדול מידי. בפועל, בצורתו הפשוטה אלגוריתם ה gradient descent הוא מאד בעייתי משום שבכדי למנוע התבדרות גודל הצעד צריך להיות מאד קטן שידרוש מספר לא פרקטי של צעדים לצורך התכנסות.
+
+## תרגיל 7.1 - אלגוריתם הגרדיאנט
+
+נתונה בעיית האופטימיזציה הבאה:
+
+$$
+\underset{\theta}{\arg\min}\ \tfrac{1}{2}\theta^2+5\sin(\theta)
+$$
+
+**1)** נסו לפתור את הבעיה על ידי גזירה והשוואה ל-0. הגיעו למשוואה (סתומה) אשר מגדירה את נקודות המינימום האפשריות.
+
+**2)** רשמו את צעד העידכון של אלגוריתם הגרדיאנט.
+
+**3)** חשבו את שלושת צעדי העדכון הראשונים עבור אתחול של $\theta^{(0)}=0$, וצעד לימוד של $\eta=0.1$.
+
+**4)** חשבו את שלושת צעדי העדכון הראשונים עבור אתחול של $\theta^{(0)}=2.5$, וצעד לימוד של $\eta=0.1$. מודע האלגוריתם יתכנס כעת לפתרון אחר מבסעיף הקודם? 
+
+**5)** הגרפים הבאים מציגים עשר איטרציות של gradient descent בעבור ארבעה ערכים שונים של גודל צעד: $\eta=\{0.003, 0.03,0.3,3\}$. התאם בין גודל הצעד לגרפים.
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/ex_7_1_5.png)
 
 </div>
+
+### פתרון 7.1
+
+#### 1)
+
+נסמן את ה objective (פונקציית המטרה) של בעיית האופטימיזציה ב:
+
+$$
+t(\theta)=\tfrac{1}{2}\theta^2+5\sin(\theta)
+$$
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/ex_7_1_objective.png)
+
+</div>
+
+נגזור אותו ונשווה אותו ל-0:
+
+$$
+\begin{aligned}
+\frac{\partial}{\partial\theta}t(\theta)&=0 \\
+\Leftrightarrow \theta+5\cos(\theta)&=0 \\
+\Leftrightarrow \theta&=-5\cos(\theta)
+\end{aligned}
+$$
+
+בפועל זה אומר שעלינו למצוא את נקודות החיתוך של הפונקציות הבאות:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/ex_7_1_1_analytic_solution.png)
+
+</div>
+
+למשוואה זו אין פתרון אנליטי.
 
 #### 2)
 
-בשכבת הקונבולוציה יש 3 פילטרים בגודל 4x4, זאת אומרת 48 פרמטרים.
+צעד העדכון של הגרדיאנט יהיה:
+
+$$
+\theta^{(t+1)}=\theta^{(t)}-\eta\frac{\partial}{\partial\theta}t(\theta)=\theta^{(t)}-\eta\left(\theta^{(t)}+5\cos(\theta^{(t)})\right)
+$$
 
 #### 3)
 
-בשכבת ה average pooling אין פרמטרים, ובשכבת ה FC כמות הפרמטרים שווה למספר הכניסות כפול מספר היציאות. בכניסה לשכבה יש 5x5x3 איברים ובמוצא יש 4x1 ולכן סך הכל יש
+נאתחל את האלגוריתם עם $\theta^{(0)}=0$ ונבצע שלושה צעדים (עם $\eta=0.1$):
 
 $$
-5\times5\times3\times4=300
+\theta^{(1)}
+=\theta^{(0)}-\eta\left(\theta^{(0)}+5\cos(\theta^{(0)})\right)
+=0-0.1\left(0+5\cos(0)\right)=-0.5
 $$
 
-פרמטרים. בך הכל יש ברשת $300+48=348$ פרמטרים.
+$$
+\theta^{(2)}
+=\theta^{(1)}-\eta\left(\theta^{(1)}+5\cos(\theta^{(1)})\right)
+=-0.5-0.1\left(-0.5+5\cos(-0.5)\right)=-0.889
+$$
+
+$$
+\theta^{(3)}
+=\theta^{(2)}-\eta\left(\theta^{(2)}+5\cos(\theta^{(2)})\right)
+=-0.889-0.1\left(-0.889+5\cos(-0.889)\right)=-1.115
+$$
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/ex_7_1_3.png)
+
+</div>
+
+(נקודת האופטימום האמיתי הינה $\theta=-1.30644$)
 
 #### 4)
 
-##### שכבת הקונבולוציה
-
-לחישוב של מספר הפרמטרים בשכבת הקונבולוציה הכי קל זה להסתכל על המוצא. החישוב של כל איבר במוצא דורש 4x4 כפלים. במוצא של השכבה יש 10x10x3 איברים, ולכן סה"כ שיכבה זו דורשת::
+נחזור על הפתרון עם אתחול של $\theta^{(0)}=2.5$ ונבצע שלושה צעדים:
 
 $$
-4\times4\times10\times10\times3=4800
+\theta^{(1)}=2.65
 $$
 
-כפלים
-
-##### שכבת ה FC
-
-מספר הכפלים בשכבת ה FC שווה למספר הכניסות כפול מספר היציאות. בכניסה לשכבה יש 5x5x3 איברים ובמוצא יש 4x1 ולכן סך הכל יש
-
 $$
-5\times5\times3\times4=300
+\theta^{(2)}=2.83
 $$
 
-כפלים
+$$
+\theta^{(2)}=3.02
+$$
 
-##### שכבת ה average pooling
+<div class="imgbox" style="max-width:600px">
 
-בשכיבת ה average pooling יש מספר כפלים כמספר האיברים במוצא (כל איבר במוצא מיוצר על ידי סכימה של 4 איברים וחלוקה ב 4), ברשת הנתונה יש במוצא של שכבת ה avarage pooling $5\times5\times3=75$ איברים ולכן שכבה זו מבצעת 75 כפלים.
+![](./output/ex_7_1_4.png)
 
-בסה"כ יש ברשת 5175 כפלים.
+</div>
+
+בעבור האתחול הזה אלגוריתם יתכנס לפתרון אחר מאשר הפתרון בסעיף הקודם. זאת כמובן משום ש gradient descent מתכנס למינימום לוקאלי, לכן בעבור איתחולים שונים האלגוריתם עלול להתכנס לפתרונות שונים.
 
 #### 5)
 
-כן, הרשת עם שכבת הקונבולוציה וה average pooling הינה מקרה פרטי של רשת FC, עם בחירה ספציפית של המשקולות.
+הפרמטר $\eta$ קובע כאמור את גדול הצעד.
 
-#### 6)
+- גודל צעד גדול מידי עשוי להרחיק בכל צעד את האלגוריתם מנקודת המינימום, כפי שקורה במקרה של $\eta_1$. גודל הצעד שמתאים למקרה זה הינו הערך הגדול ביותר, זאת אומרת 3.
 
-רשת עם שכבות הקונבולוציה מתארות תת-תחום של מרחב הפונקציות שאותה יכולה לתאר רשת MLP. היתרון שברשת עם שכבת הקונבולוציה הינה שהיא עושה זאת על ידי מספר קטן משמעותית של פרמטרים. לכן, בהנחה שניתן לקרב במידה טובה מספיק את פונקצייית המטרה על ידי פונקציות מתת-תחום זה, היא כנראה תעשה פחות overfit ולכן בעלת סיכוי להניב תוצאות טובות יותר. לשם השוואה ברשת ה MLP שמייצגת את אותה הפונקציה ישנם כ50k פרמטרים.
+- גודל הצעד השני הכי גדול הינו 0.3 והוא מתאים ל $\eta_3$. במקרה זה הצעדים עושים "over shoot" ועוברים במרבית הפעמים את המינימום אך עדיין מתקרבים אליו בכל צעד.
 
-## תרגיל 9.2
+- גודל הצעד השלישי הכי גדול הינו 0.03 הוא מתאים ל $\eta_4$. כאן האופטימיזציה מתקדמת לאט לאט באופן עקבי לכיוון המינימים.
 
-התמך או הrecptive field של משתנה מסויים ברשת מוגדר להיות כל התחום בכניסה אשר משפיע על אותו המשתנה.
+- גודל הצעד הקטן ביות הינו $0.003$ והוא מתאים ל $\eta_2$ במקרה זה ההתקדמות היא מאד איטית ויקח לאלגוריתם מספר רב של צעדים על מנת להתקרב למינימום.
 
-מצאו את הrecptive field של ערך מסויים במוצא של שלוש שכבות קונבולוציה רצופות עם גרעין של $3\times 3$.
+## תרגיל 7.2 - צעד העדכון של logistic regression
 
-### תרגיל 9.2 - פתרון
-
-הrecptive field של שלוש שכבות קונבולוציה רצופות בגודל  $3\times 3$ הינו איזור בגודל $7\times 7$. נדגים זאת:
-
-קונבולוציה ראשונה:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/question_9_2_a.png)
-
-</div>
-
-קונבולוציה שניה:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/question_9_2_b.png)
-
-</div>
-
-קונבולוציה שלישית:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/question_9_2_c.png)
-
-</div>
-
-## איתחול משקולות הרשת
-
-לאיתחול של הפרמטרים של הרשת יש חשיבות רבה ברשתות נוירונים משתי בחינות:
-
-1. מכיוון ש gradient decent מתכנס למינימום לוקאלי אשר תלוי בנקודת ההתחלה.
-2. ערכים גדולים מדי או קטנים מידי של הפרמטרים עלולים לייצר הבדלים גדולים בין ערכי הביניים בתוך הרשת. מכיוון שערכי הבניים משפיעים על הגרדיאנטים של המשתנים נקבל שחלק מהגרדיאנטים יהיו מאד גדולים בעוד שהאחרים מאד קטנים, מה שיקשה מאד על בחירה של קצב לימוד טוב.
-
-נציג דוגמא לבעיה השניה ונראה כיצד ניתן לאתחל את הפרמטרים של הרשת בכדי לנסות ולהמנע מבעיות אלו.
-
-נסתכל על רשת MLP של 5 שכבות ברוחב 5 וכניסה ברוחב 5 עם פונקציית הפעלה של ReLU:
-
-<div class="imgbox" style="max-width:700px">
-
-![](./assets/init_network.png)
-
-</div>
-
-ניקח כניסה אקראית $\boldsymbol{x}$ שבה האיברים מוגרלים מתול פילוג נורמאלי עם תוחלת 0 וסטיית תקן של 1:
+**1)** בעבור המקרה של רגרסיה לוגיסטית בינארית, הראו כי ניתן לרשום את המודל של פונקציית ההסתברות המותנית באופן הבא:
 
 $$
-\boldsymbol{x}=[2.59,1.84,0.44,-0.72,-0.58]^{\top}
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})=\sigma\left((-1)^{y+1} f(\boldsymbol{x};\boldsymbol{\theta})\right)
 $$
 
-### אתחול עם משקולות גדולות מידי
-
-נאתחל את המשקולות של הרשת מתוך פילוג נורמאלי עם תוחלת 0 וסטיית תקן של 10. כאשר נזין את $\boldsymbol{x}$ לתוך הרשת נקבל את המוצאים הבאים מכל שכבה של הרשת:
+**2)** נסתכל על אלגוריתם gradient descent אשר מנסה למצוא פיתרון לבעיית ה MLE בעבור רגרסיה לוגיסטית בינארית. הראו שניתן לרשום את צעד העדכון של האלגוריתם באופן הבא:
 
 $$
-\begin{aligned}
-z_1=[0.00,18.93,0.00,29.21,0.00]^{\top}\\
-z_2=[0.00,647.54,0.00,527.02,498.82]^{\top}\\
-z_3=[5263.19,0.00,0.00,4494.22,0.00]^{\top}\\
-z_4=[100556.40,0.00,4364.23,99805.43,0.00]^{\top}
-\end{aligned}
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
 $$
 
-המוצא של הרשת יהיה:
+**3)** ננסה לתת פרשנות אינטואיטיבית לתפקיד של האיברים השונים בצעד העדכון מהסעיף הקודם.
+
+נתחיל בכך שנתעלם מהביטוי $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. ונקבל את צעד העדכון הבא:
 
 $$
-y=155078.15
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
 $$
 
-נשים לב כי הערכים של משתני הבניים גדלים משכבה לשכבה. בעיה זו הולכת ומחמירה ככך שמספר השכבות והרוחב שלהם גדל. כאשר נחשב את הגרדיאנטים של הפרמטרים בכל שכבה נקבל שגם הגרדיאנטים יהיו עם הבדלים מאד גדולים בניהם.
+הסבירו כיצד ישפיע כל צעד עידכון על הפונקציה $f(\boldsymbol{x};\boldsymbol{\theta})$. ספציפית הסבירו מה יקרה לערך של הפונקציה בנקודות $\boldsymbol{x}^{(i)}$? התייחסו להשפעה השונה יש לדגימות עם $y=1$ ולדגימות עם $y=0$ מהמדגם.
 
-אותה בעיה הייתה מתקבלת ברשת זו גם בעבור סטיית תקן של 1 אך בצורה קצת פחות חמורה.
+**4)** נחזיר כעת את האיבר $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. למה שווה איבר זה במקרים בהם המודל הפרמטרי נותן הסתברות גבוהה לדגימה כלשהי $\{\boldsymbol{x}^{(i)},y^{(i)}\}$? ולמה הוא שווה במקרים בהם המודל נותן הסתברות נמוכה לדגימה כלשהי?
 
-### אתחול עם משקולות קטנות מידי
+התייחסו לאיבר זה כאל איבר מישקול, אשר נותן משקל שונה לכל דגימה מהמדגם. הסבירו מה תהיה ההשפעה של משקול זה על צעד העדכון.
 
-נאתחל כעת את המשקולות של הרשת מתוך פילוג נורמאלי עם תוחלת 0 וסטיית תקן של 0.1. כאשר נזין את $\boldsymbol{x}$ לתוך הרשת נקבל את המוצאים הבאים מכל שכבה של הרשת:
-
-$$
-\begin{aligned}
-z_1=[0.00000,0.18927,0.00000,0.29210,0.00000]^{\top}\\
-z_2=[0.00000,0.06475,0.00000,0.05270,0.04988]^{\top}\\
-z_3=[0.00526,0.00000,0.00000,0.00449,0.00000]^{\top}\\
-z_4=[0.00101,0.00000,0.00004,0.00100,0.00000]^{\top}
-\end{aligned}
-$$
-
-המוצא של הרשת יהיה:
+**5)** (לקריאה עצמית) נרחיב את הדוגמא למקרה הלא בינארי. הראו שניתן לכתוב את צעד העדכון של אלגוריתם ה gradient discent במקרה הלא בינארי באופן הבא:
 
 $$
-y=0.00155
+\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
+\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
+\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
 $$
 
-נשים לב שכאן הערכים הולכים וקטנים.
+הסבירו את התפקיד של $\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x};\boldsymbol{\theta}^{(t)})$ ושל $\left(\delta_{y,c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)$ בצעד העדכון.
 
-מקרה שבו הגרדיאנטים הולכים וגדלים נראת **exploding gradients** והתופעה שבה הם הולכים וקטנים נקראת **vanishing gradients**. בתרגיל הבא ננסה למצוא דרך לאתחל את הפרמטרים של הרשת כך שהערכים ישארו בערך באותו גודל לאורך הרשת.
-
-## תרגיל 9.3
-
-בשאלה זו נרצה למצוא סכמת אתחול עבור משקולות הרשת. לשם כך, נתחיל מלבחון נוירון ליניארי בודד.
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/question_9_3_1.png)
-
-</div>
-
-**הערה**: אם הממוצע של המוצא $v$ הוא 0 והשונות נשארת קבועה בין שכבות (לא דועכת או מתפוצצת) – אין התפוצצות או העלמות של האות לאורך הרשת. לכן, בסעיפים הבאים נתעניין בחישוב הממוצע והשונות של המוצא $v$. ספציפית, נרצה להראות כי $\mathbb{E}\left[v\right]=0$ ואז לחשב את השונות של המוצא על מנת לראות מה עלינו לדרוש על אתחול המשקולות על מנת להבטיח כי שונות המוצא תישאר קבועה לאורך הרשת.
+### פתרון 7.2
 
 #### 1)
 
-נניח כי כל רכיבי המשקולות וכל רכיבי הכניסה הם משתנים אקראיים IID. בנוסף, נניח כי התפלגות המשקולות סימטרית סביב 0.
-
-1. חשבו את התוחלת של המוצא $v$ כתלות בתוחלות של המשקולות והכניסה. בפרט, הראו כי $\mathbb{E}\left[v\right]=0$.
-2. הראו כי לכל זוג משתנים אקראיים בלתי תלויים $x,y$ מתקיים:
-
-    $$
-    \text{Var}\left(xy\right)=\mathbb{E}\left[x\right]^2\text{Var}\left(y\right)+\mathbb{E}\left[y\right]^2\text{Var}\left(x\right)+\text{Var}\left(x\right)\text{Var}\left(y\right)
-    $$
-
-3. כעת, נניח כי לכל $i$: $\mathbb{E}\left[x_i\right]=0$ (בסעיף הבא נראה הצדקה להנחה זו). השתמשו בנוסחה מהסעיף הקודם על מנת לבטא את השונות של $v$ באמצעות השונות של $x_1,w_1$.
-4. כיצד ניתן לשמור על השונות של המוצא $v$ זהה לשונות של כל אחת מרכיבי הכניסה $x_i$?
-
-#### 2)
-
-כעת, נרצה להרחיב את הסכמה לנוירונים **לא ליניאריים**:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/question_9_3_2.png)
-
-</div>
-
-כלומר, כעת מתקיים כי $x_i=\sigma\left(y_i\right), \forall i=1, \dots,n$ כאשר $\sigma\left(\cdot\right)$ היא פונקציית האקטיבציה ו- $v=w_1 x_1+w_2 x_2+\cdots+w_n x_n$
-
-אנו נניח כי נוירון זה הוא חלק מרשת עמוקה, כלומר, נניח כי $y_1,\dots,y_n$ הם המוצאים של נוירונים מהשכבה הקודמת ברשת.
-
-**הערה:** בסעיף הבא נראה כי התוחלת של המוצא איננה 0 עבור אחת מהאקטיבציות שלמדנו בקורס. עם זאת, נראה כי הממוצע לפני האקטיבציה, כלומר, הממוצע של $y_i$, הוא עדיין 0 לכל $i$. לכן, אין לנו בעיה של התפוצצות הממוצע $\leftarrow$ אם השונות נשארת קבועה בין שכבות (לא דועכת או מתפוצצת) – אין התפוצצות או העלמות של האות לאורך הרשת.
-
-1. לאילו מפונקציות האקטיבציה הבאות: sigmoid, tahn ו-ReLU, ההנחה $\mathbb{E}\left[x_i\right]=0$ שביצענו בסעיף הקודם היא עדיין הנחה "סבירה"? תזכורת:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/question_9_3_3.png)
-
-</div>
-
-2. כעת לא נניח דבר על התוחלת של $x_i$. כיצד ישתנה הביטוי של השונות של $v$ מסעיף א.3?
-3. עבור פונקציית האקטיבציה ReLU, בטאו את השונות של $v$ באמצעות השונות של אחת הכניסות $y_i$. הניחו כי $\text{Var}\left(y_1\right)=\text{Var}\left(y_2\right)=\cdots=\text{Var}\left(y_n\right)$.
-
-הדרכה: היעזרו בתוצאות הסעיפים הקודמים.
-
-### תרגיל 9.3 - פתרון
-
-#### 1)
-
-**1)**
-
-$$
-\mathbb{E}\left[v\right]=\mathbb{E}\left[w_1 x_1+w_2 x_2+⋯+w_n x_n\right]=n\mathbb{E}\left[w_1 x_1\right]=n\mathbb{E}\left[w_1\right]\mathbb{E}\left[x_1\right]=0
-$$
-
-**2)** נעזר בקשר $\text{Var}\left(z\right)=\mathbb{E}\left[z^2\right]-\mathbb{E}\left[z\right]^2$:
+נשחק מעט עם הצורה של המודל הפרמטרי בכדי להגיע לצורה אותה בקשו בשאלה:
 
 $$
 \begin{aligned}
-\text{Var}\left(xy\right)
-& = \mathbb{E}\left[x^2y^2\right]-\mathbb{E}\left[xy\right]^2 \\
-& = \mathbb{E}\left[x^2\right]\mathbb{E}\left[y^2\right]-\mathbb{E}\left[x\right]^2\mathbb{E}\left[y\right]^2 \\
-& = \left(\mathbb{E}\left[x^2\right]-\mathbb{E}\left[x\right]^2+\mathbb{E}\left[x\right]^2\right)\left(\mathbb{E}\left[y^2\right]-\mathbb{E}\left[y\right]^2+\mathbb{E}\left[y\right]^2\right)-\mathbb{E}\left[x\right]^2\mathbb{E}\left[y\right]^2 \\
-& = \left(\text{Var}\left(x\right)+\mathbb{E}\left[x\right]^2\right)\left(\text{Var}\left(y\right)+\mathbb{E}\left[y\right]^2\right)-\mathbb{E}\left[x\right]^2\mathbb{E}\left[y\right]^2 \\
-& = \text{Var}\left(x\right)\text{Var}\left(y\right)+\text{Var}\left(x\right)\mathbb{E}\left[y\right]^2+\text{Var}\left(y\right)\mathbb{E}\left[x\right]^2 \\
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
+&=\begin{cases}
+    \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=1 \\
+    1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=0 \\
+\end{cases}\\
+&=\begin{cases}
+    \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=1 \\
+    \sigma(-f(\boldsymbol{x};\boldsymbol{\theta})) & y=0 \\
+\end{cases}\\
+&=\sigma\left((-1)^{y+1} f(\boldsymbol{x};\boldsymbol{\theta})\right)
 \end{aligned}
-$$
-
-**3)** תחת ההנחה כי התוחלות של המשקולות ושל הכניסה הן 0, הנוסחה שהוכחנו בסעיף הקודם מצטמצמת ל $\text{Var}\left(w_ix_i\right)=\text{Var}\left(x_i\right)\text{Var}\left(w_i\right)$. בנוסף, עבור מוצא הנוירון $v$ ניתן לכתוב:
-
-$$
-v=w_1 x_1+w_2 x_2+\cdots+w_n x_n
-$$
-
-מכיוון שהנחנו שכל המשתנים מפולגים IID נקבל:
-
-$$
-\text{Var}\left(v\right)=n\text{Var}\left(w_1 x_1\right)=n\text{Var}\left(w_1\right)\text{Var}\left(x_1\right)
-$$
-
-**4)** קיבלנו בסעיף הקודם כי שונות המוצא היא שונות הכניסה מוכפל בפקטור של $n\text{Var}\left(w_i\right)$ כאשר $n$ הוא מספר הנוירונים המוזנים לנוירון. לכן, על מנת לשמור על שונות זהה בין כניסה למוצא נבחר את אתחול המשקולות כך שיתקיים:
-
-$$
-\text{Var}\left(w_i\right)= \frac{1}{n}
 $$
 
 #### 2)
 
-**1)** אם התפלגות המשקולות סימטרית סביב 0, נקבל כי התפלגות $y_i$ סימטרית סביב 0 לכל $i$. לכן, ההנחה עדיין סבירה עבור tanh אך לא עבור ReLU וsigmoid. עבור tanh נקבל:
-  
-$$
-\mathbb{E}\left[x\right]=\mathbb{E}\left[\sigma\left(y\right)\right]=\int_{-\infty}^{\infty} \sigma\left(y\right) f_Y\left(y\right)dy=0
-$$
-  
-כאשר סימנו $x=x_i,y=y_i$.
+נציב את המודל הפרמטרי כפי שרשמנו אותו בסעיף הקודם:
 
-**2)** משימוש בתוצאות הסעיפים הקודמים, נקבל:
-  
 $$
 \begin{aligned}
-\text{Var}\left(v\right)
-& = n\text{Var}\left(w_1 x_1\right) \\
-& = n\left(\mathbb{E}\left[w_1\right]^2 \text{Var}\left(x_1\right)+\mathbb{E}\left[x_1\right]^2\text{Var}\left(w_1\right)+\text{Var}\left(x_1\right)\text{Var}\left(w_1\right)\right) \\
-& = n\text{Var}\left(w_1\right)\left(\mathbb{E}\left[x_1\right]^2+\text{Var}\left(x_1\right)\right) \\
-& = n\text{Var}\left(w_1\right)\mathbb{E}\left[x_1^2\right]
+\boldsymbol{\theta}^*
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+\underbrace{
+    -\sum_{i=1}^{N}\log\left(\sigma\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)
+}_{\overset{\Delta}{=}t(\boldsymbol{\theta})}
 \end{aligned}
 $$
-  
-**3)** אם התפלגות המשקולות סימטרית סביב 0, נקבל כי התפלגות $y_i$ סימטרית סביב 0 לכל $i$. לכן, עבור פונקציית אקטיבציה ReLU נקבל:
-  
+
+לשם הנוחות, סימנו את ה objective של בעיית האופטימיזציה ב $t(\boldsymbol{\theta})$. נחשב את הגרדיאנט של ה objective וננסה להביא אותו לצורה דומה לזו שבקשו בשאלה:
+
 $$
 \begin{aligned}
-\mathbb{E}\left[x_1^2\right]
-& = \mathbb{E}\left[\max\left(0,y_1\right)^2 \right] \\
-& = \int_{-\infty}^{\infty} \max\left(0,y_1\right)^2 f_Y\left(y\right)dy \\
-& = \int_{0}^{\infty} y_1^2 f_Y\left(y\right)dy \\
-& = \frac{1}{2}\int_{-\infty}^{\infty} y_1^2 f_Y\left(y\right)dy \\
-& = \frac{1}{2}\mathbb{E}\left[y_1^2\right] \\
-& = \frac{1}{2}\text{Var}\left(y_1\right)
+\nabla_{\boldsymbol{\theta}}t(\boldsymbol{\theta})
+&=-\sum_{i=1}^{N}\nabla_{\boldsymbol{\theta}}\log\left(\sigma\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)\\
+&=-\sum_{i=1}^{N}\left(1-\sigma\left((-1)^{y^{(i)}+1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)\nabla_{\boldsymbol{\theta}}\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
+&=\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\\
 \end{aligned}
 $$
-  
-נשלב את התוצאה יחד עם תוצאות הסעיפים הקודמים ונקבל:
+
+צעד העדכון של אלגוריתם ה gradient descent יהיה אם כן:
 
 $$
-\text{Var}\left(v\right)=n\text{Var}\left(w_1\right)\mathbb{E}\left[x_1^2\right]=\frac{n}{2}\text{Var}\left(w_1\right)\text{Var}\left(y_1\right)
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
 $$
 
-לכן, על מנת לשמור על שונות זהה בין כניסה למוצא נבחר את אתחול המשקולות כך שיתקיים:
+#### 3)
+
+נתייחס לצעד עדכון מהצורה של:
 
 $$
-\text{Var}\left(w_i\right)= \frac{2}{n}
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
 $$
 
-## חלק מעשי- LeNet 5
+נסתכל על התרומה של הדגימות מהמדגם ששייכים למחלקה $y=1$ (אשר גורר: $(-1)^y=-1$). איברים אלו ינסו לשנות את $\boldsymbol{\theta}$ בכיוון הגרדיאנט בנקודות $\boldsymbol{x}^{(i)}$ ששיכות למחלקה. זאת אומרת, שהם ינסו לגרום לשינוי של הפרמטריים כך שהערך של הפונקציה הפרמטרית $f(\boldsymbol{x};\boldsymbol{\theta})$ בנקודות $\boldsymbol{x}^{(i)}$ יהיה גדול יותר.
+
+באופן הפוך, התרומה של הדגימות מהמחלקה $y=0$ (ו $(-1)^y=1$) תהיה לנסות ולעדכן את $\boldsymbol{\theta}$ בכיוון ההפוך מהגרדיאנט. זאת אומרת, שהם ינסו להקטין את הערך של $f(\boldsymbol{x};\boldsymbol{\theta})$ בנקודות $\boldsymbol{x}^{(i)}$ מהמחלקה $y=0$.
+
+בסה"כ הכל נקבל שהאלגוריתם ינסה בכל צעד לשנות את  $f(\boldsymbol{x};\boldsymbol{\theta})$ כך שיניב ערכים גבוהים על הנקודות $\boldsymbol{x}$ שמתאימות ל $y=1$ וערכים נמוכים על הנקודות שמתאימות ל $y=0$. התנהגות זו הגיונית משום שזה בדיוק מה שאנחנו רוצים מהמודל שלנו, שאמור לחזות את ההסתברות ש $\text{y}=1$ בהינתן $\mathbf{x}$. משום שהסתברות זו שווה ל $\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))$ אנו רוצים רוצים ש $f$ יניב ערכים גבוהים באיזורים שבהם $\text{y}=1$ בסבירות גבוהה בהינתן $\mathbf{x}$ וערכים נמוכים בשאר המקומות.
+
+#### 4)
+
+נסתכל על הביטוי $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. נזכור שההסתברות $p_{\text{y}|\mathbf{x}}$ היא מספר בין 0 ל 1.האיבר כולו יהיה לכן קרוב ל-0 כאשר הסתברות של $y$ מסויים בהינתן $\boldsymbol{x}$ היא גבוהה והוא יהיה קרוב ל-1 כאשר ההסתברות נמוכה.
+
+נזכור גם כי $p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ היא אינה ההסתברות האמיתית של $\mathbf{x}$ ו $\text{y}$ אלא ההסתברות שהמודל שלנו נותן לדגימה כלשהי מהמדגם. (אנו רוצים שבסופו של דבר שמודל זה יהיה קרוב להסתברות האמיתית). היינו מעניינים שככל שנעשה יותר צעדי עדכון המודל יגדיל לאט לאט את ההסתברות שהוא נותן לדגימות במדגם (זו בעצם המטרה של MLE ו MAP).
+
+נסתכל על איבר זה כעל משקל בין 0 ל 1 שמשוייך לכל דגימה במדגם. לדגימות שהמודל חושב הם סבירות הוא נותן משקל קרוב ל 0 ולדגימות שהמודל נותן להם סבירות נמוכה הוא נותן משקל 1. מה שאיבר זה עושה לצעד העידכון הוא לגרום לו יחסית להתעלם מדגימות שכבר מקבלות סבירות גבוהה ולהתמקד בדגימות שהוא עדיין "טועה" עליהם, זאת אומרת, שהוא נותן להם הסתברות נמוכה.
+
+#### 5)
+
+בעיית ה MLE הינה:
+
+$$
+\begin{aligned}
+\boldsymbol{\theta}^*
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+\underbrace{
+    -\sum_{i=1}^N \log\left(\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}\right)
+}_{\overset{\Delta}{=}t(\boldsymbol{\theta})}
+\end{aligned}
+$$
+
+נחשב את הגרדיאנט של ה objective:
+
+$$
+\begin{aligned}
+\nabla_{\boldsymbol{\theta}_c}t(\boldsymbol{\theta})
+&=-\sum_{i=1}^{N}\nabla_{\boldsymbol{\theta}_c}
+\log\left(\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}\right)\\
+&=-\sum_{i=1}^{N}
+\left(\delta_{y^{(i)},c}-\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_c\right)
+\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\\
+&=-\sum_{i=1}^{N}
+\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
+\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
+\end{aligned}
+$$
+
+צעד העדכון יהיה:
+
+$$
+\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
+\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
+\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
+$$
+
+האיבר $\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)$ הוא חיובי כאשר $c=y^{(i)}$ ושלילי אחרת. איבר זה גורם לכך שבעבור כל דגימה מהמדגם צעד העדכון ינסה לגדיל את הפונקציה הפרמטרית $f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)$ שבה $c=y^{(i)}$ ויקטין את הפונקציות הפרמטריות שבהם $c\neq y^{(i)}$.
+
+בדומה למקרה הבינארי ככל שהסבירות של הדגימה במדגם $p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ כך ההשפעה של הדגימה על העדכון יהיה קטן יותר.
+
+## תרגיל 7.3 - MLE and KL divergence
+
+בתרגיל זה נציג דרך אחרת לפתח את בעיית האופטימיזציה של משערך ה MLE.
+
+נתון לנו מדגם של $N$ דגימות i.i.d. של משתנה אקראי כלשהו $\text{x}$:
+
+$$
+\mathcal{D}=\{x^{(i)}\}_{i=1}^N
+$$
+
+ומודל פרמטרי כל שהוא $p_{\text{x}}(x;\boldsymbol{\theta})$. נרצה לבחור את הפרמטרים של המודל $\boldsymbol{\theta}$ כך שהמודל יתאר בצורה טובה את הדגימות במדגם.
+
+לשם כך נשתמש במדד הבא אשר מודד עד כמה פונקציית צפיפות הסתברות כלשהי $q_{\text{x}}(x)$ תהיה טובה בכדי לתאר דגימות המגיעות מצפיפות הסתברות אחרת $p_{\text{x}}(x)$. המדד נקרא Kullback-Leibler divergence והוא מוגד באופן הבא:
+
+$$
+D_{\text{KL}}(p_{\text{x}}(x)||q_{\text{x}}(x))
+=\int p_{\text{x}}(x)\log\left(\frac{p_{\text{x}}(x)}{q_{\text{x}}(x)}\right)
+=\mathbb{E}_{(p)}\left[\log\left(\frac{p_{\text{x}}(x)}{q_{\text{x}}(x)}\right)\right]
+$$
+
+הסימון $\mathbb{E}_{(p)}$ הוא תוחלת לפי הפילוג $p_{\text{x}}$. מדד זה מגיע מתורת האינפורמציה ואנו לא ניכנס למשמעות ולמקור של מדד זה. ככל שהמדד נמוך יותר כך הפילוגים קרובים יותר.
+
+השתמשו במדד זה על מנת להגדיר בעיית אופטימיזציה שבוחרת את הפרמטרים של המודל כפרמטרים כך שהם ממזערים את ה Kullback-Leibler divergence בין המודל הפרמטרי לפילוג האמיתי. בכדי להיפתר מהתוחלת על הפילוג הלא ידוע החליפו אותו בתוחלת אמפירית על המדגם. הראו כי בעיית האופטימיזציה המתקבלת זהה לזו של משערך ה MLE.
+
+### פתרון 7.3
+
+נסמן את הפילוג האמיתי (הלא ידוע) של $\text{x}$ ב $p_{\text{x}}(x)$ (בלי $\boldsymbol{\theta}$). בעיית האופטימיזציה שהיינו רוצים לפתור הינה:
+
+$$
+\begin{aligned}
+\boldsymbol{\theta}^*
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ D_{\text{KL}}(p_{\text{x}}(x)||p_{\text{x}}(x;\boldsymbol{\theta})) \\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ \mathbb{E}_{(p)}\left[\log\left(\frac{p_{\text{x}}(x)}{p_{\text{x}}(x;\boldsymbol{\theta})}\right)\right] \\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ \mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x))\right]
+                                          - \mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x;\boldsymbol{\theta}))\right] \\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x;\boldsymbol{\theta}))\right] \\
+\end{aligned}
+$$
+
+נחליף את התוחלת בתוחלת אמפירית על המדגם:
+
+$$
+\begin{aligned}
+\boldsymbol{\theta}^*
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\frac{1}{N}\sum_{i=1}^N \log(p_{\text{x}}(x^{(i)};\boldsymbol{\theta})) \\
+\end{aligned}
+$$
+
+שזה בדיוק המינימיזציה של ה log-likelihood עד כדי החלוקה ב $N$ שלא משנה את בעיית האופטימיזציה.
+
+## תרגיל מעשי - איבחון סרטן שד
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
-בחלק זה נעבור על היישום המעשי הראשון של רשתות קונבולוציה. הארכיטקטורה זאת שימשה ב1998 ושימש לזהות ספרות בכתב יד על צק'ים במערכות בנקאיות.
+שיטה נפוצה כיום לאבחון של סרטן הינה בשיטת Fine-needle aspiration. בשיטה זו נלקחת דגימה של רקמה בעזרת מחט ומבוצעת אנליזה בעזרת מיקרוסקופ על מנת לאבחן שני מקרים:
 
-<div class="imgbox" style="max-width:500px">
+- Malignant - רקמה סרטנית
+- or Benign - רקמה בריאה
 
-![](./assets/lenet.gif)
-
-</div>
-
-הרשת מקבלת תמונה רמת אפור של ספרה בגודל 32x32 ומשתמש באריטקטורה הבאה על מנת להוציא וקטור פלט באורך 10 אשר מציג את ההיסברות שהתמונה שייכת לכל אחת מ 10 הספרות.  
-
-#### אריכטקטורה
-
-<div class="imgbox" style="max-width:800px">
-
-![](./assets/lenet_arch.png)
-
-</div>
-
-ארכיטקטורה זו לא עושה שימוש בריפוד ו-dilation, ואלא אם רשום אחרת stride=1.
-
-- C1: Convolutional layer + ReLU activation: kernel size=5x5, output channels=6.
-- S2: Max pooling layer: size=2x2, stride=2
-- C3: Convolutional layer + ReLU activation: kernel size=5x5, output channels=16.
-- S4: Max pooling layer: size=2x2, stride=2
-- C5: Convolutional layer + ReLU activation: kernel size=5x5, output channels=120. (this is, in fact, a fully connected layer)
-- F6: Fully connected layer + ReLU: output vector length= 84
-- Output layer: Fully connected layer: output vector length=10
-
-על מנת לייצג את הסתברות שהתמונה שייכת לאחת מהמחלקות נעשה ביציאה שימוש בשכבת Softmax.
-
-דרך אחת לשרטט את הרשת הינה באופן הבא:
-
-<div class="imgbox" style="max-width:800px">
-
-![](./assets/lenet_arch2.png)
-
-</div>
-
-### הגדרת הבעיה
-
-הבעיה היא בעיית סיווג (לא בינארית) כאשר
-
-- $\mathbf{x}$ הוא תמונה בגודל 28x28 של סיפרה בכתב יד.
-- $\text{y}$ הוא ערך הסיפרה: \[0-9\]
-
-אנו נרצה להשתמש ברשת על מנת לפתור את בעיית הסיווג בגישה הדיסקרימינטיבית הסתברותית (ללמוד את $p_{\text{y}|\mathbf{x}}$). כמו תמיד בכדי לקבל פילוג חוקי אנו נפעיל softmax על המוצא של הרשת פונקציית.
-
-### Dataset: MNIST
-
-מכיוון שהמדגם המקורי אשר שימש לאימון של הרשת לא פורסם, אנו נשתמש במדגם פופולרי אחר אשר נקרא MNIST. הוא סט פופולרי מאוד שנעשה בו שימוש נרחב עד היום. הסט מורכב 70000  תמונות בינאריות בגודל 28x28 של ספרות בכתב יד, מתוכן 10000 מוגדרים להיות ה test set.
-
-ניתן להוריד את הסט מ [Yann LeCun's web site](http://yann.lecun.com/exdb/mnist/).
+להלן דוגמא לתמונת מיקרוסקופ של דגימה שכזו:
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/mnist.png)
+![](./assets/fna.jpg)
 
 </div>
 
-הגדול של התמונות במדגם הם 28x28, בניגוד לגודל של התמונות בעבודה המקורית שהייתה 32x32. בכדי להתאים את הרשת תמונות בגודל זה נוסיף ריפוד של 2 אפסים בכל שפה של התמונה.
+בתרגול זה נעבוד עם מדגם בשם **Breast Cancer Wisconsin Diagnostic** אשר נאסף על ידי חוקרים מאוניברסיטת ויסקונסין. הוא כולל 30 ערכים מספריים, כגון שטח התא הממוצע והרדיוס ההמוצע, אשר חושבו בעבור 569 דגימות שונות. בנוסף יש לכל דגימה במדגם תווית של האם הדגימה הינה סרטנית או לא.
 
-#### חלוקה של מאגר המידע
+את המדגם המקורי ניתן למצוא פה: [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29), אנחנו נשתמש בגרסא מעט מעובדת שלו הנמצאת [פה](https://technion046195.netlify.app/datasets/wdbc.csv).
 
-משום שהמאגר מגדיר כבר את ה test set, כל מה שנותר לנו הוא לחלק את ה train set ל train ו validation. מיכוון שה train set מאד גדול (60000 דגימות), מספיק לקחת validation set שהוא קטן יותר מ 25% מ train ושעדיין יהיה מצייג מספיק.
-הסיבה לקחת validation קטן הוא גם בשביל לזרז את השלב של חישוב הביצועים על ה validation וגם בשביל לא להקטין את הגודל של ה train.
+נציג כמה עמודות ושורות מייצגות מהמדגם:
 
-ניקח אם כן validation set בגודל 1024.
+<div dir="ltr">
 
-### בניית הרשת על ידי שימוש ב PyTorch
+|    | diagnosis   |   radius_mean |   texture_mean |   perimeter_mean |   area_mean |   smoothness_mean |   compactness_mean |   concavity_mean |
+|---:|:------------|--------------:|---------------:|-----------------:|------------:|------------------:|-------------------:|-----------------:|
+|  0 | M           |         17.99 |          10.38 |           122.8  |      1001   |           0.1184  |            0.2776  |          0.3001  |
+|  1 | M           |         20.57 |          17.77 |           132.9  |      1326   |           0.08474 |            0.07864 |          0.0869  |
+|  2 | M           |         19.69 |          21.25 |           130    |      1203   |           0.1096  |            0.1599  |          0.1974  |
+|  3 | M           |         11.42 |          20.38 |            77.58 |       386.1 |           0.1425  |            0.2839  |          0.2414  |
+|  4 | M           |         20.29 |          14.34 |           135.1  |      1297   |           0.1003  |            0.1328  |          0.198   |
+|  5 | M           |         12.45 |          15.7  |            82.57 |       477.1 |           0.1278  |            0.17    |          0.1578  |
+|  6 | M           |         18.25 |          19.98 |           119.6  |      1040   |           0.09463 |            0.109   |          0.1127  |
+|  7 | M           |         13.71 |          20.83 |            90.2  |       577.9 |           0.1189  |            0.1645  |          0.09366 |
+|  8 | M           |         13    |          21.82 |            87.5  |       519.8 |           0.1273  |            0.1932  |          0.1859  |
+|  9 | M           |         12.46 |          24.04 |            83.97 |       475.9 |           0.1186  |            0.2396  |          0.2273  |
 
-Python מכיל מספר חבילות אשר מפשטות מאד את הבניה והאימון של רשתות נוירונים. בקורס זה אנחנו נעבוד עם אחת החבילות הפופולריות בתחום אשר נקראת PyTorch.
+</div>
 
-בתרגיל רטוב 5 תעזרו ב PyTorch בכדי למממש רשת קונסולוציה דומה לזו שנשתמש בה כאן.
+רק לשם המחשה נתחיל בניסיון לחזות האם הרקמה סרטנית או לא רק על פי שני השדות הראשונים:
 
-#### הגדרת הרשת
+- **radius_mean** - רדיוס התא הממוצא בדגימה.
+- **texture_mean** - סטיית התקן הממוצעת של רמת האפור בצבע של כל תא בדגימה.
 
-הדרך המקובלת להשתמש ב PyTorch היה על ידי הגדרת class יעודי אשר מגדיר את השכבות ואת הדרך בה הרשת פועלת. הדבר נעשה באופן הבא:
+השדה של התוויות $\text{y}$ הינו:
 
-```python
-class LeNet5(torch.nn.Module):
-     
-    def __init__(self):   
-        super(LeNet5, self).__init__()
-        
-        ## Defining the layers
-        ## =========================================================
-        ## C1: Convolutional layer: kernel size=5x5, output channels=6.
-        ## Here we will add the padding of 2 to make the images of MNIST fit to the network.
-        self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=6, kernel_size=5, padding=2)
-        self.relu1 = torch.nn.ReLU()  
+- **diagnosis** - התווית של הדגימה: M = malignant (סרטני), B = benign (בריא)
 
-        ## S2: Max pooling layer: size=2x2, stride=2
-        self.max_pool2 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
+(בחרנו להתחיל עם 2 שדות משום שמעבר לכך כבר לא נוכל לשרטט את הפילוג של הדגימות ואת החיזוי).
 
-        ## C3: Convolutional layer + ReLU activation: kernel size=5x5, output channels=16.
-        self.conv3 = torch.nn.Conv2d(in_channels=6, out_channels=16, kernel_size=5)
-        self.relu3 = torch.nn.ReLU()
-        
-        ## S4: Max pooling layer: size=2x2, stride=2vector)
-        self.max_pool4 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
+<div class="imgbox" style="max-width:600px">
 
-        ## C5: Convolutional layer + ReLU activation: kernel size=5x5, output channels=120.
-        self.conv5 = torch.nn.Conv2d(in_channels=16, out_channels=120, kernel_size=5)
-        self.relu5 = torch.nn.ReLU()
+![](./output/breast_cancer_2d_dataset.png)
 
-        ## F6: Fully connected layer + ReLU: output vector length=84
-        self.fc6 = torch.nn.Linear(120, 84)
-        self.relu6 = torch.nn.ReLU()
-        
-        ## Output: Fully connected layer + ReLU: output vector length=10
-        self.fc_output = torch.nn.Linear(84, 10)
+</div>
 
-        ## Note: It is not actually necessary to define multiple ReLUs and max-pooling operations
-        ## since these layers have no parameters.
-        
-        
-    def forward(self, x):
-        ## C1: Convolutional layer + ReLU activation: kernel size=5x5, output channels=6.
-        x = self.conv1(x)
-        x = self.relu1(x)
-        
-        ## S2: Max pooling layer: size=2x2, stride=2
-        x = self.max_pool2(x)
+נרצה למצוא חזאי אשר יפריד בין הנקודות הכתומות לנקודות הכחולות. לשם כך נפצל את המדגם ל 60% train / 20% validation / 20% test. נתאים שלושה מודלים: LDA, QDA, linear logistic regression.
 
-        ## C3: Convolutional layer + ReLU activation: kernel size=5x5, output channels=16.
-        x = self.conv3(x)
-        x = self.relu3(x)
+### LDA
 
-        ## S4: Max pooling layer: size=2x2, stride=2
-        x = self.max_pool4(x)
-
-        ## C5: Convolutional layer + ReLU activation: kernel size=5x5, output channels=120.
-        x = self.conv5(x)
-        x = self.relu5(x)
-
-        x = x.view(x.shape[0], x.shape[1]) ## Redefine x as a 1D vector
-        
-        ## F6: Fully connected layer + ReLU: output vector length= 84
-        x = self.fc6(x)
-        x = self.relu6(x)
-
-        ## Output layer: Fully connected layer: output vector length=10
-        x = self.fc_output(x)
-        
-        return x
-```
-
-במימוש של פונקציה זו אנו עושים שימוש באובייקטים הבאים מהחבילה של PyTorch:
-
-- **torch.nn.Model**: אובייקט שממנו יש לרשת (inherit) כאשר יוצרים רשת חדש בPyTorch. בקורס זה לא נרחיב על הנושא נציין רק שיש להוסיף תמיד "(torch.nn.Module)" אחרי שם ה class.
-- **[torch.nn.Conv2d](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#conv2d)**: אובייקט אשר מממש קונבולוציה דו מימדית.
-- **[torch.nn.ReLU](https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html?highlight=relu#relu)**: אובייקט אשר מממש פונקציית ReLU (איבר איבר).
-- **[torch.nn.MaxPool2d](https://pytorch.org/docs/stable/generated/torch.nn.MaxPool2d.html?highlight=maxpool#maxpool2d)**: אובייקט אשר מממש max pooling דו מימדי.
-- **[torch.nn.Linear](https://pytorch.org/docs/stable/nn.html#linear)**: אובייקט אשר מבצע טרנספורמציה לינארית (לייתר דיוק אפינית). זה למעשה החלק הלינארי של שכבת FC.
-
-### לימוד
-
-#### חישוב ה Log-likelihood
-
-לצורך הלימוד נצטרך לחשב את ה log-liklihood על ה batch:
+נחשב את פרמטרים של המודל:
 
 $$
-\sum_i \text{softmax}(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}
+p_{\text{y}}(0)=\frac{|\mathcal{I}_0|}{N}=0.37
 $$
 
-כאשר $f(\boldsymbol{x};\boldsymbol{\theta})$ היא הפונקציה שאותה ממשת הרשת עם פרמטרים $\boldsymbol{\theta}$ והסכימה היא על כל הדגימות ב batch.
+$$
+p_{\text{y}}(1)=\frac{|\mathcal{I}_1|}{N}=0.63
+$$
 
-הפונקציה **[torch.nn.CrossEntropyLoss()](https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html#crossentropyloss)** מקבלת מטריצה שבכל שורה יש $f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ ווקטור של $y^{(i)}$ והיא מחשבת את ה softmax של המטריצה ואז את ה log-likelihood של כל הדגימות.
+$$
+\boldsymbol{\mu}_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\boldsymbol{x}^{(i)}=[12.3,17.9]^{\top}
+$$
 
-```python
-## Set the objective
-objective_func = nn.CrossEntropyLoss()
+$$
+\boldsymbol{\mu}_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\boldsymbol{x}^{(i)}=[17.5,21.3]^{\top}
+$$
 
-## Calculate the log-likelihood on x and y
-py_hat = net(x)
-objective = objective_func(py_hat, y)
-```
+$$
+\Sigma = \frac{1}{N}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+=\begin{bmatrix}
+5.8 & 0.67 \\
+0.67 & 13.5
+\end{bmatrix}
+$$
 
-#### Auto differentiation
+פרמטרים אלו יתנו את החיזוי הבא:
 
-היתרון גדול של שימוש בחבילה כמו PyTorch הוא שהיא למעשה יודעת לחשב את הנגזרת בשבילנו על ידי שימוש ב back-propogation. לאחר חישוב ה log-likelihood נוכל פשוט לקרוא לפקודה:
+<div class="imgbox" style="max-width:600px">
 
-```python
-objective.backward()
-```
+![](./output/breast_cancer_lda.png)
 
-והחבילה תחשב את כל הגרדיאנטים של ה objective לפי הפרמטרים של המודל. PyTorhc שומר את הגרדיאנטים המתקבלים בתוך הרשת ביחד עם המשתנים
+</div>
 
-#### Stochastic Gradient Descent
+נזכיר כי החזאי המתקבל ממודל ה LDA הינו חזאי אשר מחלק את המרחב לשני חלקים על ידי משטח לינארי (במקרה זה קו ישר).
 
-בכדי למצוא את הפרמטרים האופטימאליים נשתמש ב mini-batch gradient descent אשר מופיע ב PyTorch בשם stochastic gradient descent (SGD). הדרך להשתמש באלגוריתם הוא בעזרת שלושת הפקודות הבאות:
+ביצועי חזאי זה על ה validation set (במובן של misclassification rate) הינם: 0.09. זאת אומרת שאנו צפויים לצדוק באבחון ב 91% מהמקרים.
 
-```python
-## Initizalie the optimizer
-optimizer = torch.optim.SGD(net.parameters(), lr=eta)
-```
+### QDA
 
-מאתחל את האלגוריתם עם הפרמטרים של הרשת ומגדיר את גודל הצעד
+נחשב את פרמטרים של המודל. הפרמטרים של $p_{\text{y}}(y)$ ו $\boldsymbol{\mu}_c$ לא ישתנו. נחשב לכן רק את מטריצות הקווריאנס:
 
-```python
-optimizer.zero_grad()
-```
+$$
+\Sigma_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)^T
+=\begin{bmatrix}
+3.3 & -0.13 \\
+-0.13 & 13.8
+\end{bmatrix}
+$$
 
-מאפס את כל הנגזרות ש PyTorch חישב עד כה (יש להריץ פקודה זו לפני כל קריאה ל "objective.backward()" שמחשבת את הגרדיאנטים)
+$$
+\Sigma_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_1\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_1\right)^T
+=\begin{bmatrix}
+10.2 & 2 \\
+2 & 13.2
+\end{bmatrix}
+$$
 
-```python
-## Preform the gradient descent step
-optimizer.step()
-```
+פרמטרים אלו יתנו את החיזוי הבא:
 
-אשר מבצע את צעד הגרדיאנט ומעדכן את הפרמטרים של הרשת.
+<div class="imgbox" style="max-width:600px">
 
-#### הכל ביחד
+![](./output/breast_cancer_qda.png)
 
-האלגוריתם כולו ראה כך:
+</div>
 
-```python
-def train(net, eta, n_epoch, train_loader):
-    
-    ## Set the objective
-    objective_func = torch.nn.CrossEntropyLoss()
-    
-    ## Initizalie the optimizer
-    optimizer = torch.optim.SGD(net.parameters(), lr=eta)
+החזאי המתקבל ממודל ה QDA מחלק את המרב על ידי משטח ריבועי. בשרטוט זה המשטח אומנם נראה כמעט ישר אך אם נגדיל טיפה את השרטוט נראה שהוא אכן ריבועי:
 
-    for epoch in tqdm.tqdm(range(n_epoch), leave=False):
-        for x, y in tqdm.tqdm(train_loader, leave=False):
-            optimizer.zero_grad()
-            ## Forward pass
-            py_hat = net(x)
-            objective = objective_func(py_hat, y)
-            ## Backward pass
-            objective.backward()
-            ## Preform the gradient descent step
-            optimizer.step()
-```
+<div class="imgbox" style="max-width:600px">
 
-#### בחירת גודל צעד הלימוד
+![](./output/breast_cancer_qda_zoom_out.png)
 
-בדומה לתהליך שעשינו בתרגול הקודם, נבחן ארבע גדלים של צעד הגרדיאנט $\eta$ ונסתכל על ה objective המתקבל על ה train ועל ה validation:
+</div>
+
+ביצועי חזאי זה על ה validation set הינם: 0.08. זהו שיפור של 1% מביצועיו של מודל ה LDA.
+
+### שימוש בכל 30 העמודות במדגם
+
+אם נחזור על החישוב של מודל ה QDA רק עם כל 30 העמודות שבמדגם נקבל miscalssification rate של 0.02.
+
+### Linear Logistic Regression
+
+ננסה כעת להתאים מודל של linear logistic regression מהצורה:
+
+$$
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})
+=\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}))
+$$
+
+בעיית האופטימיזציה של MLE תהיה:
+
+$$
+\boldsymbol{\theta}^*
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
+I\{y^{(i)}=1\}\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
++I\{y^{(i)}=0\}\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+$$
+
+נשתמש ב gradient descent על מנת למצוא את הפרמטרים של המודל. בכדי לבחור את גודל הצעד ננסה כמה ערכים שונים ונריץ את האלגוריתם מספר קטן של צעדים (1000) ונבחר את גודל הצעד הגדול ביותר אשר גורם למודל להתכנס. בדוגמא זו נציג את התוצאות בעבור 4 ערכים של גודל הצעד:
 
 <div class="imgbox" style="max-width:800px">
 
-![](./output/mnist_lenet_select_eta.png)
+![](./output/breast_cancer_logistic_select_eta.png)
 
 </div>
 
-שימו לב כי בגלל השימוש ב stochastic gradient descent הגרף של ה train מאד רועש. בנוסף בגלל שסטוכסטיות של התהילך אנו גם לא נצפה שה validation ירד בצורה מונוטונית ונתעיין במגמה הכללית שלו ונתעלם מעליות נקודתיות בגרף.
-
-מבין ארבעת הערכים שבדקנו נבחר את $\eta=0.3$ שבעברו הגרף מצליח להתכנס (הוא אומנם מעט יותר רועש מאשר $\eta=01$ ולכן לא ברור מי משניים עדיף. הכי טוב זה לבדוק את שניהם).
-
-#### האימון
-
-נריץ את האלגוריתם ה stochasctic gradient descent למשך 20 epochs (20 פעמים שעברנו על כל הדגימות במדגם).
+בגרפים האלה רואים את החישוב של ה objective על ה train set ועל ה validation set כפונקציה של מספר הצעדים. נשים לב שבעבור בחירה של $\eta=0.1$ או $\eta=1$ המודל מתבדר לערכים מאד גדולים וזה ימנע ממנו להתכנס למינימום של הפונקציית המטרה. נבחר אם כן את גודל הצעד להיות $\eta=0.01$ ונריץ את האלגוריתם מספר רב של צעדים (1000000):
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/mnist_lenet_train.png)
+![](./output/breast_cancer_logistic_train.png)
 
 </div>
 
-ניתן לראות שה validation יורד בהתחלה עד בערך הצעד ה6000 ואז מתחיל לאט לאט לעלות. הסיבה כי כנראה overfitting. לשם הפשטות לא השתמשנו כאן ב early stopping, בפועל היינו רוצים כנראה בזמן האימון לשמור בצד את הפרמטרים שנותנים את ה validation הנמוך ביותר ומשתמשים בהם בכדי לקבוע את הפרמטרים הסופיים של הרשת.
+נראה אם כן שגם אחרי מליון צעדים האלגוריתם עדיין לא התכנס. כפי שציינו זוהי אחת הבעיות העיקריות של אלגוריתם הגרדיאנט בצורתו הפשוטה. למזלנו, ישנן מספר שיטות פשוטות לשפר את האלגוריתם בכדי לפתור בעיה זו אך אנו לא נפרט עליהן בקורס זה.
 
-### הערכת ביצועים
+הביצועים של המודל עם הפרמטרים המתקבלים אחרי מיליון צעדים נותנים miscalssification rate של 0.02 שזה דומה לתוצאה שקיבלנו על ידי שימוש ב QDA.
 
-נריץ את המודל לאחר הלימוד על סט המבחן ונקבל שפונקצית המחיר הינה $0.011$
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/mnist_lenet_predictions.png)
-
-</div>
+ביצועי המודל על ה test set הינם: 0.04.
 
 </div>

@@ -8,566 +8,349 @@ print_pdf: true
 
 <div dir="rtl" class="site-style">
 
-# הרצאה 11 - Bagging and Boosting
+# הרצאה 11 - CNN
 
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/lecture11.pdf" class="link-button" target="_blank">PDF</a>
-<!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
-## מה נלמד היום
+## Stochastic and Mini-Batch Gradient Descent
 
-<div class="imgbox" style="max-width:900px">
-
-![](./assets/course_diagram.png)
-
-</div>
-
-## Ensembles Methods
-
-בהרצאה הזו נציג שתי שיטות אשר בעזרתן ניתן לשפר את הביצועים של אלגוריתמים קיימים על ידי שימוש בסט של חזאים. סט זה מכוונה לרוב ensemble (מכלול).
-
-### תזכורת Bias and Variance
-
-על מנת להבין מה שיטות אלו מנסות לעשות נזכיר שוב את המושגים של bias ו variance של חזאים. שני מושגים אלו כזכור מתייחסים לפילוג של שגיאת החיזוי **על פני מדגמים שונים**. נזכור כי כל מדגם $\mathcal{D}$ נבנה על ידי הגרלה של $N$ דגימות בלתי תלויות מתוך פילוג כל שהוא ולכן נוכל להתייחס למדגם עצמו כאל משתנה אקראי.
-
-נניח שאנו משתמשים באלגוריתם אשר בהינתן מדגם $\mathcal{D}$ מייצר חזאי $h_{\mathcal{D}}(\boldsymbol{x})$.
-
-הגדרנו בעבר את החיזוי הממוצע (על פני מדגמים) באופן הבא:
+צעד העדכון ב gradient descent נתון על ידי:
 
 $$
-\bar{h}(\boldsymbol{x})=\mathbb{E}_{\mathcal{D}}\left[h(\boldsymbol{x})\right]
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})
 $$
 
-ואת החזיזוי האופטימאלי ב $h^*(\boldsymbol{x})$. ה bias של החיזוי הוא ההפרש בין החיזוי הממוצע לחיזוי האופטמאלי. ה variance של החיזוי הוא ה variance של החיזוי כפונקציה של המדגם:
+כאשר $g(\boldsymbol{\theta})$ היא פונקציית ה objective שאותה אנו מעוניינים למזער. בהקשר של מערכות לומדות פונקציה זו תכיל לרוב סכום או ממוצע על כל הדגימות במדגם. בקרוס זה נתקלנו בשתי בעיות האופטימיזציה הבאות למציאת פרמטרים של מודל:
 
-$$
-\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\boldsymbol{x})-\bar{h}(\boldsymbol{x}))^2\right]
-$$
+1. ב ERM אנו רוצים למזער את התוחלת האמפירית של ה risk בעבור חזאי פרמטרי כל שהוא $\hat{y}=h(\boldsymbol{x^{(i)}};\boldsymbol{\theta})$
 
-<div class="imgbox" style="max-width:800px">
+    $$
+    \underset{\boldsymbol{\theta}}{\arg\min} \underbrace{\frac{1}{N}\sum_{i=1}^N l(h(\boldsymbol{x^{(i)}};\boldsymbol{\theta}),y^{(i)})}_{g(\boldsymbol{\theta};\mathcal{D})}
+    $$
 
-![](../lecture11/assets/models_bias_variance.png)
+2. MLE, כאשר אנו ממזערים את ה מינוס log-likelihood בעבור פונקציית פונקציית פילוג כל שהיא $p_{\text{y};\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})$ (לקחנו כאן את המקרה של מקבל בגישה הדיסקרינימניטבית הסתברותית):
 
-</div>
+    $$
+    \underset{\boldsymbol{\theta}}{\arg\min} \underbrace{-\sum_{i=1}^N \log(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})}_{g(\boldsymbol{\theta};\mathcal{D})}
+    $$
 
-ראינו כי:
+במקרים אלו גם הגרדיאנט יכיל סכום על כל המדגם. כאשר המדגם מאד גדול הסכימה יכולה להיות מאד בעייתית וארוכה לחישוב במקרים כאלה נרצה להשתמש בחישוב אלטרנטיבי אשר משתמש בכל צעד רק בחלק מן המדגם ולא בכולו.
 
-- מודלים בעלי יכולת ייצוג נמוכה יסבלו לרוב מ underfitting אשר יתבטא ב bias גבוה ו variance נמוך (מדגמים שונים יניבו בערך את אותו המודל, אך המודל הזה יהיה רחוק מהחיזוי האופטימאלי בגלל יכולת הייצוג המוגבלת).
-- מודלים בעלי יכולת ייצוג גבוהה יסבלו לרוב מ overfitting אשר יתבטא ב variance מאד גבוה ו bias נמוך (מדגמים שונים יניבו מודלים מאד שונים, אך החיזוי הממוצע על פני מודלים אלו יהיה לרוב קרוב לחיזוי האופטימאלי).
+### Stochastic Gradient Descent
 
-כעת נוכל להסביר מה bagging ו boosting מנסים לעשות:
+Stochastic Gradient Descent מחשב בכל פעם את הנגזרת על פי **דגימה בודדת** מתוך המדגם, בלי סכימה בכלל, כאשר בכל צעד נשתמש בדגימה אחרת. שתי אופציות לבחירה של הדגימה בכל צעד הינן:
 
-- ב bagging ננסה לקחת מכלול של חזאים עם variance גבוהה ולשלב בניהם בכדי ליצור חזאי עם variance נמוך יותר.
-- ב boosting ננסה לקחת מכלול של חזאים עם bias גבוהה ולשלב בניהם בכדי ליצור חזאי עם bias נמוך יותר.
+1. בכל צעד להגריל דגימה אקראית אחרת
+2. לעבור על הדגימות במדגם צורה סידרתית (במקרה זה חשוב לרוב לערבב את הסדר של דגימות)
 
-## Bagging
+ההיגון מאחורי שיטה זו הינה שאומנם הנגזרת לפי כל אחת מהדגימות תצביע לכיוון שונה מהנגזרת של הסכום אבל בממוצע על פני כל הדגימות הכיוון הכללי יהיה זהה לכיוון של הנגזרת של הסכום.
 
-כפי שציינו, ב Bagging נהיה מעוניינים לייצר מכלול (ensamble) של חזאים בעלי bias נמוך אך variance גבוה ואז לשלב בניהם על מנת להקטין את ה variance. אחת הבחירות הנפוצות לחזאים שכאלה ב bagging היא עצי החלטה עמוקים (ללא pruning).
+היתרונות של שיטה זו הינה שהחישוב הוא מאד מהיר שכן במקום סכום על כל המדגם אנו צריכים לחשב את הנגזרת רק בעבור דגימה בודדת, אך החיסרום של שיטה זו הינה שהכיוון של הגרדיאנט יהיה מאד "רועש" ואנו נצטרך לעשות צעדים מאד קטנים שהאלגוריתם באמת יתקדם בכיוון הנכון.
 
-השם Bagging הוא הלחם של המילים **bootstrapping** ו **aggregation**, שהם שני שלבי השיטה שאותה נתאר כעת.
+### Mini-Batch Gradient Descent
 
-### גישה נאיבית
+Mini-batch gradient descent הוא פתרון ביניים בין stochastic gradient descent וה gradient descent הרגיל. בשיטה זו נשתמש בקבוצת דגימות מתוך המדגם המוכנה mini-batch על מנת לחשב את הנגזרת. בכל צעד אנו נחליף את ה mini-batch. גירסא זו של האלגוריתם היא הנפוצה ביותר לאימון של רשתות נוירונים כאשר גדלים אופיינים של ה mini-batch הינם 32-256 דגימות.
 
-אנו יודעים מהסתברות שבמקרים בהם יש באפשרותינו לחזור על מדידה אקראית מסויימת מספר פעמים, באופן בלתי תלוי, נוכל להקטין את ה variance של המדידה על ידי לקיחת הממוצע של מספר מדידות.
+### שמות
 
-תיאורטית אם היינו יכולים לייצר כמה מדגמים בלתי תלויים, היינו יכולים לבנות חזאי בעבור כל אחד מהמדגמים ולמצע על החזאים האלה על מנת להקטין את ה variance של השגיאת החיזוי. בפועל לרוב יהיה בידינו רק מדגם יחיד שאיתו נצטרך לעבוד.
+- **Epoch**: כאשר אנו עוברים על המדגם באופן סידרתי עם stochastic gradient descent או עם mini-batch gradient descent אנו נגיד שהשלמנו epoch בכל פעם שנסיים מעבר מלא על כל המדגם והתחנו מהתחלה.
+- למרות שברוב הספרי הלימוד רבים מתייחסים ל batch כאלה המדגם כולו, בפועל ביום יום משתמשים בשם batch כדי להתייחס ל mini-batch.
+- החבילות של machine learning בהם ממומש אלגוריתם המימוש של gradient descent מופיע תחת השם stochastic gradient descent למרות שבפעול ניתן להשתמש בו לכל אחד מהמימושים שציינו (stochastic, mini-batch ורגיל).
 
-ניתן אומנם לייצר מספר מדגמים שונים על ידי חלוקת המדגם הקיים למספר מדגמים קטנים יותר. הבעיה עם שיטה זו הינה שבמרבית המקרים העובדה שהמדגמים התמקבלים הם משמעותית קטנים מהמדגם המקורי **תגדיל** מאד את variance של החזאים שניצור ובפועל נקבל חזאי ממוצע בעל vairance גדול יותר.
+## עצירה מוקדמת של gradient descent
 
-### Bootstrapping
+מסתבר שדרך מוצלחת נוספת למנוע overfitting הינה לעצור את אלגוריתם הגרדיאנט לפני שהוא מתכנס. הדרך לעשות זאת הינה לבדוק את הערך של ה objective על ה validation set לאורך כל תהליך ההתכנסות של אלגוריתם ה gradient descent ולשמור תמיד בצד את הפרמטרים אשר נותנים את ה objective הנמוך ביותר על ה validation set.
 
-Bootstraping הינה אופציה חלופית לייצר מספר מדגמים מתוך מדגם הנתון אשר שומרת על גודל המדגם, אך מתפשרת על דרישת החוסר תלות בין המדגמים ובין הדגימות במדגם.
-
-בשיטה זו אנו נייצר מדגמים חדשים על ידי דגימה מחדש של המדגם הנתון. זאת אומרת שבשביל לייצר מתוך מדגם נתון $\mathcal{D}$ בגודל $N$ מדגם חדש $\tilde{\mathcal{D}}$ בגודל $\tilde{N}$ אנו נגריל $\tilde{N}$ פעמים ערכים מתוך $\mathcal{D}$. הדגימה מתוך $\mathcal{D}$ הינה **עם חזרות**, זאת אומרת שניתן להגריל כל דגימה מתוך $\mathcal{D}$ מספר פעמים.
+גרף אופייני של ה objective במהלך הריצה של אלגוריתם ה gradient descent יראה כך:
 
 <div class="imgbox" style="max-width:600px">
 
-![](../lecture11/assets/bootstrapping.png)
+![](./assets/early_stopping.png)
 
 </div>
 
-ניתן להראות שהסיכוי של דגימה כל שהיא מ $\mathcal{D}$ להופיע ב $\tilde{\mathcal{D}}$ הינה $1-(1-\frac{1}{N})^{\tilde{N}}$. כאשר $\tilde{N}=N$ ו $N\rightarrow\infty$, סיכוי זה הולך ל $1-e^{-1}\approx63\%$. זאת אומרת שכאשר נייצר מדגם על ידי bootstrapping מתוך מדגם גדול, המדגם החדש יכיל בערך 63% מהדגימות המקוריות עם כפילויות.
+## Convolutional Neural Networks (CNN)
 
-### Aggregation: בניית החזאים ושילובם לחזאי יחיד
+בהרצאה הקודם הצגנו את ארכיטקטורת ה MLP. כפי שראינו ניתן להגדיל את היכולת הייצוג של הארכיטקטורה על ידי הגדלת הרשת (מספר השכבות והרוחב שלהם). הבעיה היא, שכפי שקורה בכל מודל פרמטרי, הגדלה של יכולת הייצוג תגדיל גם את ה overfitting שהמודל יעשה. באופן כללי רשת בעלת ארכיטקטורה טובה היא לאו דווקא רשת בעלת יכולת ייצוג גבוהה אלא דווקא רשת בעלת יכולת ייצוג נמוכה אשר עדיין מוסגלת לקרב בצורה טובה את הפונקציה שאותה היא מנסה למדל (למשל את החזאי האופטימאלי ב ERM או את הפילוג המותנה בגישה הדיסקרימינטיבת הסתברותית).
 
-ב Bagging אנו נעשה שימוש ב bootstrapping על מנת לייצר $M$ מדגמים חדשים $\{\tilde{\mathcal{D}}_m\}_{m=1}^M$ בגדול זהה למדגם המקורי, $\tilde{N}=N$. מספר המדגמים $M$ בהם נהוג להשתמש נע בין עשרות מדגמים לאלפים. בעבור כל אחד מהמדגים $\tilde{\mathcal{D}}_m$ נבנה חזאי $\tilde{h}_m$. לרוב נשתמש באותה השיטה על מנת לבנות את כל החזאים.
+מסתבר שישנם בעיות רבות שבהם ארכיטקטורה אשר נקראת convolutional nerual network (CNN) עונה בדיוק על דרישות אלו. ארכיטקטורה זו מבוססת על שכבות הנקראות שכבות קונבולוציה. נסביר ראשית כיצד שכבות אלו פועלות ואחר כך נסביר לאילו מקרים הם טובות.
 
-לאחר הבניה של $M$ החזאים אנו נקבץ את כולם על מנת לקבל את החזאי הכולל בו נשתמש לחיזוי.
+### שכבת קונבולוציה
 
-- **בעבור בעיות רגרסיה**: אנו נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{M}\sum_{m=1}^M \tilde{h}_m(\boldsymbol{x})$
-- **בעבור בעיות סיווג**: נבצע majority voting, זאת אומרת: $h(\boldsymbol{x})=\text{majority}(\{\tilde{h}_1(\boldsymbol{x}),\tilde{h}_2(\boldsymbol{x}),\dots,\tilde{h}_M(\boldsymbol{x})\})$
+שכבה קונבולוציה דומה לשכבת fully connected (FC) אך היא נבדלת ממנה בשני מובנים:
 
-<div class="imgbox" style="max-width:700px">
+1. כל נוירון בשכבה זו מוזן רק מכמות מוגבלת של ערכים הנמצאים בסביבתו הקרובה (בשרטוט המוצג כל נוירון מוזן מ3 ערכים: זה שנמצא מולו, אחד לפני ואחד אחרי).
+2. כל הנוירונים בשכבה מסויימת זהים, זאת אומרת שהם משתמשים באותם המשקלים (תכונה המכונה **weight sharing**).
 
-![](../lecture11/assets/bagging.png)
+<div class="imgbox" style="max-width:400px">
+
+![](../lecture11/assets/conv.png)
 
 </div>
 
-### הערכת ביצועיים - Out Of Bag Error Estimation (לקריאה עצמית - לא למבחן)
+שכבת קונבולוציה היא מקרה פרטי של שיכבת FC שבה כל הקשרים שלא מופיעים בשכבת הקונבולוציה הם 0 ושהמשקולות שלא התאפסו בכל נוירון הם בעות ערכים זהים בין כל הנורונים.
 
-אחד היתרונות של bagging הינו העובדה שניתן להעריך את ביצועי המודל ללא צורך ב test / validation set. הרעיון הינו להשתמש בעובדה שכל אחד מהמדגמים החדשים מכיל רק חלק מהדגימות וניתן להשתמש בשאר הדגימות בכדי להעריך את הביצועים שלהם.
+למעשה ניתן לחשוב על הפעולה שאותה מבצע הנוירון כאילו הוא נע לאורך הערכים שבכניסה לשיכבה ומפעיל את הפונקציה שלו כל פעם על סט ערכים אחר:
 
-בעבור כל אחד מהמדגמים $\tilde{\mathcal{D}}_M$ נזהה את הדגימות שלא נכללו במדגם זה. דגימות אלו מוכנות **out-of-bag samples**. כפי שציינו קודם, בעבור $N$ גדול, בערך 37% מהדגימות יהיו out-of-bag samples. בכדי להעריך את ביצועי המודל נעבור על כל הדגימות במדגם ונעריך את השגיאה על דגימה זו תוך שימוש רק בחזאים שבעבורם דגימה זו הינה out-of-bag samples, זאת אומרת, כל החזאים שלא ראו את הדגימה הזו בשלב האימון. ככל שמספר החזאים יהיה גדול יותר כך שיערוך זה של השגיאה יהיה טוב יותר.
+<div class="imgbox" style="max-width:400px">
 
-### Random Forest (לקריאה עצמית - לא למבחן)
+![](../lecture11/assets/conv.gif)
 
-שיטה מאד נפוצה ויעילה לפתרון בעיות ב supervised learning נקראת random forest. שיטה זו היא למעשה שימוש בעצי החלטה בשילוב עם bagging בתוספת של שינוי אחד קטן. ב random forest בכדי להגדיל את האקראיות ואת השוני בין העצים (מלבד העובדה שהם פועלים על מדגמים שונים) אנו נכניס אקראיות נוספת לתהליך הבניה של העץ.
+</div>
 
-אנו נעשה זאת על ידי בחירה מראש של קבוע כל שהוא $b$ אשר קטן מהמימד (מספר השדות / איברים) של $\boldsymbol{x}$. בכל בחירה של node אנו נגריל באקראי $b$ שדות מתוך כלל השדות של $\boldsymbol{x}$ ונגביל את הבחירה של כלל ההחלטה רק לשדות אלו. הגבלה זו אמורה להכניס הרבה מאד אקראיות לתהליך הבניה של העץ. שאר האלגוריתם של בניית העצים וה bagging לא משתנים.
+(לשם הפשטות כאן סימנו את הכניסה לשכבה ב $\boldsymbol{x}$ ואת המוצא ב $\boldsymbol{y}$ והשמטנו את האינדקס של השכיבה $i$.)
 
-## AdaBoost
+מתמטית השיכבה מבצעת את שלושת הפעולות הבאות:
 
-בניגוד ל bagging, ב boosting ננסה להשתמש במכלול של חזאים בעלי **bias גבוהה** אך **variance נמוך** בכדי ליצור חזאי כולל בעל bias נמוך מבלי להגדיל באופן משמעותי את ה variance. שיטות אלו מתמקדות בבעיות סיווג בינארי, ובדומה לדיון על SVM, גם כאן אנו נניח כי התווית בבעיה הם $\text{y}=\pm1$.
+1. פעולת קרוס-קורלציה (ולא קונבולוציה) בין וקטור הכניסה $\boldsymbol{x}$ ווקטור משקולות $\boldsymbol{w}$ באורך $K$.
+2. הוספת היסט $b$ (אופציונלי).
+3. הפעלה של פונקציית הפעלה על וקטור המוצא איבר איבר.
 
-בקורס זה נציג את אחת משיטות ה boosting הפופולריות ביותר אשר נקראת AdaBoost (adaptive-boosting). בהינתן אוסף של חזאים $\tilde{h}(\boldsymbol{x})$ בעלי bias גובה, שיטה זו מנסה לבנות חזאי מהצורה של:
+פעולת הקרוס-קורלציה מוגדרת באופן הבא:
 
 $$
-h(\boldsymbol{x})=\text{sign}\left(\sum_{m=1}^M\alpha_m \tilde{h}_m(\boldsymbol{x})\right)
+y_i=\sum_{m=1}^K x_{i+m-1}w_m
 $$
 
-כך ש $h(\boldsymbol{x})$ יהיה בעל bias נמוך. בפועל זאת אומרת שאנו מעוניינים לקחת מכלול של מסווגים שעושים underfitting ולשלבם בכדי לקבל מסווג אשר שמתאים בצורה טובה יותר לבעיה. בחירה פופולרית של מסווגים כאלה הינה עצי החלטה בעומק 1 המוכנים **stumps** (עצים עם פיצול יחיד).
+וקטור המשקולות של שכבת הקונבולציה $\boldsymbol{w}$ נקרא **גרעין הקונבולוציה (convolution kernel)**.
 
-החידוש ש AdaBoost הכניס לעומת שיטת ה boosting שהייתה קיימת לפניו, הינה העובדה ש $\alpha_m$ תלוי ב $m$, זאת אומרת לכל $\tilde{h}$ יש את המקדם שלו. מכאן מגיע ה adaptive בשם של האלגוריתם.
+(שימו לב שבניגוד לשמה, שכבת הקונבולוציה מבצעת קורלציה ולא קונבולוציה. ההבדלים בין השתי הפעולות במקרה זה רק עניין של הדרך בה ממספרים את האיברים בוקטור $\boldsymbol{w}$, בקונבולוציה יש להפוך קודם את סדר האיברים בוקטור ורק אז לחשב את הקורלציה).
 
-### בעיית ה boosting המקורית (לקריאה עצמאית - לא למבחן)
+גודל המוצא של שכבת הקונבולוציה הוא קטן יותר מהכניסה והוא נתון על ידי $D_{\text{out}}=D_{\text{in}}-K+1$.
 
-במקור boosting פותח כמענה לשאלה תיאורתית שהתייחסה ליכולת לבנות מסווג "טוב" בהינתן אוסף של מסווגים "גרועים". על מנת לרשום זאת באופן יותר פורמלי נגדיר את המושגים של לומד חזק ולומד (weak / strong learner). בעבור בעיית סיווג בינארית:
+משום ששכבת הקונבולוציה היא מקרה פרטי מאד מצומצם של שכבת FC יכולת הייצוג שלה קטנה בהרבה. מקובל להסתכל על כמות הפרמטרים של מודל מסויים בתור הערכה גסה ליכולת הייצוג שלו. נשווה בין כמות הפרמטרים בשכבת FC ובשכבת קונבולוציה. נסתכל על שכבת קונבולוציה עם גרעין באורך $K=3$ הפועל על כניסה באורך 10. המוצא של שכבה זו יהיה באורך 8, בשיכבה יהיו ארבעה פרמטרים, שלושת המשקולות שבגרעין ועוד איבר היסט יחיד. לעומת זאת בשכבת FC המחברת כניסה באורך 10 עם מוצא באורך 8 יהיו $8\times10=80$ משקולות אשר קובעות את הקומבינציה הלינארית בכל נוירון ועוד 8 איברי היסט בעבור כל אחד מהנוירונים. ניתן לראות אם כן שבשכבת הקונבולוציה יש משמעותית הרבה פחות פרמטרים.
 
-- אנו נאמר שאלגוריתם מסויים הוא **לומד חזק** אם לכל $\epsilon,\delta>0$ האלגוריתם מסוגל, בהינתן מדגם גדול מספיק, ללמוד פונקציית חיזוי שמקיימת $\text{Pr}\left(h(\mathbf{x})\neq \text{y}\right)<\epsilon$, בהסתברות גדולה מ $1-\delta$.
-- אנו נאמר שאלגוריתם מסויים הוא **לומד חלש** אם לכל $\delta>0$ קיים $\gamma>0$ כך שהאלגוריתם מסוגל, בהינתן מדגם גדול מספיק, ללמוד פונקציית חיזוי שמקיימת $\text{Pr}\left(h(\mathbf{x})\neq \text{y}\right)<\tfrac{1}{2}-\gamma$, בהסתברות גדולה מ $1-\delta$.
+באופן כללי, בשכבת FC קיימות $D_{\text{in}}\times D_{\text{out}}$ משקולות ועוד $D_{\text{out}}$ איברי היסט. לעמות זאת, בשכבת קונבולציה יש $K$ משקולות ואיבר היסט בודד.
 
-במילים פשוטות יותר, לומד חזק הינו אלגוריתם אשר בעבור מדגם מספיק גדול ייצר חזאי מדוייק כרצונינו ולומד חלש הינו אלגוריתם אשר מסוגל לייצר חזאי שהוא קצת יותר טוב מניחוש אקראי (הטלת מטבע).
+### קלט רב-ערוצי
 
-בעזרת boosting הצליחו להוכיח את הטענה שניתן להפוך כל לומד חלש ללומד חזק על ידי בניית קומבינציה לינארית של מסווגים אשר נוצרו בעזרת הלומד החלש.
+במקרים רבים נרצה ששכבת הקונבולציה תקבל קלט רב ממדי, לדוגמא, תמונה בעלת שלושה ערוצי צבע או קלט שמע ממספר ערוצי הקלטה. מבנה זה מאפשר לאזור מרחבי בקלט להכיל אינפורמציה ממספר ערוצי כניסה.
 
-### החסם על ה misclassification rate
+במקרים אלו הניורון $h$ יהיה פונקציה של כל ערוצי הקלט:
 
-לפני שנציג את הבעיית האופטימיזציה שאותה AdaBoost מנסה לפתור, נראה תחילה שבעבור חזאי מהצורה של
+<div class="imgbox" style="max-width:400px">
 
-$$
-h(\boldsymbol{x})=\text{sign}\left(\sum_{m=1}^M\alpha_m \tilde{h}_m(\boldsymbol{x})\right)
-$$
-
-ותוויות של $\text{y}=\pm1$, ה misclassification rate חסום מלמעלה על ידי:
-
-$$
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-$$
-
-נתחיל בעובדה שבעבור $y=\pm1$ וערך כל שהוא $z$ מתקיים ש:
-
-$$
-I\{\text{sign}(z)\neq y\}=
-I\{y\cdot\text{sign}(z)\neq 1\}=
-I\{\text{sign}(yz)\neq 1\} \leq
-\exp(-yz)
-$$
-
-את השוויון האחרון ניתן להראות על ידי הפרדה לשני מקרים על פי הסימן של $yz$. כאשר נציב את המבנה של $h(\boldsymbol{x})$ לתוך הנוסחא של ה misclassification rate ונשתמש באי השיוון הנ"ל על כל איבר בסכום נקבל כי:
-
-$$
-\begin{aligned}
-\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
-&=\frac{1}{N}\sum_i I\left\lbrace\text{sign}\left(\sum_{m=1}^M\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)\neq y^{(i)}\right\rbrace\\
-&\leq\frac{1}{N}\sum_{i=1}^N\exp\left(-y^{(i)}\sum_{m=1}^M\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)\\
-&=\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-\end{aligned}
-$$
-
-כעת נציג את בעיית האופטימיזציה אותה מנסה AdaBoost לפתור.
-
-### בעיית האופטימיזציה של AdaBoost
-
-על פי החסם שהצגנו לעיל נוכל להניח כי מזעור של בעיית האופטימיזציה הבאה:
-
-$$
-\underset{\{\alpha_m,\tilde{h}_m\}_{m=1}^M}{\arg\min}\quad
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-$$
-
-תגרום כנראה להקטנת ה misclassification rate ובכך להקטנת ה bias. יתרה מזאת, אנו נראה בהמשך כי תחת תנאים מסויימים מתקיים שכאשר $M\rightarrow\infty$ החסם ילך ל-0 וכך גם ה misclassification rate.
-
-הדרך שבה AdaBoost מנסה לפתור את בעיית האופטימיזציה הינה בצורה חמדנית. בשיטה זו אנו נגדיל את $M$ בהדרגה כאשר בכל פעם נחפש את ה $\alpha_m$ וה $\tilde{h}_m$ האופטימאלים. נראה כעת כיצד כיצד ניתן למצוא את $\alpha_m$ ו $\tilde{h}_m$ האופטימאליים בכל שלב.
+![](../lecture11/assets/conv_multi_input.gif)
 
-נסתכל על המצב בו כבר מצאנו את כל ה $\alpha_m$ וה $\tilde{h}_m$ עד ל $M-1$, וכעת אנו רוצים למצוא את $\alpha_M$ ו $\tilde{h}_M$. אנו רוצים אם כן לפתור את בעיית האופטימיזציה הבאה:
+</div>
 
-$$
-\alpha_M,\tilde{h}_M=\underset{\alpha,\tilde{h}}{\arg\min}\quad
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^{M-1}\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})-\alpha y^{(i)}\tilde{h}(\boldsymbol{x}^{(i)})\right)
-$$
-
-בבעיית האופטימיזציה הזו $\alpha_M$ יכול לקבל כל ערך בעוד שאת $\tilde{h}_M$ עלינו לבחור מתוך מאגר מסווגים נתון. הדרך לפתור את בעיית האופטימיזציה הזו היא על ידי השלבים הבאים:
-
-1. רישום מחדש של בעיית האופטימיזציה בצורה יותר פשוטה.
-2. מציאת $\alpha_M$ כפונקציה של $\tilde{h}_M$ על ידי גזירה והשוואה ל-0.
-3. הצבה של $\alpha_M$ בחזרה לבעיית האופטימיזציה על מנת לקבל ביטוי פשוט שאותו יש למזער כתלות ב $\tilde{h}_M$.
-
-נציג כאן ישר את הפתרון של בעיה זו, כאשר הפיתוח המלא של הפתרון מופיע בסוף ההרצאה. בכדי לרשום את הפתרון בצורה פשוטה נגדיר את הגדלים הבאים ונסביר מה הם מייצגים:
+### פלט רב-ערוצי
 
-$$
-\begin{aligned}
-\tilde{w}_i^{(M-1)}&=\exp\left(-\sum_{m=1}^{M-1}\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})\right)\\
-w_i^{(M-1)}&=\frac{\tilde{w}_i^{(M-1)}}{\sum_{j=1}^N\tilde{w}_j^{(M-1)}}\\
-\varepsilon(\tilde{h},\{w_i\})&=\sum_{i=1}^N w_iI\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
-\end{aligned}
-$$
-
-נתחיל מהאיבר $w_i^{(M-1)}$ שהוא למעשה גרסא "מנורמלת" של $\tilde{w}_i^{(M-1)}$ כך שסכימה על כל איבריו לפי $i$ תיתן 1. ניתן למעשה להסתכל על איבר זה כעל איבר מישקול אשר נותן מישקל שונה לכל דגימה במדגם כך שסכום כל המשקלים יהיה 1. נמשיך לפונקציה $\varepsilon$ שהיא למעשה דומה מאד לביטוי של misclassification rate של $\tilde{h}$ עד כדי המשקלים $w_i$ אשר נותנים חשיבות יתרה לחלק מהדגימות במדגם על פני דגימות אחרות. פונקציה זו היא למעשה **misclassification rate ממושקל**.
+בנוסף, נרצה לרוב להשתמש ביותר מגרעין קונבולוציה אחד, במקרים אלו נייצר מספר ערוצים ביציאה בעבור כל אחד מגרעיני הקונבולוציה.
 
-$\tilde{h}_M$ ו $\alpha_M$ האופטימאליים בכל שלב יהיו נתונים על ידי:
-
-$$
-\tilde{h}_M
-=\underset{\tilde{h}}{\arg\min}\ \varepsilon(\tilde{h},\{w_i^{(M-1)}\})
-=\underset{\tilde{h}}{\arg\min}\ \sum_{i=1}^N w_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
-$$
+<div class="imgbox" style="max-width:400px">
 
-ו
+![](../lecture11/assets/conv_multi_chan.gif)
 
-$$
-\alpha_M=\frac{1}{2}\ln\left(\frac{1-\varepsilon_M}{\varepsilon_M}\right)
-$$
+</div>
 
-כאשר סימנו:
+בשכבות אלו אין שיתוף של משקולות בין ערוצי הפלט השונים, כלומר כל גרעין קונבולציה הוא בעל סט משקולות יחודי הפועל על כל הערוצי הכניסה על מנת להוציא פלט יחיד.
+מספר הפרמטרים בשכבת כזאת היינו:  $\underbrace{C_\text{in}\times C_\text{out}\times K}_\text{the weights}+\underbrace{C_\text{out}}_\text{the bias}$.
 
-$$
-\varepsilon_M=\varepsilon(\tilde{h}_M,\{w_i^{(M-1)}\})
-$$
+כאשר:
 
-אם כן, בכל שלב עלינו לבצע את פעולות הבאות:
+- $C_\text{in}$ - מספר ערוצי קלט.
+- $C_\text{out}$ - מספר ערוצי פלט.
+- $K$ - גודל הגרעין.
 
-1. חישוב המשקלים $\{w_i^{(M-1)}\}$.
-2. מציאת החזאי $\tilde{h}$ אשר ממזער את ה misclassification rate הממושקל.
-3. חישוב המקדם $\alpha_M$.
+### הרחבות נוספות שלשכבות הקונבולוציה
 
-בפועל ניתן לחשב את המשקלים של ה צעד ה $M$ כבר בסוף הצעד ה $M-1$. בנוסף ניתן להשתמש בעובדה ש:
+לרוב מרחיבים מעט את ההגדרה של שכבת הקונבולוציה הבסיסית שהצגנו על ידי הוספת התכונות הבאות:
 
-$$
-\tilde{w}_i^{(M)}=\tilde{w}_i^{(M-1)}\exp\left(-\alpha_M y^{(i)}\tilde{h}_M(\boldsymbol{x}^{(i)})\right)
-$$
+#### Padding - ריפוד
 
-בכדי להמנע מלחשב את הסכום על $m$ ולקצר את החישוב.
+במידה ונרצה לשמור על הגודל הוקטור במוצא של שכבת הקונבולוציה, ניתן לרפד את וקטור הכניסה באפסים. לדוגמא:
 
-### האלגוריתם של AdaBoost
+<div class="imgbox" style="max-width:400px">
 
-נסכם את שלבי האלגוריתם.
+![](../lecture11/assets/padding.gif)
 
-נתחיל מ $M=0$ ונאתחל את המשקולות ל $w_i^{(0)}=\frac{1}{N}$. בכל צעד נגדיל את $M$ על ידי ביצוע הפעולות הבאות:
+</div>
 
-1. נבחר את המסווג אשר ממזער את ה misclassification rate הממושקל:
+#### Stride - גודל צעד
 
-    $$
-    \tilde{h}_M=\underset{\tilde{h}}{\arg\min}\ \sum_{i=1}^N w_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
-    $$
+לעיתים נרצה דווקא להקטין את גודל הוקטור במוצא בפקטור מסויים. דרך אחת לעשות זאת היא על ידי דילול המוצא. בפועל אין צורך לחשב את הערכים במוצא שנזרקים ולכן למעשה ניתן לחשב את הקונבולוציה בקפיצות מסויימות המכונות stride.
+אלא אם רשום אחרת, ה stride של שכבה הוא 1.
 
-2. נחשב את המקדם $\alpha_{t+1}$ של המסווג:
+<div class="imgbox" style="max-width:400px">
 
-    $$
-    \begin{aligned}
-    \varepsilon_M&=\sum_{i=1}^N w_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}_{M}(\boldsymbol{x}^{(i)})\}\\
-    \alpha_M&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_M}{\varepsilon_M}\right)
-    \end{aligned}
-    $$
+![](../lecture11/assets/stride.gif)
 
-3. נעדכן את וקטור המשקלים:
+</div>
 
-    $$
-    \begin{aligned}
-    \tilde{w}_i^{(M)}&=w_i^{(M-1)}\exp\left(-\alpha_M y^{(i)}\tilde{h}_M(\boldsymbol{x}^{(i)})\right)\\
-    w_i^{(M)}&=\frac{\tilde{w}_i^{(M)}}{\sum_{j=1}^N \tilde{w}_j^{(M)}}
-    \end{aligned}
-    $$
+#### Dilation - התרחבות
 
-### המשמעות של המשקלים
+במקרים אחרים נרצה לגדיל את האיזור שממנו אוסף נוירון מסויים את הקלט שלו מבלי להגדיל את מספר הפרמטרים ואת הסיבוכיות החישובית. לשם כך ניתן לדלל את הדרך בה נדגם הקלט על מנת להרחיב את איזור הקלט. אלא אם רשום אחרת, ה dilation של שכבה (הצפיפות בה הכניסה נדגמת) הוא 1.
 
-נסתכל על המשקל ללא הנרמול של הדגימה ה $i$. משקל זה שווה ל $\tilde{w}_i^{(M)}=\exp\left(-y^{(i)}\sum_{m=1}^{M}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)$. משקל זה מציין למעשה עד כמה טוב האלגוריתם מסווג את הדגימה ה $i$. כאשר הסיווג הוא נכון ו $\sum_{m=1}^{M}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})$ באותו סימן של $y^{(i)}$ משקל זה יהיה קטן מ 1 ($e$ עם חזקה שלילית) וכאשר הסיווג הוא שגוי המשקל יהיה גדול מ 1. הגודל בערך מוחלט של $\sum_{m=1}^{M}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})$ קובע עד כמה המשקל יהיה גדול או קטן מ 1. גודל זה במובן מסויים מציין את הודאות של המסווג בחיזוי.
+<div class="imgbox" style="max-width:400px">
 
-מכאן שתפקיד המשקלים הוא לדאוג שהאלגוריתם יבחר בכל צעד את החזאי אשר ישפר את הסיווג בעיקר על הדגימות שעליהם החזאי הנוכחי טועה.
+![](../lecture11/assets/dilation.gif)
 
-### תנאי עצירה
+</div>
 
-באופן כללי בחלק גדול מהמקרים AdaBoost ילך ויקטין את שגיאת החיזוי על ה train set ככל שנגדיל את $M$ עד שהוא יגיע לסיווג מושלם. אך תכונה מפתיעה של AdaBoost (ואלגוריתמי boosting באופן כללי) הינה שהם ממשיכים לשפר את יכולת ההכללה שלהם אם ממשיכים להריץ את האלגוריתם גם אחרי שהוא הגיע לסיווג מושלם. בנוסף אלגוריתמים אלו לרוב יגדילו את כמות ה overfitting שהחזאי עושה בקצב מאד איטי. זאת אומרת שלרוב נרצה להריץ את האלגוריתם מספר רב של צעדים ולבדוק במהלך הריצה את הביצועים שלו על validation set. נעצור את האלגוריתם כאשר האלגוריתם יפסיק להשתפר או כאשר יגיע למספר צעים מקסימאלי שנקבע מראש.
+### Max / Average Pooling
 
-### קצב ההתכנסות של החסם
+שיכבות נוספת אשר מופיעה במקרים רבים ברשתות CNN הם שכבות מסוג pooling. שכבות אלו מחליפות את פעולת הקונבולוציה בפונקציה קבועה אשר מייצרת סקלר מתוך מתוך הקלט של הנוירון. שני שכבות pooling נפוצות הם max pooling ו average pooling, שכבה זו לוקחת את הממוצע או המקסימום של ערכי הכניסה.
 
-ראינו קודם כי שגיאת ה misclassification rate (הלא ממושקלת) של החזאי על המדגם חסומה על ידי ה הביטוי:
+דוגמא זו מציגה max pooling בגודל 2 עם גודל צעד (stride) גם כן של 2:
 
-$$
-\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
-\leq\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-$$
+<div class="imgbox" style="max-width:400px">
 
-נראה כעת כי תחת תנאים מסויימים מובטח כי חסם זה ידאך ל-0 ככל שנגדיל את $M$.
+![](../lecture11/assets/max_pooling.gif)
 
-#### טענה
+</div>
 
-נסמן את ה misclassification rate הממושקל בצעד ה $m$ ב $\varepsilon_m=\frac{1}{2}-\gamma_m$. נטען כי מתקיים הקשר הבא:
+בשכבה זאת אין פרמטרים נלמדים.
 
-$$
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-\leq\exp\left(-2\sum_{m=1}^M\gamma_m^2\right)
-$$
+### 2D Convolutional Layer
 
-מטענה זו ניתן להסיק שבמידה וקיים $\gamma$ כל שהוא אשר מקיים $\gamma_m\geq\gamma>0$ אזי מתקיים ש:
+במרקים רבים נרצה לעבוד על קלט דו מימדי, לדוגמא על תמונות. במקרים כאלה הקונבולוציה תהיה דו מימדית. הגרפים הבאים מדגימים כיצד נראית פעולת שכבת הקונבולוציה על קלט דו מימדי (הירוק) אשר מייצרת פלט דו מימדי (הכחול) בעבור ערכים שונים של ה padding, stride ו dilation.
 
-$$
-\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
-\leq\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-\leq\exp\left(-2M\gamma^2\right)
-$$
+<table style="width:100%; table-layout:fixed;">
+  <tr>
+    <td><center>kernel size=3<br>padding=0<br>stride=1<br>dilation=1</center></td>
+    <td><center>kernel size=4<br>padding=2<br>stride=1<br>dilation=1</center></td>
+    <td><center>kernel size=3<br>padding=1<br>stride=1<br>dilation=1<br>(Half padding)</center></td>
+    <td><center>kernel size=3<br>padding=2<br>stride=1<br>dilation=1<br>(Full padding)</center></td>
+  </tr>
+  <tr>
+    <td><img width="150px" src="../lecture11/assets/no_padding_no_strides.gif"></td>
+    <td><img width="150px" src="../lecture11/assets/arbitrary_padding_no_strides.gif"></td>
+    <td><img width="150px" src="../lecture11/assets/same_padding_no_strides.gif"></td>
+    <td><img width="150px" src="../lecture11/assets/full_padding_no_strides.gif"></td>
+  </tr>
+  <tr>
+    <td><center>kernel size=3<br>padding=0<br>stride=2<br>dilation=1</center></td>
+    <td><center>kernel size=3<br>padding=1<br>stride=2<br>dilation=1</center></td>
+    <td><center>kernel size=3<br>padding=1<br>stride=2<br>dilation=1</center></td>
+    <td><center>kernel size=3<br>padding=0<br>stride=1<br>dilation=2</center></td>
+  </tr>
+  <tr>
+    <td><img width="150px" src="../lecture11/assets/no_padding_strides.gif"></td>
+    <td><img width="150px" src="../lecture11/assets/padding_strides.gif"></td>
+    <td><img width="150px" src="../lecture11/assets/padding_strides_odd.gif"></td>
+    <td><img width="150px" src="../lecture11/assets/dilation_2d.gif"></td>
+  </tr>
+</table>
 
-זאת אומרת, שקיים חסם לשגיאת ה miscalssification rate אשר דועך באופן מעריכי עם $M$.
+- \[1\] Vincent Dumoulin, Francesco Visin - [A guide to convolution arithmetic for deep learning](https://arxiv.org/abs/1603.07285)([BibTeX](https://gist.github.com/fvisin/165ca9935392fa9600a6c94664a01214))
+  
+### מבנה רשת CNN
 
-#### הוכחה
+רשתות קונבולוציה מורכבת משילוב של שכבות קנבולוציה, pooling ו FC. לדוגמא, אחת הרשתות הפופולריות היום לסיווג של תמונות הינה רשת בשם VGG-16. הרשת מקבלת תמונת צבע (3 ערוצים) בגודל 224x224 ומסווגת אותם ל 1 מ 1000 קטגוריות. הרשת נראית כך:
 
-ראשית נראה כי
+<div class="imgbox" style="max-width:900px">
 
-$$
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-=\prod_{m=1}^M 2\sqrt{\varepsilon_m(1-\varepsilon_m)}
-$$
+![](./assets/vgg16.png)
 
-נוכיח זאת באינדוקציה. בעבור $M=0$ נקבל ש:
+</div>
 
-$$
-\frac{1}{N}\sum_{i=1}^N\exp(0)=1
-$$
+(כל שכבות הקונבולוציה ברשת הם בלי stride או dilation, זאת אומרת stride=1 ו dilation=1, ועם padding של 0 אחד בכל שפה על מנת לשמור על הגודל של התמונה בשכבות הקונבולוציה)
 
-כעת נניח שהקשר מתקיים בעבור $M-1$:
+### למה CNN כל כך טובים לבעיות מסויימות?
 
-$$
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^{M-1} y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-=\prod_{m=1}^{M-1} 2\sqrt{\varepsilon_m(1-\varepsilon_m)}
-$$
+נסתכל על אחת הבעיות ש CNNs מאד טובים בלפתור, שהיא הבעיה של סיווג של תמונות לפי התוכן שלהם. הסיבה שבגללה CNNs מתאימים לפתרון של בעיה זו היא בין היתר בגלל שהתאמה של שתי התכונות שמבדילות שכבת קנבולוציה משכבות FC לייצוג של הפתרון. נתייחס לכל אחת משתי התכונות בנפרד.
 
-ונראה שמתקיים צעד האינדוקציה בעבור $M$:
+#### תלות של כל נוירון רק בסביבה המיידית שלו
 
-$$
-\begin{aligned}
-&\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)\\
-=&\frac{1}{N}\sum_{i=1}^N
-\underbrace{
-    \exp\left(-\sum_{m=1}^{M-1} y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-}_{=\tilde{w}_i^{(N-1)}}
-\exp\left(-y^{(i)}\alpha_M\tilde{h}_M(\boldsymbol{x}^{(i)})\right)\\
-=&\frac{1}{N}\sum_{i=1}^N \tilde{w}_i^{(N-1)} \exp\left(-y^{(i)}\alpha_M\tilde{h}_M(\boldsymbol{x}^{(i)})\right)\\
-\end{aligned}
-$$
+התכונה הראשונה שמייחדת שכבות קונבולוציה הינה שכל נוירון מוזן מהערכים בסביבה המיידית שלו. תכונה זו מכריחה את הרשת לנסות לנתח את התמונה בצורה היררכית בה ככל שמתקדמים בשכבות הנוירונים מסתכלים על איזורים הולכים וגדלים בתמונה ומנסים לזהות אובייקטים בגדלים שהולכים וגדלים. ניתן לראות זאת בשרטוט הבא:
 
-מכיוון שמדובר בבעיית סיווג בינארית עם תוויות $\pm1$ הביטוי $y^{(i)}h_M(\boldsymbol{x}^{(i)})$ יכול לקבל רק אחד משני ערכים, $1$ כאשר $y^{(i)}=h_M(\boldsymbol{x}^{(i)})$ ו $-1$ אחרת. נפצל אם כך את הסכום לשני המקרים על ידי הוספה של פונקציות אידיקציה:
+<div class="imgbox" style="max-width:600px">
 
-$$
-\begin{aligned}
-=&\frac{1}{N}\sum_{i=1}^N \tilde{w}_i^{(N-1)} \exp\left(-y^{(i)}\alpha_M\tilde{h}_M(\boldsymbol{x}^{(i)})\right)
-  \left(I\{y^{(i)}=\tilde{h}(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}\right)\\
-=&\frac{1}{N}\left[
-    e^{-\alpha_M}\sum_{i=1}^N \tilde{w}_i^{(N-1)}I\{y^{(i)}=\tilde{h}(\boldsymbol{x}^{(i)})\}
-    +e^{\alpha_M}\sum_{i=1}^N \tilde{w}_i^{(N-1)}I\{y^{(i)}\neq\tilde{h}(\boldsymbol{x}^{(i)})\}
-\right]\\
-=&\frac{1}{N}\left[
-    e^{-\alpha_M}\sum_{i=1}^N \tilde{w}_i^{(N-1)}\left(
-        1-I\{y^{(i)}\neq\tilde{h}(\boldsymbol{x}^{(i)})\}
-    \right)
-    +e^{\alpha_M}\sum_{i=1}^N \tilde{w}_i^{(N-1)}I\{y^{(i)}\neq\tilde{h}(\boldsymbol{x}^{(i)})\}
-\right]\\
-=&\frac{1}{N}\left[
-    e^{-\alpha_M}\left(
-        \sum_{i=1}^N \tilde{w}_i^{(N-1)}-\sum_{i=1}^N \tilde{w}_i^{(N-1)} I\{y^{(i)}\neq\tilde{h}(\boldsymbol{x}^{(i)})\}
-    \right)
-    +e^{\alpha_M}\sum_{i=1}^N \tilde{w}_i^{(N-1)}I\{y^{(i)}\neq\tilde{h}(\boldsymbol{x}^{(i)})\}
-\right]\\
-\end{aligned}
-$$
+![](../lecture11/assets/receptive_field.gif)
 
-נחלק ב $\sum_{i=1}^N\tilde{w}_i^{(N-1)}$ בתוך הסורגיים ונכפיל מבחוץ ובכך נהפוך את כל ה $\tilde{w}$ ל $w$:
+</div>
 
-$$
-\begin{aligned}
-=&\frac{1}{N}\sum_{i=1}^N \tilde{w}_i^{(N-1)}\left[
-    e^{-\alpha_M}\left(1-\underbrace{
-        \sum_{i=1}^N w_i^{(N-1)} I\{y^{(i)}\neq\tilde{h}(\boldsymbol{x}^{(i)})\}
-    }_{\varepsilon_M}\right)
-    +e^{\alpha_M}\underbrace{
-        \sum_{i=1}^N w_i^{(N-1)}I\{y^{(i)}\neq\tilde{h}(\boldsymbol{x}^{(i)})\}
-    }_{=\varepsilon_M}
-\right]\\
-=&\frac{1}{N}\sum_{i=1}^N \tilde{w}_i^{(N-1)}\left[
-    e^{-\alpha_M}\left(1-\varepsilon_M\right)
-    +e^{\alpha_M}\varepsilon_M
-\right]\\
-\end{aligned}
-$$
+כל נוירון בשכבה הראשונה מושפע מאיזור באורך 3 בוקטור הכניסה. בשכבה השניה כל נוירון כבר יהיה מושפע מאיזור באורך 5 בוקטור הכניסה וכן הלאה. הגודל של האיזור שממנו מושפע נוירון בשכבה מסויימת נקרא ה **receptive field** שלו. לדוגמא, ה receptive field של נוירון בשכבה השלישית הוא 7.
 
-נציב כעת את $\alpha_M=\frac{1}{2}\ln\left(\frac{1-\varepsilon_M}{\varepsilon_M}\right)$
+בנוסף לשכבות הקונבולוציה שמגדילות את ה receptive field יש גם את שכבות ה pooling אשר מקטינות את המימדים ובכל מגדילות את ה reeptive filed של השכבות שאחריהם.
 
-$$
-\begin{aligned}
-=&\frac{1}{N}\sum_{i=1}^N \tilde{w}_i^{(N-1)}\left[
-    \sqrt{\frac{\varepsilon_M}{1-\varepsilon_M}}\left(1-\varepsilon_M\right)
-    +\sqrt{\frac{1-\varepsilon_M}{\varepsilon_M}}\varepsilon_M
-\right]\\
-=&\frac{1}{N}\sum_{i=1}^N \tilde{w}_i^{(N-1)}2\sqrt{\varepsilon_M(1-\varepsilon_M)}\\
-\end{aligned}
-$$
+אם כן ברשתות אלו התפקיד של כל שכבה יהיה לנסות ולהבין מה המאפיינים של הסביבה שהם מושפעים ממנו על פי המאפיינים שהוציאה השכבה הקודמת.ש נדגים את הפעולה שמבצעת השכבה הראשונה ברשת אשר מנסה להזהות האם בתמונה מסויימת מופיע פרצוף.
 
-נציב בחזרה את $\tilde{w}_i^{(N-1)}$:
+<div class="imgbox">
 
-$$
-\begin{aligned}
-=&2\sqrt{\varepsilon_M(1-\varepsilon_M)}\frac{1}{N}\sum_{i=1}^N \tilde{w}_i^{(N-1)}\\
-=&2\sqrt{\varepsilon_M(1-\varepsilon_M)}\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^{M-1} y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)\\
-\end{aligned}
-$$
+![](./assets/face.jpg)
 
-ועל פי הנחת האינדוקציה זה שווה ל:
+</div>
 
-$$
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-=2\sqrt{\varepsilon_M(1-\varepsilon_M)}\prod_{m=1}^{M-1} 2\sqrt{\varepsilon_m(1-\varepsilon_m)}
-=\prod_{m=1}^M 2\sqrt{\varepsilon_m(1-\varepsilon_m)}
-$$
+גרעיני הקנובולוציה של השכבות הראשונות יעברו על התמונה ויחפשו, בעזרת קורלציה עם הגרעינים, תופעות בסיסיות כמו פסים אנכיים, פסים אופקיים, פינות, נקודות קטנות וכו'. כל גרעין ייצר ערוץ אשר מתאים לתופעה שאותה הוא מחפש. זאת אומרת שיהיה לנו ערוץ בעבור כל תופעה. לדוגמא הייצור של פסים אופקיים יעשה כך:
 
-כעת נציב $\varepsilon_m=\frac{1}{2}-\gamma_m$ ונקבל ש:
+<div class="imgbox">
 
-$$
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-=\prod_{m=1}^M \sqrt{1-4\gamma_m^2}
-$$
+![](./assets/horizontal_filter.png)
 
-ונשתמש בעובדה ש $\sqrt{1-4x^2}\leq e^{-2x^2}$ בכדי לסיים את ההוכחה:
+</div>
 
-$$
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M y^{(i)}\alpha_m\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-=\prod_{m=1}^M \sqrt{1-4\gamma_m^2}\leq \exp\left(-2\sum_{m=1}^M\gamma_m\right)
-$$
+שכבת קונבולוציה עם 4 ערוצים במוצא תראה כך:
 
-מ.ש.ל.
+<div class="imgbox">
 
-### הפיתוח של פתרון בעיית האופטימיזציה
+![](./assets/conv_illustration.png)
 
-נרצה לפתור את בעיית האופטימיזציה הבאה:
+</div>
 
-$$
-\alpha_M,\tilde{h}_M=\underset{\alpha,\tilde{h}}{\arg\min}\quad
-\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^{M-1}\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})-\alpha y^{(i)}\tilde{h}(\boldsymbol{x}^{(i)})\right)
-$$
+השכבות הבאות ברשת יחפשו אובייקטים אשר מורכבים מהתופעות שמצאו השכבות הראשונות. לדוגמא נוכל לחפש איזורים שמכילים הרבה פסים אנכיים בכדי לזהות איזורים שעשויים להכיל שיער, או לדוגמא לחפש שני פסים אופקיים סמוכים שעשויים להכיל שפתיים וכו'
 
-נפתר מה $\frac{1}{N}$ ונפשט מעט את ה objective. נשים לב שהאיברים עד $M-1$ הם כולם ידועים לכן על מנת לפשט את הביטוי נסמן ב $\tilde{w}_i^{(M-1)}$ את הבטוי הבא:
+מסתבר ששיטה זו, שבה הרשת מנסה להבין את תכולת התמונה באופן הירכי, היא מאד יעילה להבנת התמונה במספר יחסית קטן של פעולות, דבר שאר מסייע לרשתות CNN בפתרון של משימה זו.
 
-$$
-\tilde{w}_i^{(M-1)}=\exp\left(-\sum_{m=1}^{M-1}\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
-$$
+#### Weight sharing
 
-בעזרת סימון זה נוכל לכתוב את ה objective באופן הבא
+התכונה הנוספת של שכבת הקונבולוציה הינה שהמשקולות של כל הנוירונים משותפים בין כל הנוירונים באותה השכבה באותו ערוץ. ישנם מספר סיבות ללמה אילוץ זה לא מגביל מאד את היכולת לזהות אובייקטים:
 
-$$
-\sum_{i=1}^N\exp\left(-\sum_{m=1}^{M-1}\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})-\alpha y^{(i)}\tilde{h}(\boldsymbol{x}^{(i)})\right)
-=\sum_{i=1}^N
-\tilde{w}_i^{(M-1)}\exp\left(-\alpha y^{(i)}\tilde{h}(\boldsymbol{x}^{(i)})\right)
-$$
+1. הסיווג של התמונה לא אמור להיות מושפע אם מזיזים את האובייקט בתמונה מעט לצדדים. מהסיבה הזו אנו בעצם צריכים פונקציה שהיא בגדול איווריאנטית להזזות. בפועל זה אומר שאנו רוצים להפעיל את אותם הפעולות הלוקליות בשכבות הראשונות בצורה דומה בכל איזור בתמונה.
 
-כעת נשים לב שמכיוון שמדובר בבעיית סיווג בינארית עם תוויות $\pm1$ הביטוי $y^{(i)}h(\boldsymbol{x}^{(i)})$ יכול לקבל רק אחד משני ערכים, $1$ כאשר $y^{(i)}=h(\boldsymbol{x}^{(i)})$ ו $-1$ אחרת. נפצל אם כך את הסכום לשני המקרים על ידי הוספה של פונקציות אידיקציה:
+2. הפעולות שהשכבות הראשונות מבצעות, כגון חיפוש קווים אופקיים ואנכיים משותף לכל האובייקטים שנרצה לחפש בכל האיזורים בתמונה.
 
-$$
-\begin{aligned}
-=&\sum_{i=1}^N
-  \tilde{w}_i^{(M-1)}\exp\left(-\alpha y^{(i)}\tilde{h}(\boldsymbol{x}^{(i)})\right)
-  \left(I\{y^{(i)}=\tilde{h}(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}\right)\\
-=&e^{-\alpha}\sum_{i=1}^N\tilde{w}_i^{(M-1)}I\{y^{(i)}=\tilde{h}(\boldsymbol{x}^{(i)})\}
- +e^{\alpha}\sum_{i=1}^N\tilde{w}_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}\\
-\end{aligned}
-$$
+## Batch Normalization (לא למבחן)
 
-נרשום כעת את $I\{y^{(i)}=\tilde{h}(\boldsymbol{x}^{(i)})\}$ בתור $1-I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}$:
+אחת הבעיות בעבודה עם רשתות עמוקות הינה שיכול להיווצר מצב שבו הערכים במוצא של כל שכבה הם מסדר גודל שונה. הדבר מאד משפיע על הגרדיאנטים של כל שיכבה ויכול ליצור גרדיאנטים בטווח ערכים מאד גדול שמאד מקשה על הבחירה של גודל הצעד. אנו נרחיב על כך בתרגול בהקשר של האיתחול של הפרמטרים של הרשת באלגוריתם ה gradient descent.
 
-$$
-\begin{aligned}
-=&e^{-\alpha}\sum_{i=1}^N\tilde{w}_i^{(M-1)}\left(1-I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}\right)
- +e^{\alpha}\sum_{i=1}^N\tilde{w}_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}\\
-=&e^{-\alpha}\sum_{i=1}^N\tilde{w}_i^{(M-1)}
- +\left(e^{\alpha}-e^{-\alpha}\right)\sum_{i=1}^N\tilde{w}_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
-\end{aligned}
-$$
+דרך אחת לנסות ולהבטיח כי המוצאים של כל שכבה יהיו בערך מאותו סדר גודל הינה על ידי הוספה של שכבה בשם batch normalization אשר מנסה לנרמל את הערכים אשר עוברים דרכה (מביאה את התוחלת של הערכים ל 0 ואת הסטיית תקן ל 1). הדרך שהיא עושה זאת הינה על ידי חישוב התוחלת וסטיית התקן האמפירית של הערכים על פני ה batch הספציפי באותו צעד גרדיאנט.
 
-הגודל $\sum_{i=1}^N\tilde{w}_i^{(M-1)}$ הוא קבוע מבחינת בעיית האופטימיזציה ולכן נוכל לחלק את התוצאה שקיבלנו בגודל זה מבלי לשנות את בעיית האופטימיזציה. נקבל לאחר פעולה זו את ה objective הבא:
+נסתכל על שכבת batch norm המקבלת וקטור $\boldsymbol{z}_{\text{in}}$ ומוציאה וקטור $\boldsymbol{z}_{\text{out}}$:
 
-$$
-e^{-\alpha}+\left(e^{\alpha}-e^{-\alpha}\right)\sum_{i=1}^N\frac{\tilde{w}_i^{(M-1)}}{\sum_{j=1}^N\tilde{w}_j^{(M-1)}}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
-$$
+<div class="imgbox" style="max-width:400px">
 
-נסמן ב $w_i^{(M-1)}$ את הגודל:
+![](./assets/batch_norm.png)
 
-$$
-w_i^{(M-1)}=\frac{\tilde{w}_i^{(M-1)}}{\sum_{j=1}^N\tilde{w}_j^{(M-1)}}
-$$
+</div>
 
-שהוא למעשה גרסא "מנורמלת" של $\tilde{w}_i^{(M-1)}$. נכתוב אם כן את ה objective בעזרת משקלים אלו:
+נניח כי בצעד עדכון מסויים אנו רוצים לחשב את הגרדיאנט של הרשת בעבור mini-batch מסויים $\{\boldsymbol{x}^{(i)}\}_{i=1}^M$. נניח כי הוקטורים המתקבלים בכניסה לשכבת ה batch norm הם $\{\boldsymbol{z}_{\text{in}}^{(i)}\}_{i=1}^M$. שיכבת ה batch norm תחשב את התוחלת וסטיית התקן האמפירית של הכניסה באופן הבא:
 
 $$
-e^{-\alpha}+\left(e^{\alpha}-e^{-\alpha}\right)\sum_{i=1}^N w_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
+\boldsymbol{\mu}=\frac{1}{M}\sum_{i=1}^M \boldsymbol{z}_{\text{in}}^{(i)}
 $$
-
-נסמן כעת את הפונקציה $\varepsilon$ להיות הפונקציה שמחשבת את ה misclassification rate הממושקל:
 
 $$
-\varepsilon(\tilde{h},\{w_i\})=\sum_{i=1}^N w_iI\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
+\sigma^2=\frac{1}{M}\sum_{i=1}^M (\boldsymbol{z}_{\text{in}}^{(i)}-\boldsymbol{\mu})^2
 $$
 
-נשתמש בפונקציה זו בכדי לרשום את ה objective ונחזור לבעיית האופטימיזציה המלאה:
+המוצא של השכבה יהיה:
 
 $$
-\begin{aligned}
-\alpha_M,\tilde{h}_M
-&=\underset{\alpha,\tilde{h}}{\arg\min}\quad
-e^{-\alpha}+\left(e^{\alpha}-e^{-\alpha}\right)\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\\
-&=\underset{\alpha,\tilde{h}}{\arg\min}\quad
-e^{-\alpha}\left(1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\right)+e^{\alpha}\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\\
-\end{aligned}
+\boldsymbol{z}_{\text{out}}=\frac{
+\boldsymbol{z}_{\text{in}}-\boldsymbol{\mu}
+}{\sigma+\epsilon}
 $$
 
-נמצא את $\alpha_M$ על ידי גזירה ונשוואה ל-0:
+כאשר $\epsilon$ הוא מספר קטן כל שהוא אשר אמור למנוע חלוקה ב 0.
 
-$$
-\begin{aligned}
-  0&=\frac{\partial}{\partial\alpha}\left(
-    e^{-\alpha}\left(1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\right)+e^{\alpha}\varepsilon(\tilde{h},\{w_i^{(M-1)}\})
-  \right)\\
-\Leftrightarrow 0&=-e^{-\alpha}\left(1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\right)+e^{\alpha}\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\\
-\Leftrightarrow e^{\alpha}\varepsilon(\tilde{h},\{w_i^{(M-1)}\})&=e^{-\alpha}\left(1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\right)\\
-\Leftrightarrow e^{2\alpha}&=\frac{1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}{\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}\\
-\Leftrightarrow \alpha_M&=\frac{1}{2}\ln\left(\frac{1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}{\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}\right)\\
-\end{aligned}
-$$
-
-נציב את $\alpha_M$ בחזרה לבעיית האופטימיזציה:
+לרוב השכבה תכיל גם טרנספורמציה לינרארית נלמדת עם פרמטרים $\gamma$ ו $\beta$:
 
 $$
-\begin{aligned}
-\tilde{h}_M
-&=\underset{\tilde{h}}{\arg\min}\quad
-\sqrt{\frac{\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}{1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}}
-\left(1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\right)+
-\sqrt{\frac{1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}{\varepsilon(\tilde{h},\{w_i^{(M-1)}\})}}
-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\\
-&=\underset{\tilde{h}}{\arg\min}\quad
-2\sqrt{\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\left(1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\right)}\\
-&=\underset{\tilde{h}}{\arg\min}\quad
-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\left(1-\varepsilon(\tilde{h},\{w_i^{(M-1)}\})\right)
-\end{aligned}
+\boldsymbol{z}_{\text{out}}=\frac{
+\boldsymbol{z}_{\text{in}}-\boldsymbol{\mu}
+}{\sigma+\epsilon}\cdot\gamma+\beta
 $$
 
-כפונקציה של $\varepsilon$ ה objective הוא $\varepsilon(1-\varepsilon)$. זהו פולינום הפוך שמקבל את ערכו המקסימאלי ב $\varepsilon=\frac{1}{2}$ ומתאפס ב $\varepsilon=0,1$. נניח לרגע ש $\varepsilon$ הוא בתחום של $[0,0.5]$, מיד נצדיק הנחה זו. במקרה זה הערך המינמאלי של ה objective יהיה כאשר $\varepsilon$ יהיה מיניאלי. זאת אומרת ש:
-
-$$
-\tilde{h}_M
-=\underset{\tilde{h}}{\arg\min}\ \varepsilon(\tilde{h},\{w_i^{(M-1)}\})
-=\underset{\tilde{h}}{\arg\min}\ \sum_{i=1}^N w_i^{(M-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
-$$
+כאשר $\gamma$ ו $\beta$ הוא וקטורים באורך של $\boldsymbol{z}$ והמכפלה עם $\gamma$ היא איבר איבר.
 
-נסביר מדוע ניתן להניח ש $\varepsilon$ הוא בתחום של $[0,0.5]$. באופן כללי $\varepsilon$ הוא ממוצע ממושקל של פונקציות אינדיקטורים שמקבלים 0 או 1 ולכן הוא יכול לקבל ערכים בתחום $[0,1]$. בכדי לפשט את הבעיה נוכל להניח שאנו דואגים מראש  לטפל במסווגים שבהם ה misclassification rate הממושקל קטן מחצי על ידי היפוך הסימן של מוצא החזאי. הסיבה לעשות זאת הינה שהמקרים שבהם ה misclassification rate הממושקל גדול מחצי הם מקרים שבהם החזאי מבצע יותר טעויות מחיזויים נכונים (באופן ממושקל). במקרים כאלה ההפוך של החזאי יגרום להם לעשות פחות טעויות מחיזויים נכונים ויהפוך את ה miscalssification rate הממושקל שלהם ל $1-\varepsilon$ שיהיה קטן מחצי.
+### אחרי שלב האימון
 
-(באופן כללי לא חייבים לבצע את ההיפוך ובמקום זאת צריך למזער את $|0.5-\varepsilon|$ והמשקול $\alpha_M$ ידאג להפוך את הסימן של המוצא של החזאי כאשר זה הכרחי במקום לעשות זאת באופן ידני)
+במהלך הלימוד מחזיקים ממוצע נע ([exponantial moving average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average)) של הערכים $\mu$ ו $\sigma$ ובסוף שלב הלימוד מקבעים את הערכים שלהם ואלו הערכים שבהם הרשת תשתמש לאחר שלב האימון.
 
 </div>

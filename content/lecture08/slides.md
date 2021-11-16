@@ -4,10 +4,11 @@ index: 8
 template: slides
 slides_pdf: true
 ---
+
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# הרצאה 8 - Neural Networks
+# הרצאה 8 - שיערוך פילוג בשיטות פרמטריות וסיווג גנרטיבי
 
 <div dir="ltr">
 <a href="/assets/lecture08_slides.pdf" class="link-button" target="_blank">PDF</a>
@@ -24,415 +25,906 @@ slides_pdf: true
 </div>
 </section><section>
 
-## רשת נוירונים מלאכותית כמודל פרמטרי
+## בעיות בגישה הלא פרמטרית
 
-- נתקלנו במספר מקרים בהם ניסינו למצוא פונקציה שתבצע פעולה או תתאר תופעה כל שהיא (מציאת חזאי או פונקציית פילוג).
-- דרך נוחה לעשות זאת היא בעזרת מודל פרמטרי ומציאת הפרמטרים האופטימאלים.
-- עד כה עבדנו עם מודלים לינאריים בפרמטרים.
-- ניתן לקרב הרבה מאד פונקציות בעזרת פולינום מסדר מספיק גבוהה.
-- מודלים אלו הם לא מאד מוצלחים ובעיתיים וכאשר $\boldsymbol{x}$ הוא ממימד גבוה.
-- האם ישנם מודלים מתאימים יותר?
+### פונקציות שקשה לעבוד איתם
 
-</section><section>
+- מתייחס בעיקר ל KDE ול ECDF.
+- הפונקציות שקיבלנו מכילות סכום על כל האיברים ב train set.
 
-## רשתות נוירונים מלאכותיות<br/>Artificail Neural Networks - ANN
+### הערה לגבי שלב בניית המודל ושלב החיזוי
 
-- בשנים האחרונות מודלים אלו הוכיחו את עצמם כמודלים פרמטריים מאד יעילים לפתרון מגוון רחב של בעיות.
-- הההשראה לצורה שבה הם בנויים מגיעה מרשתות נויירונים ביולוגיות.
+- בשלב בניית המודל כמות המשאבים שיעמדו לרשותינו תהיה מאד גדולה.
+- בזמן החיזוי נרצה לבצע את החישוב על פלטפורמה יחסית ולקבל תוצאות מאד מהירות.
 
 </section><section>
 
-## נוירון ביולוגי
+## הבעיה של כיסוי המרחב - דוגמא
 
-<br/>
-<br/>
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/neuron.png)
-
-</div>
-
-</section><section>
-
-## נוירון ביולוגי
-
-בצורה פשטנית ניתן לתאר את האופן בו נוירון ביולוגי פועל כך:
-
-<div class="imgbox" style="max-width:800px">
-
-![](./assets/neuron_model.png)
-
-</div>
-
-</section><section>
-
-## נוירון ביולוגי
-
- באופן סכימתי ניתן למדל את פעולת הנוירון באופן הבא:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/neuron_scheme.png)
-
-</div>
-
-$$
-y=I\{\boldsymbol{x}^{\top}\boldsymbol{w}+b>0\}
-$$
-
-</section><section>
-
-## נוירונים ברשת נוירונים מלאכותית
-
-- פונקציית המדרגה היא בפועל מאד בעייתית.
-- לשם כך נחליף את פונקציית המדרגה בפונקציה אחרת כל שהיא $\varphi(\cdot)$.
-- פונקציה זו מכונה **פונקציית ההפעלה (activation function)**.
-- בחירות נפוצות של פונקציית ההפעלה כוללות את:
-    - הפונקציה הלוגיסטית (סיגמואיד): $\varphi(x)=\sigma(x)=\frac{1}{1+e^{-x}}$
-    - טנגנס היפרבולי: $\varphi(x)=\tanh\left(x/2\right)$
-    - $\varphi(x)=\max(x,0)$ :ReLU (Rectified Linear Unit).
-
-- פונקציות נוספות שנמצאות הם כל מיני וריאציות של ReLU.
-
-</section><section>
-
-## נוירונים ברשת נוירונים מלאכותית
-
-באופן סכימתי נסמן נוירון בודד באופן הבא:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/neuron_scheme2.png)
-
-</div>
-
-</section><section>
-
-## רשת נוירונים
-
-נשלב מספר נוירונים יחד על מנת לבנות רשת נוירונים:
+נניח שאנו רוצים לחזות האם אדם מסויים פרק את הכתף על פי הסימפטומים שלו. לשם כך נסתכל על המדגם הבא
 
 <br/>
 
-<div class="imgbox" style="max-width:700px">
-
-![](./assets/ann.png)
-
-</div>
-
-<br/>
-
-רשת שכזו יכולה לקרב מגוון מאד רחב של פונקציות. הפרמטרים של המודל יהיו הפרמטרים של כל הנוירונים.
-
-</section><section>
-
-## רשת נוירונים
-
-<div class="imgbox" style="max-width:700px">
-
-![](./assets/ann.png)
-
-</div>
+|   | פריקה | כאב בכתף | נפיחות | סימנים כחולים | נימול ביד | נזלת |
+| - |:-----:|:--------:|:------:|:-------------:|:---------:|:----:|
+| 1 | +     | +        | +      | +             | +         | -    |
+| 2 | +     | +        | +      | +             | -         | -    |
+| 3 | +     | +        | +      | -             | +         | -    |
+| 4 | +     | +        | +      | +             | -         | +    |
+| 5 | -     | -        | -      | -             | -         | -    |
+| 6 | -     | +        | -      | -             | -         | +    |
+| 7 | -     | -        | -      | +             | -         | -    |
+| 8 | -     | +        | -      | -             | -         | -    |
 
 <br/>
 
-לרוב הנוירונים יהיו מהצורה של:
+האם לאדם עם כל הסימפטומים יש פריקה של הכתף?
+
+</section><section>
+
+## הבעיה של כיסוי המרחב - דוגמא
+
+|   | פריקה | כאב בכתף | נפיחות | סימנים כחולים | נימול ביד | נזלת |
+| - |:-----:|:--------:|:------:|:-------------:|:---------:|:----:|
+| 1 | +     | +        | +      | +             | +         | -    |
+| 2 | +     | +        | +      | +             | -         | -    |
+| 3 | +     | +        | +      | -             | +         | -    |
+| 4 | +     | +        | +      | +             | -         | +    |
+| 5 | -     | -        | -      | -             | -         | -    |
+| 6 | -     | +        | -      | -             | -         | +    |
+| 7 | -     | -        | -      | +             | -         | -    |
+| 8 | -     | +        | -      | -             | -         | -    |
+
+על פי השיטה שראינו בשבוע שעבר הסבירות לפריקה בהינתן הכל הסימפטומים היא חצי.
+
+<br/>
+
+זאת משום שאין אף דגימה בה יש את כל הסימפטומים ולכן גם הסבירות של פריקה וגם הסבירות של אי-פריקה היא 0.
+
+</section><section>
+
+## הבעיה של כיסוי המרחב - דוגמא נוספת
+
+כמות הערכים השונים שהוקטור בינראי באורך 10 יכול לקבל הינה $2^{10}=1024$. גם אם ננסה לשערך את הפילוג של וקטור זה עם מדגם של 500 דגימות לפחות חצי מהערכים לא יופיע במדגם.
+
+</section><section>
+
+## הבעיה של כיסוי המרחב
+
+- בשיטות שראינו הפילוג בכל איזור נקבע על פי הדגימות שנמצאות באותו איזור.
+- שיטות אלו מניחות שיש בידינו מספיק דגימות בכדי לכסות את כל המרחב.
+- הנחה זו בעייתית כאשר יש הרבה משתנים אקראיים.
+- הגדול האפקטיבי של המרחב גדל בצורה מעריכית עם מספר המשתנים.
+
+</section><section>
+
+## Curse of Dimensionality
+
+- התופעה שהדגמנו מתרחשת לא רק בעבור משתנים דיסקרטיים.
+- התופעה שבה המורכבות של הבעיה גדלה בצורה מעריכית עם המימד של הבעיה מופיע בהרבה תחומים וידוע בתור ה **curse of dimensionality**.
+
+</section><section>
+
+## שיערוך נאיבי - חוסר תלות בין המשתנים
+
+שיטה מאד נאיבית (לא מתוחכמת) לפתור את הבעיה היא להתעלם מהקשר בין המשתנים השונים ולהניח שהם בלתי תלויים סטטיסטית. זאת אומרת ש:
 
 $$
-h_j(\boldsymbol{x};\boldsymbol{w}_j,b_j)=\varphi(\boldsymbol{x}^{\top}\boldsymbol{w}_j+b_j)
+p_{\mathbf{x}}(\boldsymbol{x})=
+p_{\text{x}_1}(x_1)
+p_{\text{x}_2}(x_2)
+\dots
+p_{\text{x}_D}(x_D)
+=\prod_{d=1}^D p_{\text{x}_d}(x_d)
 $$
 
-אך ניתן גם לבחור פונקציות אחרות. בקורס זה, אלא אם נאמר אחרת, אנו נניח כי כי הנוירונים הם מהצורה הזו.
+- לא סובלת מה curse of dimesionality.
+- חיסרון: שהיא מגבילה מאד את הפילוגים שניתן ללמוד.
 
 </section><section>
 
-## הארכיטקטורה של הרשת
+## מסווג בייס נאיבי - Naïve Bayes Classification
 
-המבנה של הרשת אשר כולל מספר הנוירונים שהיא מכילה ואת הדרך שבה הם מחוברים אחד לשני.
+נוכל להשתמש בשיערוך הנאיבי לפתרון בעיות סיווג.
 
-- בחירת הארכיטקטורה היא קריטית לביצועים.
-- לשימושים שונים מתאימות ארכיטקטורות שונות.
-- חלק גדול מאד מהמחקר שנעשה כיום הוא סביב הנושא של חיפוש ארכיטקטורות.
-- התהליך של מציאת הארכיטקטורה דורש לא מעט ניסיון, אינטואיציה והרבה ניסוי וטעיה.
-- לרוב נמצא בעיה דומה ונשתמש בארכיטקטורה שעבדה טובה במקרה זה (נרפרנס).
-
-</section><section>
-
-## הארכיטקטורה של הרשת
-
-<div class="imgbox" style="max-width:700px">
-
-![](./assets/ann.png)
-
-</div>
-
-- **יחידות נסתרות** (**hidden units**): הנוירונים אשר אינם מחוברים למוצא הרשת.
-- **רשת עמוקה** (**deep network**): רשת אשר מכילה מסלולים אשר עוברים דרך יותר מיחידה נסתרת אחת.
-
-</section><section>
-
-## Feed-forward vs. Recurrent
-
-אנו מבדילים בין שני סוגי ארכיטקטורות:
-
-- **רשת הזנה קדמית (feed-forward network)**: ארכיטקטורות אשר אינם מכילות מסלולים מעגליים.
-- **רשתות נשנות (recurrent neural network - RNN)**: בקורס זה לא נעסוק ברשתות מסוג זה. אלו ארכיטקטורות אשר כן מכילות מסלולים מעגליים.
-
-</section><section>
-
-## על החשיבות של פונקציות ההפעלה
-
-- ללא פונקציית ההפעלה הנורונים היו לינאריים ולכן כל הרשת תהיה פשוט מודל לינארי.
-
-</section><section>
-
-## המוצא של הרשת
-
-### Regression + ERM
-
-- הרשת תמדל חזאי אשר אמור להוציא סקלר שמקבל ערכים רציפים בתחום לא מוגבל.
-- אנו נרצה שהמוצא של הרשת יתנקז לנוירון בודד ללא פונקציית אקטיבציה.
-
-</section><section>
-
-## המוצא של הרשת
-
-### סיווג בינארי + הדיסקרימינטיבית הסתברותית
-
-- הרשת תמדל את $p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x})$.
-- אנו נרצה שהרשת תוציא ערך סקלרי רציף בתחום בין 0 ל-1.
-- שהמוצא של הרשת יתנקז לנוירון בודד עם פונקציית הפעלה שמוציאה ערכים בתחום $[0,1]$ כדוגמאת הפונקציה הלוגיסטית.
-
-### סיווג לא בינארי + הדיסקרימינטיבית הסתברותית
-
-- הרשת תמדל את כל ההסתברותיות $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$.
-- נרצה שהרשת תוציא וקטור באורך $C$ שעליו נפעיל את פונקציית ה softmax.
-
-</section><section>
-
-## מציאת הפרמטרים של המודל
-
-בעיית האופטימיזציה:
-
-- ב ERM אנו ננסה למזער את ה risk האמפרי
-- בגישה הדיסקרימינטיבית הסתברותית נשתמש ב MLE או MAP.
-
-בכדי לפתור את בעיית האופטימיזציה נשתמש ב grdaient descent.
-
-</section><section>
-
-## MultiLayer Percepron (MLP)
-
-<div class="imgbox" style="max-width:800px">
-
-![](./assets/mlp.png)
-
-</div>
-
-- הנוירונים מסודרים בשתייים או יותר שכבות (layers)
-- השכבות הם **Fully Connected (FC)** (כל נוירון מוזן מ**כל** הנוריונים שבשכבה שלפני).
-
-</section><section>
-
-## MultiLayer Percepron (MLP)
-
-<div class="imgbox" style="max-width:800px">
-
-![](./assets/mlp.png)
-
-</div>
-
-מה שמגדיר את הארכיטקטורה במקרה של MLP הוא מספר השכבות וכמות הנוירונים בכל שכבה (**רוחב השכבה**). בדוגמה הזו, יש ברשת 3 שכבות ברוחב 2, 3 ו 2.
-
-</section><section>
-
-## רישום מטריצי
-
-<div class="imgbox" style="max-width:400px">
-
-![](./assets/mlp.png)
-
-</div>
-
-- $W_i=
-\begin{bmatrix}
--&\boldsymbol{w}_{i,1}&-\\
--&\boldsymbol{w}_{i,2}&-\\
-&\vdots&\\
-\end{bmatrix}$
-- $\boldsymbol{b}_i=[b_{i,1},b_{i,2},\dots]^{\top}$
-
-הפונקציה שאותה ממשת השכבה כולה הינה:
+נניח כי:
 
 $$
-\boldsymbol{z}_i=\varphi(W_i\boldsymbol{z}_{i-1}+\boldsymbol{b}_i)
+p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)=
+p_{\text{x}_1|\text{y}}(x_1|y)
+p_{\text{x}_2|\text{y}}(x_2|y)
+\dots
+p_{\text{x}_D|\text{y}}(x_D|y)
+=\prod_{d=1}^D p_{\text{x}_d|\text{y}}(x_d|y)
 $$
+
+- אנו **לא** נרצה להניח חוסר תלות בין $\mathbf{x}$ ל $\text{y}$.
 
 </section><section>
 
-## "משפט הקירוב האוניברסלי"
+## מסווג בייס נאיבי - Naïve Bayes Classification
 
-בהינתן:
-
-- פונקציית הפעלה רציפה כל שהיא $\varphi$ ש**אינה פולינומאילית** (או חסומה ואינטגרבילית).
-- ופונקציה רציפה כל שהיא על קוביית היחידה $f:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$.
-
-אזי ניתן למצוא פונקציה $f_{\varepsilon}:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$ מהצורה:
-
-$$
-f_{\varepsilon}(\boldsymbol{x})=W_2\varphi(W_1\boldsymbol{x}+\boldsymbol{b}_1)+\boldsymbol{b}_2
-$$
-
-כך ש:
-
-$$
-\underset{x\in[0,1]^{D_{\text{in}}}}{\text{sup}}\lVert
-f(\boldsymbol{x})-f_{\varepsilon}(\boldsymbol{x})
-\rVert<\varepsilon
-$$
-
-</section><section>
-
-## Back-Propagation
-
-שיטה המקלה על חישוב הנגזרות על ידי שימוש בכלל השרשרת.
-
-### כלל השרשרת - תזכורת
-
-במקרה הסקלרי:
-
-$$
-\left(f(g(x))\right)'=f'(g(x))\cdot g'(x)
-$$
-
-במקרה של מספר משתנים:
+החזאי אשר ממזער את ה misclassifcation rate יהיה:
 
 $$
 \begin{aligned}
-\frac{d}{dx} f(z_1(x),z_2(x),z_3(x))
-=& &\left(\frac{d}{dz_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
- &+&\left(\frac{d}{dz_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
- &+&\left(\frac{d}{dz_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
+\hat{y}=h(\boldsymbol{x})
+&=\underset{y}{\arg\max}\ p_{\text{y}|\boldsymbol{x}}(y|\boldsymbol{x})\\
+&=\underset{y}{\arg\max}\ p_{\boldsymbol{x}|\text{y}}(\boldsymbol{x}|y)p_{\text{y}}(y)\\
+&=\underset{y}{\arg\max}\ p_{\text{y}}(y)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(x_d|y)
 \end{aligned}
 $$
 
 </section><section>
 
-## Back-Propagation
+## דוגמא 1 - זיהוי פריקה של הכתף
 
-לאלגוריתם 2 שלבים:
+תחת הנחת החוסר תלות ונשערך בנפרד את ההסתברות המותנית של כל אחד מהרכיבים $p_{\text{x}_d|\text{y}}(x_d|y)$. לדוגמא:
 
-- **Forward pass**: העברה של הדגימות דרך הרשת ושמירה של כל ערכי הביניים.
-- **Backward pass**: חישוב של הנגזרות של הנוירונים מהמוצא של הרשת לכיוון הכניסה.
+$$
+p_{\text{x}_{\text{pain}}|\text{y}}(x_{\text{pain}}|1)=\begin{cases}
+\tfrac{4}{4}=1&1\\
+\tfrac{0}{4}=0&0
+\end{cases}
+$$
+
+$$
+p_{\text{x}_{\text{pain}}|\text{y}}(x_{\text{pain}}|0)=\begin{cases}
+\tfrac{2}{4}=0.5&1\\
+\tfrac{2}{4}=0.5&0
+\end{cases}
+$$
+
+$$
+p_{\text{x}_{\text{swelling}}|\text{y}}(x_{\text{swelling}}|1)=\begin{cases}
+\tfrac{4}{4}=1&1\\
+\tfrac{0}{4}=0&0
+\end{cases}
+$$
+
+$$
+p_{\text{x}_{\text{swelling}}|\text{y}}(x_{\text{swelling}}|0)=\begin{cases}
+\tfrac{0}{4}=0&1\\
+\tfrac{1}{4}=1&0
+\end{cases}
+$$
 
 </section><section>
 
-## Back-Propagation - דוגמא פשוטה
+## דוגמא 1 - זיהוי פריקה של הכתף
 
-<div class="imgbox" style="max-width:700px">
+החיזוי בעבור המקרה בו מופיעים כל הסימפטומים יהיה
 
-![](./assets/back_prop_simple.png)
+$$
+\hat{y}
+=\underset{y}{\arg\max}\ p_{\text{y}}(y)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|y)
+$$
+
+זאת אומרת שעלינו לבדוק האם:
+
+$$
+\begin{aligned}
+p_{\text{y}}(0)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|1)\overset{?}{>}
+&p_{\text{y}}(1)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|0)\\
+0.5 \times 1 \times 1 \times 0.75 \times 0.5 \times 0.25 \overset{?}{>}
+&0.5 \times 0.5 \times 0 \times 0.25 \times 0 \times 0.25\\
+0.09375 \overset{?}{>}
+& 0
+\end{aligned}
+$$
+
+מכיוון שהתנאי זה מתקיים, החיזוי יהיה שישנה פריקה של כתף.
+
+</section><section>
+
+## דוגמא 2 - זיהוי הונאות אשראי
+
+ננסה להשתמש בשיטה זו לבעיית חיזוי הונאות האשראי
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_dataset.png)
 
 </div>
 
-<br/>
-
-נרשום את הנגזרת של $y$ לפי $\theta_2$:
-
-$$
-\frac{dy}{d\theta_2}=\frac{dy}{dz_2}\frac{dz_2}{d\theta_2}=\frac{dy}{dz_2}\frac{d}{d\theta_2}h_2(z_1;\theta_2)
-$$
-
-נוכל לפרק גם את הנגזרת של $\frac{dy}{dz_2}$:
-
-$$
-\frac{dy}{dz_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)
-$$
-
-לכן:
-
-$$
-\frac{dy}{d\theta_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}\frac{dz_2}{d\theta_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)\frac{d}{d\theta_2}h_2(z_1;\theta_2)
-$$
+נשתמש ב KDE חד מימד לשיערוך של $p_{\text{x}_d|\text{y}}(x_d|y)$.
 
 </section><section>
 
-## Back-Propagation - דוגמא פשוטה
+## דוגמא 2 - זיהוי הונאות אשראי
 
-<div class="imgbox" style="max-width:700px">
+<div class="imgbox" style="max-width:800px">
 
-![](./assets/back_prop_simple.png)
+![](./output/transactions_naive_pdf.png)
 
 </div>
 
-$$
-\frac{dy}{d\theta_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}\frac{dz_2}{d\theta_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)\frac{d}{d\theta_2}h_2(z_1;\theta_2)
-$$
-
-<br/>
-
-בכדי לחשב את הביטוי שקיבלנו עלינו לבצע את שני השלבים הבאים:
-
-- לחשב את כל ה $z_i$ לאורך הרשת (forward pass).
-- לחשב את כל הנגזרות מהמוצא של הרשת ועד לנקודה בה נמצא הפרמטר שלפיו רוצים לגזור (backword-pass).
+- לב שקיבלנו הסתברות גבוהה להונאה גם באיזורים שבמדגם לא היו שום דגימות של הונאות.
+- הסיבה היא הנחת החוסר תלות.
 
 </section><section>
 
-## Back-Propagation - דוגמא מעט יותר מורכבת
+## דוגמא 2 - זיהוי הונאות אשראי
 
-<div class="imgbox" style="max-width:900px">
+פונקציית החיזוי תהיה
 
-![](./assets/back_prop.png)
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_naive_predictions.png)
 
 </div>
 
-<br/>
+</section><section>
 
-נחשב את הנגזרת של $y_1$ לפי $\theta_3$.
+## שיטות פרמטריות
+
+- דומה לשימוש שעשינו במודלים פרמטרים בגישה הדטרמיניסטית.
+- נגביל את הצורה של הפונקציה שאותה אנו רוצים לשערך למודל פרמטרי.
+- נסמן את וקטור הפרמטרים ב $\boldsymbol{\theta}$.
+- כאן המודל חייב לייצר פילוג חוקי בעבור כל בחירה של פרמטרים.
+- מגבלה קשה אשר מצמצמת מאד את המודלים הפרמטריים שאיתם ניתן לעבוד.
 
 </section><section>
 
-## Back-Propagation - דוגמא מעט יותר מורכבת
+## בחירת הפרמטרים
+
+- נרצה למצוא דרך לתת "ציון" לכל בחירה של פרמטרים ולחפש את הפרמטריים אשר מניבים את הציון הטוב ביותר.
+- נציג שני גישות שונות להתייחס לפרמטרים של המודל.
+- כל גישה מובילה לדרך מעט שונה לבחירה של הפרמטרים.
+
+</section><section>
+
+## דוגמא: שיערוך הפילוג של זמן הנסיעה
+
+$$
+\mathcal{D}=\{x^{(i)}\}=\{55, 68, 75, 50, 72, 84, 65, 58, 74, 66\}
+$$
+
+משערך ה KDE של הפילוג הינו:
 
 <div class="imgbox" style="max-width:600px">
 
-![](./assets/back_prop.png)
+![](./output/drive_time_kde.png)
 
 </div>
 
 <br/>
 
-נפרק את הנגזרת של $\frac{dy_1}{d\theta_3}$ בדומה למה שחישבנו קודם:
+נרצה לשערך פרמטרים של פילוג נורמאלי שיתאר בצורה טובה את הדגימות במדגם.
+
+</section><section>
+
+## הגישה הלא-בייסיאנית<br/>(קלאסית או תדירותית (**Frequintist**))
+
+$$
+p_{\mathbf{x}}(\boldsymbol{x};\boldsymbol{\theta})
+$$
+
+- נתייחס לפרמטרים כאל מספרים שאותם יש לקבוע על מנת שהמודל יתאר בצורה טובה את המדגם.
+- בניגוד לגישה השניה, אין כל העדפה של ערך מסויים של הפרמטרים.
+
+</section><section>
+
+## Maximum Likelyhood Estimator (MLE)
+
+- נסמן ב $p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})$ את ההסתברות לקבלת המדגם $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}$.
+- גודל זה מכונה ה**סבירות** (**likelihood**) של המדגם.
+- אנו מעוניינים למצוא את הפרמטרים $\boldsymbol{\theta}$ אשר מניבים את הסבירות הכי גבוהה.
+- מקובל לסמן את פונקציית ה likelihood באופן הבא:
+
+$$
+\mathcal{L}(\boldsymbol{\theta};\mathcal{D})\triangleq p_{\mathcal{D}}(D;\boldsymbol{\theta})
+$$
+
+משערך ה MLE של $\boldsymbol{\theta}$ הוא הערך אשר ממקסמים את פונקציית ה likelihood:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\max}\ \mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+$$
+
+</section><section>
+
+## Maximum Likelyhood Estimator (MLE)
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\max}\ \mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+$$
+
+- נרשום את בעיית האופטימיזציה כבעיית מינימיזציה:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+$$
+
+- כאשר הדגימות במדגם הם i.i.d:
+
+$$
+p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})=\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
+$$
+
+ולכן:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
+$$
+
+</section><section>
+
+## Maximum Likelyhood Estimator (MLE)
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
+$$
+
+במקרים רבים נוכל להחליף את המכפלה על כל הדגימות בסכום, על ידי החלפת פונקציית ה likelihood ב log-likelihood:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
+$$
+
+</section><section>
+
+## דוגמא - זמן הנסיעה
+
+ננסה להתאים למדגם מודל של פילוג נורמאלי:
+
+$$
+p_{\text{x}}(x;\boldsymbol{\theta})=\frac{1}{\sqrt{{2\pi}}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+$$
+
+וקטור הפרמטרים הינו $\boldsymbol{\theta}=[\mu,\sigma]^\top$.
+
+</section><section>
+
+## דוגמא - זמן הנסיעה
+
+$$
+p_{\text{x}}(x;\boldsymbol{\theta})=\frac{1}{\sqrt{{2\pi}}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+$$
+
+נרשום את בעיית האופטימיזציה של מציאת משערך ה MLE:
 
 $$
 \begin{aligned}
-\frac{dy_1}{d\theta_3}
-&=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}\frac{dz_6}{dz_3}\frac{dz_3}{d\theta_3}\\
-&=\frac{d}{dz_7}h_8(z_7;\theta_8)\frac{d}{dz_6}h_7(z_6;\theta_7)\frac{d}{dz_3}h_6(z_5;\theta_6)\frac{d}{d\theta_3}h_3(z_2;\theta_3)
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\text{x}}(x^{(i)};\boldsymbol{\theta})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(\frac{1}{\sqrt{{2\pi}}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ \sum_i \log(\sigma) + \tfrac{1}{2}\log(2\pi) + \frac{(x^{(i)}-\mu)^2}{2\sigma^2}\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ N\log(\sigma) + \frac{1}{2\sigma^2}\sum_i (x^{(i)}-\mu)^2\\
+\end{aligned}
+$$
+
+נפתור על ידי גזירה והשוואה ל-0.
+
+</section><section>
+
+## דוגמא - זמן הנסיעה
+
+נסמן את ה objective ב $f$:
+
+$$
+f(\boldsymbol{\theta};\mathcal{x})=N\log(\sigma) + \frac{1}{2\sigma^2}\sum_i (x^{(i)}-\mu)^2
+$$
+
+$$
+\begin{aligned}
+&\begin{cases}
+  \frac{\partial f(\boldsymbol{\theta};\mathcal{x})}{\partial\mu} = 0\\
+  \frac{\partial f(\boldsymbol{\theta};\mathcal{x})}{\partial\sigma} = 0
+\end{cases}\\
+\Leftrightarrow&\begin{cases}
+  -\frac{1}{\sigma^2}\sum_i (x^{(i)}-\mu)=0\\
+  \frac{N}{\sigma}-\frac{1}{\sigma^3}\sum_i (x^{(i)}-\mu)^2=0
+\end{cases}\\
+\Leftrightarrow&\begin{cases}
+  N\mu-\sum_i x^{(i)}=0\\
+  N\sigma^2-\sum_i (x^{(i)}-\mu)^2=0
+\end{cases}\\
+\Leftrightarrow&\begin{cases}
+  \mu=\frac{1}{N}\sum_i x^{(i)}\\
+  \sigma=\sqrt{\frac{1}{N}\sum_i (x^{(i)}-\mu)^2}
+\end{cases}\\
 \end{aligned}
 $$
 
 </section><section>
 
-## Back-Propagation - דוגמא מעט יותר מורכבת
+## דוגמא - זמן הנסיעה
+
+במקרה של הנסיעות בכביש החוף נקבל:
+
+$$
+\mu=66.7\ \text{[min]}
+$$
+
+$$
+\sigma=9.7\ \text{[min]}
+$$
 
 <div class="imgbox" style="max-width:600px">
 
-![](./assets/back_prop.png)
+![](./output/drive_time_mle.png)
 
 </div>
 
+</section><section>
+
+## הגישה הבייסיאנית
+
+- הפרמטרים של המודל הם ריאליזציות (הגרלות) של משתנה אקראי.
+- גישה זו מניחה שיש בידינו מודל לפילוג המשותף של הפרמטרים והמדגם.
+
+$$
+p_{\mathcal{D},\boldsymbol{\theta}}(\mathcal{D},\boldsymbol{\theta})
+=p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+$$
+
+תחת ההנחה שבהינתן הפרמטרים הדגימות במדגם הם i.i.d:
+
+$$
+p_{\mathcal{D},\boldsymbol{\theta}}(\mathcal{D},\boldsymbol{\theta})
+=p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
+$$
+
+- עלינו לקבוע את $p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{\theta})$ ואת $p_{\boldsymbol{\theta}}(\boldsymbol{\theta})$.
+
+</section><section>
+
+## הגישה הבייסיאנית
+
+### A Prioiri Distribution
+
+הפילוג השולי של הפרמרטים $p_{\boldsymbol{\theta}}(\boldsymbol{\theta})$, מכונה לרוב ה**פילוג הפריורי** (**prior distribution**) או ה**א-פריורי** (**a priori distribution**), זאת אומרת הפילוג של $\boldsymbol{\theta}$ לפני שראינו את המדגם.
+
+### A Posteriori Distribution
+
+הפילוג של הפרמטרים בהינתן המדגם $p_{,\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})$ מכונה ה**פילוג הפוסטריורי** (**posterior distribution**) או **א-פוסטריורי** (**a posteriori distribution**) (או הפילוג בדיעבד), זאת אומרת, הפילוג אחרי שראינו את המדגם.
+
+</section><section>
+
+## Maximum A-posteriori Probaility (MAP)
+
+MAP משערך את הערך אשר ממקסם את הפילוג הא-פוסריורי (הערך הכי סביר של $\boldsymbol{\theta}$ בהינתן המדגם $p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})$):
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\max}\ p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})
+$$
+
+על פי חוק בייס, נוכל לכתוב זאת כ:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\frac{
+  p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})
+  p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+}{
+  p_{\mathcal{D}}(\mathcal{D})
+}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})
+p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+$$
+
+ כאשר הדגימות במדגם **בהינתן** $\boldsymbol{\theta}$ הן i.i.d, מתקיים:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
+$$
+
+</section><section>
+
+## Maximum A-posteriori Probaility (MAP)
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
+$$
+
+גם כאן נוכל להפוך את המכפלה לסכום על ידי מזעור מינוס הלוג של הפונקציה:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)-\sum_i \log\left(p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})\right)
+$$
+
+</section><section>
+
+## ההבדל בין MLE ל MAP
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
+$$
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)-\sum_i \log\left(p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})\right)
+$$
+
+- האיבר $-\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)$ מוסיף את הידע שיש לנו לגבי איזה ערכים של $\boldsymbol{\theta}$ יותר סבירים.
+- ראינו תוספת שכזו כאשר דיברנו על רגולריזציה.
+- ניתן לחשוב על בעיית ה MAP כעל בעיית MLE עם רגולריזציה.
+- בתרגיל הבית אתם תראו את השקילות שבין בעיית MAP לבין לבעיית MLE עם רגולריזציה.
+
+</section><section>
+
+## בגישה בייסיאנית השערוך הוא בעיית חיזוי
+
+- אנו מתייחסים גם למדגם וגם לפרמטרים כאלה ריאליזציות של משתנים אקראיים.
+- אנו מניחים שאנו יודעים את הפילוג המשותף שלהם.
+- ואנו מנסים למצוא את הערך של הפרמטרים בהינתן המדגם.
+- זוהי בדיוק בעיית חיזוי קלאסית של משתנה אקראי אחד בהינתן משתנה אקראי אחר על סמך הפילוג המשותף.
+
+<br/>
+
+הבחירה שלל ממקסמים את הפילוג נובעת מכך שזהו הפתרון הפשוט ביותר.
+
+</section><section>
+
+## דוגמא - הוספת prior
+
+- נחזור לדוגמא של התאמת מודל של פילוג נורמאלי לפילוג של זמן הנסיעה בכביש החוף.
+- לשם הפשטות נקבע את סטיית התקן של המודל ל $\sigma=10$.
+- הפרמטר היחיד של המודל יהיה $\mu$:
+
+$$
+p_{\text{x}|\mu}(x|\mu)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+$$
+
+</section><section>
+
+## דוגמא - הוספת prior
+
+$$
+p_{\text{x}|\mu}(x|\mu)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+$$
+
+- נניח שיש לנו ידע קודם על פילוג הצפוי של $\mu$.
+- נניח שהפילוג הא-פריורי של $\mu$ הוא גם פילוג נורמאלי עם תוחלת $\mu_{\mu}=60$ וסטיית תקן של $\sigma_{\mu}=5$:
+
+$$
+p_{\mu}(\mu)=\frac{1}{\sqrt{2\pi}\sigma_{\mu}}\exp\left(-\frac{(\mu-\mu_{\mu})^2}{2\cdot\sigma_{\mu}^2}\right)
+$$
+
+נרשום את משערך ה MAP של $\mu$:
+
 $$
 \begin{aligned}
-\frac{dy_1}{d\theta_3}
-&=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}\frac{dz_6}{dz_3}\frac{dz_3}{d\theta_3}\\
-&=\frac{d}{dz_7}h_8(z_7;\theta_8)\frac{d}{dz_6}h_7(z_6;\theta_7)\frac{d}{dz_3}h_6(z_5;\theta_6)\frac{d}{d\theta_3}h_3(z_2;\theta_3)
+\hat{\mu}_{\text{MAP}}
+=\underset{\mu}{\arg\min}\ -\log\left(p_{\mu}(\mu)\right)-\sum_i \log\left(p_{\mathbf{x}|\mu}(\boldsymbol{x}^{(i)}|\mu)\right)
 \end{aligned}
 $$
 
-- נריץ את ה forward-pass בשביל לחשב את ערכי ה $z_i$.
-- נריץ את ה backword-pass בו נחשב את הנגזרות מהמוצא של הרשת עד לנגזרת של $h_3$.
+</section><section>
+
+## דוגמא - הוספת prior
+
+$$
+\begin{aligned}
+\hat{\mu}_{\text{MAP}}
+=\underset{\mu}{\arg\min}\ -\log\left(p_{\mu}(\mu)\right)-\sum_i \log\left(p_{\mathbf{x}|\mu}(\boldsymbol{x}^{(i)}|\mu)\right)
+\end{aligned}
+$$
+
+גזירה והשוואה ל-0 נותנת את התוצאה הבאה:
+
+$$
+\begin{aligned}
+  \frac{\partial f(\boldsymbol{\theta};\mathcal{x})}{\partial\mu} &= 0\\
+\Leftrightarrow
+  \frac{1}{\sigma_{\mu}^2}(\mu-\mu_{\mu})-\frac{1}{\sigma^2}\sum_i (x^{(i)}-\mu)&=0\\
+\Leftrightarrow
+  \left(\frac{1}{\sigma_{\mu}^2}+\frac{N}{\sigma^2}\right)\mu&=\frac{\mu_{\mu}}{\sigma_{\mu}^2}+\frac{1}{\sigma^2}\sum_i x^{(i)}\\
+\Leftrightarrow
+  \mu&=\frac{\frac{\sigma}{N\sigma_{\mu}^2}\mu_{\mu}+\frac{1}{N}\sum_i x^{(i)}}{\frac{\sigma}{N\sigma_{\mu}^2}+1}
+\end{aligned}
+$$
+
+זו למעשה ממוצע ממושקל בין הממוצע של $x$ במדגם לבין $\mu_{\mu}$.
+
+</section><section>
+
+## דוגמא - הוספת prior
+
+בעבור הדוגמא שלנו נקבל:
+
+$$
+\mu=64.8\ \text{[min]}
+$$
+
+ערך זה מעט יותר קרוב ל60 משאר התוצאה שקיבלנו בשיערוך ה MLE. זאת משום ה prior ש"מושך" את הפרמטרים לאיזורים הסבירים יותר ולכן הוא מקרב אותו ל $\mu_{\mu}=60$.
+
+</section><section>
+
+## שימוש בשיערוך פרמטרי לפתרון בעיות supervised learning
+
+בדומה לאופן שבו השתמשנו בשיערוכים הלא פרמטריים לפתרון בעיות supervised learning נוכל לעשות זאת גם בעזרת שיערוכים פרמטריים. נציג שיטה אשר משתמשת במודל של פילוג נורמאלי וב MLE לפתרון בעיות סיווג.
+
+</section><section>
+
+## Quadric Discriminant Analysis (QDA)
+
+- נשתמש בפילוג נורמאלי וב MLE על מנת לשערך את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$.
+- אנו צריכים לשערך מודל בעבור כל אחת מ $C$ המחלקות של $\text{y}$:
+  - וקטור תוחלת $\boldsymbol{\mu}_c$ בעבור כל אחד מהמחלקות.
+  - מטריצת קווריאנס $\Sigma_c$ בעבור כל אחד מהמחלקות.
+
+$$
+p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|c;\boldsymbol{\mu}_c,\Sigma_c)=
+\frac{1}{\sqrt{(2\pi)^D|\Sigma_c|}}
+\exp\left(-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_c)^{\top}\Sigma_c^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_c)\right)
+$$
+
+הפילוג המשותף של $\mathbf{x}$ ו $\text{y}$ יהיה:
+
+$$
+p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\{\boldsymbol{\mu}_c\},\{\Sigma_c\})=
+p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y;\boldsymbol{\mu}_y,\Sigma_y)
+p_{\text{y}}(y)
+$$
+
+</section><section>
+
+## Quadric Discriminant Analysis (QDA)
+
+בעיית האופטימיזציה של MLE תהיה:
+
+$$
+\begin{aligned}
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\mathcal{L}(\boldsymbol{\theta};\mathcal{D})\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\sum_i \log\left(
+  p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)
+  p_{\text{y}}(y^{(i)})
+\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\sum_i
+  \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)\right)
+  +\log\left(p_{\text{y}}(y^{(i)})\right)
+\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\sum_i \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)\right)\\
+\end{aligned}
+$$
+
+</section><section>
+
+## Quadric Discriminant Analysis (QDA)
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\sum_i \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)\right)
+$$
+
+- נחלק את הסכימה לסכימות ניפרדות על כל אחת מהמחלקות.
+- נגדיר לשם כך את הסימונים הבאים:
+  - $\mathcal{I}_c=\{i:\ y^{(i)}=c\}$ - זאת אומרת, אוסף האינדקסים של הדגמים במדגם שמקיימים $y^{(i)}=c$.
+  - $|\mathcal{I}_c|$ - מספר האינדקסים ב $\mathcal{I}_c$
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\sum_{i\in\mathcal{I}_1} \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|1;\boldsymbol{\mu}_1,\Sigma_1)\right)
+-\sum_{i\in\mathcal{I}_2} \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|2;\boldsymbol{\mu}_1,\Sigma_2)\right)
+-\dots
+$$
+
+</section><section>
+
+## Quadric Discriminant Analysis (QDA)
+
+בעבור המחלקה ה $c$ נקבל את בעיית האופטימיזציה הבאה:
+
+$$
+\begin{aligned}
+\hat{\boldsymbol{\mu}}_{c,\text{MLE}},\hat{\Sigma}_{c,\text{MLE}}
+&=\underset{\boldsymbol{\mu}_c,\Sigma_c}{\arg\min}\ 
+-\sum_{i\in\mathcal{I}_c} \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|c;\boldsymbol{\mu}_c,\Sigma_c)\right)\\
+&=\underset{\boldsymbol{\mu}_c,\Sigma_c}{\arg\min}\ 
+\sum_{i\in\mathcal{I}_c}
+\log\left(\sqrt{|\Sigma_c|})\right)+
+\frac{1}{2}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)^{\top}\Sigma_c^{-1}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)\\
+\end{aligned}
+$$
+
+- ניתן לפתור את הבעיה הזו על ידי גזירה והשוואה ל-0.
+- הפיתוח בעבור $\Sigma_c$ הוא מעט מורכב ואנו לא נראה אותו בקורס זה ונקפוץ ישר לפתרון.
+
+</section><section>
+
+## Quadric Discriminant Analysis (QDA)
+
+החישוב של $\boldsymbol{\mu}_c$
+
+$$
+f(\boldsymbol{\theta};\mathcal{x})
+=\sum_{i\in\mathcal{I}_c}
+\log\left(\sqrt{|\Sigma_c|})\right)+
+\frac{1}{2}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)^{\top}\Sigma_c^{-1}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)
+$$
+
+<br/>
+
+$$
+\begin{aligned}
+\frac{\partial f}{\partial\boldsymbol{\mu}_c}&=0\\
+\Leftrightarrow-\sum_{i\in\mathcal{I}_c}\Sigma_c^{-1}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)&=0\\
+\Leftrightarrow|\mathcal{I}_c|\boldsymbol{\mu}_c-\sum_{i\in\mathcal{I}_c}\boldsymbol{x}^{(i)}&=0\\
+\Leftrightarrow\boldsymbol{\mu}_c&=\frac{1}{|\mathcal{I}_c|}\sum_{i\in\mathcal{I}_c}\boldsymbol{x}^{(i)}\\
+\end{aligned}
+$$
+
+</section><section>
+
+## Quadric Discriminant Analysis (QDA)
+
+הפרמטרים של המודל יהיו:
+
+$$
+p_{\text{y}}(c)=\frac{|\mathcal{I}_c|}{N}
+$$
+
+$$
+\boldsymbol{\mu}_c=\frac{1}{|\mathcal{I}_c|}\sum_{i\in\mathcal{I}_c}\boldsymbol{x}^{(i)}
+$$
+
+$$
+\Sigma_c = \frac{1}{|\mathcal{I}_c|}\sum_{i\in\mathcal{I}_c}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c\right)^T
+$$
+
+</section><section>
+
+## Quadric Discriminant Analysis (QDA)
+
+בעבור פונקציית מחיר של miscalssification rate, החזאי האופטימאלי יהיה:
+
+$$
+\begin{aligned}
+\hat{y}=h(\boldsymbol{x})
+&=\underset{y}{\arg\max}\ 
+  p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y;\boldsymbol{\mu}_y,\Sigma_y)
+  p_{\text{y}}(y)\\
+&=\underset{y}{\arg\max}\ 
+  -\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_y)^{\top}\Sigma_y^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_y)
+  +\log\left(\frac{p_{\text{y}}(y))}{\sqrt{|\Sigma_y|}}\right)\\
+\end{aligned}
+$$
+
+</section><section>
+
+## המקרה הבנארי - משטח הפרדה ריבועי
+
+בעבור המקרה של סיווג בינארי (סיווג לשני מחלקות) מתקבל החזאי הבא:
+
+$$
+h\left(x\right)
+=\begin{cases}
+  1\qquad \boldsymbol{x}^T C \boldsymbol{x} + \boldsymbol{a}^T \boldsymbol{x} + b > 0 \\
+  0\qquad \text{otherwise}\\
+\end{cases}
+$$
+
+כאשר:
+
+$$
+C=\frac{1}{2}(\Sigma^{-1}_0-\Sigma^{-1}_1)
+$$
+
+$$
+\boldsymbol{a}=\Sigma^{-1}\boldsymbol{\mu}_1-\Sigma^{-1}_0\boldsymbol{\mu}_0
+$$
+
+$$
+b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma_0^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma_1^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{\sqrt{|\Sigma_0|}p_\text{y}(1)}{\sqrt{|\Sigma_1|}p_\text{y}(0)}\right)
+$$
+
+התנאי שקיבלנו $\boldsymbol{x}^T C \boldsymbol{x} + \boldsymbol{a}^T \boldsymbol{x} + b > 0$ הוא ריבועי ב $\boldsymbol{x}$ ומכאן מקבל האלגוריתם את שמו.
+
+</section><section>
+
+## Linear Discriminant Analysis (LDA)
+
+- מניח שלפונקציות הפילוג של המחלקות השונות יש את אותה מטריצת הקווריאנס.
+- שהפרמטרים של המודל יהיו כעת:
+  - וקטור תוחלת $\boldsymbol{\mu}_c$ בעבור כל אחד מהמחלקות.
+  - מטריצת covariance אחת $\Sigma$ משותפת לכל המחלקות.
+
+$$
+p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|c;\boldsymbol{\mu}_c,\Sigma)=
+\frac{1}{\sqrt{(2\pi)^D|\Sigma|}}
+\exp\left(-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_c)^{\top}\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_c)\right)
+$$
+
+</section><section>
+
+## Linear Discriminant Analysis (LDA)
+
+פתרון בעיית ה MLE:
+
+$$
+p_{\text{y}}(c)=\frac{|\mathcal{I}_c|}{N}
+$$
+
+$$
+\boldsymbol{\mu}_c = \frac{1}{|\mathcal{I}_c|}\sum_{i\in \mathcal{I}_c}\boldsymbol{x}^{(i)}
+$$
+
+$$
+\Sigma = \frac{1}{N}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+$$
+
+</section><section>
+
+## Linear Discriminant Analysis (LDA)
+
+בעבור פונקציית מחיר של miscalssification rate, החזאי האופטימאלי המתקבל ממודל זה הינו:
+
+$$
+\begin{aligned}
+\hat{y}=h(\boldsymbol{x})
+&=\underset{y}{\arg\max}\ 
+  p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y;\boldsymbol{\mu}_c,\Sigma)
+  p_{\text{y}}(y)\\
+&=\underset{y}{\arg\max}\ 
+  -\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_y)^{\top}\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_y)
+  +\log(p_{\text{y}}(y))\\
+&=\underset{y}{\arg\min}\ 
+  \boldsymbol{x}^{\top}\Sigma^{-1}\boldsymbol{\mu}_y
+  -\frac{1}{2}\boldsymbol{\mu}_y^{\top}\Sigma^{-1}\boldsymbol{\mu}_y
+  -\log(p_{\text{y}}(y))\\
+\end{aligned}
+$$
+
+</section><section>
+
+## המקרה הבנארי - הפרדה לינארית
+
+בעבור המקרה של סיווג בינארי (סיווג לשני מחלקות) מתקבל החזאי הבא:
+
+$$
+h\left(x\right)
+=\begin{cases}
+  1\qquad \boldsymbol{a}^T \boldsymbol{x} + b > 0 \\
+  0\qquad \text{otherwise}\\
+\end{cases}
+$$
+
+כאשר:
+
+$$
+\boldsymbol{a}=\Sigma^{-1}\left(\boldsymbol{\mu}_1-\boldsymbol{\mu}_0\right)
+$$
+
+$$
+b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{p_\text{y}\left(1\right)}{p_\text{y}\left(0\right)}\right)
+$$
+
+התנאי שקיבלנו $\boldsymbol{a}^T \boldsymbol{x} + b > 0$ הוא לינארי ב $\boldsymbol{x}$ ומכאן מקבל האלגוריתם את שמו.
+
+</section><section>
+
+## המקרה הכללי (לא בינארי)
+
+במקרה הכללי המרחב יהיה מחולק ל $C$ איזורים שהשפות שלהם יהיו מורכבות מהמישורים המתקבלים מהשפות שבין כל זוג מחלקות. דוגמא למקרה עם 3 מחלקות תופיע בתרגול.
 
 </section>
 </div>

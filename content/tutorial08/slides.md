@@ -7,8 +7,9 @@ slides_pdf: true
 
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
+<section>
 
-# תרגול 8 - MLP and Back-propagetion
+# תרגול 8 - שיערוך פילוג בשיטות פרמטריות וסיווג גנרטיבי
 
 <div dir="ltr">
 <a href="/assets/tutorial08_slides.pdf" class="link-button" target="_blank">PDF</a>
@@ -17,728 +18,1010 @@ slides_pdf: true
 
 ## תקציר התיאוריה
 
-</section><section>
+### הבעיה בגישה הלא פרמטרית
 
-### Artificial Neural Networks (ANN)
+<div class="fragment">
 
-* רשתות ניורונים מלאכותיות הינן שיטה לבניה של פונקציות פרמטריות.
-* במקור, השיטה הינה בהשראת רשתות נוירונים ביולוגיות.
-* ברשתות נוירונים מלאכותיות נשלב הרבה פונקציות פרמטריות פשוטות על מנת לקבל מודל אשר יכול לייצג פונקציות מורכבות.
-* לרוב, הפונקציות הפשוטות יקבלו מספר משתנים ויחזירו סקלר.
+* **Curse of dimensionality**: 
+  * לומדות את הפילוג בכל איזור על פי הדגימות שנמצאות באותו איזור באופן בלתי תלוי באיזורים האחרים במרחב.
+  * לכן, נדרש מספר רב של דוגמאות לכסות את מרחב הדגימות האפשריות.
+  * (הגודל האפקטיבי של מרחב הדגימות גדל בצורה מעריכית עם המימד של הדגימות (האורך של הוקטור $\mathbf{x}$))
 
-</section><section>
+</div><div class="fragment">
 
-<div class="imgbox" style="max-width:800px">
-
-
-
-![](../lecture08/assets/ann.png)
+* המודלים המתקבלים אינם פונקציה שנוח לעבוד איתן:
+  * לדוגמא: חישוב הצפיפות בנקודה מסויימת ב- KDE נעשה באמצעות סכימה על כל הנקודות שנמצאות ב train set.
 
 </div>
 
-
-
 </section><section>
 
- לרוב נבחר את הפונקציות הפשוטות להיות מהצורה של:
-$$
-h(\boldsymbol{x};\boldsymbol{w},b)=\varphi(\boldsymbol{w}^{\top}\boldsymbol{x}+b)
-$$
+### הגישה הפרמטרית
 
-*  $\varphi$ סקאלרית לא לינארית ומכונה פונקציית ההפעלה.
-* בחירות נפוצות של הפונקציית ההפעלה הינן:
-  * הפונקציה הלוגיסטית (סיגמואיד): $\varphi(x)=\sigma(x)=\frac{1}{1+e^{-x}}$
-  * טנגנס היפרבולי: $\varphi(x)=\tanh\left(x/2\right)$
-  * ReLU (Rectified Linear Unit):  $\varphi(x)=\max(x,0)$
+* נעשה שימוש במודלים פרמטרים בדומה לאופן שבו הדבר נעשה בגישה הדיסקרימינטיבית:
+* נחפש פילוג בתוך משפחה פרמטרית מסויימת, על ידי מציאת הפרמטרים האופטימליים.
+  *  לרוב ננסה למדל את צפיפות הפילוג (הPDF). 
 
-</section><section>
+<div class="fragment">
 
-### מושגים:
+*  2 דרכים להתייחס לפרמטרי המודל:
 
-- **יחידות נסתרות** (**hidden units**): הנוירונים אשר אינם מחוברים למוצא הרשת (אינם נמצאים בסוף הרשת).
-- **רשת עמוקה** (**deep network**): רשת אשר מכילה מסלולים מהכניסה למוצא, אשר עוברים דרך יותר מיחידה נסתרת אחת.
-- **ארכיטקטורה**: הצורה שבה הנוירונים מחוברים בתוך הרשת.
-
-</section><section>
-
-### 
-
-### מוטיבציה
-
-* רשתות נוירונים  יכולות לשמש כפונקציה פרמטרית לכל דבר.
-* נשתמש בהן בקורס למטרות הבאות:
-  * פתרון בעיות סיווג בגישה הדיסקרימינטיבית הסתברותית.
-  * פתרון בעיות רגרסיה בשיטת ה ERM.
-* לרוב, נפתור את בעיות האופטימיזציה של מציאת הפרמטרים בעזרת gradient descent.
-  * ניעזר ב- back-propagation על מנת לחשב את הנגזרות של הרשת על פי הפרמטריים.
-
-
-
-הערה: נשתמש בוקטור $\boldsymbol{\theta}$ אשר יאגד את כל הפרמטרים של הרשת (הפרמטרים של כל הנוירונים).
-
-</section><section>
-
-#### הערה לגבי השם loss
-
-* עד כה השתמשנו בשם loss בהקשר של פונקציות risk (הקנס שמקבלים על שגיאת חיזוי בודדת מסויימת).
-* בהקשר של רשתות נוירונים משתמשים לרוב במושג זה על מנת לתאר את הפונקציית המטרה (ה objective) שאותו רוצים למזער בבעיית האופטימיזציה.
-
-* בכדי למנוע בלבול, בקורס זה נשתדל להיצמד להגדרה המקורית של פונקציית ה loss (שמגדירה את פונקציית ה risk) ונמשיך להשתמש בשם פונקציית מטרה או objective בכדי לתאר את הביטוי שאותו אנו רוצים למזער.
-
-</section><section>
-
-### Back-Propagation
-
-* Back-propagation שימוש בכלל השרשת על מנת לחשב את הנגזרות של רשת נוירונים.
-
-* תזכורת לכלל השרשרת:
-
-$$
-\begin{aligned}
-\frac{d}{dx} f(z_1(x),z_2(x),z_3(x))
-=& &\left(\frac{d}{dz_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
- &+&\left(\frac{d}{dz_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
- &+&\left(\frac{d}{dz_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
-\end{aligned}
-$$
-
-</section><section>
-
-#### דוגמא (מההרצאה)
-
-נסתכל על הרשת הבאה:
-
-<div class="imgbox" style="max-width:900px">
-
-
-![](../lecture08/assets/back_prop.png)
+  * גישה בייסיאנית וגישה תדירותית (לא בייסיאנית)
 
 </div>
 
-* עבור $\boldsymbol{x}$ ו $\boldsymbol{\theta}$ נתונים:
-* נרצה לחשב את הנזרות של מוצא הרשת $\boldsymbol{y}$ לפי הפרמטרים $\boldsymbol{\theta}$.
-
 </section><section>
 
-נסתכל לדוגמא על הנזגרת של $y_1$ לפי $\theta_3$. לשם הנוחות נסמן ב $z_i$ את המוצא של הניורון $h_i$.
+#### הגישה הלא-בייסיאנית (קלאסית או תדירותית (**Frequintist**))
 
-נוכל לפרק את $\frac{dy}{d\theta_3}$ על פי כלל השרשת:
-
-$$
-\frac{dy_1}{d\theta_3}
-=\frac{dy_1}{dz_3}\frac{dz_3}{d\theta_3}
-=\frac{dy_1}{dz_3}\frac{dh_3}{d\theta_3}
-$$
-
-נוכל לפרק גם את $\frac{dy_1}{dz_3}$ על פי כלל השרשרת:
+* בגישה זו אנו נתייחס לפרמטרים באופן דומה לשיטות הדיסקרימינטיביות.
+* תחת גישה זו אין כל העדפה של ערך מסויים של הפרמטרים על פני ערך אחר. את המודל הפרמטרי להסתברות / צפיפות הסתברות של משתנה אקראי $\mathbf{x}$ נסמן ב:
 
 $$
-\frac{dy_1}{dz_3}
-=\frac{dy_1}{dz_6}\frac{dz_6}{dz_3}
-=\frac{dy_1}{dz_6}\frac{dh_6}{dz_3}
-$$
-
-ונוכל להמשיך ולפרק את $\frac{dy_1}{dz_6}$:
-
-$$
-\frac{dy_1}{dz_6}
-=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}
-=\frac{dh_8}{dz_7}\frac{dh_7}{dz_6}
+p_{\mathbf{x}}(\boldsymbol{x};\boldsymbol{\theta})
 $$
 
 </section><section>
 
-* זאת אומרת שאם נדע לחשב את הנגזרות של $\frac{dh_i}{dz_i}$ ו $\frac{dh_i}{d\theta_i}$ נוכל לחשב את הגזרות לפי כל הפרמטרים.
-* נסתכל לדוגמא על הנגזרת:
+## 
+
+##### משערך Maximum Likelyhood Estimator (MLE)
+
+* הדרך הנפוצה ביותר לבחור את הערך של $\boldsymbol{\theta}$ תחת הגישה הלא בייסאנית היא בעזרת MLE:
+* נחפש את הערך של $\boldsymbol{\theta}$ אשר מסביר בצורה הכי טובה את המדגם הנתון.
+
+<div class="fragment">
+
+* נסמן ב $p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})$ את ההסתברות לקבלת מדגם $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}$.
+* גודל זה מכונה ה**סבירות** (**likelihood**) של המדגם כפונקציה של $\boldsymbol{\theta}$. 
+
+</div><div class="fragment">
+
+* כדי להדגיש שהמדגם הוא גודל ידוע ואילו הגודל הלא ידוע שאותו נרצה לבדוק הינו $\boldsymbol{\theta}$, מקובל לסמן את פונקציית ה likelihood באפן הבא:
 
 $$
-\frac{d}{d\theta_6}h_6(z_3,z_4;\theta_6)
+\mathcal{L}(\boldsymbol{\theta};\mathcal{D})\triangleq p_{\mathcal{D}}(D;\boldsymbol{\theta})
 $$
-
-* ראשית, נגזור את הפונקציה $h_6$ ונציב את הערכים של $z_3$, $z_4$ ו $\theta_6$.
-* בכדי לחשב את הערכים של $z_i$ עלינו להעביר את $\boldsymbol{x}$ דרך הרשת ולשמור את כל ערכי הביניים $z_i$. חישוב זה של ערכי הביניים נקרא ה **forward pass**.
-
-</section><section>
-
-לאחר שחישבנו את ערכי הביניים $z_i$, נוכל להתחיל לחשב את כל הנגזרות של הרשת מהמוצא לכיוון הכניסה. זאת אומרת:
-
-1. נחשב את: $\frac{dy_1}{d\theta_8}$, $\frac{dy_1}{dz_7}$.
-2. נשתמש ב $\frac{dy_1}{dz_7}$ בכדי לחשב את $\frac{dy_1}{d\theta_7}$, $\frac{dy}{dz_5}$, $\frac{dy}{dz_6}$.
-3. נשתמש ב $\frac{dy_1}{dz_6}$ בכדי לחשב את $\frac{dy_1}{d\theta_6}$, $\frac{dy}{dz_3}$, $\frac{dy}{dz_4}$.
-
-וכן הלאה. מכיוון שבשלב זה אנו מחשבים את הנזגרות מהמוצא לכיוון הכניסה שלב זה נקרא ה **backward pass** ומכאן גם מקבלת השיטה את שמה.
-
-</section><section>
-
-### MultiLayer Perceptron (MLP)
-
-* ארכיטקטורה נפוצה לרשת נוירונים  ה- **MLP**. 
-* במודל זה הנוירונים מסודרים בשתייים או יותר שכבות (layers) של נוירונים.
-* השכבות ב MLP הם שכבות שמכונות **Fully Connected (FC)**:
-  * כל נוירון מוזן מ**כל** הנוריונים שבשכבה שלפניו.
-
-<div class="imgbox" style="max-width:400px">
-
-
-
-![](../lecture08/assets/mlp.png)
 
 </div>
 
-
-
 </section><section>
 
-<div class="imgbox" style="max-width:300px">
-
-
-
-![](../lecture08/assets/mlp.png)
-
-</div>
-
-הניורונים הם מהצורה:
-$$
-h_{i,j}(\boldsymbol{z}_{i-1};\boldsymbol{w}_{i,j},b_{i,j})=\varphi(\boldsymbol{w}_{i,j}^T\boldsymbol{z}_{i-1}+b_{i,j})
-$$
-
-* הפרמטרים הנלמדים הינם המשקולות $\boldsymbol{w}_{i,j}$ ואברי היסט $b_{i,j}$ בקומבינציה הלניארית שמכיל כל נוירון $h_{i,j}$.
-
-ה Hyperparameters של MLP הינם:
-
-- מספר השכבות
-- מספר הנוירונים בכל שכבה
-- פונקציית האקטיבציה
-
-</section><section>
-
-
-
-## תרגיל 8.1 - Back propagation in MLP
-
-נפתור בעיית רגרסיה בעזרת ERM ורשת ה MLP הבאה:
-
-* כניסה באורך 2
-* שכבה נסתרת אחת ברוחב 2
-* יציאה באורך 1 (מוצא סקלרי) 
-
-<div class="imgbox" style="max-width:600px">
-
-![](../tutorial08/assets/ex8_1.png)
-
-</div>
-
-
-
-
-
-
-
-</section><section>
-
-
-
-<div class="imgbox" style="max-width:400px">
-
-![](../tutorial08/assets/ex8_1.png)
-
-</div>
-
-
-
-* ב- $h_{1,1}$ ו $h_{1,2}$ יש פונקציית אקטיבציה מסוג ReLU
-* ב- $h_2$ אין פונקציה אקטיבציה.
+* משערך ה MLE של $\boldsymbol{\theta}$ הוא הערך שממקסם את ה- likelihood:
 
 $$
-\begin{aligned}
-h_{1,1}(\boldsymbol{x};\boldsymbol{w}_{1,1},b_1)&=\max(\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1,0)\\
-h_{1,2}(\boldsymbol{x};\boldsymbol{w}_{1,2},b_1)&=\max(\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1,0)\\
-h_2(\boldsymbol{z};\boldsymbol{w}_2,b_2)&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2
-\end{aligned}
-$$
-
-**שימו לב:** איבר ההיסט בשכבה הראשונה $b_1$ משותף לשתי הנוירונים בשכבה זו.
-
-
-
-</section><section>
-
-
-
-נרכז את כל הפרמטרים של הרשת לוקטור פרמטרים אחד:
-$$
-\boldsymbol{\theta}=[\boldsymbol{w}_{1,1}^{\top},\boldsymbol{w}_{1,2}^{\top},b_1,\boldsymbol{w}_2^{\top},b_2]^{\top}
-$$
-
-ונסמן את הפונקציה שאותה הרשת מממשת ב $\hat{\boldsymbol{y}}=f(\boldsymbol{x};\boldsymbol{\theta})$.
-
-</section><section>
-
-**1)** בעבור מדגם נתון $\mathcal{D}=\{\boldsymbol{x}^{(i)},y^{(i)}\}_{i=1}^N$ ופונקציית מחיר מסוג RMSE רשמו את בעיית האופטימיזציה שיש לפתור. בטאו את תשובתכם בעזרת הפונקציה $f$.
-
-</section><section>
-
-#### פתרון:
-
-פונקציית המחיר (סיכון) של RMSE נתונה על ידי:
-
-$$
-\sqrt{\mathbb{E}\left[(\hat{\text{y}}-\text{y})^2\right]}
-=\sqrt{\mathbb{E}\left[(f(\mathbf{x};\boldsymbol{\theta})-\text{y})^2\right]}
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\max}\ \mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
 $$
 
 <div class="fragment">
 
-הסיכון האמפירי מתקבל על ידי החלפה של התחולת בממוצע על המדגם:
+* כאשר הדגימות במדגם הן i.i.d נוכל להסיק כי:
+
 $$
-\sqrt{\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2}
+p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})=\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
 $$
 
 </div><div class="fragment">
 
-בעיית האופטימיזציה שנרצה לפתור הינה למצוא את הפרמטרים שימזערו את הסיכון האמפירי:
+ולכן:
+
 $$
-\underset{\boldsymbol{\theta}}{\arg\min}\sqrt{\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2}
-=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
 $$
+
+</div><div class="fragment">
+
+* נוכל להחליף את המכפלה על כל הדגימות בסכום:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
+$$
+
 </div>
 
 </section><section>
 
-**2)** נפתור את בעיית האופטימיזציה בעזרת gradient descent עם גדול קצב לימוד $\eta$.
+## 
 
-* רשמו את כלל העדכון של הפרמטרים של המודל $\boldsymbol{\theta}$ על ידי שימוש בגרדיאנט של הרשת לפי הפרמטרים, $\nabla_{\boldsymbol{\theta}}f(\boldsymbol{x};\boldsymbol{\theta})$.
+#### הגישה הבייסיאנית
+
+* וקטור הפרמטרים $\boldsymbol{\theta}$ הינו ריאליזציה של וקטור אקראי בעל פילוג כלשהוא $p_{\boldsymbol{\theta}}(\boldsymbol{\theta})$.
+* פילוג זה מכונה ה**א-פריורי** (**a priori distribution**), הפילוג של $\boldsymbol{\theta}$ לפני שראינו את המדגם.
+* תחת גישה זו, המודל שלנו יהיה הפילוג של $\mathbf{x}$ **בהינתן** $\boldsymbol{\theta}$:
+
+$$
+p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{\theta})
+$$
 
 </section><section>
 
-נסמן את ה objective שאותו נרצה למזער ב:
+## 
+
+##### משערך Maximum A-posteriori Probaility (MAP)
+
+* בגישה זו נבחר את הערך של $\boldsymbol{\theta}$ ע"י משערך MAP.
+* בשיטה זו נחפש את הערך הכי סביר של $\boldsymbol{\theta}$ בהינתן המדגם $p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})$.
+* פילוג זה מכונה הפילוג **א-פוסטריורי** (**a posteriori distribution**) (או הפילוג בדיעבד) - הפילוג אחרי שראינו את המדגם.
+
+</section><section>
+
+## 
+
+אם כן, משערך ה MAP הוא וקטור הפרמטרים אשר ממקסמים את ההסתברות ה א-פוסטריורית:
 
 $$
-g(\boldsymbol{\theta})=\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\max}\ p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})
 $$
 
 <div class="fragment">
 
-כלל העדכון של הפרמטרים הינו:
+על פי חוק בייס, נוכל לכתוב זאת כ:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\frac{
+  p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})
+  p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+}{
+  p_{\mathcal{D}}(\mathcal{D})
+}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})
+p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+$$
+
+</div><div class="fragment">
+
+כאשר הדגימות במדגם **בהינתן** $\boldsymbol{\theta}$ הן i.i.d מתקיים כי:
+
+$$
+p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})=\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
+$$
+
+</div><div class="fragment">
+
+ולכן:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
+\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
+$$
+
+</div><div class="fragment">
+
+</div>
+
+</section><section>
+
+גם כאן נוכל להפוך את המכפלה לסכום על ידי מזעור מינוס הלוג של הפונקציה:
+
+$$
+\hat{\boldsymbol{\theta}}_{\text{MAP}}
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)-\sum_i \log\left(p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})\right)
+$$
+
+</section><section>
+
+## Linear Discriminant Analysis (LDA)
+
+LDA הינו אלגוריתם לפתרון בעיות סיווג בגישה גנרטיבית פרמטרית (לא בייסיאנית).
+
+<div class="fragment">
+
+המודל הפרמטרי:
+
+1. את הפילוג של $p_{\text{y}}(y)$ נשערך ישירות מתוך התווית (זה פילוג דיסקרטי).
+2. את הפילוג של $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$ נמדל כפילוג נורמאלי.
+3. אנו נניח כי מטריצת ה convariance של הפילוג הנורמאלי אינה תלויה בערך של $\text{y}$.
+
+</div>
+
+</section><section>
+
+* נסמן את מטריצת הקווריאנס של הפילוגים הנורמאליים (אותה נרצה לשערך) ב- $\Sigma$.
+
+<div class="fragment">
+
+* בנוסף, בעבור כל מחלקה $c$ של $\text{y}$ נסמן:
+  * $\mathcal{I}_c=\{i:\ y^{(i)}=c\}$ - זאת אומרת, אוסף האינדקסים של הדגמים במדגם שמקיימים $y^{(i)}=c$.
+  * $|\mathcal{I}_c|$ - מספר האינדקסים ב $\mathcal{I}_c$
+  * $\mu_c$ - וקטורי התוחלת של הפילוג הנורמאלי $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|c)$.
+
+</div>
+
+</section><section>
+
+## 
+
+שיערוך של הפרמטריים בעזרת משערך MLE נותן את הפתרון הבא:
+
+$$
+\boldsymbol{\mu}_c = \frac{1}{|\mathcal{I}_c|}\sum_{i\in \mathcal{I}_c}\boldsymbol{x}^{(i)}
+$$
+
+$$
+\Sigma = \frac{1}{N}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+$$
+
+</section><section>
+
+## 
+
+### הפרדה לינארית
+
+בעבור המקרה של סיווג בינארי (סיווג לשתי מחלקות) ושימוש בzero-one loss מתקבל החזאי הבא:
+
+$$
+h\left(x\right)=
+\begin{cases}
+  1\qquad \boldsymbol{a}^T \boldsymbol{x} + b > 0 \\
+  0\qquad \text{otherwise}\\
+\end{cases}
+$$
+
+כאשר:
+
+$$
+\boldsymbol{a}=\Sigma^{-1}\left(\boldsymbol{\mu}_1-\boldsymbol{\mu}_0\right)
+$$
+
+$$
+b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{p_\text{y}\left(1\right)}{p_\text{y}\left(0\right)}\right)
+$$
+
+* נשים לב כי תנאי ההחלטה שבין שני התחומים הינו לינארי, ומכאן מקבל האלגוריתמם את שמו.
+
+</section><section>
+
+## 
+
+## תרגיל 6.1 - שיערוך MLE
+
+נתון מדגם $\mathcal{D}=\{x^{(i)}\}_{i=1}^N$ של דגימות בלתי תלויות של משתנה אקראי $\text{x}$. מצאו את משערך ה MLE של המודלים הבאים:
+
+</br>
+
+**1)** פילוג נורמלי: $\text{x}\sim N\left(\mu,\sigma^2\right)$ עם פרמטרים $\mu$ ו$\sigma^2$ לא ידועים.
+
+**2)** פילוג אחיד: $\text{x}\sim U\left[0, \theta\right]$, עם פרמטר $\theta$ לא יודע.
+
+**3)** פילוג אקספוננציאלי (**לקריאה עצמית**): $\text{x}\sim \exp\left(\theta\right)$. עם פרמטר $\theta$ לא ידוע.
+
+</section><section>
+
+## 
+
+### פיתרון 6.1
+
+#### 1)
+
+המודל של פונקציית ה PDF יהיה:
+
+$$
+p(x;\boldsymbol{\theta}))=\frac{1}{\sqrt{2\pi\sigma^2}_2}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)
+$$
+
+
+<div class="fragment">
+
+נסמן את וקטור הפרמטרים: $\boldsymbol{\theta}=[\mu,\sigma^2]^T$. המשערך הינו:
+
+</div><div class="fragment">
+
 $$
 \begin{aligned}
-\boldsymbol{\theta}^{(t+1)}
-&=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}g(\boldsymbol{x};\boldsymbol{\theta}^{(t)})\\
-&=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})^2\\
-&=\boldsymbol{\theta}^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\\
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+& = \underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^N\log\left(p(x^{(i)};\boldsymbol{\theta})\right) \\
+& = \underset{\boldsymbol{\theta}}{\arg\min}\quad -\sum_{i=1}^N\log\left(\frac{1}{\sqrt{2\pi\theta}_2}\exp\left(-\frac{1}{2\theta_2}\left(x^{(i)}-\theta_1\right)^2\right)\right) \\
+& = \underset{\boldsymbol{\theta}}{\arg\min}\quad \frac{N}{2}\log\left(2\pi\theta_2\right)+\sum_{i=1}^N\frac{1}{2\theta}_2\left(x^{(i)}-\theta_1\right)^2 \\
 \end{aligned}
 $$
 
 </div>
 
-
-
 </section><section>
 
-#### 
-
-**3)** נתון המדגם הבא באורך 2:
-$$
-\begin{aligned}
-\boldsymbol{x}^{(1)}&=[1,2]^{\top}\qquad &y^{(1)}=70\\
-\boldsymbol{x}^{(2)}&=[0,-1]^{\top}\qquad &y^{(2)}=50\\
-\end{aligned}
-$$
-
-כמו כן, נתון כי בצעד מסויים $t$ הערכים של הפרמטרים הינם:
+נפתור על ידי גזירה והשוואה ל 0 (נסמן ב $f(\boldsymbol{\theta})$ את פונקציית המטרה אותה יש למזער):
 
 $$
 \begin{aligned}
-b_1^{(t)}&=1\\
-\boldsymbol{w}_{1,1}^{(t)}&=[2,3]^{\top}\\
-\boldsymbol{w}_{1,2}^{(t)}&=[4,-5]^{\top}\\
-b_2^{(t)}&=6\\
-\boldsymbol{w}_{2}^{(t)}&=[7,8]^{\top}\\
+& \begin{cases}
+  \frac{\partial}{\partial \theta_1}f(\boldsymbol{\theta})=0 \\
+  \frac{\partial}{\partial \theta_2}f(\boldsymbol{\theta})=0 \\
+\end{cases} \\
+\Leftrightarrow & \begin{cases}
+  \sum_{i=1}^N\frac{1}{\theta}_2\left(x^{(i)}-\theta_1\right)=0 \\
+  \frac{N}{2\theta_2}-\sum_{i=1}^N\frac{1}{2\theta_2^2}\left(x^{(i)}-\theta_1\right)^2=0
+\end{cases} \\
+\Leftrightarrow & \begin{cases}
+  \theta_1=\frac{1}{N}\sum_{i=1}^N x^{(i)} \\
+  \theta_2=\frac{1}{N}\sum_{i=1}^N\left(x^{(i)}-\theta_1\right)^2
+\end{cases} \\
 \end{aligned}
 $$
 
-חשבו את הערך של $b_1^{(t+1)}$ בעבור $\eta=0.01$.
+מכאן ש:
+
+$$
+\hat{\mu}_{\text{MLE}}=\hat{\theta}_1=\frac{1}{N}\sum_{i=1}^N x^{(i)}
+$$
+
+$$
+\hat{\sigma^2}_{\text{MLE}}=\hat{\theta}_2=\frac{1}{N}\sum_{i=1}^N\left(x^{(i)}-\hat{\mu}_{\text{MLE}}\right)^2
+$$
 
 </section><section>
 
-נרצה לחשב את:
+## 
+
+#### 2)
+
+המודל של פונקציית ה PDF יהיה:
 
 $$
-\boldsymbol{b}_1^{(t+1)}
-=\boldsymbol{b}_1^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
+p(x;\theta))
+=\begin{cases}
+  \tfrac{1}{\theta} & \theta\geq x_i\geq 0 \\
+  0 & \text{else}
+\end{cases}
 $$
 
 <div class="fragment">
 
-נחשב את $\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})$ בעזרת back-propagation.
+ולכן:
 
-</div>
+$$
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+=\underset{\boldsymbol{\theta}}{\arg\max}\ \prod_{i=1}^N p(x^{(i)};\boldsymbol{\theta})
+=\begin{cases}
+  \tfrac{1}{\theta^N} & \theta\geq x^{(i)}\quad\forall i \\
+  0 & \text{else}
+\end{cases}
+$$
 
+</div><div class="fragment">
 
+התנאי $\theta\geq x^{(i)}$ לכל $i$ שקול ל $\theta>\max_i\{x^{(i)}\}$. מצד אחד נרצה לקיים תנאי זה בכדי שה likelihood לא יתאפס, מצד שני נרצה ש $\theta$ יהיה כמה שיותר קטן בכדי למקסם את $1/\theta^N$. לכן,
+
+$$
+\hat{\theta}_{\text{MLE}} = \max_i\{x^{(i)}\}
+$$
 
 </section><section>
 
-##### $i=1$
+## 
 
-נחשב את ה forward-pass בשביל למצוא את משתני הביניים ואת המוצא:
+#### 3)
 
-$$
-\begin{aligned}
-z_1&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([1,2][2,3]^{\top}+1,0)=\max(9,0)=9\\
-z_2&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([1,2][4,-5]^{\top}+1,0)=\max(-5,0)=0\\
-y&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2=[9,0][7,8]^{\top}+6=69
-\end{aligned}
-$$
-
-</section><section>
-
-* נחשב את הנגזרות ב backward-pass.
-* נתחיל בחישוב של $\frac{d\hat{y}}{dz_1}$ ו $\frac{d\hat{y}}{dz_1}$:
+המודל של פונקציית ה PDF יהיה:
 
 $$
-\begin{aligned}
-\frac{d\hat{y}}{dz_1}&=\frac{d}{dz_1}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,1}=7\\
-\frac{d\hat{y}}{dz_2}&=\frac{d}{dz_2}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,2}=8\\
-\end{aligned}
+p(x;\boldsymbol{\theta}))=\theta\exp(-\theta x)
 $$
-
-
 
 <div class="fragment">
 
-נשתמש בחישוב זה בכדי לחשב את $\frac{d}{db_1}f(\boldsymbol{x};\boldsymbol{\theta})=\frac{d\hat{y}}{db_1}$, נשים לב ש $b_1$ מופיע פעמים ברשת, ב $h_{1,1}$ וב $h_{1,2}$:
-
-(נשתמש בעובדה ש $\frac{d}{dx}\max(x,0)=I\{x>0\}$)
+משערך ה MLE נתון על ידי:
 
 $$
 \begin{aligned}
-\frac{d\hat{y}}{db_1}
-  &= \frac{d\hat{y}}{dz_1}\frac{dz_1}{db_1}
-    +\frac{d\hat{y}}{dz_2}\frac{dz_2}{db_1}\\
-  &= 7\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1>0\}
-    +8\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1>0\}
-   =7
+\hat{\boldsymbol{\theta}}_{\text{MLE}}
+& = \underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^N\log\left(p(x^{(i)};\boldsymbol{\theta})\right) \\
+& = \underset{\boldsymbol{\theta}}{\arg\min}\ -N\log(\theta)+\theta\sum_{i=1}^N x^{(i)}
 \end{aligned}
 $$
-
-
 
 </div>
 
 </section><section>
 
-##### $i=2$
+## 
 
-נחשב באופן דומה את ה- Foreward Pass:
+נפתור על ידי גזירה והשוואה ל 0 (נסמן ב $f(\theta)$ את פונקציית המטרה אותה יש למזער):
 
 $$
 \begin{aligned}
-z_1&=\max(\boldsymbol{x}^{(2)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([0,-1][2,3]^{\top}+1,0)=\max(-2,0)=0\\
-z_2&=\max(\boldsymbol{x}^{(2)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([0,-1][4,-5]^{\top}+1,0)=\max(6,0)=6\\
-y&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2=[0,6][7,8]^{\top}+6=54
+& \frac{\partial}{\partial\theta}f(\theta)=0 \\
+\Leftrightarrow & -\frac{N}{\theta}+\sum_{i=1}^N x^{(i)}=0 \\
+\Leftrightarrow & \theta=\frac{1}{\frac{1}{N}\sum_{i=1}^N x^{(i)}} \\
 \end{aligned}
+$$
+
+מכאן ש:
+
+$$
+\hat{\theta}_{\text{MLE}} = \frac{1}{\frac{1}{N}\sum_{i=1}^N x^{(i)}}
 $$
 
 </section><section>
 
-Backward-pass:
-$$
-\begin{aligned}
-\frac{d\hat{y}}{dz_1}&=\frac{d}{dz_1}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,1}=7\\
-\frac{d\hat{y}}{dz_2}&=\frac{d}{dz_2}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,2}=8\\
-\end{aligned}
-$$
+## 
 
-$$
-\begin{aligned}
-\frac{d\hat{y}}{db_1}
-  &= \frac{d\hat{y}}{dz_1}\frac{dz_1}{db_1}
-    +\frac{d\hat{y}}{dz_2}\frac{dz_2}{db_1}\\
-  &= 7\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1>0\}
-    +8\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1>0\}
-   =8
-\end{aligned}
-$$
+## תרגיל 6.2 - MAP
 
+ביום טוב, עומרי כספי קולע בהסתברות $p$ מהקו. ביום רע, הוא קולע בהסתברות $q$ מהקו. $\alpha$ מהימים הם ימים טובים עבור עומרי.
 
+ביום מסויים זרק עומרי $N$ זריקות וקלע $m$ מתוכם. מאמנו של עומרי צריך לזהות האם מדובר ביום טוב או רע של השחקן (ולהשאיר אותו או להחליף אותו בהתאמה).
+
+**מהו חוק ההחלטה אשר ממקסם את סיכויי המאמן לצדוק?**
+
+* הניחו כי בהינתן המידע של האם יום מסויים הוא טוב או לא, ההסברות לקלוע זריקות שונות הינה הסתברות בלתי תלויה.
 
 </section><section>
 
+## 
 
+### פתרון 6.2
 
-חישוב צעד העדכון
+- $\text{x}^{(i)}$ - משתנה אקראי בינארי של האם עומרי קלע בזריקה ה $i$. (0-החטיא, 1-קלע)
+- $\text{y}$ - משתנה אקראי בינארי של האם היום הינו יום טוב. (0-יום לא טוב, 1-יום טוב).
 
-נציב את התוצאות שקיבלנו ואת $\eta=0.01$:
+על פי הנתונים בשאלה:
 
 $$
-\begin{aligned}
-\boldsymbol{b}_1^{(t+1)}
-  &=\boldsymbol{b}_1^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\\
-  &=1-0.01\left(
-      (f(\boldsymbol{x}^{(1)};\boldsymbol{\theta}^{(t)})-y^{(1)})\frac{d}{db_1}f(\boldsymbol{x}^{(1)};\boldsymbol{\theta}^{(t)})
-      +(f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})-y^{(2)})\frac{d}{db_1}f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})
-    \right)\\
-  &=1-0.01\left((69-70)\cdot7+(54-50)\cdot8\right)
-   =1-0.01\cdot25=-0.75
-\end{aligned}
+p_{\text{x}|\text{y}}(x|0)=\begin{cases}
+  1-q & x=0 \\
+  q & x=1
+\end{cases}
 $$
 
+$$
+p_{\text{x}|\text{y}}(x|1)=\begin{cases}
+  1-p & x=0 \\
+  p & x=1
+\end{cases}
+$$
 
-
+$$
+p_{\text{y}}(y)=\begin{cases}
+  1-\alpha & y=0 \\
+  \alpha & y=1
+\end{cases}
+$$
 </section><section>
 
+* בכדי למקסם את הסיכוי לחזות האם היום הוא יום טוב בהינתן המדגם נרצה למצוא איזה ערך יותר סביר בהינתן המדגם (יום טוב או רע).
+* במילים אחרות אנו רוצים את ה $\text{y}$ הכי סביר בהינתן $\mathcal{D}=\{x^{(i)}\}$
 
+$$
+\hat{y}=\underset{y}{\arg\max}\ p_{\text{y}|\mathcal{D}}(y|\mathcal{D})
+$$
+<div class="fragment">
 
-## תרגיל 8.2
+* זוהי למעשה בעיית MAP קלאסית, כאשר $\text{y}$ משמש למעשה כפרמטר בפילוג של $\text{x}|\text{y}$.
+* בכדי לשמור על אחידות עם הסימונים שהגדרנו קודם לבעיות שיערוך נסמן את $\text{y}$ ב $\theta$. 
 
-**1)** הראו כיצד ניתן לייצג את הפונקציה הבאה בעזרת רשת MLP עם פונקציית אקטיבציה מסוג ReLU.
-
-<div class="imgbox" style="max-width:600px">
-
-
-![](../tutorial08/assets/ex8_3.png)
+$$
+\hat{\theta}
+=\underset{\theta}{\arg\max}\ p_{\theta|\mathcal{D}}(\theta|\mathcal{D})
+=\underset{\theta}{\arg\max}\ p_{\mathcal{D}|\theta}(\mathcal{D}|\theta)p_{\theta}(\theta)
+=\underset{\theta}{\arg\max}\ p_{\theta}(\theta)\prod_i p_{\text{x}|\theta}(x^{i}|\theta)
+$$
 
 </div>
 
-שרטטו את הרשת ורשמו את הערכים של פרמטרי הרשת.
-
-
-
 </section><section>
 
-### פתרון:
+מכיוון ש $\theta$ יכול לקבל רק שני ערכים נוכל לבדוק את שניהם ולקבוע מי מהם סביר יותר.
 
-* נבנה פונקציות רציפות ולינאריות למקוטעין, בעלות מספר סופי של קטעים, כמו זו בשבשאלה זו.
-* נשתמש בנויירונים בעלי פונקציית אקטיבציה מסוג ReLU הפועלים על קומבינציה לינארית של הכניסות.
+בעבור $\theta=0$ נקבל:
 
-* נבנה פונקציה זו בעזרת MLP בעל שיכבה נסתרת אחת אשר דואגת לייצג את המקטעים השונים ושיכבת מוצא אשר דואגת לשיפוע בכל מקטע.
-* נקבע את קבוע הbias בכל נוירון כך שהשינוי בשיפוע של ה ReLU (ב $x=0$) יהיה ממוקם על נקודה בה משתנה השיפוע של הפונקציה המקורית.
+$$
+p_{\theta}(0)\prod_i p_{\text{x}|\theta}(x^{(i)}|0)
+=(1-\alpha)q^m\left(1-q\right)^{N-m}
+$$
 
-</section><section>
+<div class="fragment">
 
-<div class="imgbox" style="max-width:400px">
+בעבור $\theta=1$ נקבל:
 
-![](../tutorial08/assets/ex8_3_1.png)
+$$
+p_{\theta}(1)\prod_i p_{\text{x}|\theta}(x^{(i)}|1)
+=\alpha p^m\left(1-p\right)^{N-m}
+$$
 
-</div>
+</div><div class="fragment">
+
+לכן החיזוי האופטימאלי יהיה:
 
 $$
 \begin{aligned}
-h_{1,1}(x)=\max(x+1,0) \\
-h_{1,2}(x)=\max(x,0) \\
-h_{1,3}(x)=\max(x-1,0) \\
+\hat{\theta}
+& = \begin{cases}
+  0 & (1-\alpha)q^m\left(1-q\right)^{N-m} > \alpha p^m\left(1-p\right)^{N-m} \\
+  1 & \text{otherwise}
+\end{cases} \\
+& = \begin{cases}
+  0 & \frac{1-\alpha}{\alpha}\left(\frac{q}{p}\right)^m\left(\frac{1-q}{1-p}\right)^{N-m} > 1 \\
+  1 & \text{otherwise}
+\end{cases} \\
 \end{aligned}
+$$
+
+</div>
+
+</section><section>
+
+## 
+
+#### תרגיל 6.3 - LDA
+
+* בסוואנה חיים שלושה זני פילים אשר נמצאים בסכנת הכחדה. ידוע כי כל אחד משלושת הזנים ניזון מצמחיה מעט שונה ועל מנת לשמר את אוכלוסיית הפילים מעוניינים לפזר להם אוכל ברחבי הסוואנה.
+
+* בכדי למקסם את האפקטיביות של פעולה זו מעוניינים לשערך בכל נקודת חלוקה מהו הזן שהכי סביר להמצא באותה נקודה על מנת להתאים את סוג המזון לזן זה.
+
+* הפילוג של זני הפילים על פני הסוואנה אינו ידוע אך נתונות לנו התצפית הבאה של הקואורדינטות בהם נצפו הפילים:
+
+<div style="direction:ltr">
+
+| Type | $\text{x}_1$ | $\text{x}_2$ |
+| ---- | ------------ | ------------ |
+|   1  |  1           |  2           |
+|   1  |  3           |  2           |
+|   2  | -2           |  2           |
+|   3  |  0           | -1           |
+|   3  |  0           | -5           |
+
+</div>
+
+</section><section>
+
+## 
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/ex_6_3_dataset.png)
+
+</div>
+
+השתמשו במסווג LDA על מנת לבנות חזאי אשר ישערך את הזן הנפוץ ביותר בכל קואורדינטה.
+
+</section><section>
+
+## 
+
+### פתרון 6.3
+
+נחשב את הפרמטרים של המודל הפרמטרי של LDA:
+
+נסמן ב $\mathcal{I}_c$ את אוסף כל התצפיות של שבהם הזן הוא $c$:
+
+$$
+\mathcal{I}_1=\{1,2\}
+$$
+
+$$
+\mathcal{I}_2=\{3\}
+$$
+
+$$
+\mathcal{I}_3=\{4,5\}
+$$
+
+<div class="fragment">
+
+נשערך את $p_{\text{y}}(y)$:
+
+$$
+p_{\text{y}}(y)=\begin{cases}
+  \frac{|\mathcal{I}_1|}{N}=\frac{2}{5} & 1 \\
+  \frac{|\mathcal{I}_2|}{N}=\frac{1}{5} & 2 \\
+  \frac{|\mathcal{I}_3|}{N}=\frac{2}{5} & 3 \\
+\end{cases}
+$$
+
+</div>
+
+</section><section>
+
+## 
+
+נחשב את התוחלות של כל אחת משלושת הפילוגים $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|c)$:
+
+$$
+\boldsymbol{\mu}_1=\frac{1}{|\mathcal{I}_1|}\sum_{i\in\mathcal{I}_1}\boldsymbol{x}^{(i)}
+=\frac{1}{2}\left(\begin{pmatrix}1\\2\end{pmatrix}+\begin{pmatrix}3\\2\end{pmatrix}\right)
+=\begin{pmatrix}2\\2\end{pmatrix}
+$$
+
+$$
+\boldsymbol{\mu}_2=\frac{1}{|\mathcal{I}_2|}\sum_{i\in\mathcal{I}_2}\boldsymbol{x}^{(i)}
+=\begin{pmatrix}-2\\2\end{pmatrix}
+$$
+
+$$
+\boldsymbol{\mu}_3=\frac{1}{|\mathcal{I}_3|}\sum_{i\in\mathcal{I}_3}\boldsymbol{x}^{(i)}
+=\frac{1}{2}\left(\begin{pmatrix}0\\-1\end{pmatrix}+\begin{pmatrix}0\\-5\end{pmatrix}\right)
+=\begin{pmatrix}0\\-3\end{pmatrix}
+$$
+
+<div class="fragment">
+
+נחשב את מטריצת covariance המשותפת של הפילוגים:
+
+$$
+\Sigma=\frac{1}{N}\sum_{i}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}})(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}})^T
+$$
+
+</div>
+
+</section><section>
+
+## 
+
+דרך נוחה לחשב את הסכום בביטוי זה הינה באופן הבא. נגדיר את המטריצה של התצפיות לאחר חיסור של התוחלת המתאימה לכל זן:
+
+$$
+\tilde{X}
+=\begin{pmatrix}-\boldsymbol{x}_1-\\-\boldsymbol{x}_2-\\-\boldsymbol{x}_3-\\-\boldsymbol{x}_4-\\-\boldsymbol{x}_5-\end{pmatrix}-\begin{pmatrix}-\boldsymbol{\mu}_{y_1}-\\-\boldsymbol{\mu}_{y_2}-\\ -\boldsymbol{\mu}_{y_3}\\-\boldsymbol{\mu}_{y_4}-\\-\boldsymbol{\mu}_{y_5}-\end{pmatrix}
+=\begin{pmatrix}1 & 2 \\ 3 & 2 \\ -2 & 2 \\ 0 & -1 \\ 0 & -5 \end{pmatrix}-\begin{pmatrix} 2 & 2 \\ 2 & 2 \\ -2  & 2 \\ 0 & -3 \\ 0 & -3 \end{pmatrix}
+=\begin{pmatrix}-1 & 0 \\ 1 & 0 \\ 0 & 0 \\ 0 & 2 \\ 0 & -2 \end{pmatrix}
+$$
+
+<div class="fragment">
+
+ניתן להראות כי ניתן לכתוב את הסכום בביטוי ל $\Sigma$ באופן הבא:
+
+$$
+\begin{aligned}
+\Sigma
+& =\frac{1}{N}\sum_{i}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}})(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}})^T=\frac{1}{N}\tilde{X}^T\tilde{X}\\
+& =\frac{1}{5}\begin{pmatrix}-1 & 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 2 & -2 \end{pmatrix}\begin{pmatrix}-1 & 0 \\ 1 & 0 \\ 0 & 0 \\ 0 & 2 \\ 0 & -2 \end{pmatrix} =\frac{1}{5}\begin{pmatrix} 2  & 0 \\ 0 & 8 \end{pmatrix}
+\end{aligned}
+$$
+
+</div>
+
+</section><section>
+
+* נשתמש כעת בפילוגים שאותם שיערכנו על מנת לבנות את החזאי.
+* האיזור שבו זן 1 הינו הזן הסביר ביותר הינו האיזור שבו מתקיים:
+
+$$
+\begin{cases}
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) > p_{\text{y}|\mathbf{x}}(2|\boldsymbol{x}) \\
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) > p_{\text{y}|\mathbf{x}}(3|\boldsymbol{x})
+\end{cases}
 $$
 
 </section><section>
 
-### 
+נחשב את התנאי הראשון
 
-כעת נדאג לשיפועים. נסתכל על מקטעים משמאל לימין.
+$$
+\begin{aligned}
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) &> p_{\text{y}|\mathbf{x}}(2|\boldsymbol{x}) \\
+\Leftrightarrow p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)p_{\text{y}}(1) &> p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|2)p_{\text{y}}(2) \\
+\Leftrightarrow
+  \frac{1}{\sqrt{4\pi^2|\Sigma|}}e^{-\tfrac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_1)^T\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_1)}p_{\text{y}}(1)
+  &>
+  \frac{1}{\sqrt{4\pi^2|\Sigma|}}e^{-\tfrac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_2)^T\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_2)}p_{\text{y}}(2) \\
+\Leftrightarrow
+  -\tfrac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_1)^T\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_1)+\log\left(p_{\text{y}}(1)\right)
+  &>
+  -\tfrac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_2)^T\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_2)+\log\left(p_{\text{y}}(2)\right) \\
+\Leftrightarrow
+  \boldsymbol{x}^T\Sigma^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)
+  +\tfrac{1}{2}(\boldsymbol{\mu}_2^T\Sigma^{-1}\boldsymbol{\mu}_2 &-\boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1)
+  +\log\left(\frac{p_{\text{y}}(1)}{p_{\text{y}}(2)}\right)
+  >0
+\end{aligned}
+$$
 
-- המקטע השמאלי ביותר הינו בעל שיפוע 0 ולכן הוא כבר מסודר, שכן כל הפונקציות אקטיבציה מתאפסות באיזור זה.
-- המקטע $[-1,0]$ מושפע רק מן הנוירון הראשון. השיפוע במקטע זה הינו 1 ולכן ניתן משקל של 1 לנירון זה.
-- המקטע $[0,1]$ מושפע משני הנוירונים הראשונים. הנוירון הראשון כבר תורם שיפוע של 1 במקטע זה ולכן עלינו להוסיף לו עוד שיפוע של $-2$ על מנת לקבל את השיפוע של $-1$ הנדרש. ולכן ניתן משקל של $-2$ לנירון השני.
-- באופן דומה ניתן לנוירון השלישי משקל של $2$.
+<div class="fragment">
 
-סה"כ קיבלנו כי $h_2(z_1,z_2,z_3)=z_1-2z_2\times2z_3$
+זוהי למעשה הפרדה לשני תחומים על ידי הקו הבא:
+
+$$
+\boldsymbol{a}^T \boldsymbol{x}+b=0
+$$
+
+כאשר:
+
+$$
+\begin{aligned}
+&\boldsymbol{a}=\Sigma^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)
+=\begin{pmatrix} 10 \\ 0 \end{pmatrix} \\
+& b=\tfrac{1}{2}(\boldsymbol{\mu}_2^T\Sigma^{-1}\boldsymbol{\mu}_2 - \boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1) + \log\left(\frac{p_{\text{y}}(1)}{p_{\text{y}}(2)}\right)
+=\log(2)
+\end{aligned}
+$$
+
+</div>
 
 </section><section>
 
+* זוהי כמובן התוצאה עבור מסווג LDA בינארי בין שני הזנים של $\text{y}=1$ ו $\text{y}=2$.
 
+* מכאן שקו המפריד בין זן 1 ל זן 2 נתון על ידי:
 
-**2)** האם ניתן לייצג **במדוייק** את הפונקציה $f(x)=x^2+\lvert x\rvert$ בעזרת רשת MLP עם אקטיבציה מסוג ReLU? הסבירו ו/או הדגימו.
+$$
+1-2:\quad 10x_1+\log(2)=0
+$$
+
+* באופן דומה ניתן לחשב גם את שני קווי ההפרדה האחרים (בין 1 ל 3 ובין 2 ל 3):
+
+$$
+1-3:\quad 5x_1+\frac{25}{8}x_2+\frac{55}{16}=0
+$$
+
+$$
+2-3:\quad -5x_1+\frac{25}{8}x_2+\frac{55}{16}-\log(2)=0
+$$
 
 </section><section>
 
-מכיוון ש:
+## 
 
-1. נוירון בעל פונקציית הפעלה מסוג ReLU מייצג פונקציה רציפה ולינארית למקוטעין.
-2. כל הרכבה או סכימה של פונקציות רציפות ולינאריות למקוטעין יצרו תמיד פונקציה חדשה שגם היא רציפה ולינארית למקוטעין.
+<div class="imgbox" style="max-width:500px">
 
-מכאן, שנוכל באמצעת נוירונים מסוג ReLU לייצג רק פונקציות רציפות ולנאריות למקוטעין.
+![](./output/ex_6_3_classification.png)
 
-
-
-* מכיוון ש$$x^2$$ אינה לינארית אנו נוכל רק לקרב אותה, אך לא לייצג אותה במדוייק.
+</div>
 
 </section><section>
 
+## 
 
-
-## תרגיל מעשי - איבחון סרטן שד עם MLP
+## תרגיל מעשי - שיערוך הפילוג של זמני נסיעה בניו יורק
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
+נחזור לבעיה מהתרגול הקודם של שיערוך הפילוג של זמן הנסיעה של מונית מתוך מדגם הבא:
 
-נסתכל שוב על הבעיה של איבחון סרטן שד על סמך תצלום מיקרוסקופי של ריקמה.
+|    |   passenger count |   trip distance |   payment type |   fare amount |   tip amount |   pickup easting |   pickup northing |   dropoff easting |   dropoff northing |   duration |   day of week |   day of month |   time of day |
+|---:|------------------:|----------------:|---------------:|--------------:|-------------:|-----------------:|------------------:|------------------:|-------------------:|-----------:|--------------:|---------------:|--------------:|
+|  0 |                 2 |        2.76806  |              2 |           9.5 |         0    |          586.997 |           4512.98 |           588.155 |            4515.18 |   11.5167  |             3 |             13 |      12.8019  |
+|  1 |                 1 |        3.21868  |              2 |          10   |         0    |          587.152 |           4512.92 |           584.85  |            4512.63 |   12.6667  |             6 |             16 |      20.9614  |
+|  2 |                 1 |        2.57494  |              1 |           7   |         2.49 |          587.005 |           4513.36 |           585.434 |            4513.17 |    5.51667 |             0 |             31 |      20.4128  |
+|  3 |                 1 |        0.965604 |              1 |           7.5 |         1.65 |          586.649 |           4511.73 |           586.672 |            4512.55 |    9.88333 |             1 |             25 |      13.0314  |
+|  4 |                 1 |        2.46229  |              1 |           7.5 |         1.66 |          586.967 |           4511.89 |           585.262 |            4511.76 |    8.68333 |             2 |              5 |       7.70333 |
+|  5 |                 5 |        1.56106  |              1 |           7.5 |         2.2  |          585.926 |           4512.88 |           585.169 |            4511.54 |    9.43333 |             3 |             20 |      20.6672  |
+|  6 |                 1 |        2.57494  |              1 |           8   |         1    |          586.731 |           4515.08 |           588.71  |            4514.21 |    7.95    |             5 |              8 |      23.8419  |
+|  7 |                 1 |        0.80467  |              2 |           5   |         0    |          585.345 |           4509.71 |           585.844 |            4509.55 |    4.95    |             5 |             29 |      15.8314  |
+|  8 |                 1 |        3.6532   |              1 |          10   |         1.1  |          585.422 |           4509.48 |           583.671 |            4507.74 |   11.0667  |             5 |              8 |       2.09833 |
+|  9 |                 6 |        1.62543  |              1 |           5.5 |         1.36 |          587.875 |           4514.93 |           587.701 |            4513.71 |    4.21667 |             3 |             13 |      21.7831  |
 
-<div dir="ltr">
+ננסה להתאים מודל פרמטרי בעזרת שיערוך MLE.
 
+</section><section>
 
-|      | diagnosis | radius_mean | texture_mean | perimeter_mean | area_mean | smoothness_mean | compactness_mean | concavity_mean |
-| ---: | :-------- | ----------: | -----------: | -------------: | --------: | --------------: | ---------------: | -------------: |
-|    0 | M         |       17.99 |        10.38 |          122.8 |      1001 |          0.1184 |           0.2776 |         0.3001 |
-|    1 | M         |       20.57 |        17.77 |          132.9 |      1326 |         0.08474 |          0.07864 |         0.0869 |
-|    2 | M         |       19.69 |        21.25 |            130 |      1203 |          0.1096 |           0.1599 |         0.1974 |
-|    3 | M         |       11.42 |        20.38 |          77.58 |     386.1 |          0.1425 |           0.2839 |         0.2414 |
-|    4 | M         |       20.29 |        14.34 |          135.1 |      1297 |          0.1003 |           0.1328 |          0.198 |
-|    5 | M         |       12.45 |         15.7 |          82.57 |     477.1 |          0.1278 |             0.17 |         0.1578 |
-|    6 | M         |       18.25 |        19.98 |          119.6 |      1040 |         0.09463 |            0.109 |         0.1127 |
-|    7 | M         |       13.71 |        20.83 |           90.2 |     577.9 |          0.1189 |           0.1645 |        0.09366 |
-|    8 | M         |          13 |        21.82 |           87.5 |     519.8 |          0.1273 |           0.1932 |         0.1859 |
-|    9 | M         |       12.46 |        24.04 |          83.97 |     475.9 |          0.1186 |           0.2396 |         0.2273 |
+## 
+
+### ניסיון 1: פילוג גאוסי
+
+* נשתמש במודל של פילוג נורמלי לתיאור הפילוג של משך הנסיעה. למודל זה שני פרמטרים, התוחלת $\mu$ והשונות $\sigma$ .
+
+סימונים והנחות:
+
+- $N$ - מספר הדגמים במדגם.
+
+- $\boldsymbol{\theta}=\left[\mu,\sigma\right]^T$ - וקטור הפרמטרים של המודל
+- $p_\text{normal}\left(x_i;\boldsymbol{\theta}\right)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{\left(x_i-\mu\right)^2}{2\sigma^2}\right), i=1,...,N$ - המודל
+
+</section><section>
+
+ראינו כי בעבור המודל הנורמלי, ניתן למצוא את הפרמטרים של משערך הMLE באופן מפורש (אנליטית), והפתרון נתון על ידי:
+
+$$
+\begin{aligned}
+\mu=\displaystyle{\frac{1}{N}\sum_i x_i} \\
+\sigma=\sqrt{\displaystyle{\frac{1}{N}\sum_i\left(x_i-\mu\right)^2}}
+\end{aligned}
+$$
+
+<div class="fragment">
+
+בעבור המדגם הנתון נקבל:
+
+$$
+\hat{\mu} = 11.4\ \text{min}
+$$
+
+$$
+\hat{\sigma} = 7.0\ \text{min}
+$$
 
 </div>
 
 </section><section>
 
-
-
-נתחיל שוב בביצוע איבחון על סמך שתי העמודות הראשונות בלבד. אנו עושים זאת כמובן רק בכדי שנוכל להציג את הבעיה בגרף דו מימדי.
-
-<div class="imgbox" style="max-width:600px">
-
-
-![](../tutorial08/output/breast_cancer_2d_dataset.png)
-
-</div>
-
-</section><section>
-
-* נפצל אותו שוב ל 60% train / 20% validation / 20% test.
-
-* וננסה להתאים לו את המודל הבא:
-
-<div class="imgbox" style="max-width:600px">
-
-
-![](../tutorial08/assets/example_mlp1.png)
-
-</div>
-
-*  FC 2x10 מציין שכבה של fully connected שבכניסה אליה יש וקטור באורך 2 וביציאה יש וקטור ברוחב 10
-
-</section><section>
-
- נריץ את אלגוריתם ה gradient descent למספר קטן של צעדים כדי לבחור את קצב הלימוד $\eta$
+ההיסטוגרמה של של משכי הנסיעה יחד עם הפילוג המשוערך:
 
 <div class="imgbox" style="max-width:500px">
 
-
-
-![](../tutorial08/output/breast_cancer_mlp1_select_eta.png)
+![](./output/nyc_duration_normal.png)
 
 </div>
 
-בדומה לתרגול הקודם, אנו נבחר את הערך הגדול ביותר שבו הגרף יורד בצורה מונוטונית שבמקרה זה הינו $\eta=0.03$.
+*  הפילוג הנורמלי נותן קירוב מאד גס לפילוג האמיתי.
+* עובדה אחת שמאד מטרידה לגבי הפילוג שקיבלנו הינה שישנו סיכוי לא אפסי לקבל נסיעות עם משך נסיעה שלילי.
 
 </section><section>
 
-נריץ כעת האלגוריתם למספר גדול של צעדים:
+## 
 
-<div class="imgbox" style="max-width:300px">
+### נסיון 2: פילוג Rayleigh
 
+* פילוג Rayleigh מתאר את הפילוג של האורך האוקלידי ($l_2$ norm) של וקטור גאוסי דו מימדי עם תוחלת 0 וחוסר קורלציה ופילוג זהה לשני רכיבי הוקטור.
+* במלים אחרות, עבור וקטור בעל הפילוג הבא:
 
+$$
+\boldsymbol{Z}\sim N\left(\begin{bmatrix} 0 \\ 0 \end{bmatrix}, \begin{bmatrix} \sigma^2 & 0 \\ 0 & \sigma^2 \end{bmatrix}\right)
+$$
 
-![](../tutorial08/output/breast_cancer_mlp1_train.png)
+* פילוג Rayleigh מתאר את הגודל $\left\lVert\boldsymbol{Z}\right\rVert_2=\sqrt{Z_x^2+Z_y^2}$.
+
+פונקציית צפיפות ההסתברות של פילוג Reyligh נתונה על ידי:
+
+$$
+p_\text{Rayleigh}\left(z;\sigma\right)=\frac{z}{\sigma^2}\exp\left({-\frac{z^2}{2\sigma^2}}\right), \quad z\geq0
+$$
+</section><section>
+
+## 
+
+פונקציית צפיפות ההסתברות של פילוג Reyligh נתונה על ידי:
+
+$$
+p_\text{Rayleigh}\left(z;\sigma\right)=\frac{z}{\sigma^2}\exp\left({-\frac{z^2}{2\sigma^2}}\right), \quad z\geq0
+$$
+
+* <u>שימו לב:</u> הפילוג מוגדר רק בעבור ערכים חיוביים.
+* לפילוג זה פרמטר יחיד $\sigma$ שנקרא פרמטר סקאלה (scale parameter). בניגוד לפילוג הנורמלי, פה $\sigma$ אינה שווה לסטיית התקן של הפילוג.
+
+</section><section>
+
+#### מוטיבציה לשימוש בפילוג Rayleigh
+
+* נניח שוקטור המחבר את נקודת תחילת הנסיעה עם נקודת סיום הנסיעה הינו וקטור דו מימדי אשר מפולג נרמלית ולשם הפשטות נניח כי רכיביו מפולגים עם פילוג זהה וחסר קורלציה.
+
+* נניח כי המונית נוסעת בקירוב בקו ישר בין נקודת ההתחלה והסיום ולכן המרחק אותו נוסעת המכונית יהיה מפולג על פי פילוג Reyleigh.
+* נניח בנוסף כי מהירות הנסיעה קבועה ולכן משך הנסיעה פורפורציוני למרחק ולכן גם הוא יהיה מפולג על פי פילוג Reyleigh.
+
+</section><section>
+
+## 
+
+### חישוב
+
+לשם השלמות נסמן את וקטור הפרמטרים של ב: $\theta=\left[\sigma\right]$
+
+במקרה זה המודל נתון על ידי:
+
+$$
+p_\text{rayleigh}\left(\boldsymbol{x};\theta\right)=\prod_{i=1}^{N}\frac{x_i}{\theta^2}\exp\left(-\frac{x_i^2}{2\theta^2}\right)
+$$
+
+<div class="fragment">
+
+ופונקציית ה log likelihood תהיה:
+
+$$
+\begin{aligned}
+l_\text{rayleigh}\left(\theta\right)
+& = \sum_i\log\left(p_\text{rayleigh}\left(x_i;\theta\right)\right) \\
+& = \sum_i\log\left(x_i\right)-2N\log\left(\theta\right)-\frac{1}{2\theta^2}\sum_ix_i^2
+\end{aligned}
+$$
 
 </div>
 
-* החל מנקודה מסויימת, ה- objective על ה validation set מתחיל לעלות.
-* הסיבה לכך היא תופעת ה- overfitting.
-* ניתן להימנע מכך על ידי עצירת האלגוריתם לפני שהוא מתכנס. פעולה זו מכונה early stopping.
-* נשתמש בפרמטרים מהצעד עם הערך של ה objective הנמוך ביותר על ה validation, במקרה זה זהו הצעד ה 25236.
+</section><section>
 
+## 
 
+בעיית האופטימיזציה הינה:
+
+$$
+\hat{\boldsymbol{\theta}}=\underset{\boldsymbol{\theta}}{\arg\min}\quad-\sum_i\log\left(x_i\right)+2N\log\left(\theta\right)+\frac{1}{2\theta^2}\sum_ix_i^2
+$$
+
+<div class="fragment">
+
+גם בעבור המקרה הזה נוכל לפתור את בעיית האופטימיזציה באופן אנליטי על ידי גזירה והשוואה לאפס:
+
+$$
+\begin{aligned}
+& \frac{\partial l_\text{rayleigh}\left(\theta\right)}{\partial\theta}=0 \\
+\Leftrightarrow & -\frac{2N}{\theta}+\frac{\sum_ix^2}{\theta^3}=0 \\
+\Leftrightarrow & \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i x^2}
+\end{aligned}
+$$
+
+</div><div class="fragment">
+
+בעבור המדגם הנתון נקבל:
+
+$$
+\hat{\sigma} = 9.5
+$$
+
+</div>
 
 </section><section>
 
+## 
 
-
-החזאי המתקבל ממודל זה הינו:
+נוסיף את השיערוך החדש שקיבלנו לגרף ממקודם:
 
 <div class="imgbox" style="max-width:500px">
 
-
-
-![](../tutorial08/output/breast_cancer_mlp1.png)
+![](./output/nyc_duration_rayleigh.png)
 
 </div>
+
+* המודל של פילוג Rayleigh טוב יותר מהמודל הנורמלי.
+* אין הסתברות שונה מ0 לקבל משך נסיעה שלילי.
 
 </section><section>
 
+## 
 
+### נסיון 3: Generalized Gamma Distribution
 
-נשרטט גרף זה ללא הדגימות על מנת לראות את קו ההפרדה בין שני השטחים
+* פילוג Rayleigh הינו מקרה פרטי של משפחה כללית יותר של פונקציות פילוג המכונה Generalized Gamma Distribution.
+* פונקציית צפיפות ההסתברות של משפחה זו נתונה על ידי:
 
-<div class="imgbox" style="max-width:400px">
+$$
+p_\text{gengamma}\left(z;\sigma,a,c\right)=
+\frac{cz^{ca-1}\exp\left(-\left(z/\sigma\right)^c\right)}{\sigma^{ca-1}\Gamma\left(a\right)}
+, \quad z\geq0
+$$
 
-![](../tutorial08/output/breast_cancer_mlp1_no_samples.png)
+* כש- $\Gamma$ היא פונקציה המוכנה [פונקציית גמא (gamma function)](https://en.wikipedia.org/wiki/Gamma_function) 
 
-</div>
+* למודל זה 3 פרמטרים: $\boldsymbol{\theta}=\left[\sigma, a, c\right]^T$.
 
-
-
-* הרשת מצליחה לייצר חזאי עם קו הפרדה מורכב בהשוואה ל LDA, QDA ו- linear logistic regression.
-
-* ביצועי חזאי זה על ה valudation set הינם: 0.08. ביצועים אלו דומים לביצועים של QDA ו linear logistic regresssion.
-
-</section><section>
-
-
-
-### שימוש בכל 30 העמודות במדגם
-
-נעבור כעת להשתמש בכל 30 העמודות במדגם. לשם כך נשתמש ברשת הבאה:
-
-<div class="imgbox" style="max-width:600px">
-
-
-![](../tutorial08/assets/example_mlp2.png)
-
-</div>
-
-
+* בעבור $c=2$ ו $a=1$ נקבל את פילוג Rayleight כאשר $\sigma_{gamma}=2\sigma_{rayleigh}$ .
 
 </section><section>
 
+## 
 
+* בשונה מהמקרים של פילוג נורמלי ופילוג Rayleigh, לא נוכל למצוא בקלות את הפרמטרים האופטימאלים של המשערך באופן אנליטי.
+* לכן, לשם מציאת הפרמטרים נאלץ להעזר בפתרון נומרי.
+* נעשה שימוש באחת החבילה של Python הנקראת SciPy. חבילה זו מכילה מודלים הסברותיים רבים ומכילה מספר רב של כלים הקשורים למודלים אלו, כגון מציאת הפרמטרים האופטימאלים בשיטת MLE על סמך מדגם נתון. את הפונקציות הקשורות למודל הGeneralized Gamma Distribution ניתן למצוא [כאן](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gengamma.html#scipy.stats.gengamma). אתם תעשו שימוש בפונקציות אלו בתרגיל הבית הרטוב.
 
-נחפש שוב את הערך המתאים ביותר של $\eta$:
+* שימוש בפונקציה הנ"ל, מניב את התוצאות הבאות:
 
-<div class="imgbox" style="max-width:600px">
+$$
+\hat{a} = 4.4
+$$
 
+$$
+\hat{c} = 0.8
+$$
 
-![](../tutorial08/output/breast_cancer_mlp2_select_eta.png)
-
-</div>
-
-במקרה זה נבחר את $\eta=0.003$.
+$$
+\hat{\sigma} = 1.6
+$$
 
 </section><section>
 
+## 
 
+נוסיף את השיערוך החדש שקיבלנו לגרף הקודם:
 
-האימון המלא נראה כך:
+<div class="imgbox" style="max-width:500px">
 
-<div class="imgbox" style="max-width:300px">
-
-
-
-![](../tutorial08/output/breast_cancer_mlp2_train.png)
+![](./output/nyc_duration_generalized_gamma.png)
 
 </div>
 
-* הביצועים הטובים ביותר על ה validation set מתקבלים בצעד ה 107056.
-* החזאי המתקבל בצעד זה מניב miscalssifiaction rate של 0.01 על ה validation set.
-
-* ביצועים המודל על ה test set הינם 0.03
-  * לעומת 0.04 ב linear logistic regression.
+* המודל של Generalized Gamma Distribution אכן מניב תוצאה אשר דומה מאד לצורת ההיסטוגרמה.
 
 </div>
-
-</section>
-

@@ -8,830 +8,738 @@ print_pdf: true
 
 <div dir="rtl" class="site-style">
 
-# תרגול 5 - שיערוך פילוג בשיטות לא פרמטריות
+# תרגול 5 - Bagging and AdaBoost
 
 <div dir="ltr">
-<!-- <a href="./slides/" class="link-button" target="_blank">Slides</a> -->
+<a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/tutorial05.pdf" class="link-button" target="_blank">PDF</a>
-<a href="./code/" class="link-button" target="_blank">Code</a>
+<!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
 </div>
 
 ## תקציר התיאוריה
 
-### הגישה הגנרטיבית
+Bagging ו Boosting הן שיטות אשר עושות שימוש במכלול (ensemble) של חזאים בכדי לקבל חזאי עם ביצועים טובים יותר.
 
-בגישה הגנרטיבית אנו נשתמש במדגם על מנת לשערך את הפילוג של $\mathbf{x}$ ו $\text{y}$ מתוך המדגם. על סמך פילוג זה נוכל לבנות חזאי ל $\text{y}$ בהיתנן $\mathbf{x}$.
+### Bagging
 
-### חזאים אידאליים לפונקציות מחיר נפוצות - תזכורת
+Bagging (Bootstrap + Aggregating) הינה שיטה להקטין את ה **variance** (ובכך את ה **overfitting**) של חזאי על ידי הרכבה של מספר חזאים אשר אומנו על מדגמים מעט שונים.
 
-לרוב אנו נעבוד עם פונקציות מחיר שבהינתן פונקציית הפילוג יש ביטוי סגור לחזאי האידאלי. נזכיר את החזאים האידאליים של פונקציות המחיר הנפוצות:
+<div class="imgbox" style="max-width:700px">
 
-- **MSE**: התוחלת המותנית:
+![](../lecture05/assets/bagging.png)
+
+</div>
+
+בשלב ה bootstraping נייצר את המדגמים ולכל מדגם נבנה חזאי ובשלב ה aggregation נאחד את כל החזאים לחזאי יחיד.
+
+#### Bootstraping
+
+ב Bootstraping נקח מדגם נתון בגודל $N$ ונייצר ממנו $p$ מדגמים בגודל $\tilde{N}$ על ידי הגרלה של ערכים מתוך המדגם עם חזרות (כך שניתן להגריל כל ערך מספר פעמים). ב bagging נבחר לרוב את $\tilde{N}$ להיות שווה ל $N$.
+
+#### Aggregation
+
+בשלב הראשון נבנה באופן בלתי תלוי מתוך כל אחד מהמגדמים שייצרנו חזאי $\tilde{h}_i(\boldsymbol{x})$. בשלב השני נרכיב את כל החזאים שייצרנו לחזאי אחד כולל.
+
+- **בעבור בעיות רגרסיה**: נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{p}\sum_{i=1}^p \tilde{h}_i(\boldsymbol{x})$
+- **בעבור בעיות סיווג**: נבצע majority voting, זאת אומרת: $h(\boldsymbol{x})=\text{majority}(\{\tilde{h}_1(\boldsymbol{x}),\tilde{h}_2(\boldsymbol{x}),\dots,\tilde{h}_p(\boldsymbol{x})\})$
+
+### AdaBoost
+
+AdaBoost (Adaptive Boosting) מתייחס לבעיות סיווג בינאריות, שיטה זו מנסה להקטין את ה **bias** (ובכך להקטין את ה **underfitting**) של מסווג על ידי הרכבה של מסווגים שונים.
+
+ב AdaBoost נסמן את המחלקות ב $\text{y}=\pm1$.
+
+בהיתן אוסף של מסווגים בינארים, אלגוריתם ה AdaBoost מנסה לבחור סט של $t$ מסווגים ומקדמים $\{\alpha_k,\tilde{h}_k\}_{k=1}^t$ ולבנות קומבינציה לינארית $\sum_{k=1}^t\alpha_k \tilde{h}_k(\boldsymbol{x})$ שתמזער את בעיית האופטימיזציה הבאה:
+
+$$
+\underset{\{\alpha_k,\tilde{h}_k\}_k}{\arg\min}\quad
+\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{k=1}^t\alpha_k y^{(i)}\tilde{h}_k(\boldsymbol{x}^{(i)})\right)
+$$
+
+האלגוריתם בונה את הקומבינציה הלינארית בצורה חמדנית על ידי הוספת איבר איבר לקומבינציה (והגדלה של $t$) ועצירה כאשר ביצועי המסווג מספקים או שהאלגוריתם מתחיל לעשות overfitting על ה validation set.
+
+#### אלגוריתם
+
+ב $t=0$ נאתחל וקטור משקלים $w_i^{(t)}=\frac{1}{N}$.
+
+בכל צעד $t$ נבצע את הפעולות הבאות:
+
+1. נבחר את המסווג אשר ממזער את ה misclassification rate הממושקל:
 
     $$
-    h^*(\boldsymbol{x})=\mathbb{E}[y|x]
+    \tilde{h}_t=\underset{\tilde{h}}{\arg\min}\ \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}(\boldsymbol{x}^{(i)})\}
     $$
 
-- **MAE**: החציון של הפילוג המותנה:
+2. נחשב את המקדם $\alpha_{t+1}$ של המסווג:
 
     $$
-    h^*(\boldsymbol{x})=y_{\text{median}}\qquad
-    \text{s.t.}\ F_{\text{y}|\mathbf{x}}(y_{\text{median}}|\boldsymbol{x})=0.5
+    \begin{aligned}
+    \varepsilon_t&=\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+    \alpha_t&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)
+    \end{aligned}
     $$
 
-    (כאשר $F_{\text{y}|\mathbf{x}}$ היא פונקציית הפילוג המצרפי של $\text{y}$ בהינתן $\mathbf{x}$).
-- **Misclassification rate**: הערך הכי סביר (ה mode):
+3. נעדכן את וקטור המשקלים:
 
     $$
-    h^*(\boldsymbol{x})=\underset{y}{\arg\max}\ p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})
+    \begin{aligned}
+    \tilde{w}_i^{(t)}&=w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+    w_i^{(t)}&=\frac{\tilde{w}_i^{(t)}}{\sum_{j=1}^N \tilde{w}_j^{(t)}}
+    \end{aligned}
     $$
 
-#### שימוש בהסתברות המותנית
+#### המסווג הסופי
 
-בעיות סיווג (שבהם $\text{y}$ מקבל סט ערכים בדיד) נוח לשערך את הפילוג המשותף של $\mathbf{x}$ ו $\text{y}$ בעזת הפירוק הבא:
-
-$$
-p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)
-=p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)p_{\text{y}}(y)
-$$
-
-על פי פירוק זה ניתן למעשה לחשב את הפילוג המשותף על ידי כך שנשערך בנפרד את כל אחת מהפילוגים הבאים:
-
-- $p_{\text{y}}(y)$ - הפילוג של $\text{y}$ ללא תלות בערכו של $\mathbf{x}$. שיערוך זה יהיה לרוב פשוט מכיוון ש $\text{y}$ הוא משתנה דיסקרטי (בדיד).
-- $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$ כאשר גם כאן יהיה לרוב נוח לפצל את השיערוך למספר שיערוכים שונים בעבור כל ערך אפשרי של $\text{y}$. זאת אומרת $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)$, $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|2)$, וכו'. הדרך לעשות זאת היא על ידי פיצול המדגם על פי הערכים של $\text{y}$ ושיערוך הפילוג של $\mathbf{x}$ בנפרד על כל חלק של המדגם.
-
-### שיערוך של פונקציות פילוג בשיטות א-פרמטריות
-
-נציג מספר שיטות לשיערוך של הסתברויות ופונקציות פילוג של משתנה / וקטור אקראי כל שהוא $\mathbf{x}$ על סמך מדגם כל שהוא $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}$. בתרגול זה נעסוק בשיטות אשר לא עושות שימוש במודל פרמטרי ולכן הם מכונות א-פרמטריות, בשבוע הבא נעסוק בשיטות פרמטריות.
-
-#### מדידה אמפירית / משערך הצבה (Empirical Measure)
-
-המדידה האמפירית, $\hat{p}_{A,\mathcal{D}}$, הינה שיערוך של הההסתברות, $Pr\left(A\right)$, להתרחשות המאורע $A$:
+הסיווג הסופי נעשה על ידי קומבינציה לינארית של כל מסווגים והמשקל שלהם.
 
 $$
-\hat{p}_{A,\mathcal{D}}=\tfrac{1}{N}\sum_{i=1}^N I\{\boldsymbol{x}^{(i)}\in A\}
+h(\boldsymbol{x})=\text{sign}\left(\sum_{t=1}^T\alpha_t \tilde{h}_t(\boldsymbol{x})\right)
 $$
 
-לדגומא, השיערוך של ההסתברות שהנורמה של $\mathbf{x}$ קטנה מ $3$, זאת אומרת $A=\{\lVert\mathbf{x}\rVert_2<3\}$, תהיה:
+#### חסם
+
+נסתכל על מסווג אשר התקבל מאלגוריתם AdaBoost שעבורו בכל צעד $t$ שגיאת ה misclassification error הממושקלת קטנה מ $\tfrac{1}{2}-\gamma_t$. בעבור מסווג זה מתקיים ש:
 
 $$
-\hat{p}_{\{\lVert\mathbf{x}\rVert_2<3\},\mathcal{D}}=\tfrac{1}{N}\sum_{i=1}^N I\{\lVert\boldsymbol{x}^{(i)}\rVert_2<3\}
+\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
+\leq
+\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
+\leq
+\exp\left(-2\sum_{t=1}^T\gamma_t^2\right)
 $$
 
-למעשה אנו משערכים כי ההסתברות להתרחשות של מאורע שווה למספר הפעמים היחסי שהמאורע מופיע בסט המדידות.
+## תרגיל 11.1: דוגמא חד מימדית
 
-#### שיערוך פונקציית ההסתברות PMF (המקרה של משתנה דיסקרטי)
-
-נוכל לשערך את פונקציית ההסתברות (PMF) של משתנה / וקטור אקראי דיסקרטי על ידי שימוש במדידה האמפירית:
+נתבונן בבעיית סיווג חד מימדית עבור סט דוגמאות האימון:
 
 $$
-\hat{p}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\hat{p}_{\{\mathbf{x}=\boldsymbol{x}\},\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N I\{\boldsymbol{x}^{(i)}=\boldsymbol{x}\}
+\mathcal{D}=\{\{1,-1\}, \{3,1\}, \{5,-1\}\}.
 $$
 
-#### ECDF (Empirical Cumulative Distribution Function)
+<div class="imgbox" style="max-width:600px">
 
-ECDF הינה שיטה לשערך את פונקציית הפילוג המצרפי (ה CDF):
+![](./assets/ex_11_1.png)
+
+</div>
+
+נרצה להשתמש במסווגים לינארים מסוג $\tilde{h}(x)=\pm\text{sign}(x-b)$ וב AdaBoost בכדי לבנות מסווג. רשמו את ארבעת האיטרציות הראשונות של האלגוריתם ואת החזאי המתקבל אחרי כל צעד. הניחו כי: $b\in\{0, 2, 4\}$.
+
+### פתרון 11.1
+
+נאתחל את וקטור המשקלים:
 
 $$
-\hat{F}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\hat{p}_{\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\},\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N  I\{\boldsymbol{x}^{(i)}_j\leq\boldsymbol{x}_j\ \forall j\}
+\boldsymbol{w}^{(0)}=\left[\tfrac{1}{3},\tfrac{1}{3},\tfrac{1}{3}\right]^{\top}
 $$
 
-#### היסטוגרמה
+#### צעד 1
 
-היסטוגרמה היא שיטה לשערוך פונקציית צפיפות ההסתברות (PDF). שיטה זו נפוצה בעיקר לשם ויזואליזציה של הפילוג של משתנים אקראיים סקלריים. השיערוך מתבצע באופן הבא:
+נבחר מבין המסווגים הנתונים את המסווג אשר ממזער את ה objective שהוא ה misclassification rate הממושקל.
 
-1. מחלקים את תחום הערכים ש $\mathbf{x}$ יכול לקבל ל bins (תאים) לא חופפים אשר מכסים את כל התחום.
-2. לכל תא משערכים את ההסתברות של המאורע ש $\mathbf{x}$ נמצא בתוך התא.
-3. הערך של פונקציית הצפיפות בכל תא תהיה ההסתברות המשוערכת להיות בתא חלקי גודל התא.
+$$
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}
+$$
 
-נרשום זאת בעבור המקרה של משתנה אקראי סקלרי. נסמן ב $B$ את מספר התאים וב $l_b$ ו $r_b$ את הגבול השמאלי והימני בהתאמה של התא ה $b$. ההסטוגרמה תהיה נתונה על ידי:
+נבחן את שלושת הערכים האפשריים של $b$:
+
+##### $b=0$
+
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/ex_11_1_b_0.png)
+
+</div>
+
+חזאי זה יטעה רק על הנקודה השניה $i=2$ ולכן נקבל:
+
+$$
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\tfrac{1}{3}
+$$
+
+##### $b=2$
+
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=\text{sign}(x-2)$ (עם סימון חיובי) בכדי מזער את misclassification rate.
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/ex_11_1_b_2.png)
+
+</div>
+
+חזאי זה יטעה רק על הנקודה השלישית $i=3$ ולכן נקבל:
+
+$$
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\tfrac{1}{3}
+$$
+
+##### $b=4$
+
+במקרה זה עדיף לקחת את המסווג $\tilde{h}(x)=-\text{sign}(x-4)$ (עם סימון שלילי) בכדי למזער את misclassification rate.
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/ex_11_1_b_4.png)
+
+</div>
+
+חזאי זה יטעה רק על הנקודה השלישית $i=1$ ולכן נקבל:
+
+$$
+\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\tfrac{1}{3}
+$$
+
+מכיוון שכל שלושת החזאים מניבים את אותו objective נבחר את אחד מהם באקראי. נבחר אם כן את המסווג הראשון של האלגוריתם להיות $\tilde{h}_1=-\text{sign}(x)$.
+
+נחשב את $\alpha_1$:
 
 $$
 \begin{aligned}
-\hat{p}_{\text{x},\mathcal{D}}(x)
+\varepsilon_1&=\sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}_1(\boldsymbol{x}^{(i)})\}=\frac{1}{3}\\
+\alpha_1&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_1}{\varepsilon_1}\right)=\frac{1}{2}\ln(2)=0.347
+\end{aligned}
+$$
+
+נעדכן את וקטור המשקלים:
+
+$$
+\tilde{\boldsymbol{w}}^{(1)}
+=\begin{bmatrix}
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)\\
+    \frac{1}{3}\exp\left(-\alpha_1 y^{(i)}\tilde{h}_1(x^{(i)})\right)
+\end{bmatrix}
+=\frac{1}{3}\begin{bmatrix}
+    \exp\left(-\frac{1}{2}\ln(2)\cdot1\right)\\
+    \exp\left(-\frac{1}{2}\ln(2)\cdot(-1)\right)\\
+    \exp\left(-\frac{1}{2}\ln(2)\cdot1\right)
+\end{bmatrix}
+=\frac{1}{3}\begin{bmatrix}
+    2^{-\frac{1}{2}}\\
+    2^{\frac{1}{2}}\\
+    2^{-\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{3\sqrt{2}}\begin{bmatrix}
+    1\\
+    2\\
+    1
+\end{bmatrix}
+$$
+
+אחרי הנרמול נקבל:
+
+$$
+\boldsymbol{w}^{(1)}
+=\frac{1}{4}\begin{bmatrix}
+    1\\
+    2\\
+    1
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)\right)\\
+&=\text{sign}\left(-0.347\text{sign}(x)\right)\\
 &=\begin{cases}
-  \frac{1}{\text{size of bin }1}\hat{p}_{\{\text{x in bin }1\},\mathcal{D}}&\text{x in bin }1\\
-  \vdots\\
-  \frac{1}{\text{size of bin }B}\hat{p}_{\{\text{x in bin }B\},\mathcal{D}}&\text{x in bin }B
+\text{sign}(0.347)&x<0\\
+\text{sign}(-0.347)&0<x
 \end{cases}\\
 &=\begin{cases}
-  \frac{1}{N(r_1-l_1)}\sum_{i=1}^N I\{l_1\leq x^{(i)}<r_1\}&l_1\leq x<r_1\\
-  \vdots\\
-  \frac{1}{N(r_B-l_B)}\sum_{i=1}^N I\{l_B\leq x^{(i)}<r_B\}&l_B\leq x<r_B\\
+1&x<0\\
+-1&0<x\\
 \end{cases}
 \end{aligned}
 $$
 
-הערות:
+#### צעד 2
 
-- בחירת התאים משפיעה באופן משמעותי על תוצאת השערוך של ה PDF.
-- כלל אצבע: לחלק את טווח הערכים ל-$$\sqrt{N}$$ תאים בגודל אחיד.
+נמצא את החזאי האופטימאלי:
 
-#### Kernel Density Estimation (KDE)
-
-KDE הינה שיטה נוספת לשערוך ה PDF. בשיטה זו אנו נבחר פונקציה המכונה **פונקציית גרעין** (**kernel**) או **Parzan window** מהם נבנה $N$ פונקציות גרעין מוזזות בעבור כל נקודה מהמדגם. נסמן ב $\phi(\boldsymbol{x})$ את פונקציות הגרעין. פונקציית הגרעין המוזזת לנקודה ה $\boldsymbol{x}^{(i)}$ תהיה $\phi(\boldsymbol{x}-\boldsymbol{x}^{(i)})$. פונקציית הצפיפות המשוערכת תהיה הממוצע של כל הפונקציות המוזזות:
-
-$$
-\hat{p}_{\mathbf{x},\phi,\mathcal{D}}(\boldsymbol{x})=\frac{1}{N}\sum_{i=1}^N \phi(\boldsymbol{x}-\boldsymbol{x}^{(i)})
-$$
-
-**הערה**: תנאי מספיק והכרחי בכדי שנקבל PDF חוקי, הינו שפונקציית הגרעיון תהיה בעצמה PDF חוקי. זאת אומרת שהיא חייבת להיות חיוביות ושהאינטרגל עליה יהיה שווה ל 1.
-
-##### הוספת פרמטר רוחב
-
-מקובל להוסיף לפונקציות הגרעין פרמטר $h$ אשר שולט ברוחב שלה באופן הבא:
-
-$$
-\phi_h(\boldsymbol{x})=\frac{1}{h^D}\phi\left(\frac{\boldsymbol{x}}{h}\right)
-$$
-
-החלוקה ב $h^D$ היא על מנת לשמור על הנרמול של הפונקציה. כאשר $D$ הוא המימד של $\mathbf{x}$.
-
-בתוספת פרמטר זה המשערך יהיה:
-
-$$
-\hat{p}_{\mathbf{x},\phi,h,\mathcal{D}}(\boldsymbol{x})=\frac{1}{Nh^D}\sum_{i=1}^N \phi\left(\frac{\boldsymbol{x}-\boldsymbol{x}^{(i)}}{h}\right)
-$$
-
-##### פונקציות גרעין נפוצות
-
-שתי הבחירות הנפוצות ביותר לפונקציית הגרעין הינן:
-
-1. חלון מרובע:
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל:
 
     $$
-    \phi_h(\boldsymbol{x})=\frac{1}{h^D}I\{|x_j|\leq \tfrac{h}{2}\quad\forall j\}
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_2^{(0)}=\frac{2}{4}
     $$
 
-2. גאוסיאן:
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל:
 
     $$
-    \phi_{\sigma}\left(x\right)=\frac{1}{\sqrt{2\pi}\sigma^D}\exp\left(-\frac{\lVert x\rVert_2^2}{2\sigma^2}\right)
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_3^{(0)}=\frac{1}{4}
     $$
 
-כלל אצבע לבחירת רוחב הגרעין במקרה הגאוסי הסקלרי הינו $\sigma=\left(\frac{4\cdot\text{std}(\text{x})^5}{3N}\right)^\frac{1}{5}\approx1.06\ \text{std}(\text{x})N^{-\tfrac{1}{5}}$, כאשר $\text{std}(\text{x})$ הינה הסטיית תקן של $\text{x}$ (אשר לרוב תהיה משוערכת גם היא מתוך המדגם)
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל:
 
-#### תוחלת אמפירית (Empirical mean)
+    $$
+    \sum_{i=1}^N w_i^{(0)}I\{y^{(i)}\neq \tilde{h}(x^{(i)})\}=w_1^{(0)}=\frac{1}{4}
+    $$
 
-התוחלת האמפירית משערכת את התוחלת של פונקציה מסויימת של המשתנה האקראי $f(\mathbf{x})$, על ידי החלפת התוחלת במיצוע של הפונקציה על הדגימות במדגם:
+המסווג השני והשלישי נותנים את אותם הביצועים נבחר באופן אקראי את המסווג השני $\tilde{h}_2=\text{sign}(x-2)$.
 
-$$
-\hat{\mu}_{f(\mathbf{x}),\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N f(\boldsymbol{x}^{(i)})
-$$
-
-### ה bias וה variance של משערך
-
-כפי שציינו כאשר עסקנו ב bias-variance tradeoff, בכדי לשערך את הביצועים של שיטה מסויימת נרצה להסתכל על הפילוג של תוצאות השערוך הנובע מהאקראיות של המדגם. נשתמש שוב בסימון $\mathbb{E}_{\mathcal{D}}$ בכדי לסמן תוחלת על פני הפילוג של המדגם.
-
-#### Bias
-
-בעבור שיערוך של גודל כל שהוא $z$ בעזרת משערך $\hat{z}_{\mathcal{D}}$, ה bias (היסט) של השיערוך מוגדר כ:
+נחשב את $\alpha_2$:
 
 $$
-\text{Bias}\left(\hat{z}\right)=\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]-z
+\begin{aligned}
+\varepsilon_2&=\frac{1}{4}\\
+\alpha_2&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_2}{\varepsilon_2}\right)=\frac{1}{2}\ln(3)=0.549
+\end{aligned}
 $$
 
-כאשר ההטיה שווה ל-0, אנו אומרים שהמשערך **אינו מוטה** (**Unbiased**).
-
-#### Variance
-
-ה variance (שונות) של המשערך יהיה:
+נעדכן את וקטור המשקלים:
 
 $$
-\text{Var}\left(\hat{z}\right)
-=\mathbb{E}_{\mathcal{D}}\left[\left(\hat{z}_{\mathcal{D}}-\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]\right)^2\right]
-=\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}^2\right]-\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]^2
+\tilde{\boldsymbol{w}}^{(2)}
+=\frac{1}{4}\begin{bmatrix}
+    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
+    2\exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)\\
+    \exp\left(-\alpha_2 y^{(i)}\tilde{h}_2(x^{(i)})\right)
+\end{bmatrix}
+=\begin{bmatrix}
+    \exp\left(-\frac{1}{2}\ln(3)\cdot1\right)\\
+    2\exp\left(-\frac{1}{2}\ln(3)\cdot1\right)\\
+    \exp\left(-\frac{1}{2}\ln(3)\cdot(-1)\right)
+\end{bmatrix}
+=\frac{1}{4}\begin{bmatrix}
+    3^{-\frac{1}{2}}\\
+    2\cdot3^{-\frac{1}{2}}\\
+    3^{\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{4\sqrt{3}}\begin{bmatrix}
+    1\\
+    2\\
+    3
+\end{bmatrix}
 $$
 
-אנו נהיה מעוניינים כמובן במשערך שגם ה bias וגם ה variance שלו קטנים.
-
-## תרגיל 5.1 - משתנה בינארי (ברנולי)
-
-**1)** המשתנה האקראי $\text{x}$ הוא משתנה בינארי (משתנה אשר יכול לקבל את הערכים 0 או 1). נתון לנו מדגם המכיל $N$ דגימות של $\text{x}$. חשבו את השיערוך של פונקציית ההסתברות של $\text{x}$. בטאו את התשובה בעזרת $N_0$ ו $N_1$, כאשר $N_0$ הוא מספר הדגימות ששוות ל 0 ו $N_1$ הוא מספר הדגימות ששוות ל 1.
-
-נתון כי הפילוג האמיתי של $\text{x}$ הינו:
+אחרי הנרמול נקבל:
 
 $$
-p_{\text{x}}(x)=\begin{cases}
-1&&p\\
-0&&(1-p)
+\boldsymbol{w}^{(2)}
+=\frac{1}{6}\begin{bmatrix}
+    1\\
+    2\\
+    3
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)\right)\\
+&=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)\right)\\
+&=\begin{cases}
+\text{sign}(-0.203)&x<0\\
+\text{sign}(-0.896)&0<x<2\\
+\text{sign}(0.203)&2<x
+\end{cases}\\
+&=\begin{cases}
+-1&x<2\\
+1&2<x\\
 \end{cases}
+\end{aligned}
 $$
 
-שני הסעיפים הבאים לא קשורים למדגם הנתון.
+#### צעד 3
 
-**2)** חשבו את ה bias של המשערך ב $\text{x}=1$.
+נמצא את החזאי האופטימאלי:
 
-**3)** חשבו את ה variance של המשערך $\text{x}=1$.
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{6}$
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{6}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{1}{6}$
 
-### פתרון 5.1
+המסווג השלישי הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_3=-\text{sign}(x-4)$.
+
+נחשב את $\alpha_3$:
+
+$$
+\begin{aligned}
+\varepsilon_3&=\frac{1}{6}\\
+\alpha_3&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_3}{\varepsilon_3}\right)=\frac{1}{2}\ln(5)=0.805
+\end{aligned}
+$$
+
+נעדכן את וקטור המשקלים:
+
+$$
+\tilde{\boldsymbol{w}}^{(3)}
+=\frac{1}{6}\begin{bmatrix}
+    \exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
+    2\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)\\
+    3\exp\left(-\alpha_3 y^{(i)}\tilde{h}_3(x^{(i)})\right)
+\end{bmatrix}
+=\frac{1}{6}\begin{bmatrix}
+    5^{\frac{1}{2}}\\
+    2\cdot5^{-\frac{1}{2}}\\
+    3\cdot5^{-\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{6\sqrt{5}}\begin{bmatrix}
+    5\\
+    2\\
+    3
+\end{bmatrix}
+$$
+
+אחרי הנרמול נקבל:
+
+$$
+\boldsymbol{w}^{(3)}
+=\frac{1}{10}\begin{bmatrix}
+    5\\
+    2\\
+    3
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 h_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)\right)\\
+&=\text{sign}\left(-0.347\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
+&=\begin{cases}
+\text{sign}(0.602)&x<0\\
+\text{sign}(-0.091)&0<x<2\\
+\text{sign}(1.007)&2<x<4\\
+\text{sign}(-0.602)&4<x\\
+\end{cases}\\
+&=\begin{cases}
+1&x<0\\
+-1&0<x<2\\
+1&2<x<4\\
+-1&4<x\\
+\end{cases}
+\end{aligned}
+$$
+
+נשים לב שבשלב זה כבר קיבלנו סיווג מושלם
+
+#### צעד 4
+
+נמצא את החזאי האופטימאלי:
+
+- בעבור $\tilde{h}(x)=-\text{sign}(x)$ נקבל: $w_2^{(0)}=\frac{2}{10}$
+- בעבור $\tilde{h}(x)=\text{sign}(x-2)$ נקבל: $w_3^{(0)}=\frac{3}{10}$
+- בעבור $\tilde{h}(x)=-\text{sign}(x-4)$ נקבל: $w_1^{(0)}=\frac{5}{10}$
+
+המסווג השני הוא בעל הביצועים הטובים ביותר ולכן נבחר $\tilde{h}_4=-\text{sign}(x)$.
+
+נחשב את $\alpha_4$:
+
+$$
+\begin{aligned}
+\varepsilon_4&=\frac{2}{10}\\
+\alpha_4&=\frac{1}{2}\ln\left(\frac{1-\varepsilon_4}{\varepsilon_4}\right)=\frac{1}{2}\ln(4)=0.693
+\end{aligned}
+$$
+
+נעדכן את וקטור המשקלים:
+
+$$
+\tilde{\boldsymbol{w}}^{(4)}
+=\frac{1}{10}\begin{bmatrix}
+    5\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
+    2\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)\\
+    3\exp\left(-\alpha_4 y^{(i)}\tilde{h}_4(x^{(i)})\right)
+\end{bmatrix}
+=\frac{1}{10}\begin{bmatrix}
+    5\cdot4^{-\frac{1}{2}}\\
+    2\cdot4^{\frac{1}{2}}\\
+    3\cdot4^{-\frac{1}{2}}
+\end{bmatrix}
+=\frac{1}{20}\begin{bmatrix}
+    5\\
+    8\\
+    3
+\end{bmatrix}
+$$
+
+אחרי הנרמול נקבל:
+
+$$
+\boldsymbol{w}^{(4)}
+=\frac{1}{16}\begin{bmatrix}
+    5\\
+    8\\
+    3
+\end{bmatrix}
+$$
+
+החזאי שקיבלנו עד כה הינו:
+
+$$
+\begin{aligned}
+h(x)
+&=\text{sign}\left(\alpha_1 \tilde{h}_1(x)+\alpha_2 \tilde{h}_2(x)+\alpha_3 \tilde{h}_3(x)+\alpha_4 \tilde{h}_4(x)\right)\\
+&=\text{sign}\left(-1.04\text{sign}(x)+0.549\text{sign}(x-2)-0.805\text{sign}(x-4)\right)\\
+&=\begin{cases}
+\text{sign}(1.295)&x<0\\
+\text{sign}(-0.784)&0<x<2\\
+\text{sign}(0.314)&2<x<4\\
+\text{sign}(-1.295)&4<x\\
+\end{cases}\\
+&=\begin{cases}
+1&x<0\\
+-1&0<x<2\\
+1&2<x<4\\
+-1&4<x\\
+\end{cases}
+\end{aligned}
+$$
+
+הסיווג אומנם לא השתנה, אך ככל שנריץ עוד צעדים של האלגוריתם הוא ימשיך לנסות למזער את $\frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{t=1}^T\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)$. במקרים רבים כאשר נמשיך להריץ את האלגוריתם יכולת ההכללה של האלגוריתם תמשיך להשתפר גם אחרי שהאלגוריתם מתכנס לסיווג מושלם על ה train set. (זה לא יקרה במקרה המנוון הזה).
+
+## תרגיל 11.2 - שאלות תיאורטיות
+
+מלבד סעיפים 3 ו 4 שתלויים אחד בשני, הסעיפים הבאות לא תלויים אחד בשני.
+
+**1)** מדוע נעדיף ב AdaBoost להשתמש במסווגים בעלי יכולת ביטוי חלשה? לדוגמא מדוע נעדיף להשתמש בעצים בעומק 1 מאשר עצים מאד עמוקים?
+
+**2)** נניח כי בעבור מדגם כל שהוא בגודל $N$, מובטח לנו שבאלגוריתם ה AdaBoost נוכל תמיד למצוא מסווג כזה אשר יתן לנו שגיאת misclassification rate קטנה מ $\tfrac{1}{2}-\gamma$. מצאו חסם עליון על כמות הצעדים של AdaBoost שיש לבצע בכדי לקבל סיווג מושלם.
+
+**רמז**: מהי השגיאת ה misclassification rate (הלא ממושקל) במצב בו המסווג טועה רק על דגימה אחת?
+
+**3)** הראו שאם באלגוריתם AdaBoost ננסה להשתמש באותו המסווג בשני צעדים רצופים בצעד השני נקבל misclassification rate ממושקל ששווה לחצי.
+
+הדרכה (תחת הסימונים שמופיעים בתחילת התרגול)
+
+1. הראו ש: $\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}$.
+2. הראו שקבוע הנרמול של המשקלים נתון על ידי: $\sum_{i=1}^N\tilde{w}_i^{(t)}=2\sqrt{\varepsilon_t(1-\varepsilon_t)}$.
+3. חשבו את ה misclassification rate הממושקל עם משקלים $\boldsymbol{w}^{t}$ והחזאי $\tilde{h}_t$ (מהצעד ה $t$). עשו זאת על ידי הצבה של $w_i^{(t)}$ ושל קבוע הנרמול שלו.
+
+### פתרון 11.2
 
 #### 1)
 
-השיערוך של פונקציית ההסתברות בעבור $\text{x}=0$ הינו:
+AdaBoost מגדיל את ההתאמה של חזאי למדגם על ידי בניית קומבינציה של חזאים. האלגוריתם מקטין את ה underfitting על חשבון ה overfitting. אם נתחיל עם מודלים בעלי יכולת ביטוי גדולה מידי המודלים יעשו overfitting ואותו האלגוריתם לא יוכל להקטין.
 
-$$
-\hat{p}_{\mathbf{x},\mathcal{D}}(0)=\frac{1}{N}\sum_{i=1}^N I\{x^{(i)}=0\}=\frac{N_0}{N}
-$$
-
-ובאופן דומה
-
-$$
-\hat{p}_{\mathbf{x},\mathcal{D}}(1)=\frac{1}{N}\sum_{i=1}^N I\{x^{(i)}=1\}=\frac{N_1}{N}
-$$
-
-סה"כ
-
-$$
-p_{\text{x}}(x)=\begin{cases}
-\frac{N_1}{N}&x=1\\
-\frac{N_0}{N}&x=0
-\end{cases}
-$$
+בפועל מה שיקרה אם ניקח מודלים בעלי יכולת ביטוי גדולה הוא שנמצא בצעד הראשון מודל שיסווג בצורה טובה את המדגם (אך גם כנראה יעשה הרבה overfitting) לו הוא יתן את מרבית המשקל.
 
 #### 2)
 
-נחשב את התחולת של המשערך $\hat{p}_{\text{x},\mathcal{D}}(1)$:
+בעבור מדגם בגודל $N$ וחזאי עם שגיאת חיזוי אחת על המדגם נקבל שגיאת misclassification rate של $\frac{1}{N}$. נמצא בעזרת החסם את כמות הצעדים שיש לעשות בכדי להגיע לשגיאה קטנה מזו. על פי החסם על השגיאה של AdaBoost אנו יודעים כי:
 
 $$
-\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)\right]
-=\mathbb{E}_{\mathcal{D}}\left[\frac{1}{N}\sum_{i=1}^N I\{\text{x}^{(i)}=1\}\right]
+\frac{1}{N}\sum_i I\{h(\boldsymbol{x}^{(i)})\neq y^{(i)}\}
+\leq
+\exp\left(-2\sum_{t=1}^T\gamma^2\right)
+=\exp\left(-2T\gamma^2\right)
 $$
 
-שימו לב שבחישוב זה אנו לא מתייחסים ל $\text{x}^{(i)}$ כאל מספר ידוע אלא כאל משתנה אקראי. נוציא את החלוקה ב $N$ ואת הסכימה אל מחוץ לתוחלת:
+נמצא את מספר הצעדים המינימאלי $T$ אשר מקיים:
 
-$$
-=\frac{1}{N}\sum_{i=1}^N \mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}\right]
-$$
-
-משום שכל ה $\text{x}^{(i)}$ הם משתנים אקראיים זהים ומפולגים לפי הפילוג של $\text{x}$, ניתן להסיר את האינדקס של $(i)$:
 
 $$
 \begin{aligned}
-&=\frac{1}{N}\sum_{i=1}^N \mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]\\
-&=\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]=p
+\exp\left(-2T\gamma^2\right)&\leq\frac{1}{N}\\
+\Leftrightarrow -2T\gamma^2&\leq\ln\left(\frac{1}{N}\right)\\
+\Leftrightarrow T&\geq\frac{1}{2\gamma^2}\ln(N)
 \end{aligned}
 $$
 
-ה bias יהיה:
-
-$$
-\text{Bias}\left(\hat{p}_{\text{x}}(1)\right)=\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)\right]-p=p-p=0
-$$
-
-מכאן שהמשערך של ההסתברות של משתנים בדידים הוא **משערך לא מוטה**.
+מכאן שבעבור $T=\left\lceil\frac{1}{2\gamma^2}\ln(N)\right\rceil+1$ מובטח לנו שנקבל שגיאת misclassification rate קטנה מ $\frac{1}{N}$, זאת אומרת שיש אפס שגיאות סיווג.
 
 #### 3)
 
-נחשב את התחולת של $\hat{p}_{\text{x},\mathcal{D}}(1)^2$:
+נפעל על פי ההדרכה. נתחיל עם השלב הראשון. נשתמש בעובדה ש $\alpha_t=\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)$ ונראה ש:
 
 $$
 \begin{aligned}
-\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)^2\right]
-&=\mathbb{E}_{\mathcal{D}}\left[\left(\frac{1}{N}\sum_{i=1}^N I\{\text{x}^{(i)}=1\}\right)^2\right]\\
-&=\frac{1}{N^2}\mathbb{E}_{\mathcal{D}}\left[\left(\sum_{i=1}^N I\{\text{x}^{(i)}=1\}\right)\left(\sum_{j=1}^N I\{\text{x}^{(j)}=1\}\right)\right]\\
-&=\frac{1}{N^2}\sum_{i,j}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}I\{\text{x}^{(j)}=1\}\right]\\
+\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)
+&=\exp\left(-\frac{1}{2}\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right) y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+&=\exp\left(\ln\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)\right)^{-\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
+&=\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}
 \end{aligned}
 $$
 
-מכיוון שבעבור $i\neq j$ המשתנים $\text{x}^{(i)}$ ו $\text{x}^{(j)}$ הם משתנים בלתי תלויים, נוכל במקרים אלו לפרק את התוחלת של המכפלה למכפלת התוחלות. נפריד אם כן את הסכום למקרים בהם $i=j$ (יש $N$ מקרים כאלה) ולמקרים שבהם $i\neq j$ (יש $N^2-N$ מקרים כאלה):
+נמשיך ונחשב את קבוע הנרמול:
 
 $$
 \begin{aligned}
-&=\frac{1}{N^2}\sum_{i}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}I\{\text{x}^{(i)}=1\}\right]
-+\frac{1}{N^2}\sum_{i\neq j}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}I\{\text{x}^{(j)}=1\}\right]\\
-&=\frac{1}{N^2}\sum_{i}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}\right]
-+\frac{1}{N^2}\sum_{i\neq j}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}\right]\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(j)}=1\}\right]\\
+\sum_{i=1}^N\tilde{w}_i^{(t)}
+&=\sum_{i=1}^N w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})}\\
+&=\sum_{i=1}^N w_i^{(t-1)}\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}y^{(i)}h_t(\boldsymbol{x}^{(i)})}\left(I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}+I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)\\
+&=
+  \left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}=\tilde{h}_t(\boldsymbol{x}^{(i)})\}
+  +\left(\frac{\varepsilon_t}{1-\varepsilon_t}\right)^{-\frac{1}{2}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}\left(1-I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(
+    \underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}
+    }_{=1}
+    -\underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
+    }_{=\varepsilon_t}
+  \right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}
+    \underbrace{
+      \sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
+    }_{=\varepsilon_t}\\
+&=
+  \sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\left(1-\varepsilon_t\right)
+  +\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\varepsilon_t\\
+&=2\sqrt{\varepsilon_t(1-\varepsilon_t)}
 \end{aligned}
 $$
 
-בדומה לסעיף הקודם נוכל להסיר את האינדקסים:
+נחשב את ה misclassification rate הממושקל $\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}$. נציב את ההגדרה של $w_i^{(t)}$:
 
 $$
 \begin{aligned}
-&=\frac{1}{N}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]
-+\frac{N^2-N}{N^2}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]^2\\
-&=\frac{1}{N}p+\frac{N^2-N}{N^2}p^2\\
-&=\frac{1}{N}(p-p^2)+p^2\\
-&=\frac{1}{N}p(1-p)+p^2\\
+\sum_{i=1}^N w_i^{(t)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}
+&=\sum_{i=1}^N \frac{\tilde{w}_i^{(t)}}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(-\alpha_t y^{(i)}\tilde{h}_t(\boldsymbol{x}^{(i)})\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\sum_{i=1}^N \frac{w_i^{(t-1)}\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}\\
+&=\frac{\exp\left(\alpha_t\right)}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\underbrace{\sum_{i=1}^N w_i^{(t-1)}I\{y^{(i)}\neq \tilde{h}_t(\boldsymbol{x}^{(i)})\}}_{=\varepsilon_t}\\
+&=\frac{\varepsilon_t}{2\sqrt{\varepsilon_t(1-\varepsilon_t)}}\exp\left(\alpha_t\right)\\
+&=\frac{1}{2}\sqrt{\frac{\varepsilon_t}{1-\varepsilon_t}}\sqrt{\frac{1-\varepsilon_t}{\varepsilon_t}}\\
+&=\frac{1}{2}
 \end{aligned}
 $$
 
-ה variance יהיה:
+שגיאת misclassification rate של חצי היא שקולה להטלת מטבע. מכאן שבחירה של אותו המסווג פעמים ברצף לא תשפר את החיזוי ולכן אין טעם במהלך הריצה של האלגוריתם לעשות כן.
 
-$$
-\text{Var}\left(\hat{p}_{\text{x}}(1)\right)=
-\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)^2\right]
--\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)\right]^2
-=\frac{1}{N}p(1-p)+p^2-p^2
-=\frac{1}{N}p(1-p)
-$$
-
-כפי שהיינו מצפים ניתן לראות כי השונות הולכת וקטנה עם מספר הדגימות, שכן ככל שיש לנו יותר דגימות כך השיערוך יהיה מדוייק יותר. בנוסף, בתור אימות, ניתן להבחין כי בעבור $N=1$ נקבל שהשיערוך הוא הערך של הדגימה היחידה ובמקרה זה השונות בדיוק שווה לשונות של משתנה בינארי $p(1-p)$.
-
-## תרגיל 5.2 - EDCF
-
-בעבור משתנה אקראי רציף כל שהוא $\text{x}$, מהו ה bias וה variance של משערך ה ECDF בנקודה מסויימת $x_0$? בטאו את התשובה בעזרת הפילוג המצרפי האמיתי
-
-### פתרון 5.3
-
-למעשה לפתרון תרגיל זה נוכל להשתמש בתוצאת הסעיף הקודם. שיערוך ה ECDF בנקודה $x_0$ נתון על ידי:
-
-$$
-\hat{F}_{\text{x},\mathcal{D}}(x_0)=\hat{p}_{\{\text{x}\leq x_0\},\mathcal{D}}
-$$
-
-נוכל אם כן אז להגדיר משתנה אקראי בינארי חדש $\text{z}$ אשר שווה ל-1 אם $\text{x}\leq x_0$ ו-0 אחרת. בעזרת משתנה זה נוכל לכתוב את שיערוך ה ECDF כשיערוך של ההסתברות ש $\text{z}=1$:
-
-$$
-\hat{F}_{\text{x},\mathcal{D}}(x_0)=\hat{p}_{\{\text{z}=1\},\mathcal{D}}=\hat{p}_{\text{z},\mathcal{D}}(1)
-$$
-
-את ה bias וה variance של המשערך הזה חישבנו בסעיף הקודם וקיבלנו ש:
-
-$$
-\text{Bias}\left(\hat{p}_{\text{z}}(1)\right)=0
-$$
-
-$$
-\text{Var}\left(\hat{p}_{\text{z}}(1)\right)=\frac{1}{N}p(1-p)
-$$
-
-כאשר $p$ הוא ההסתברות האמתית ש $\text{z}=1$. במקרה שלנו $p=F_{\text{x}}(x_0)$, ולכן נקבל ש:
-
-$$
-\text{Bias}\left(\hat{F}_{\text{x}}(x_0)\right)=0
-$$
-
-$$
-\text{Var}\left(\hat{F}_{\text{x}}(x_0)\right)=\frac{1}{N}F_{\text{x}}(x_0)(1-F_{\text{x}}(x_0))
-$$
-
-## תרגיל 5.3 - פילוג משותף
-
-נתון כי $\text{y}$ הינו משתנה אקראי בינארי ו $\text{x}$ משתנה אקראי רציף אשר יכול לקבל ערכים בתחום $[0,15]$. כמו כן נתון לנו המדגם הבא של זוגות של $\text{x}$ ו $\text{y}$:
-
-<div style="direction:ltr">
-
-|            | 1 | 2 | 3 | 4  | 5 | 6 | 7 |
-| ---------- | - | - | - | -- | - | - | - |
-| $\text{x}$ | 1 | 7 | 9 | 12 | 4 | 4 | 7 |
-| $\text{y}$ | 0 | 0 | 0 | 0  | 1 | 1 | 1 |
-
-</div>
-
-**1)** חשבו את הפילוג המשותף של $\text{x}$ ו $\text{y}$ על ידי שימוש בהסטוגרמה לשיערוך של $\text{x}$ בהינתן $\text{y}$. חלקו את התחום $[0,15]$ לשלושה חלקים שווים.
-
-**2)** בעבור $x=6$ מהו החיזוי האופטימאלי של $\text{y}$ תחת פנקציית המחיר של missclassification rate.
-
-**3)** חזרו על שני הסעיפים עם הסטוגרמה שמחלקת את התחום ל15 תאים.
-
-**4)** חזרו על שני הסעיפים הראשונים עם KDE עם פונקציית גרעין של מסוג חלון מרובע ופרמטר רוחב $h=5$
-
-### פתרון 5.3
-
-#### 1)
-
-נחשב עת הפילוג המשותף על ידי שימוש בתוחלת המותנית:
-
-$$
-p_{\text{x},\text{y}}(x,y)=p_{\text{x}|\text{y}}(x|y)p_{\text{y}}(y)
-$$
-
-##### $p_{\text{y}}$
-
-נתחיל בלשערך את $p_{\text{y}}$. מכיוון ש $\text{y}$ הוא משתנה בינארי, השיערוך של הפילוג שלו יהיה:
-
-$$
-p_{\text{y}}(y)=\begin{cases}
-\frac{N_1}{N}=\frac{3}{7}&y=1\\
-\frac{N_0}{N}=\frac{4}{7}&y=0
-\end{cases}
-$$
-
-השיערוך של $p_{\text{x}|\text{y}}(x|y)$ הוא למעשה שני שיערוכים של שתי פונקציות פילוג, $p_{\text{x}|\text{y}}(x|0)$ ו  $p_{\text{x}|\text{y}}(x|1)$. נתחיל מהמקרה של $\text{y}=0$
-
-##### $p_{\text{x}|\text{y}}(x|0)$
-
-נסתכל רק על הדגימות שבהן $y^{(i)}=0$. ישנם ארבע דגימות כאלה. על פי ההנחיה נחלק את התחום ל3 תאים שווים, $[0,5]$, $[5,10]$ ו $[10,15]$. נחשב את צפיפות ההסתברות בכל תא בעזרת היסטוגרמה. על פי הגדרת ההיסטוגרמה הצפיפות הסתברות בכל תא שווה לכמות הדגימות מהמדגם ששיכות לתא זה חלקי מספר הדגימות הכולל, חלקי גודל התא.
-
-מתוך הדגימות שבהם $y^{(i)}=0$ ישנה דגימה בודד שהגיעה לתא של $[0,5]$ ולכן צפיפות ההסתברות בתא זה תהיה:
-
-$$
-\frac{1}{4(5-0)}=0.05
-$$
-
-באפן דומה נחשב את הצפיפות ההסתברות בשאר התאים:
-
-$$
-\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|0)=\begin{cases}
-\frac{1}{4(5-0)}=\frac{1}{20}&0\leq x<5\\
-\frac{2}{4(10-5)}=\frac{1}{10}&5\leq x<10\\
-\frac{1}{4(15-10)}=\frac{1}{20}&10\leq x<15
-\end{cases}
-$$
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/ex_5_3_1_hist_y_0.png)
-
-</div>
-
-##### $p_{\text{x}|\text{y}}(x|1)$
-
-בעבור הדגימות שבהם $\text{y}^{(i)}=1$ נקבל:
-
-$$
-\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|1)=\begin{cases}
-\frac{2}{3(5-0)}=\frac{2}{15}&0\leq x<5\\
-\frac{1}{3(10-5)}=\frac{1}{15}&5\leq x<10\\
-\frac{0}{3(15-10)}=0&10\leq x<15
-\end{cases}
-$$
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/ex_5_3_1_hist_y_1.png)
-
-</div>
-
-הפילוג המשותף יהיה אם כן:
-
-<div style="direction:ltr">
-
-|       | $0\leq x<5$                             | $5\leq x<10$                             | $10\leq x\leq 15$                      |
-| ----- | --------------------------------------- | ---------------------------------------- | -------------------------------------- |
-| $y=0$ | $\frac{1}{20}\frac{4}{7}=\frac{1}{35}$  | $\frac{1}{10}\frac{4}{7}=\frac{2}{35}$   | $\frac{1}{20}\frac{4}{7}=\frac{1}{35}$ |
-| $y=1$ | $\frac{2}{15}\frac{3}{7}=\frac{2}{35}$  | $\frac{1}{15}\frac{3}{7}=\frac{1}{35}$   | $0\frac{3}{7}=0$                       |
-
-</div>
-
-#### 2)
-
-אנו יודעים כי החזאי האופטימאלי תחת פונקציית המחיר של misclassification rate הינו הערך הכי סביר של $\text{y}$ בהינתן $\text{x}$. אם כן עלינו להשוות בין $p_{\text{y}|\text{x}}(1|6)$ לבין  $p_{\text{y}|\text{x}}(0|6)$.
-
-באופן עקרוני עלינו לחשב את:
-
-$$
-p_{\text{y}|\text{x}}(y|x)=\frac{p_{\text{x},\text{y}}(x,y)}{p_{\text{x}}(x)}=\frac{p_{\text{x}|\text{y}}(x|y)p_{\text{y}}(y)}{p_{\text{x}}(x)}
-$$
-
-אך נשיב לב שהמכנה אינו משנה כלל לתוצאה מפני שהוא משותף לשתי ההסתברויות המותנות שברצונינו להשוות ולכן מספיק להסתכל על:
-
-$$
-p_{\text{y}|\text{x}}(0|6)\propto p_{\text{x}|\text{y}}(6|0)p_{\text{y}}(0)=\frac{1}{10}\frac{4}{7}=\frac{2}{35}
-$$
-
-$$
-p_{\text{y}|\text{x}}(1|6)\propto p_{\text{x}|\text{y}}(6|1)p_{\text{y}}(1)=\frac{1}{15}\frac{3}{7}=\frac{1}{35}
-$$
-
-ולכן הערך היותר סביר הוא 0 וזה יהיה החיזוי שלנו.
-
-#### 3)
-
-נחשב את הפילוג המשותף באופן דומה ונקבל:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/ex_5_3_3_hist_y_0.png)
-
-</div>
-<div class="imgbox" style="max-width:500px">
-
-![](./output/ex_5_3_3_hist_y_1.png)
-
-</div>
-<div style="direction:ltr">
-
-|       | $0\leq x<1$ | $1\leq x<2$   | $2\leq x<3$ | $3\leq x<4$ | $4\leq x<5$   | $5\leq x<6$ | $6\leq x<7$   | $7\leq x<8$   | $8\leq x<9$ | $9\leq x<10$  | $10\leq x<11$ | $11\leq x<12$ | $12\leq x<13$ | $13\leq x<14$ | $14\leq x\leq 15$ |
-| ----- | ----------- | ------------- | ----------- | ----------- | ------------- | ----------- | ------------- | ------------- | ----------- | ------------- | ------------- | ------------- | ------------- | ------------- | ----------------- |
-| $y=0$ | $0$         | $\frac{1}{7}$ | $0$         | $0$         | $0$           | $0$         | $0$           | $\frac{1}{7}$ | $0$         | $\frac{1}{7}$ | $0$           | $0$           | $\frac{1}{7}$ | $0$           | $0$           | $0$               |
-| $y=1$ | $0$         | $0$           | $0$         | $0$         | $\frac{2}{7}$ | $0$         | $0$           | $\frac{1}{7}$ | $0$         | $0$           | $0$           | $0$           | $0$           | $0$           | $0$               |
-
-</div>
-
-בפילוג זה גם $p_{\text{y}|\text{x}}(1|6)$ וגם $p_{\text{y}|\text{x}}(0|6)$ שיווים ל0 ולכן שני הערכים של $\text{y}$ סבירים באותה המידה.
-
-הבעיה עם הפילוג הזה הינה שנראה שלקחנו כמות תאים גדולה מידי ולכן ברוב התאים אין לנו דגימות בכלל וכנראה שהשיערוך שם לא מייצג כלל את הפילוג האמיתי.
-
-#### 4)
-
-בכדי לבנות כעת את פונקציות הפילוג של $p_{\text{x}|\text{y}}(x|y)$ עלינו לקחת כל נקודה מהמדגם (עם ה $\text{y}$ המתאים) ולמקם סביבה חלון ריבועי ברוחב 5 ובגובה $\tfrac{1}{5}$. החלונות של הדגימות המתאימות ל $\text{y}=0$ הם:
-
-<div class="imgbox" style="max-width:300px">
-
-![](./output/ex_5_3_4_kernel_1.png)
-
-</div>
-<div class="imgbox" style="max-width:300px">
-
-![](./output/ex_5_3_4_kernel_2.png)
-
-</div>
-<div class="imgbox" style="max-width:300px">
-
-![](./output/ex_5_3_4_kernel_3.png)
-
-</div>
-<div class="imgbox" style="max-width:300px">
-
-![](./output/ex_5_3_4_kernel_4.png)
-
-</div>
-
- פונקציית הפילוג תהיה הממוצע של כל החלונות הריבועיים:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/ex_5_3_4_kde_y_0.png)
-
-</div>
-
-ובאופן דומה בעבור $\text{y}=1$:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/ex_5_3_4_kde_y_1.png)
-
-</div>
-
-מכאן ש:
-
-$$
-p_{\text{x}|\text{y}}(6|0)=\frac{1}{20}
-$$
-
-$$
-p_{\text{x}|\text{y}}(6|1)=\frac{1}{5}
-$$
-
-וההסתברות המותנית של $\text{y}$ ב $\text{x}$ היא
-
-$$
-p_{\text{y}|\text{x}}(0|6)\propto p_{\text{x}|\text{y}}(6|0)p_{\text{y}}(0)=\frac{1}{20}\frac{4}{7}=\frac{1}{35}
-$$
-
-$$
-p_{\text{y}|\text{x}}(1|6)\propto p_{\text{x}|\text{y}}(6|1)p_{\text{y}}(1)=\frac{1}{5}\frac{3}{7}=\frac{3}{35}
-$$
-
-לכן הערך הסביר יותר הינו $\text{y}=1$.
-
-למעשה בעבור כל שיטת שיערוך קיבלנו תוצאה שונה. עובדה זו מחזקת את הנקודה שלשיערוכים שנקבל ישנה תלות גבוהה בשיטה שנבחר להשתמש בה.
-
-## תרגיל מעשי - שיערוך הפילוג של זמני נסיעה בניו יורק
+## חלק מעשי - הטיטניק
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
-נחזור למדגם של נסיעות המונית בניו יורק:
+<div class="imgbox" style="max-width:800px">
 
-|    |   passenger count |   trip distance |   payment type |   fare amount |   tip amount |   pickup easting |   pickup northing |   dropoff easting |   dropoff northing |   duration |   day of week |   day of month |   time of day |
-|---:|------------------:|----------------:|---------------:|--------------:|-------------:|-----------------:|------------------:|------------------:|-------------------:|-----------:|--------------:|---------------:|--------------:|
-|  0 |                 2 |        2.76806  |              2 |           9.5 |         0    |          586.997 |           4512.98 |           588.155 |            4515.18 |   11.5167  |             3 |             13 |      12.8019  |
-|  1 |                 1 |        3.21868  |              2 |          10   |         0    |          587.152 |           4512.92 |           584.85  |            4512.63 |   12.6667  |             6 |             16 |      20.9614  |
-|  2 |                 1 |        2.57494  |              1 |           7   |         2.49 |          587.005 |           4513.36 |           585.434 |            4513.17 |    5.51667 |             0 |             31 |      20.4128  |
-|  3 |                 1 |        0.965604 |              1 |           7.5 |         1.65 |          586.649 |           4511.73 |           586.672 |            4512.55 |    9.88333 |             1 |             25 |      13.0314  |
-|  4 |                 1 |        2.46229  |              1 |           7.5 |         1.66 |          586.967 |           4511.89 |           585.262 |            4511.76 |    8.68333 |             2 |              5 |       7.70333 |
-|  5 |                 5 |        1.56106  |              1 |           7.5 |         2.2  |          585.926 |           4512.88 |           585.169 |            4511.54 |    9.43333 |             3 |             20 |      20.6672  |
-|  6 |                 1 |        2.57494  |              1 |           8   |         1    |          586.731 |           4515.08 |           588.71  |            4514.21 |    7.95    |             5 |              8 |      23.8419  |
-|  7 |                 1 |        0.80467  |              2 |           5   |         0    |          585.345 |           4509.71 |           585.844 |            4509.55 |    4.95    |             5 |             29 |      15.8314  |
-|  8 |                 1 |        3.6532   |              1 |          10   |         1.1  |          585.422 |           4509.48 |           583.671 |            4507.74 |   11.0667  |             5 |              8 |       2.09833 |
-|  9 |                 6 |        1.62543  |              1 |           5.5 |         1.36 |          587.875 |           4514.93 |           587.701 |            4513.71 |    4.21667 |             3 |             13 |      21.7831  |
-
-בתרגול זה אנו נשתמש רק בשני השדות הבאים:
-
-- **duration**: משך הנסיעה הכולל בדקות.
-- **time_of_day**: שעת תחילת הנסיעה כמספר (לא שלם)
-
-(תיאור מלא של כל השדות בטבלה ניתן למצוא [פה](https://www1.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf))
-
-### המשימה: שיערוך הפילוג של זמן הנסיעה של מוניות
-
-נהג מונית מעוניין לשערך את הפילוג של משך הנסיעות שלו. הוא לקח את הקורס מבוא למערכות לומדות והוא יודע שהוא יוכל לעשות זאת מתוך המידע ההיסטורי אותו אספה עיריית New York. בחלק זה של התרגול אנו נעזור לאותו נהג מונית לבצע שיערוך זה.
-
-באופן פורמלי, אנו מעוניינים לשערך את הפילוג של משך נסיעות המונית בעיר כפונקציית פילוג מצרפי (CDF) או כפונקציית צפיפות הסתברות (PDF).
-
-המדגם שלנו לבעיה זו יהיה אוסף משכי הנסיעה מהמדגם הכולל של פרטי הנסיעה. נסמן את המדגם של משך הנסיעה ב $\{x^{(i)}\}$.
-
-### שיטה 1: ECDF
-
-נחשב ונשרטט את ה ECDF על פני grid של ערכים בין 0 ל $\max(\{x^{(i)}\})$ בקפיצות של 0.001:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/nyc_duration_ecdf.png)
+![](../tutorial04/assets/titanic.jpg)
 
 </div>
 
-נסתכל מקרוב על איך נראית פונקציית ה ECDF:
+נחזור לבעיה מהתרגול על עצי החלטה של חיזוי אלו מהנוסעים על ספינת הטיטניק שרדו על פי הנתונים שלהם ברשימת הנוסעים. המדגם נראה כך:
 
-<div class="imgbox" style="max-width:500px">
+<div dir="ltr">
 
-![](./output/nyc_duration_ecdf_zoom.png)
-
-</div>
-
-נשים לב שמערך ה ECDF יהיה תמיד מורכב מאוסף של פונקציות מדרגה.
-
-#### שאלה
-
-על פי פונקציית הפילוג המצרפי המשוערכת, מהו הסיכוי שנסיעת מונית תערך יותר מ20 דקות?
-
-##### תשובה
-
-על פי הגדרת הפילוג המצרפי:
-
-$$
-\text{Pr}(\text{x}>20)=1-\text{Pr}(\text{x}\leq 20)=1-F_{\text{x}}(20)\approx1-0.89=0.11
-$$
-
-#### התלות בגודל המדגם
-
-על מנת לראות את התלות של ה ECDF בגודל המדגם נחזור על החישוב עם כמויות קטנות יותר של דגימות במדגם. אנו נבחר בארקאי $N=10,10,1000$ דגימות מהמדגם ונחזור על החישוב. התוצאה:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/nyc_duration_ecdf_smaller.png)
+|    |   pclass |   survived | name                                            | sex    |   age |   sibsp |   parch | ticket   |     fare | cabin   | embarked   | boat   |   body | home.dest                       |
+|---:|---------:|-----------:|:------------------------------------------------|:-------|------:|--------:|--------:|:---------|---------:|:--------|:-----------|:-------|-------:|:--------------------------------|
+|  0 |        1 |          1 | Allen, Miss. Elisabeth Walton                   | female |    29 |       0 |       0 | 24160    | 211.338  | B5      | S          | 2      |    nan | St Louis, MO                    |
+|  1 |        1 |          0 | Allison, Miss. Helen Loraine                    | female |     2 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    nan | Montreal, PQ / Chesterville, ON |
+|  2 |        1 |          0 | Allison, Mr. Hudson Joshua Creighton            | male   |    30 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    135 | Montreal, PQ / Chesterville, ON |
+|  3 |        1 |          0 | Allison, Mrs. Hudson J C (Bessie Waldo Daniels) | female |    25 |       1 |       2 | 113781   | 151.55   | C22 C26 | S          | nan    |    nan | Montreal, PQ / Chesterville, ON |
+|  4 |        1 |          1 | Anderson, Mr. Harry                             | male   |    48 |       0 |       0 | 19952    |  26.55   | E12     | S          | 3      |    nan | New York, NY                    |
+|  5 |        1 |          1 | Andrews, Miss. Kornelia Theodosia               | female |    63 |       1 |       0 | 13502    |  77.9583 | D7      | S          | 10     |    nan | Hudson, NY                      |
+|  6 |        1 |          0 | Andrews, Mr. Thomas Jr                          | male   |    39 |       0 |       0 | 112050   |   0      | A36     | S          | nan    |    nan | Belfast, NI                     |
+|  7 |        1 |          1 | Appleton, Mrs. Edward Dale (Charlotte Lamson)   | female |    53 |       2 |       0 | 11769    |  51.4792 | C101    | S          | D      |    nan | Bayside, Queens, NY             |
+|  8 |        1 |          0 | Artagaveytia, Mr. Ramon                         | male   |    71 |       0 |       0 | PC 17609 |  49.5042 | nan     | C          | nan    |     22 | Montevideo, Uruguay             |
+|  9 |        1 |          0 | Astor, Col. John Jacob                          | male   |    47 |       1 |       0 | PC 17757 | 227.525  | C62 C64 | C          | nan    |    124 | New York, NY                    |
 
 </div>
 
-באופן לא מפתיע ניתן לראות כי ככל שאנו מגדילים את מספר הדגימות במדגם המשערך מתקרב יותר ויותר לפונקציה חלקה וניתן גם להראות כי השערוך מתקרב (במובן סטיסטי) לפונקציית הפילוג המצרפי האמיתית.
+### השדות
 
-### שיטה 2: היסטוגרמה
+בדומה למקרה של עצי ההחלטה נשתמש בשדות הבאים:
 
-נחשב את ההסטוגרמה של משך הנסיעה בעבור חלוקה של התחום ל30, 300 ו 3000 תאים.
+- **pclass**: מחלקת הנוסע: 1, 2 או 3
+- **sex**: מין הנוסע
+- **age**: גיל הנוסע
+- **sibsp**: מס' של אחים ובני זוג של כל נוסע על האוניה
+- **parch**: מס' של ילדים או הורים של כל נוסע על האונייה
+- **fare**: המחיר שהנוסע שילם על הכרטיס
+- **embarked**: הנמל בו עלה הנוסע על האונייה (C = Cherbourg; Q = Queenstown; S = Southampton)
+- **survived**: התיוג, האם הנוסע שרד או לא
 
-*תזכורת*: כלל האצבע לבחירה של מספר התאים הינו $\sqrt{B}=\sqrt{80000}\approx 280$$.
+### הפילוג של ערכים
 
-תוצאה:
+הפילוג של כל אחד מהשדות בעבור האנשים ששרדו והאנשים שלא:
 
-<div class="imgbox" style="max-width:900px">
+<div class="imgbox" style="max-width:800px">
 
-![](./output/nyc_duration_histogram.png)
-
-</div>
-
-לפני שנבחן את התוצאות, נריץ מבחן נוסף. ננסה לשערך באופן איכותי את ה variance של כל אחת מההיסטוגרמות. לשם כך נפצל את המגדם ל8 תתי מדגמים שווים ונחשב היסטוגרמה בעבור כל אחד משמונת תתי המדגם.
-
-<div class="imgbox" style="max-width:900px">
-
-![](./output/nyc_duration_histogram_variance.png)
-
-</div>
-
-בכדי להגדיר את השונות של השיערוך בצורה טובה יותר נחסר משמונת השיערוכים את הממוצע שלהם:
-
-<div class="imgbox" style="max-width:900px">
-
-![](./output/nyc_duration_histogram_variance_no_mean.png)
+![](./output/titanic_data_slices.png)
 
 </div>
 
-ניתן לראות כי:
+### סט המסווגים - Stumps
 
-- בעבור **מספר גדול של תאים**, ההבדלים בין תתי המדגם השונים (**שונות גדולה**) גדול והתאים צרים ולכן ההיסטוגרמה יכולה לקרב בצורה יותר טובה את פונקציית הצפיפות האמיתית (**הטיה קטנה**)
-- בעבור **מספר קטן של תאים**, ההבדלים בין תתי מדגמים שונים קטן (**שונות קטנה**) אך התאים מאד רחבים ולכן לא יכולים לקרב את הפונקציה האמיתי בצורה טובה (**הטיה גדולה**)
+המסווגים בהם נשתמש הינם stumps (עצים בעומק 1). למשתנים הקטגוריים נעבור על כל האפשרויות לחלק את הקטגוריות.
 
-זהו למעשה אותו bias-variance tradeoff:
+### בניית המסווג
 
-- כאשר **מספר התאים גדול**, כל תא יהיה צר ומקור השגיאה העיקרי ינבע מה**אקראיות** של המדגם הגורמת לשינויים גדולים במספר היחסי של נקודות אשר נופלות בכל תא. שגיאה זו נובעת מה variance של המשערך. שגיאה זו תלך ותקטן ככל שנגדיל את כמות הדגימות במדגם.
-- כאשר **מספר התאים קטן**, מקור השגיאה העקרי ינבע מ**יכולת הייצוג המוגבלת** של המודל שלנו. שגיאה זו נובעת מה bias של המשערך.
+אחרי שנחלק את המדגם ל train-validation-test נשתמש ב train בשביל לבנות את הקומבינציה של המסווגים.
 
-אנו כמובן נשאף לבחור ערך ביניים אשר לא סובל מ variance גדול מידי וגם לא מ bias גדולה מידי. כלל ההאבצע מנסה לתת לעזור לנו לבחור ערך שכזה.
+גודל ה train set הוא 599. נאתחל את וקטור המשקלים $\boldsymbol{w}^{(0)}$ להיות וקטור שמכיל את הערך $\frac{1}{599}$.
 
-### שיטה 3: KDE
+### צעד 1
 
-נשערך כעת את פונקציית צפיפות ההסתברות בעזרת KDE עם חלון גאוסי. נבחן ערכים שונים לרוחב החלון $$\sigma=0.08,0.8,8$$.
+נעבור על כל ה stumps האפשריים ונחפש את זה שממזער את ה misclassification rate הממושקל. נקבל שה stump האופטימאלי הוא זה שמפצל לפי המגדר וחוזה שהנשים שרדו והגברים לא. המסווג שנקבל יהיה:
 
-תזכורת, כלל האצבע מציע לבחור רוחב של: $\sigma=1.06\ \text{std}(\text{x}) N^{-\tfrac{1}{5}}\approx0.775$
+$$
+h(\boldsymbol{x})=\text{sign}\left(0.598 \cdot I\{\text{sex}=\text{female}\}\right)
+$$
 
-לשם השוואה, נשרטט גם את ההסטוגרמה עם ה 300 תאים:
+הציון על ה train set יהיה: 0.232
 
-<div class="imgbox" style="max-width:900px">
+הציון על ה validation set יהיה: 0.226
 
-![](./output/nyc_duration_kde.png)
+### צעד 2
+
+נצייר את הפילוג של הדגימות ממושקלות על ידי המשקלים המעודכנים:
+
+<div class="imgbox" style="max-width:800px">
+
+![](./output/titanic_adaboost_step_02.png)
 
 </div>
 
-שוב אנו רואים את ה bias-variance tradeoff:
-
-- עבור בחירה של **רוחב צר** המשערך יכולה לקרב פרטים "עדינים" יותר, אבל השיערוך רועש יותר.זוהי שגיאת ה variance.
-- עבור בחירה של **רוחב רחב** המשערך מחליק את הפרטים הקטנים, אבל השיערוך פחות רועש יותר. זוהי שגיאת bias.
-
-### בעיית חיזוי: האם נסיעה התרחשה בזמן שעות העבודה
-
-נניח ושעות העבודה ב NYC מוגדרות כשעות שבין 7:00 ו18:00. נגדיר משתנה אקראי בינארי $\text{y}$ אשר שווה ל 1 אם נסיעה התרחשה בזמן שעות העבודה ו-0 אחרת.
-
-נרצה לבנות חזאי ל $\text{y}$ על סמך $\text{x}$ אשר ימזער את ה**missclassification rate**. נעשה זאת תחת הגישה הגנרטיבית.
-
-נפעל בדומה לתרגיל 5.3. השלבים לפתרון הבעיה:
-
-1. שיערוך הפילוג השולי של $\text{y}$, זאת אומרת $\hat{p}_{\text{y},\mathcal{D}}(y)$.
-2. שיערוך הפילוג המותנה של $\text{x}$ בהינתן $\text{y}$, זאת אומרת $\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)$, בעבור כל אחד משני הערכים של $\text{y}$.
-3. בניית החזאי האופטימאלי בהינתן הפילוג המשוערך על פי: $h(x)=\underset{y}{\arg\max}\ \hat{p}_{\text{y}|\text{x},\mathcal{D}}(y|x)$.
-
-#### שלב 1: שיערוך של $\hat{p}_{\text{y},\mathcal{D}}(y)$
-
-$\text{y}$ הוא משתנה דיסקרטי ולכן השיערוך של הפילוג שלו פשוט:
+ה stump האופטימאלי כעת יהיה זה שמפצל לפי המחלקה של הנוסעים וחוזה שנוסעים ממחלקה ראשונה שרדו והאחרים לא. המסווג שנקבל יהיה:
 
 $$
-\hat{p}_{\text{y},\mathcal{D}}(y)=\frac{1}{N}\sum_{i=1}^N I\{y^{(i)}=y\}
+h(\boldsymbol{x})=\text{sign}\left(
+    0.598 \cdot I\{\text{sex}=\text{female}\}
+    +0.31 \cdot I\{\text{class}=1\}
+\right)
 $$
 
-נקבל כי:
-
-$$
-\hat{p}_{\text{y},\mathcal{D}}(y)=
-\begin{cases}
-0.51&y=1\\
-0.49&y=0\\
-\end{cases}
-$$
-
-##### חיזוי עיוור
-
-אם היה ברצונינו לתת חיזוי עיוור (ללא ידיעת $\text{x}$) להאם נסיעה התרחשה במהלך שעות העבודה היינו מעוניינים לתת את החיזוי הבא:
-
-$$
-\hat{y}=\underset{y}{\arg\max}\ \hat{p}_{\text{y},\mathcal{D}}(y)=1
-$$
-
-הסיבה שזהו החיזוי האידאלי נובעת ישירות מן העובדה שיש במדגם יותר נסיעות שהתרחשו בשעות העבודה. שיערכנו שיש סיכוי מעט יותר גדול שנסיעה אקראית תתרחש בשעות העבודה מכיוון שיש לנו סיכוי קטן יותר לטעות בעבור חיזוי זה.
-
-##### הערכת ביצועים לחיזוי עיוור
-
-נחשב את ה missclassification rate של החיזוי העיוור (חיזוי קבוע של 1) על ה test set. נקבל את הציון של: $0.49$.
-
-#### שלב 2: שיערוך $\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)$
-
-נשתמש פעמיים ב KDE על מנת לשערך את הפילוג המותנה פעם אחת בעבור הדגימות שבהן $\text{y}=0$ ופעם נוספת בעבור הדגימות שבהן $\text{y}=1$:
-
-<div class="imgbox" style="max-width:900px">
-
-![](./output/nyc_work_hour_x_given_y.png)
+הציון על ה train set וה validation set ישאר זהה.
 
 </div>
 
-ניתן לראות כי ישנו שוני קטן בין הפילוגים. לנסיעות מחוץ לשעות העבודה ישנה נטיה קלה יותר לטובת זמני נסיעה קצרים יותר. הבדל קטן זה יעזור לנו לשפר את במעט את יכולת החיזוי שלנו.
+### צעד 3
 
-#### שלב 3: בניית החזאי
+נצייר את הפילוג של הדגימות ממושקלות על ידי המשקלים המעודכנים:
 
-עלינו לחשב את:
+<div class="imgbox" style="max-width:800px">
 
-$$
-h(x)=\underset{y}{\arg\max}\ \hat{p}_{\text{y}|\text{x},\mathcal{D}}(y|x)
-$$
-
-נתחיל בלהפוך את הפילוג המותנה בביטוי בעזרת חוק בייס על מנת לקבל ביטוי אשר תלוי בפילוגים שחישבנו:
-
-$$
-=\underset{y}{\arg\max}\quad
-\frac{
-  \hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)
-  \hat{p}_{\text{y},\mathcal{D}}(y)
-}{
-  \hat{p}_{\text{x},\mathcal{D}}(x)
-}
-$$
-
-כפי שציינו בתרגיל 5.3, ניתן להיפתר מהאיבר במכנה משום שהוא אינו תלוי ב $y$:
-
-$$
-=\underset{y}{\arg\max}\quad
-\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)
-\hat{p}_{\text{y},\mathcal{D}}(y)
-=\begin{cases}
-1&\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|1)\hat{p}_{\text{y},\mathcal{D}}(1)>
-  \hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|0)\hat{p}_{\text{y},\mathcal{D}}(0)\\
-0&\text{else}
-\end{cases}
-$$
-
-מכאן שהחיזוי יהיה 1 באיזורים שבהם $\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|1)\hat{p}_{\text{y},\mathcal{D}}(1)>\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|0)\hat{p}_{\text{y},\mathcal{D}}(0)$ ו-0 בכל השאר.
-
-חישוב תנאי זה על פני כל התחום נותן את פונקציית החיזוי הבאה:
-
-<div class="imgbox" style="max-width:900px">
-
-![](./output/nyc_work_hour_predict.png)
+![](./output/titanic_adaboost_step_03.png)
 
 </div>
 
-מכאן שהחיזוי שלנו יהיה:
+ה stump האופטימאלי כעת יהיה זה שמפצל לפי הגיל וחוזה שנוסעים מתחת לגיל 35.5 שרדו. המסווג שנקבל יהיה:
 
 $$
-\hat{y}\left(x\right)=
-\begin{cases}
-1 & x\geq11.4 \\
-0 & \text{otherwise}
-\end{cases}
+h(\boldsymbol{x})=\text{sign}\left(
+    0.598 \cdot I\{\text{sex}=\text{female}\}
+    +0.31 \cdot I\{\text{class}=1\}
+    +0.162 \cdot I\{\text{age}<35.5\}
+\right)
 $$
 
-#### הערכת ביצועים
+הציון על ה train set וה validation set ישאר זהה.
 
-נחשב את ה missclassification rate על ה test set. נקבל את הציון של: $0.46$. ציון זה הוא רק מעט יותר טוב מהחיזוי העיוור אשר היה נותן ציון של $0.49$. כפי שציינו קודם השיפור הקטן מגיע מההבדלים הקלים שבין שני הפילוגים של הנסיעות בשעות העבודה ומחוצה להן. במקרה זה קיבלנו אומנם שיפור קטן אך ככל שנסתמך בחיזוי שלנו על יותר משתנים השיפורים הקטנים האלו יצברו ונוכל בסוף להגיע לחיזויים מאד מדוייקים.
+### המשך
+
+אם נמשיך כך עוד 20 צעדים נקבל את המסווג הכולל אשר נותן את הביצועיים הבאים:
+
+הציון על ה train set יהיה: 0.209
+
+הציון על ה validation set יהיה: 0.201
+
+הציון על ה test set יהיה: 0.189
+
+(זה בהשוואה ל 0.205 שקיבלנו בעזרת עצי החלטה)
 
 </div>

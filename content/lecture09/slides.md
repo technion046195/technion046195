@@ -4,10 +4,11 @@ index: 9
 template: slides
 slides_pdf: true
 ---
+
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# הרצאה 9 - CNN
+# הרצאה 9 - גישה דיסקרימינטיבית הסתברותית
 
 <div dir="ltr">
 <a href="/assets/lecture09_slides.pdf" class="link-button" target="_blank">PDF</a>
@@ -15,460 +16,705 @@ slides_pdf: true
 
 </section><section>
 
-## (Classical) Gradient Descent
+## מה נלמד היום
 
-צעד העדכון ב gradient descent נתון על ידי:
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/course_diagram.png)
+
+</div>
+</section><section>
+
+## דוגמא לבעיה בגישה הגנרטיבית פרמטרית
+
+נסתכל שוב על הבעיה של חיזוי עסקאות שחשודות כהונאות:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_dataset.png)
+
+</div>
+</section><section>
+
+## התאמה של מודל QDA
 
 $$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})
+p_{\text{y}}(0)=\frac{|\mathcal{I}_0|}{N}=0.81
 $$
 
-1. ב ERM:
+$$
+p_{\text{y}}(1)=\frac{|\mathcal{I}_1|}{N}=0.19
+$$
 
-    $$
-    \underset{\boldsymbol{\theta}}{\arg\min} \underbrace{\frac{1}{N}\sum_{i=1}^N l(h(\boldsymbol{x^{(i)}};\boldsymbol{\theta}),y^{(i)})}_{g(\boldsymbol{\theta};\mathcal{D})}
-    $$
+$$
+\boldsymbol{\mu}_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\boldsymbol{x}^{(i)}=[55.1,54.6]^{\top}
+$$
 
-2. MLE:
+$$
+\boldsymbol{\mu}_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\boldsymbol{x}^{(i)}=[54.4,55.2]^{\top}
+$$
 
-    $$
-    \underset{\boldsymbol{\theta}}{\arg\min} \underbrace{-\sum_{i=1}^N \log(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})}_{g(\boldsymbol{\theta};\mathcal{D})}
-    $$
+$$
+\Sigma_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+=\begin{bmatrix}
+350.9 & -42.9 \\
+-42.9 & 336
+\end{bmatrix}
+$$
+
+$$
+\Sigma_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+=\begin{bmatrix}
+817.9 & 730.5 \\
+730.5 & 741.7
+\end{bmatrix}
+$$
 
 </section><section>
 
-## (Classical) Gradient Descent
+## התאמה של מודל QDA
 
-ב ERM:
+<div class="imgbox" style="max-width:500px">
 
-$$
-\underset{\boldsymbol{\theta}}{\arg\min} \underbrace{\frac{1}{N}\sum_{i=1}^N l(h(\boldsymbol{x^{(i)}};\boldsymbol{\theta}),y^{(i)})}_{g(\boldsymbol{\theta};\mathcal{D})}
-$$
+![](./output/transactions_qda.png)
 
-ב MLE:
+</div>
 
-$$
-\underset{\boldsymbol{\theta}}{\arg\min} \underbrace{\sum_{i=1}^N \log(p_{\text{y};\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})}_{g(\boldsymbol{\theta};\mathcal{D})}
-$$
+שגיאת החיזוי (miscalssification rate) על ה test set הינה 0.08.
 
-- הגרדיאנט מכיל סכום על כל המדגם אשר יכול להיות בעייתי כאשר המדגם גדול.
-- נרצה להשתמש בחישוב אשר משתמש בכל צעד רק בחלק מן המדגם.
+<br/>
+
+התוצאה סבירה, אך ניתן לראות  שגאוסיאן לא מאד מתאים לפילוג של ההונאות.
 
 </section><section>
 
-## Stochastic Gradient Descent
+## הבעיה של הגישה הגנרטיבת פרמטרית
 
-- מחשב בכל פעם את הנגזרת על פי **דגימה בודדת** מתוך המדגם, כאשר בכל צעד נשתמש בדגימה אחרת.
-- שתי אופציות לבחירה של הדגימה בכל צעד הינן:
+<div class="imgbox" style="max-width:300px">
 
-    1. להגריל דגימה אקראית אחרת בכל צעד.
-    2. לעבור על הדגימות במדגם צורה סידרתית.
+![](./output/transactions_qda.png)
 
-- כל אחת מהדגימות תצביע לכיוון שונה מהנגזרת של הסכום אבל בממוצע הכיוון הכללי יהיה זהה לכיוון של הסכום.
-- החישוב הוא מאד מהיר אבל הגרדיאנט מאד "רועש".
+</div>
 
-</section><section>
+- הינו רוצים מודל אשר יכול לייצג בנפרד את שני האיזורים.
+- לצערינו המבחר של המודלים בהם אנו יכולים לא גדול.
+- המגבלה הזו נובעת מהצורך שהמודל ייצג פילוג חוקיים.
 
-## Mini-Batch Gradient Descent
-
-- פתרון ביניים.
-- בשיטה זו נשתמש בקבוצת דגימות מתוך המדגם המוכנה mini-batch. בכל צעד אנו נחליף את ה mini-batch.
-- הנפוצה ביותר לאימון של רשתות נוירונים.
-- גדלים אופיינים של ה mini-batch הינם 32-256 דגימות.
+**הערה**: במקרה זה ניתן להשתמש ב GMM + EM.
 
 </section><section>
 
-## שמות
+## דוגמא למדגם שמתאים למודל של QDA
 
-- **Epoch**: מעבר שלם על המדגם.
-- מתייחסים ל mini-batch בשם batch.
-- בחבילות רבות האלגוריתם gradient descent מופיע תחת השם stochastic gradient descent.
+לצורך הדגמה נסתכל על גירסא של המדגם שבה יש רק איזור אחד של ההונאות:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_single_dataset.png)
+
+</div>
 
 </section><section>
 
-## עצירה מוקדמת של gradient descent
+## מודל QDA
 
-- דרך מוצלחת נוספת למנוע overfitting הינה לעצור את אלגוריתם הגרדיאנט לפני שהוא מתכנס.
-- זה נעשה על ידי חישוב ה objective על ה validataion set ובחירת הפרמטרים שממזערים את ה objective.
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_single_qda.png)
+
+</div>
+
+שגיאת החיזוי (miscalssification rate) על ה test set במקרה הזה הינה 0.
+
+</section><section>
+
+## מודל LDA
+
+רק לשם השוואה, נציג גם את התוצאה המתקבלת ממודל ה LDA:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_single_lda.png)
+
+</div>
+
+</section><section>
+
+## הגישות שראינו עד כה
+
+##### הגישה הדיסקרימינטיבית
+
+<div style="text-align:center">
+
+מדגם<br/>
+▼<br/>
+חזאי בעל ביצועים טובים על המדגם
+
+</div>
+
+##### הגישה הגנרטיבית
+
+<div style="text-align:center">
+
+מדגם<br/>
+▼<br/>
+הפילוג **המשותף** של $\mathbf{x}$ ו $\text{y}$ על סמך המדגם<br/>
+▼<br/>
+חזאי אופטימאלי בהינתן הפילוג המשותף
+
+</div>
+
+</section><section>
+
+## הגישה הדיסקרימינטיבית הסתברותית
+
+ברוב פונקציות המחיר החזאי האופטימאלי יהיה תלוי רק בפילוג המותנה של $\text{y}$ בהינתן $\mathbf{x}$.
+
+##### הגישה הדיסקרימינטיבית הסתברותית
+
+<div style="text-align:center">
+
+מדגם<br/>
+▼<br/>
+הפילוג **המותנה** של $\text{y}$ בהינתן $\mathbf{x}$ על סמך המדגם<br/>
+▼<br/>
+חזאי אופטימאלי בהינתן הפילוג המותנה
+
+</div>
+
+</section><section>
+
+## ההתייחסות לגישה זו במקרות אחרים
+
+- גישה זו מוכוונת ישירות למציאת החזאי ולא מנסה ללמוד את התכונות של המדגם לכן נחשבת לגישה דיסקרימינטיבית.
+
+<br/>
+
+- השם גישה דיסקרימינטיבית הסתברותית לא מופיעה במקומות אחרים.
+- במרבית המקומות מציינים שיש שתי גישות דיסקרימינטיבית אך לא נותנים להם שמות שונים.
+- במעט מקומות בהם לא מפרידים בכלל בין שתי הגישות הדיסקרימינטיביות.
+
+</section><section>
+
+## שימוש במודלים פרמטריים
+
+- אנו נבחר מודל פרמטרי אשר יתאר את הפילוג המותנה, $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$.
+- נשערך את פרמטרים של המודל בשיטות דומות לגישה הגנרטיבית (MLE ו MAP).
+
+</section><section>
+
+## MLE על הפילוג המותנה
+
+$$
+\begin{aligned}
+\boldsymbol{\theta}^*
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\mathbf{x},\text{y}}(\boldsymbol{x}^{(i)},y^{(i)};\boldsymbol{\theta})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})p_{\mathbf{x}}(\boldsymbol{x}^{(i)})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
+-\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
+-\sum_{i=1}^{N}\log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
+\end{aligned}
+$$
+
+- המשמעות היא ש אין צורך לדעת או לשערך את הפילוג של $\mathbf{x}$.
+- ניתן להגיע לאותה תוצאה גם בעבור משערך MAP.
+
+</section><section>
+
+## היתרון של הדיסקרימינטיבית הסתברותית
+
+$p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)$ צריכה לקיים את התנאים הבאים:
+
+1. $p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
+2. $\int\int p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})d\boldsymbol{x}dy=1\qquad \forall \boldsymbol{\theta}$
+
+בעבור בעיות סיווג $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ צריכה לקיים את התנאים הבאים:
+
+1. $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
+2. $\sum_{y=1}^C p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})=1\qquad \forall \boldsymbol{x},\boldsymbol{\theta}$
+
+האינטגרל על כל הערכים התחלף בסכום סופי של איברים.
+
+נראה כעת כיצד ניתן לבנות מודלים המקיימים תנאים אלו.
+
+</section><section>
+
+## סיווג בינארי
+
+במקרה זה התנאי השני יהיה:
+
+$$
+p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})=1\qquad \forall \boldsymbol{x},\boldsymbol{\theta}
+$$
+
+<br/>
+
+דרך פשוטה לקיים תנאי זה הינה למצוא פונקציה $f(\boldsymbol{x};\boldsymbol{\theta})$ אשר מחיזרה ערכים בין 0 ל 1 ולהגדיר את המודל באופן הבא:
+
+$$
+\begin{aligned}
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=f(\boldsymbol{x};\boldsymbol{\theta})\\
+p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-f(\boldsymbol{x};\boldsymbol{\theta})
+\end{aligned}
+$$
+
+</section><section>
+
+## הפונקציה הלוגיסטית
+
+$$
+\sigma(z)=\frac{1}{1+e^{-z}}
+$$
+
+<br/>
 
 <div class="imgbox" style="max-width:600px">
 
-![](./assets/early_stopping.png)
+![](./output/sigmoid.png)
 
 </div>
-
-</section><section>
-
-## Convolutional Neural Networks (CNN)
-
-- ב MLPניתן להגדיל את היכולת הייצוג על ידי הגדלת הרשת (מספר השכבות והרוחב שלהם).
-- כפי שקורה בכל מודל פרמטרי, הגדלה של יכולת הייצוג תגדיל גם את ה overfitting.
-- רשת בעלת ארכיטקטורה טובה היא דווקא רשת בעלת יכולת ייצוג נמוכה אשר עדיין מוסגלת לקרב בצורה טובה את הפונקציה שאותה היא מנסה למדל.
-- במקרים מסויימים ארכיטקטורה בשם convolutional nerual network (CNN) עונה בדיוק על דרישות אלו.
-
-</section><section>
-
-## שכבת קונבולוציה
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv.png)
-
-</div>
-
-1. כל נוירון בשכבה זו מוזן רק מכמות מוגבלת של ערכים הנמצאים בסביבתו הקרובה.
-2. כל הנוירונים בשכבה מסויימת זהים (**weight sharing**).
-
-</section><section>
-
-## שכבת קונבולוציה
-
-ניתן להסתכל על הפעולה של שכבת הקונבולוציה באופן הבא:
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv.gif)
-
-</div>
-
-</section><section>
-
-## שכבת קונבולוציה
-
-<div class="imgbox" style="max-width:300px">
-
-![](../lecture09/assets/conv.png)
-
-</div>
-
-מתמטית השיכבה מבצעת את שלושת הפעולות הבאות:
-
-1. פעולת קרוס-קורלציה (ולא קונבולוציה) בין וקטור הכניסה $\boldsymbol{x}$ ווקטור משקולות $\boldsymbol{w}$ באורך $K$.
-2. הוספת היסט $b$ (אופציונלי).
-3. הפעלה של פונקציית הפעלה על וקטור המוצא איבר איבר.
-
-</section><section>
-
-## שכבת קונבולוציה
-
-<div class="imgbox" style="max-width:300px">
-
-![](../lecture09/assets/conv.png)
-
-</div>
-
-פעולת הקרוס-קורלציה מוגדרת באופן הבא:
-
-$$
-y_i=\sum_{m=1}^K x_{i+m-1}w_m
-$$
-
-וקטור המשקולות של שכבת הקונבולציה $\boldsymbol{w}$ נקרא **גרעין הקונבולוציה (convolution kernel)**.
-
-</section><section>
-
-## שכבת קונבולוציה
-
-<div class="imgbox" style="max-width:300px">
-
-![](../lecture09/assets/conv.png)
-
-</div>
-
-- גודל המוצא של שכבת הקונבולוציה הוא קטן יותר מהכניסה והוא נתון על ידי $D_{\text{out}}=D_{\text{in}}-K+1$.
-- בשכבת FC קיימות $D_{\text{in}}\times D_{\text{out}}$ משקולות ועוד $D_{\text{out}}$ איברי היסט.
-- בשכבת קונבולציה יש $K$ משקולות ואיבר היסט בודד.
-
-</section><section>
-
-## קלט רב-ערוצי
-
-במקרים רבים נרצה ששכבת הקונבולציה תקבל קלט רב ממדי, לדוגמא, תמונה בעלת שלושה ערוצי צבע או קלט שמע ממספר ערוצי הקלטה.
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv_multi_input.gif)
-
-</div>
-
-</section><section>
-
-## פלט רב-ערוצי
-
-נרצה לרוב להשתמש ביותר מגרעין קונבולוציה אחד, במקרים אלו נייצר מספר ערוצים ביציאה בעבור כל אחד מגרעיני הקונבולוציה.
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/conv_multi_chan.gif)
-
-</div>
-
-אין שיתוף של משקולות בין ערוצי הפלט השונים.
-
-</section><section>
-
-## פלט רב-ערוצי
-
-<div class="imgbox" style="max-width:350px">
-
-![](../lecture09/assets/conv_multi_chan.gif)
-
-</div>
-
-- $C_\text{in}$ - מספר ערוצי קלט.
-- $C_\text{out}$ - מספר ערוצי פלט.
-- $K$ - גודל הגרעין.
-
-מספר הפרמטרים בשכבה:  $\underbrace{C_\text{in}\times C_\text{out}\times K}_\text{the weights}+\underbrace{C_\text{out}}_\text{the bias}$.
-
-</section><section>
-
-## Padding - ריפוד
-
-במידה ונרצה לשמור על גודל הוקטור במוצא של שכבת הקונבולוציה, ניתן לרפד את וקטור הכניסה באפסים. לדוגמא:
 
 <br/>
+
+**הערה**: מקובל לכנות את הפונקציה הזו **סיגמואיד (sigmoid)** למרות שמבחינה מתמטית זה לא מדוייק.
+
+</section><section>
+
+## הפונקציה הלוגיסטית
+
+כל מודל פרמטרי מהצורה:
+
+$$
+\begin{aligned}
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))\\
+p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
+\end{aligned}
+$$
+
+יהיה מודל פרמטרי חוקי.
+
+</section><section>
+
+## תכונות
+
+- רציפה
+- מונוטונית עולה
+- $1-\sigma(z)=\sigma(-z)$
+- $\frac{\partial}{\partial z}\log(\sigma(z))=1-\sigma(z)$
+
+</section><section>
+
+## Binary Logistic Regression
+
+ב Binary Logistic Regression נשתמש במודל שהצגנו קודם:
+
+$$
+\begin{aligned}
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))\\
+p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
+\end{aligned}
+$$
+
+נמצא את הפרמטרים של המודל בעזרת MLE:
+
+$$
+\begin{aligned}
+\boldsymbol{\theta}^*
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
+    I\{y^{(i)}=1\}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
+&\qquad\qquad\qquad\qquad\qquad\qquad +I\{y^{(i)}=0\}\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
+    y^{(i)}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+   +(1-y^{(i)})\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+\end{aligned}
+$$
+
+</section><section>
+
+## Binary Logistic Regression
+
+$$
+\boldsymbol{\theta}^*
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
+    y^{(i)}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+   +(1-y^{(i)})\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+$$
+
+במרבית המקרים לא ניתן יהיה לפתור באופן אנליטי ונחפש את הפתרון בשיטות נומריות כגון אלגוריתם ה gradient descent עליו נרחיב בהמשך ההרצאה.
+
+</section><section>
+
+## Binary Logistic Regression
+
+$$
+\begin{aligned}
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))\\
+p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
+\end{aligned}
+$$
+
+<br/>
+
+בעבור misclassification rate החזאי האופטימאלי יהיה:
+
+$$
+h(\boldsymbol{x})
+=\underset{y}{\arg\max}\ p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
+=\begin{cases}
+    1 & \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) > 0.5 \\
+    0 & \text{else}
+\end{cases}
+=\begin{cases}
+    1 & f(\boldsymbol{x};\boldsymbol{\theta}) > 0 \\
+    0 & \text{else}
+\end{cases}
+$$
+
+</section><section>
+
+## סיווג לא בינארי
+
+ניתן להרחיב את השיטה לבניית מודלים באמצעות פונקציית ה **softmax**.
+
+</section><section>
+
+## פונקציית ה Softmax
+
+לוקחת וקטור $\boldsymbol{z}$ באורך $C$ ומייצרת ממנו וקטור אשר יכול לייצג פילוג דיסקרטי חוקי.
+
+$$
+\text{softmax}(\boldsymbol{z})=\frac{1}{\sum_{c=1}^C e^{z_c}}[e^{z_1},e^{z_2},\dots,e^{z_C}]^{\top}
+$$
+
+או:
+
+$$
+\text{softmax}(\boldsymbol{z})_i=\frac{e^{z_i}}{\sum_{c=1}^C e^{z_c}}
+$$
+
+</section><section>
+
+## פונקציית ה Softmax
+
+$$
+\text{softmax}(\boldsymbol{z})_i=\frac{e^{z_i}}{\sum_{c=1}^C e^{z_c}}
+$$
+
+### תכונות
+
+- $\text{softmax}(\boldsymbol{z} + a)_i=\text{softmax}(\boldsymbol{z})_i\ \forall i$.
+- $\frac{\partial}{\partial z_j} \log(\text{softmax}(\boldsymbol{z}))_i=\delta_{i,j}-\text{softmax}(\boldsymbol{z})_j$
+
+</section><section>
+
+## הפונקציה הלוגיסטית כמקרה פרטי
+
+בעבור וקטור באורך 2: $\boldsymbol{z}=[a,b]$, נקבל:
+
+$$
+\begin{aligned}
+\text{softmax}(\boldsymbol{z})_1&=\frac{e^{a}}{e^{a}+e^{b}}=\frac{1}{1+e^{b-a}}=\sigma(a-b)\\
+\text{softmax}(\boldsymbol{z})_2&=\frac{e^{b}}{e^{a}+e^{b}}=1-\sigma(a-b)
+\end{aligned}
+$$
+
+</section><section>
+
+## (Non-Binary) Logistic Regression
+
+בעבור $C$ פונקציות פרמטריות כל שהן, $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$, ניתן לבנות מודל פרמטרי חוקי באופן הבא:
+
+$$
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
+=\frac{e^{f_y(\boldsymbol{x};\boldsymbol{\theta}_y)}}{\sum_{c=1}^C e^{f_c(\boldsymbol{x};\boldsymbol{\theta}_c)}}
+$$
+
+לשם נוחות נסמן:
+
+- $\boldsymbol{\theta}=[\boldsymbol{\theta}_1^{\top},\boldsymbol{\theta}_2^{\top},\dots,\boldsymbol{\theta}_C^{\top}]^{\top}$.
+- $\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta})=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
+
+נוכל לרשום את המודל הפרמטרי באופן הבא:
+
+$$
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
+=\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
+$$
+
+</section><section>
+
+## (Non-Binary) Logistic Regression
+
+$$
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
+=\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
+$$
+
+<br/>
+
+משערך ה MLE של מודל זה יהיה נתון על ידי:
+
+$$
+\begin{aligned}
+\boldsymbol{\theta}^*
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log(\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y})
+\end{aligned}
+$$
+
+</section><section>
+
+## היתירות בייצוג של מודל ה logistic regression
+
+- במקרה הבינארי לא היינו צריכים להגדיר 2 פונקציות פרמטריות.
+- במקרה הכללי מספיק להגדיר $C-1$ פונקציות פרמטריות.
+- הסתברות של $C-1$ מחלקות תקבע באופן מוחלט את המחלקה האחרונה כך שהיא תשלים את ההסתברות ל-1.
+- כל שינוי מהצורה של $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)\rightarrow f_c(\boldsymbol{x};\boldsymbol{\theta}_c)+g(\boldsymbol{x})$ לא ישנה את הפילוג
+
+במקרים מסויימים נרצה לבטל יתירות זו. ניתן לעשות זאת על ידי קיבוע של $f_1(\boldsymbol{x};\boldsymbol{\theta}_1)=0$
+
+</section><section>
+
+## Linear Logistic Regression
+
+המקרה שבו הפונקציות הפרמטריות הם לינאריות:
+
+$$
+f_c(\boldsymbol{x};\boldsymbol{\theta}_c)=\boldsymbol{\theta}_c^{\top}\boldsymbol{x}
+$$
+
+<br/>
+
+- במקרה זה פונקציית ה objective היא קמורה (convex) ומובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום גלובלי.
+
+</section><section>
+
+## Gradient descent (שיטת הגרדיאנט)
+
+האלגוריתם מנסה למצוא מינימום לוקאלי על ידי התקדמות בצעדים קטנים בכיוון שבו הפונקציה יורדת הכי מהר.
+
+<br/>
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/sled.jpg)
+
+</div>
+
+</section><section>
+
+## Gradient descent (שיטת הגרדיאנט)
+
+- אלגוריתם חמדן (greedy): מנסה בכל איטרציה לשפר את מצבו לעומת המצב הנוכחי
+- יתכנס למינימום לוקאלי.
+- הדרישה היחידה הינה היכולת לחשב את הנגזרת של ה objective.
+
+</section><section>
+
+## Gradient descent (שיטת הגרדיאנט)
+
+בעבור בעיית המינמיזציה:
+
+$$
+\underset{\boldsymbol{\theta}}{\arg\min}\quad g(\boldsymbol{\theta})
+$$
+
+- מאתחלים את $\boldsymbol{\theta}^{(0)}$ לנקודה אקראית כל שהיא.
+- חוזרים על צעד העדכון הבא עד שמתקיים תנאי עצירה:
+
+    $$
+    \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
+    $$
+
+<br/>
+
+את הפרמטר $\eta$ יש לקבוע מראש, והוא יקבע את גודל הצעדים שהאלגוריתם יעשה.
+
+</section><section>
+
+## תנאי עצירה
+
+$$
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
+$$
+
+<br/>
+
+- מספר צעדי עדכון שנקבע מראש: $t>\text{max-iter}$.
+- הנורמה של הגרדיאנט קטנה מערך סף: $\lVert\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})\rVert_2<\epsilon$
+- השיפור ב objective קטן מערך סף: $g(\boldsymbol{\theta}^{(t-1)})-g(\boldsymbol{\theta}^{(t)})<\epsilon$
+- שימוש בעצירה מוקדמת על מנת להתמודד עם overfitting (נרחיב על כך בהרצאה הבאה)
+
+</section><section>
+
+## הבעיות של האלגוריתם
+
+- התכנסות למינימום לוקאלי ותלות באיתחול
+- לא ניתן לקבוע בוודאות האם האלגוריתם התכנס
+- בעיית הבחירה של גודל הצעד
+
+<br/>
+
+שני הבעיות הראשונות מונעות הגעה לאופטימום אך עדיין לא מפריעים לאלגוריתם להניב תוצאות טובות.
+
+הבעיה של בחירת גודל צעד עלולה למנוע מהאלגוריתם להניב תוצאות רלוונטיות תוך מספר סביר של צעדים.
+
+</section><section>
+
+## דוגמא גודל צעד קטן
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/gradient_descent_small_step.png)
+
+</div>
+
+</section><section>
+
+## דוגמא גודל צעד גדול
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/gradient_descent_large_step.png)
+
+</div>
+
+</section><section>
+
+## דוגמא גודל צעד גדול מידי
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/gradient_descent_too_large_step.png)
+
+</div>
+
+</section><section>
+
+## בעיית הבחירה של גודל הצעד
+
+- כאשר יהיו בבעיה כיוונים שונים בהם ישנו הבדל גדול בקצב השינוי של הפונקציה לרוב לא יהיה גודל צעד אשר יגרום לפונקציה להתכנס במספר סביר של צעדים.
+- gradient descent בצורתו הפשוטה אינו מאד שימושי.
+- למזלנו ישנם מספר שיפורים שניתן לעשות על מנת להתמודד עם בעיה זו.
+- לצערינו בקורס זה לא נספיק לכסות שיפורים אלו.
+
+</section><section>
+
+## שיפורים נפוצים
+
+1. הוספה של רכיב תנע לאלגוריתם
+2. שימוש בגדול צעד אשר משתנה במהלך הריצה
+
+<br/>
+
+לקריאה על נושא:
+
+1. [An overview of gradient descent optimization algorithms](http://ruder.io/optimizing-gradient-descent/)
+2. [Why Momentum Really Works](https://distill.pub/2017/momentum/)
+
+בתרגיל הרטוב תשתמשו במימוש קיים ADAM.
+
+</section><section>
+
+## דוגמא: Linear Logistic Regression
+
+נחזור לבעיה של חיזוי עסקאות החשודות כהונאות אשראי.
+
 <div class="imgbox" style="max-width:500px">
 
-![](../lecture09/assets/padding.gif)
+![](./output/transactions_single_dataset.png)
 
 </div>
 
 </section><section>
 
-## Stride - גודל צעד
+## דוגמא: Linear Logistic Regression
 
-לעיתים נרצה דווקא להקטין את גודל הוקטור במוצא בפקטור מסויים. דרך אחת לעשות זאת היא על ידי דילול המוצא. בפועל אין צורך לחשב את הערכים במוצא שנזרקים ולכן למעשה ניתן לחשב את הקונבולוציה בקפיצות מסויימות המכונות stride.
+נשתמש במודל של linear logistic regression:
 
-<br/>
-<div class="imgbox" style="max-width:500px">
+$$
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
+=\begin{cases}
+\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}) & y=1\\
+1-\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}) & y=0\\
+\end{cases}
+$$
 
-![](../lecture09/assets/stride.gif)
+נמצא את הפרמטרים של המודל בעזרת MLE:
+
+$$
+\boldsymbol{\theta}^*
+=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
+    y\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+   +(1-y)\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+$$
+
+כלל העדכון של האלגוריתם יהיה:
+
+$$
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}+\eta\sum_{i=1}^{N}
+    \left(
+        y(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+        -(1-y)\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta})
+    \right)\boldsymbol{x}^{(i)}
+$$
+
+</section><section>
+
+## בחירת $\eta$
+
+נריץ את האלגוריתם מספר קטן של צעדים בעבור ערכי $\eta$ שונים:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/transactions_single_selecting_eta.png)
 
 </div>
 
 </section><section>
 
-## Dilation - התרחבות
-
-במקרים אחרים נרצה לגדיל את האיזור שממנו אוסף נוירון מסויים את הקלט שלו מבלי להגדיל את מספר הפרמטרים ואת הסיבוכיות החישובית. לשם כך ניתן לדלל את הדרך בה נדגם הקלט על מנת להרחיב את איזור הקלט. אלא אם רשום אחרת, ה dilation של שכבה (הצפיפות בה הכניסה נדגמת) הוא 1.
-
-<br/>
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/dilation.gif)
-
-</div>
-
-</section><section>
-
-## Max / Average Pooling
-
-שיכבות נוספת אשר מופיעה במקרים רבים ברשתות CNN הם שכבות מסוג pooling. שני שכבות pooling נפוצות הם max pooling ו average pooling, שכבה זו לוקחת את הממוצע או המקסימום של ערכי הכניסה.
-
-דוגמא זו מציגה max pooling בגודל 2 עם גודל צעד (stride) גם כן של 2:
-
-<div class="imgbox" style="max-width:400px">
-
-![](../lecture09/assets/max_pooling.gif)
-
-</div>
-
-בשכבה זאת אין פרמטרים נלמדים.
-
-</section><section>
-
-## 2D Convolutional Layer
-
-<table style="width:100%; table-layout:fixed;">
-  <tr>
-    <td><center>kernel size=3<br>padding=0<br>stride=1<br>dilation=1</center></td>
-    <td><center>kernel size=4<br>padding=2<br>stride=1<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=1<br>stride=1<br>dilation=1<br>(Half padding)</center></td>
-    <td><center>kernel size=3<br>padding=2<br>stride=1<br>dilation=1<br>(Full padding)</center></td>
-  </tr>
-  <tr>
-    <td><img width="150px" src="../lecture09/assets/no_padding_no_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/arbitrary_padding_no_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/same_padding_no_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/full_padding_no_strides.gif"></td>
-  </tr>
-  <tr>
-    <td><center>kernel size=3<br>padding=0<br>stride=2<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=1<br>stride=2<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=1<br>stride=2<br>dilation=1</center></td>
-    <td><center>kernel size=3<br>padding=0<br>stride=1<br>dilation=2</center></td>
-  </tr>
-  <tr>
-    <td><img width="150px" src="../lecture09/assets/no_padding_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/padding_strides.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/padding_strides_odd.gif"></td>
-    <td><img width="150px" src="../lecture09/assets/dilation_2d.gif"></td>
-  </tr>
-</table>
-
-- \[1\] Vincent Dumoulin, Francesco Visin - [A guide to convolution arithmetic for deep learning](https://arxiv.org/abs/1603.07285)([BibTeX](https://gist.github.com/fvisin/165ca9935392fa9600a6c94664a01214))
-  
-</section><section>
-
-## מבנה רשת CNN
-
-<div class="imgbox" style="max-width:750px">
-
-![](./assets/vgg16.png)
-
-</div>
-
-</section><section>
-
-## למה CNN כל כך טובים לבעיות מסויימות?
-
-- אחת הבעיות ש CNNs מאד טובים בלפתור היא הבעיה של סיווג של תמונות לפי התוכן שלהם.
-- הסיבה שבגללה CNNs מתאימים לפתרון של בעיה זו היא בין היתר בגלל שהתאמה של שתי התכונות שמבדילות שכבת קנבולוציה משכבות FC לייצוג של הפתרון.
-- נתייחס לכל אחת משתי התכונות בנפרד.
-
-</section><section>
-
-## תלות של כל נוירון רק בסביבה המיידית שלו
-
-כל נוירון רואה רק את הסביבה המיידת שלו ולכן על הרשת יהיה לנסות לנתח את התמונה בצורה היררכית:
-
-<br/>
-<div class="imgbox" style="max-width:500px">
-
-![](../lecture09/assets/receptive_field.gif)
-
-</div>
-
-</section><section>
-
-## Receptive Field
+## בחירת $\eta$
 
 <div class="imgbox" style="max-width:400px">
 
-![](../lecture09/assets/receptive_field.gif)
+![](./output/transactions_single_selecting_eta.png)
 
 </div>
 
-- הגודל של האיזור שממנו מושפע נוירון בשכבה מסויימת נקרא ה **receptive field** שלו.
-- לדוגמא, ה receptive field של נוירון בשכבה השלישית הוא 7.
-- בנוסף, יש גם את שכבות ה pooling אשר מקטינות את המימדים ובכך מגדילות את ה receptive filed.
+- $\eta=30$ ו $\eta=100$ מתאימים למקרה של $\eta$ גדול מידי.
+- נבחר את $\eta=10$.
 
 </section><section>
 
-## חילוץ מאפיינים מהתמונה
+## דוגמא: Linear Logistic Regression
 
-נדגים את הפעולה שמבצעת השכבה הראשונה ברשת אשר מנסה להזהות האם בתמונה מסויימת מופיע פרצוף.
-
-<br/>
-<div class="imgbox">
-
-![](./assets/horizontal_filter.png)
-
-</div>
-<br/>
-
-גרעיני הקנובולוציה של השכבות הראשונות יעברו על התמונה ויחפשו תופעות בסיסיות כמו פסים אנכיים, פסים אופקיים, פינות, נקודות קטנות וכו'.
-
-</section><section>
-
-## חילוץ מאפיינים מהתמונה
-
-כל גרעין ייצר ערוץ אשר מתאים לתופעה שאותה הוא מחפש:
+נריץ את האלגוריתם עם $\eta=10$ ונקבל את החזאי הבא:
 
 <div class="imgbox" style="max-width:500px">
 
-![](./assets/conv_illustration.png)
+![](./output/transactions_single_linear_logistic.png)
 
 </div>
 
-- השכבות הבאות ברשת יחפשו אובייקטים אשר מורכבים מהתופעות שמצאו השכבות הראשונות.
-- לדוגמא נחפש איזורים שמכילים הרבה פסים אנכיים בכדי לזהות שיער, או שני פסים אופקיים סמוכים שעשויים להכיל שפתיים.
+עם misclassification rate של 0.02 על ה test set.
 
 </section><section>
 
-## Weight sharing
+## שימוש במודל מסדר גבוהה יותר
 
-התכונה הנוספת של שכבת הקונבולוציה הינה שהמשקולות של כל הנוירונים משותפים בין כל הנוירונים באותה השכבה + ערוץ.
+נוכל להשתמש בכל מודל שנרצה.
 
-למה זה לא מגביל את הרשת:
+נחליף את $f(\boldsymbol{x};\boldsymbol{\theta})$ בפולינום מסדר שני ונקבל:
 
-1. הסיווג של התמונה לא אמור להיות מושפע אם מזיזים את האובייקט בתמונה מעט לצדדים.
+<div class="imgbox" style="max-width:500px">
 
-2. הפעולות שהשכבות הראשונות מבצעות, כגון חיפוש קווים אופקיים ואנכיים משותף לכל האיזורים בתמונה.
-
-</section><section>
-
-## Batch Normalization (לא למבחן)
-
-- אחת הבעיות בעבודה עם רשתות עמוקות הינה מצב שבו הערכים במוצאים של השכבות הם מסדר גודל שונה.
-- הדבר משפיע על הגרדיאנטים ומקשה על הבחירה של גודל הצעד.
-- דרך אחת לנסות ולהבטיח כי המוצאים יהיו בערך מאותו סדר גודל הינה על ידי הוספה של שכבה בשם batch normalization.
-
-<div class="imgbox" style="max-width:250px">
-
-![](./assets/batch_norm.png)
+![](./output/transactions_single_quadric_logistic.png)
 
 </div>
 
-</section><section>
-
-## Batch Normalization (לא למבחן)
-
-<div class="imgbox" style="max-width:250px">
-
-![](./assets/batch_norm.png)
-
-</div>
-
-- מנסה לנרמל את הערכים אשר עוברים דרכה (מביאה את התוחלת של הערכים ל 0 ואת הסטיית תקן ל 1).
-- עושה זאת על ידי חישוב התוחלת וסטיית התקן האמפירית של הערכים על פני ה batch.
-
-</section><section>
-
-## Batch Normalization (לא למבחן)
-
-<div class="imgbox" style="max-width:180px">
-
-![](./assets/batch_norm.png)
-
-</div>
-
-$$
-\boldsymbol{\mu}=\frac{1}{M}\sum_{i=1}^M \boldsymbol{z}_{\text{in}}^{(i)}
-$$
-
-$$
-\sigma^2=\frac{1}{M}\sum_{i=1}^M (\boldsymbol{z}_{\text{in}}^{(i)}-\boldsymbol{\mu})^2
-$$
-
-המוצא של השכבה יהיה:
-
-$$
-\boldsymbol{z}_{\text{out}}=\frac{
-\boldsymbol{z}_{\text{in}}-\boldsymbol{\mu}
-}{\sigma+\epsilon}
-$$
-
-</section><section>
-
-## Batch Normalization (לא למבחן)
-
-לרוב השכבה תכיל גם טרנספורמציה לינרארית נלמדת עם פרמטרים $\gamma$ ו $\beta$:
-
-$$
-\boldsymbol{z}_{\text{out}}=\frac{
-\boldsymbol{z}_{\text{in}}-\boldsymbol{\mu}
-}{\sigma+\epsilon}\cdot\gamma+\beta
-$$
-
-כאשר $\gamma$ ו $\beta$ הוא וקטורים באורך של $\boldsymbol{z}$ והמכפלה עם $\gamma$ היא איבר איבר.
-
-</section><section>
-
-## אחרי שלב האימון
-
-במהלך הלימוד מחזיקים ממוצע נע ([exponantial moving average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average)) של הערכים $\mu$ ו $\sigma$ ובסוף שלב הלימוד מקבעים את הערכים שלהם ואלו הערכים שבהם הרשת תשתמש לאחר שלב האימון.
+עם misclassification rate של 0 על ה test set.
 
 </section>
 </div>

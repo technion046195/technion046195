@@ -8,7 +8,7 @@ slides_pdf: true
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# הרצאה 7 - גישה דיסקרימינטיבית הסתברותית
+# הרצאה 7 - שיערוך פילוג בשיטות לא פרמטריות
 
 <div dir="ltr">
 <a href="/assets/lecture07_slides.pdf" class="link-button" target="_blank">PDF</a>
@@ -25,696 +25,883 @@ slides_pdf: true
 </div>
 </section><section>
 
-## דוגמא לבעיה בגישה הגנרטיבית פרמטרית
+## דיסקרימינטיבי vs. גנרטיבי
 
-נסתכל שוב על הבעיה של חיזוי עסקאות שחשודות כהונאות:
+#### הגישה הדיסקרימינטיבית
+
+<div style="text-align:center">
+
+מדגם<br/>
+️▼<br/>
+חזאי בעל ביצועים טובים על המדגם
+
+</div>
+
+<br/>
+
+#### הגישה הגנרטיבית
+
+<div style="text-align:center">
+
+מדגם<br/>
+▼<br/>
+פילוג על סמך המדגם<br/>
+▼<br/>
+חזאי אופטימאלי בהינתן הפילוג
+
+</div>
+
+</section><section>
+
+## הקשר לבעיות unsupervised learning
+
+- בקרוס זה לא נעסוק כמעט בבעיות unsupervised learning.
+- בבעיות unsupervised learning המדגם מכיל סוג אחד של משתנים $\mathbf{x}$.
+- ננסה ללמוד מהם התכונות שמאפיינות את הדגימות במדגם.
+- אחת הדרכים הטובות ביותר לעשות זאת היא על ידי שיערוך הפילוג שלהם.
+
+</section><section>
+
+## שיערוך הפילוג
+
+הבעיה של בניית מודל הסתברותי של משתנים אקראיים מתוך מדגם מכונה **בעיית שיערוך (estimation)**. את המודל ההסתברותי אנו נבטא בעזרת אחת מהפונקציות הבאות:
+
+- פונקציית ההסתברות (probablity mass function - PMF)
+- פונקציית צפיפות ההסתברות (probability density function - PDF)
+- פונקציית הפילוג המצרפית (cumulative distribution function CDF).
+
+</section><section>
+
+## חיזוי (prediction) ושיערוך (estimation)
+
+- **בבעיות חיזוי** אנו מועניינים לחזות את ערכו של **משתנה אקראי**, לרוב על סמך משתנה / וקטור אקראי בודד (**דגימה יחידה**).
+- **בבעיות שיערוך** אנו מעוניינים לבנות **מודל הסתברותי** של משתנה / משתנים אקראיים לרוב על סמך **הרבה דגימות**.
+
+</section><section>
+
+## דוגמא
+
+נסתכל לדוגמא על המדגם של הונאות אשראי מהרצאה הקודמת:
 
 <div class="imgbox" style="max-width:500px">
 
 ![](./output/transactions_dataset.png)
 
 </div>
-</section><section>
 
-## התאמה של מודל QDA
-
-$$
-p_{\text{y}}(0)=\frac{|\mathcal{I}_0|}{N}=0.81
-$$
-
-$$
-p_{\text{y}}(1)=\frac{|\mathcal{I}_1|}{N}=0.19
-$$
-
-$$
-\boldsymbol{\mu}_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\boldsymbol{x}^{(i)}=[55.1,54.6]^{\top}
-$$
-
-$$
-\boldsymbol{\mu}_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\boldsymbol{x}^{(i)}=[54.4,55.2]^{\top}
-$$
-
-$$
-\Sigma_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
-=\begin{bmatrix}
-350.9 & -42.9 \\
--42.9 & 336
-\end{bmatrix}
-$$
-
-$$
-\Sigma_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
-=\begin{bmatrix}
-817.9 & 730.5 \\
-730.5 & 741.7
-\end{bmatrix}
-$$
+נרצה לשערך את הפילוג של המשתנים על פי מדגם זה
 
 </section><section>
 
-## התאמה של מודל QDA
+## דוגמא
 
-<div class="imgbox" style="max-width:500px">
+<div class="imgbox" style="max-width:250px">
 
-![](./output/transactions_qda.png)
+![](./output/transactions_dataset.png)
 
 </div>
 
-שגיאת החיזוי (miscalssification rate) על ה test set הינה 0.08.
-
-<br/>
-
-התוצאה סבירה, אך ניתן לראות  שגאוסיאן לא מאד מתאים לפילוג של ההונאות.
-
-</section><section>
-
-## הבעיה של הגישה הגנרטיבת פרמטרית
-
-<div class="imgbox" style="max-width:300px">
-
-![](./output/transactions_qda.png)
-
-</div>
-
-- הינו רוצים מודל אשר יכול לייצג בנפרד את שני האיזורים.
-- לצערינו המבחר של המודלים בהם אנו יכולים לא גדול.
-- המגבלה הזו נובעת מהצורך שהמודל ייצג פילוג חוקיים.
-
-**הערה**: במקרה זה ניתן להשתמש ב GMM + EM.
-
-</section><section>
-
-## דוגמא למדגם שמתאים למודל של QDA
-
-לצורך הדגמה נסתכל על גירסא של המדגם שבה יש רק איזור אחד של ההונאות:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/transactions_single_dataset.png)
-
-</div>
-
-</section><section>
-
-## מודל QDA
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/transactions_single_qda.png)
-
-</div>
-
-שגיאת החיזוי (miscalssification rate) על ה test set במקרה הזה הינה 0.
-
-</section><section>
-
-## מודל LDA
-
-רק לשם השוואה, נציג גם את התוצאה המתקבלת ממודל ה LDA:
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/transactions_single_lda.png)
-
-</div>
-
-</section><section>
-
-## הגישות שראינו עד כה
-
-##### הגישה הדיסקרימינטיבית
-
-<div style="text-align:center">
-
-מדגם<br/>
-▼<br/>
-חזאי בעל ביצועים טובים על המדגם
-
-</div>
-
-##### הגישה הגנרטיבית
-
-<div style="text-align:center">
-
-מדגם<br/>
-▼<br/>
-הפילוג **המשותף** של $\mathbf{x}$ ו $\text{y}$ על סמך המדגם<br/>
-▼<br/>
-חזאי אופטימאלי בהינתן הפילוג המשותף
-
-</div>
-
-</section><section>
-
-## הגישה הדיסקרימינטיבית הסתברותית
-
-ברוב פונקציות המחיר החזאי האופטימאלי יהיה תלוי רק בפילוג המותנה של $\text{y}$ בהינתן $\mathbf{x}$.
-
-##### הגישה הדיסקרימינטיבית הסתברותית
-
-<div style="text-align:center">
-
-מדגם<br/>
-▼<br/>
-הפילוג **המותנה** של $\text{y}$ בהינתן $\mathbf{x}$ על סמך המדגם<br/>
-▼<br/>
-חזאי אופטימאלי בהינתן הפילוג המותנה
-
-</div>
-
-</section><section>
-
-## ההתייחסות לגישה זו במקרות אחרים
-
-- גישה זו מוכוונת ישירות למציאת החזאי ולא מנסה ללמוד את התכונות של המדגם לכן נחשבת לגישה דיסקרימינטיבית.
-
-<br/>
-
-- השם גישה דיסקרימינטיבית הסתברותית לא מופיעה במקומות אחרים.
-- במרבית המקומות מציינים שיש שתי גישות דיסקרימינטיבית אך לא נותנים להם שמות שונים.
-- במעט מקומות בהם לא מפרידים בכלל בין שתי הגישות הדיסקרימינטיביות.
-
-</section><section>
-
-## שימוש במודלים פרמטריים
-
-- אנו נבחר מודל פרמטרי אשר יתאר את הפילוג המותנה, $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$.
-- נשערך את פרמטרים של המודל בשיטות דומות לגישה הגנרטיבית (MLE ו MAP).
-
-</section><section>
-
-## MLE על הפילוג המותנה
-
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\mathbf{x},\text{y}}(\boldsymbol{x}^{(i)},y^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})p_{\mathbf{x}}(\boldsymbol{x}^{(i)})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
--\sum_{i=1}^{N}\log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-\end{aligned}
-$$
-
-- המשמעות היא ש אין צורך לדעת או לשערך את הפילוג של $\mathbf{x}$.
-- ניתן להגיע לאותה תוצאה גם בעבור משערך MAP.
-
-</section><section>
-
-## היתרון של הדיסקרימינטיבית הסתברותית
-
-$p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)$ צריכה לקיים את התנאים הבאים:
-
-1. $p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
-2. $\int\int p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\boldsymbol{\theta})d\boldsymbol{x}dy=1\qquad \forall \boldsymbol{\theta}$
-
-בעבור בעיות סיווג $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ צריכה לקיים את התנאים הבאים:
-
-1. $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})\geq 0\qquad \forall \boldsymbol{x},y,\boldsymbol{\theta}$
-2. $\sum_{y=1}^C p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})=1\qquad \forall \boldsymbol{x},\boldsymbol{\theta}$
-
-האינטגרל על כל הערכים התחלף בסכום סופי של איברים.
-
-נראה כעת כיצד ניתן לבנות מודלים המקיימים תנאים אלו.
-
-</section><section>
-
-## סיווג בינארי
-
-במקרה זה התנאי השני יהיה:
-
-$$
-p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})=1\qquad \forall \boldsymbol{x},\boldsymbol{\theta}
-$$
-
-<br/>
-
-דרך פשוטה לקיים תנאי זה הינה למצוא פונקציה $f(\boldsymbol{x};\boldsymbol{\theta})$ אשר מחיזרה ערכים בין 0 ל 1 ולהגדיר את המודל באופן הבא:
-
-$$
-\begin{aligned}
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=f(\boldsymbol{x};\boldsymbol{\theta})\\
-p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-f(\boldsymbol{x};\boldsymbol{\theta})
-\end{aligned}
-$$
-
-</section><section>
-
-## הפונקציה הלוגיסטית
-
-$$
-\sigma(z)=\frac{1}{1+e^{-z}}
-$$
-
-<br/>
+לדוגמא היינו רוצים למצוא פונקציות אשר יתארו את הפילוג של הדגימות החוקיות ושל ההונאות:
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/sigmoid.png)
+![](./output/transactions_gt_pdf.png)
 
 </div>
 
-<br/>
+</section><section>
 
-**הערה**: מקובל לכנות את הפונקציה הזו **סיגמואיד (sigmoid)** למרות שמבחינה מתמטית זה לא מדוייק.
+## שיערוך א-פרמטריות
+
+בהרצאה הקרובה נעסוק בשיטות שיערוך אשר מכונות שיטות לא פרמטריות או א-פרמטריות, מהות השם תהיה ברורה יותר אחרי שנציג בהרצאה הבאה את הנושא של שיטות פרמטריות.
 
 </section><section>
 
-## הפונקציה הלוגיסטית
+## שיערוך ההסתברות של מאורע
 
-כל מודל פרמטרי מהצורה:
+### דוגמא
+
+נניח שיש בידינו את המדגם הבא של מדידות של זמני נסיעה (בדקות) מחיפה לתל אביב על כביש החוף:
 
 $$
-\begin{aligned}
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))\\
-p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
-\end{aligned}
+\mathcal{D}=\{x^{(i)}\}=\{55, 68, 75, 50, 72, 84, 65, 58, 74, 66\}
 $$
 
-יהיה מודל פרמטרי חוקי.
+ברצונינו לשערך את ההסתברות של המאורע שנסיעה מסויימת תיקח פחות משעה, $A=\{x<60\}$.
 
 </section><section>
 
-## תכונות
+## שיערוך ההסתברות של מאורע
 
-- רציפה
-- מונוטונית עולה
-- $1-\sigma(z)=\sigma(-z)$
-- $\frac{\partial}{\partial z}\log(\sigma(z))=1-\sigma(z)$
+### דוגמא
+
+$$
+\mathcal{D}=\{x^{(i)}\}=\{55, 68, 75, 50, 72, 84, 65, 58, 74, 66\}
+$$
+
+נשערך שהסתברות זו שווה למספר הפעמים היחסי שמאורע זה קרה במדגם הנתון:
+
+$$
+\text{Pr}(A)\approx\hat{p}_{A,\mathcal{D}}=0.3
+$$
+
+- נשתמש בסימון "כובע" לציון גודל שאותו אנו חוזים / משערכים באופן אמפירי.
+- נציין את העובדה שמשערך תלוי במדגם שבו השתמשנו על ידי הוספת $\mathcal{D}$ מתחת למשערך.
 
 </section><section>
 
-## Binary Logistic Regression
+## מדידה אמפירית (empirical measure)<br/> / משערך הצבה
 
-ב Binary Logistic Regression נשתמש במודל שהצגנו קודם:
-
-$$
-\begin{aligned}
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))\\
-p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
-\end{aligned}
-$$
-
-נמצא את הפרמטרים של המודל בעזרת MLE:
+בהינתן מדגם מסויים $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}_{i=0}^N$, המדידה האמפירית, $\hat{p}_{A,\mathcal{D}}$, הינה שיערוך של הההסתברות, $Pr\left(A\right)$, והיא מחושבת באופן הבא:
 
 $$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    I\{y^{(i)}=1\}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
-&\qquad\qquad\qquad\qquad\qquad\qquad +I\{y^{(i)}=0\}\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    y^{(i)}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
-   +(1-y^{(i)})\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
-\end{aligned}
+\hat{p}_{A,\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N I\{\boldsymbol{x}^{(i)}\in A\}
 $$
+
+נוכל כעת להשתמש בשיטה זו על מנת לנסות ולשערך את הפילוג של משתנים אקראיים.
 
 </section><section>
 
-## Binary Logistic Regression
+## משתנה אקראי דיסקרטי
+
+### דוגמא 1 - משתנה ביארי
+
+- $\text{x}$ תוצאת הטלה של מטבע לא הוגן.
+- הטלנו את המטבע 10 פעמים וקיבלנו:
 
 $$
-\boldsymbol{\theta}^*
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    y^{(i)}\log(\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
-   +(1-y^{(i)})\log(1-\sigma(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})))
+\mathcal{D}=\{x^{(i)}\}=\{0, 0, 0, 0, 1, 0, 0, 1, 0, 0\}
 $$
 
-במרבית המקרים לא ניתן יהיה לפתור באופן אנליטי ונחפש את הפתרון בשיטות נומריות כגון אלגוריתם ה gradient descent עליו נרחיב בהמשך ההרצאה.
+מה ה PMF של $\text{x}$?
 
 </section><section>
 
-## Binary Logistic Regression
+## משתנה אקראי דיסקרטי
+
+### דוגמא 1 - משתנה ביארי
 
 $$
-\begin{aligned}
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})&=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))\\
-p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})&=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
-\end{aligned}
+\mathcal{D}=\{x^{(i)}\}=\{0, 0, 0, 0, 1, 0, 0, 1, 0, 0\}
 $$
 
-<br/>
-
-בעבור misclassification rate החזאי האופטימאלי יהיה:
+גם כאן נשערך את ההסתברויות של הערכים ש $\text{x}$ מקבל על פי השכיחות שלהם במדגם:
 
 $$
-h(\boldsymbol{x})
-=\underset{y}{\arg\max}\ p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-=\begin{cases}
-    1 & \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) > 0.5 \\
-    0 & \text{else}
+p_{\text{x}}(x)\approx\hat{p}_{\text{x},\mathcal{D}}(x)=
+\begin{cases}
+  0.8 & 0 \\
+  0.2 & 1
 \end{cases}
-=\begin{cases}
-    1 & f(\boldsymbol{x};\boldsymbol{\theta}) > 0 \\
-    0 & \text{else}
+$$
+
+- זו למעשה במדידה אמפירית של המאורע ש $\{\text{x}=x\}$.
+
+</section><section>
+
+## משתנה אקראי דיסקרטי
+
+### דוגמא 2 - משתנה לא בינארי
+
+- $\text{x}$ תוצאת הטלה של קוביה לא הוגנת.
+- הטלנו את הקוביה 10 פעמים וקיבלנו:
+
+$$
+\mathcal{D}=\{x^{(i)}\}=\{3, 2, 5, 1, 2, 6, 2, 5, 5, 3\}
+$$
+
+מה ה PMF של $\text{x}$?
+
+</section><section>
+
+## משתנה אקראי דיסקרטי
+
+### דוגמא 2 - משתנה לא בינארי
+
+$$
+\mathcal{D}=\{x^{(i)}\}=\{3, 2, 5, 1, 2, 6, 2, 5, 5, 3\}
+$$
+
+בדיוק כמו קודם, נשערך את ההסתברות לקבל כל ערך לפי השכיחות שלו במדגם:
+
+$$
+p_{\text{x}}(x)\approx\hat{p}_{\text{x},\mathcal{D}}(x)=
+\begin{cases}
+  0.1 & 1 \\
+  0.3 & 2 \\
+  0.2 & 3 \\
+  0 & 4 \\
+  0.3 & 5 \\
+  0.1 & 6 \\
 \end{cases}
 $$
 
 </section><section>
 
-## סיווג לא בינארי
+## ניסוח פורמאלי
 
-ניתן להרחיב את השיטה לבניית מודלים באמצעות פונקציית ה **softmax**.
+בהינתן מדגם מסויים $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}_{i=0}^N$, נוכל לשערך את ה PMF של משתנה / וקטור אקראי דיסקרטי באופן הבא:
+
+$$
+\hat{p}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\frac{1}{N}\sum_{i=1}^N I\{\boldsymbol{x}^{(i)}=\boldsymbol{x}\}
+$$
+
+שימו לב שמובטח לנו שנקבל פונקציית הסתברות חוקית (חיובית שהסכום עליה שווה ל1).
 
 </section><section>
 
-## פונקציית ה Softmax
+## שיערוך הפילוג המצרפי
 
-לוקחת וקטור $\boldsymbol{z}$ באורך $C$ ומייצרת ממנו וקטור אשר יכול לייצג פילוג דיסקרטי חוקי.
-
-$$
-\text{softmax}(\boldsymbol{z})=\frac{1}{\sum_{c=1}^C e^{z_c}}[e^{z_1},e^{z_2},\dots,e^{z_C}]^{\top}
-$$
-
-או:
+נזכור כי פונקציית הפילוג המצרפי (ה CDF) מוגדרת באופן הבא:
 
 $$
-\text{softmax}(\boldsymbol{z})_i=\frac{e^{z_i}}{\sum_{c=1}^C e^{z_c}}
+F_{\mathbf{x}}(\boldsymbol{x})=\text{Pr}\left(\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\}\right)
 $$
+
+נוכל אם כן לשערך גודל זה על ידי שימוש במדידה האמפירית בעבור המאורע של $\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\}$ באופן הבא:
+
+$$
+\hat{F}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\hat{p}_{\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\},\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N  I\{\boldsymbol{x}^{(i)}_j\leq\boldsymbol{x}_j\ \forall j\}
+$$
+
+משערך זה נקרא empirical cumulative distribtuion function (ECDF).
 
 </section><section>
 
-## פונקציית ה Softmax
+## ECDF - דוגמא
+
+נשערך את הפילוג המצרפי של זמני הנסיעה בכביש החוף
 
 $$
-\text{softmax}(\boldsymbol{z})_i=\frac{e^{z_i}}{\sum_{c=1}^C e^{z_c}}
+\mathcal{D}=\{x^{(i)}\}=\{55, 68, 75, 50, 72, 84, 65, 58, 74, 66\}
 $$
 
-### תכונות
-
-- $\text{softmax}(\boldsymbol{z} + a)_i=\text{softmax}(\boldsymbol{z})_i\ \forall i$.
-- $\frac{\partial}{\partial z_j} \log(\text{softmax}(\boldsymbol{z}))_i=\delta_{i,j}-\text{softmax}(\boldsymbol{z})_j$
-
-</section><section>
-
-## הפונקציה הלוגיסטית כמקרה פרטי
-
-בעבור וקטור באורך 2: $\boldsymbol{z}=[a,b]$, נקבל:
-
 $$
-\begin{aligned}
-\text{softmax}(\boldsymbol{z})_1&=\frac{e^{a}}{e^{a}+e^{b}}=\frac{1}{1+e^{b-a}}=\sigma(a-b)\\
-\text{softmax}(\boldsymbol{z})_2&=\frac{e^{b}}{e^{a}+e^{b}}=1-\sigma(a-b)
-\end{aligned}
-$$
-
-</section><section>
-
-## (Non-Binary) Logistic Regression
-
-בעבור $C$ פונקציות פרמטריות כל שהן, $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$, ניתן לבנות מודל פרמטרי חוקי באופן הבא:
-
-$$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-=\frac{e^{f_y(\boldsymbol{x};\boldsymbol{\theta}_y)}}{\sum_{c=1}^C e^{f_c(\boldsymbol{x};\boldsymbol{\theta}_c)}}
-$$
-
-לשם נוחות נסמן:
-
-- $\boldsymbol{\theta}=[\boldsymbol{\theta}_1^{\top},\boldsymbol{\theta}_2^{\top},\dots,\boldsymbol{\theta}_C^{\top}]^{\top}$.
-- $\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta})=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
-
-נוכל לרשום את המודל הפרמטרי באופן הבא:
-
-$$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-=\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
-$$
-
-</section><section>
-
-## (Non-Binary) Logistic Regression
-
-$$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-=\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
-$$
-
-<br/>
-
-משערך ה MLE של מודל זה יהיה נתון על ידי:
-
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log(\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y})
-\end{aligned}
-$$
-
-</section><section>
-
-## היתירות בייצוג של מודל ה logistic regression
-
-- במקרה הבינארי לא היינו צריכים להגדיר 2 פונקציות פרמטריות.
-- במקרה הכללי מספיק להגדיר $C-1$ פונקציות פרמטריות.
-- הסתברות של $C-1$ מחלקות תקבע באופן מוחלט את המחלקה האחרונה כך שהיא תשלים את ההסתברות ל-1.
-- כל שינוי מהצורה של $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)\rightarrow f_c(\boldsymbol{x};\boldsymbol{\theta}_c)+g(\boldsymbol{x})$ לא ישנה את הפילוג
-
-במקרים מסויימים נרצה לבטל יתירות זו. ניתן לעשות זאת על ידי קיבוע של $f_1(\boldsymbol{x};\boldsymbol{\theta}_1)=0$
-
-</section><section>
-
-## Linear Logistic Regression
-
-המקרה שבו הפונקציות הפרמטריות הם לינאריות:
-
-$$
-f_c(\boldsymbol{x};\boldsymbol{\theta}_c)=\boldsymbol{\theta}_c^{\top}\boldsymbol{x}
-$$
-
-<br/>
-
-- במקרה זה פונקציית ה objective היא קמורה (convex) ומובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום גלובלי.
-
-</section><section>
-
-## Gradient descent (שיטת הגרדיאנט)
-
-האלגוריתם מנסה למצוא מינימום לוקאלי על ידי התקדמות בצעדים קטנים בכיוון שבו הפונקציה יורדת הכי מהר.
-
-<br/>
-
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/sled.jpg)
-
-</div>
-
-</section><section>
-
-## Gradient descent (שיטת הגרדיאנט)
-
-- אלגוריתם חמדן (greedy): מנסה בכל איטרציה לשפר את מצבו לעומת המצב הנוכחי
-- יתכנס למינימום לוקאלי.
-- הדרישה היחידה הינה היכולת לחשב את הנגזרת של ה objective.
-
-</section><section>
-
-## Gradient descent (שיטת הגרדיאנט)
-
-בעבור בעיית המינמיזציה:
-
-$$
-\underset{\boldsymbol{\theta}}{\arg\min}\quad g(\boldsymbol{\theta})
-$$
-
-- מאתחלים את $\boldsymbol{\theta}^{(0)}$ לנקודה אקראית כל שהיא.
-- חוזרים על צעד העדכון הבא עד שמתקיים תנאי עצירה:
-
-    $$
-    \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
-    $$
-
-<br/>
-
-את הפרמטר $\eta$ יש לקבוע מראש, והוא יקבע את גודל הצעדים שהאלגוריתם יעשה.
-
-</section><section>
-
-## תנאי עצירה
-
-$$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
-$$
-
-<br/>
-
-- מספר צעדי עדכון שנקבע מראש: $t>\text{max-iter}$.
-- הנורמה של הגרדיאנט קטנה מערך סף: $\lVert\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})\rVert_2<\epsilon$
-- השיפור ב objective קטן מערך סף: $g(\boldsymbol{\theta}^{(t-1)})-g(\boldsymbol{\theta}^{(t)})<\epsilon$
-- שימוש בעצירה מוקדמת על מנת להתמודד עם overfitting (נרחיב על כך בהרצאה הבאה)
-
-</section><section>
-
-## הבעיות של האלגוריתם
-
-- התכנסות למינימום לוקאלי ותלות באיתחול
-- לא ניתן לקבוע בוודאות האם האלגוריתם התכנס
-- בעיית הבחירה של גודל הצעד
-
-<br/>
-
-שני הבעיות הראשונות מונעות הגעה לאופטימום אך עדיין לא מפריעים לאלגוריתם להניב תוצאות טובות.
-
-הבעיה של בחירת גודל צעד עלולה למנוע מהאלגוריתם להניב תוצאות רלוונטיות תוך מספר סביר של צעדים.
-
-</section><section>
-
-## דוגמא גודל צעד קטן
-
-<div class="imgbox" style="max-width:900px">
-
-![](./assets/gradient_descent_small_step.png)
-
-</div>
-
-</section><section>
-
-## דוגמא גודל צעד גדול
-
-<div class="imgbox" style="max-width:900px">
-
-![](./assets/gradient_descent_large_step.png)
-
-</div>
-
-</section><section>
-
-## דוגמא גודל צעד גדול מידי
-
-<div class="imgbox" style="max-width:900px">
-
-![](./assets/gradient_descent_too_large_step.png)
-
-</div>
-
-</section><section>
-
-## בעיית הבחירה של גודל הצעד
-
-- כאשר יהיו בבעיה כיוונים שונים בהם ישנו הבדל גדול בקצב השינוי של הפונקציה לרוב לא יהיה גודל צעד אשר יגרום לפונקציה להתכנס במספר סביר של צעדים.
-- gradient descent בצורתו הפשוטה אינו מאד שימושי.
-- למזלנו ישנם מספר שיפורים שניתן לעשות על מנת להתמודד עם בעיה זו.
-- לצערינו בקורס זה לא נספיק לכסות שיפורים אלו.
-
-</section><section>
-
-## שיפורים נפוצים
-
-1. הוספה של רכיב תנע לאלגוריתם
-2. שימוש בגדול צעד אשר משתנה במהלך הריצה
-
-<br/>
-
-לקריאה על נושא:
-
-1. [An overview of gradient descent optimization algorithms](http://ruder.io/optimizing-gradient-descent/)
-2. [Why Momentum Really Works](https://distill.pub/2017/momentum/)
-
-בתרגיל הרטוב תשתמשו במימוש קיים ADAM.
-
-</section><section>
-
-## דוגמא: Linear Logistic Regression
-
-נחזור לבעיה של חיזוי עסקאות החשודות כהונאות אשראי.
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/transactions_single_dataset.png)
-
-</div>
-
-</section><section>
-
-## דוגמא: Linear Logistic Regression
-
-נשתמש במודל של linear logistic regression:
-
-$$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-=\begin{cases}
-\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}) & y=1\\
-1-\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}) & y=0\\
+\hat{F}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=
+\begin{cases}
+  0 & x<50 \\
+  0.1 & 50\leq x<55 \\
+  0.2 & 55\leq x<58 \\
+  0.3 & 58\leq x<65 \\
+  0.4 & 65\leq x<66 \\
+  0.5 & 66\leq x<68 \\
+  0.6 & 68\leq x<72 \\
+  0.7 & 72\leq x<74 \\
+  0.8 & 74\leq x<75 \\
+  0.9 & 75\leq x<84 \\
+  1 & 84\leq x  \\
 \end{cases}
 $$
 
-נמצא את הפרמטרים של המודל בעזרת MLE:
+</section><section>
+
+## ECDF - דוגמא
+
+זוהי למעשה פונקציה קבועה למקוטעין אשר נראית כך:
+
+<br/>
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_time_ecdf.png)
+
+</div>
+
+<br/>
+
+**בעיה**: איך נראה ה PDF?
+
+</section><section>
+
+## ECDF - דוגמא
+
+ככה:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_time_diff_ecdf.png)
+
+</div>
+
+<br/>
+
+פונקציה כזו היא לא מאד שימושית.
+
+</section><section>
+
+## היסטוגרמה
+
+נסיון לשערך PDF על ידי קוונטיזציה של משתנה רציף.
+
+- נחלק את טווח הערכים למספר סופי של חלקים המכוונים bins (תאים).
+- נשתמש במדידה אמפירת על מנת לשערך את ההסתברות להימצא בכל תא.
+
+</section><section>
+
+## היסטוגרמה - דוגמא
 
 $$
-\boldsymbol{\theta}^*
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    y\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-   +(1-y)\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+\mathcal{D}=\{x^{(i)}\}=\{55, 68, 75, 50, 72, 84, 65, 58, 74, 66\}
 $$
 
-כלל העדכון של האלגוריתם יהיה:
+נחלק את התחום ל 5 קטעים:
 
 $$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}+\eta\sum_{i=1}^{N}
-    \left(
-        y(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-        -(1-y)\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta})
-    \right)\boldsymbol{x}^{(i)}
+[45,54),[54,63),[63,72),[72,81),[81,90]
+$$
+
+ההסתברות להיות בכל bin הינה:
+
+$$
+\begin{aligned}
+\hat{p}_{\{45\leq\text{x}<54\},\mathcal{D}}&=0.1\\
+\hat{p}_{\{54\leq\text{x}<63\},\mathcal{D}}&=0.2\\
+\hat{p}_{\{63\leq\text{x}<72\},\mathcal{D}}&=0.3\\
+\hat{p}_{\{72\leq\text{x}<81\},\mathcal{D}}&=0.3\\
+\hat{p}_{\{81\leq\text{x}\leq90\},\mathcal{D}}&=0.1\\
+\end{aligned}
+$$
+
+יש לבחור את ה bins כך שיכסו את התחום ולא יחפפו.
+
+</section><section>
+
+## היסטוגרמה
+
+בכדי להפוך את ההסתברויות לצפיפות הסתברות נרצה "למרוח" את ההסתברות שקיבלנו באופן אחיד על פני ה bin.
+
+$$
+\hat{p}_{\text{x},\mathcal{D}}(x)
+=\begin{cases}
+  \frac{1}{\text{size of bin }1}\hat{p}_{\{\text{x in bin }1\},\mathcal{D}}&\text{x in bin }1\\
+  \vdots\\
+  \frac{1}{\text{size of bin }B}\hat{p}_{\{\text{x in bin }B\},\mathcal{D}}&\text{x in bin }B
+\end{cases}
 $$
 
 </section><section>
 
-## בחירת $\eta$
+## היסטוגרמה - דוגמא
 
-נריץ את האלגוריתם מספר קטן של צעדים בעבור ערכי $\eta$ שונים:
+$$
+\begin{aligned}
+\hat{p}_{\{45\leq\text{x}<54\},\mathcal{D}}&=0.1\\
+\hat{p}_{\{54\leq\text{x}<63\},\mathcal{D}}&=0.2\\
+\hat{p}_{\{63\leq\text{x}<72\},\mathcal{D}}&=0.3\\
+\hat{p}_{\{72\leq\text{x}<81\},\mathcal{D}}&=0.3\\
+\hat{p}_{\{81\leq\text{x}\leq90\},\mathcal{D}}&=0.1\\
+\end{aligned}
+$$
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/transactions_single_selecting_eta.png)
+![](./output/drive_time_hist_5.png)
 
 </div>
 
 </section><section>
 
-## בחירת $\eta$
+## היסטוגרמה - ניסוח פורמאלי
+
+בהינתן מדגם מסויים $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}_{i=0}^N$, ההיסטוגרמה הינה שיערוך של ה PDF של משתנה / וקטור אקראי והיא מחושבת באופן הבא:
+
+1. מחלקים את תחום הערכים ש $\mathbf{x}$ יכול לקבל ל bins (תאים) לא חופפים אשר מכסים את כל התחום.
+2. לכל bin משערכים את ההסתברות של המאורע שבו $\mathbf{x}$ יהיה בתוך התא.
+3. הערך של פונקציית הצפיפות בכל תא תהיה ההסתברות המשוערכת להיות בתא חלקי גודל התא.
+
+לבחירת ה bins יש השפעה גדולה על איכות השיערוך שנקבל. ננסה להבין את השיקולים בבחירת ה bins.
+
+</section><section>
+
+## היסטוגרמה - המקרה הסקלרי
+
+- $B$ מספר התאים.
+- $l_b$ ו $r_b$ את הגבול השמאלי והימני התא ה $b$.
+
+$$
+\hat{p}_{\text{x},\mathcal{D}}(x)
+\begin{cases}
+  \frac{1}{N(r_1-l_1)}\sum_{i=1}^N I\{l_1\leq x^{(i)}<r_1\}&l_1\leq x<r_1\\
+  \vdots\\
+  \frac{1}{N(r_B-l_B)}\sum_{i=1}^N I\{l_B\leq x^{(i)}<r_B\}&l_B\leq x<r_B\\
+\end{cases}
+$$
+
+</section><section>
+
+## Overfitting ו underfitting של היסטוגרמה
+
+### דוגמא - שני מקרים קיצוניים
 
 <div class="imgbox" style="max-width:400px">
 
-![](./output/transactions_single_selecting_eta.png)
+![](./output/drive_time_hist_1.png)
 
 </div>
+<br/>
+<div class="imgbox" style="max-width:400px">
 
-- $\eta=30$ ו $\eta=100$ מתאימים למקרה של $\eta$ גדול מידי.
-- נבחר את $\eta=10$.
+![](./output/drive_time_hist_100.png)
+
+</div>
 
 </section><section>
 
-## דוגמא: Linear Logistic Regression
+## Overfitting ו underfitting של היסטוגרמה
 
-נריץ את האלגוריתם עם $\eta=10$ ונקבל את החזאי הבא:
+<div style="text-align:center">
+<div class="imgbox" style="display: inline-block;max-width:400px">
 
-<div class="imgbox" style="max-width:500px">
-
-![](./output/transactions_single_linear_logistic.png)
+![](./output/drive_time_hist_1.png)
 
 </div>
+<div class="imgbox" style="display: inline-block;max-width:400px">
 
-עם misclassification rate של 0.02 על ה test set.
+![](./output/drive_time_hist_100.png)
+
+</div>
+</div>
+
+### מספר תאים קטן
+
+Underfitting: יכולת מוגבלת לקרב את ה PDF האמיתי.
+
+### מספר תאים גדול
+
+Overfitting: ההיסטוגרמה תתאר בצורה טובה את הדגימות אך לא את הפילוג האמיתי.
 
 </section><section>
 
-## שימוש במודל מסדר גבוהה יותר
+## בחירת התאים
 
-נוכל להשתמש בכל מודל שנרצה.
+- מקובל לחלק ל $k$ תאים אחידים בגודלם.
+- מיכוון שה $k$ האופטימאלי ישתנה מבעיה לבעיה, נאלץ לרוב לבחור אותו בעזרת ניסוי וטעיה.
+- ישנם מספר כללי אצבע אשר במרבית המקרים יתנו תוצאה לא רעה.
+- הכלל הנפוץ ביותר הינו לבחור את $k$ להיות שורש מספר הדגימות במדגם (מעוגל כלפי מעלה): $k=\left\lceil\sqrt{N}\right\rceil$
 
-נחליף את $f(\boldsymbol{x};\boldsymbol{\theta})$ בפולינום מסדר שני ונקבל:
+</section><section>
 
-<div class="imgbox" style="max-width:500px">
+## Kernel Density Estimation (KDE)
 
-![](./output/transactions_single_quadric_logistic.png)
+נתחיל מ PDF שבו אנו ממקמים פונקציית דלתא בגובה $\frac{1}{N}$ בכל נקודה אשר מופיעה במדגם.
+
+<br/>
+
+לדוגמא, בעבור זמני הנסיעה בכביש החוף נקבל:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_time_delta_pdf.png)
 
 </div>
 
-עם misclassification rate של 0 על ה test set.
+</section><section>
+
+## Kernel Density Estimation (KDE)
+
+נחליף כל דלתא בפונקציית גרעין בעלת רוחב גדול מ-0.
+
+<br/>
+
+לדוגמא גאוסיאנים:
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_time_kernels.png)
+
+</div>
+
+</section><section>
+
+## Kernel Density Estimation (KDE)
+
+נסכום את כל פונקציות הגרעין לקבלת ה PDF המשוערך:
+
+<br/>
+
+<div class="imgbox" style="max-width:600px">
+
+![](./output/drive_time_kde.png)
+
+</div>
+
+</section><section>
+
+## Kernel Density Estimation (KDE)
+
+- **פונקציות הגרעין (kernel)** מכונות גם **Parzen window**.
+- ומקובל לסמנם ב $\phi(\boldsymbol{x})$.
+
+אם כן, משערך ה KDE נתון על ידי:
+
+$$
+\hat{p}_{\mathbf{x},\phi,\mathcal{D}}(\boldsymbol{x})=\frac{1}{N}\sum_{i=1}^N \phi(\boldsymbol{x}-\boldsymbol{x}^{(i)})
+$$
+
+**הערה**: תנאי מספיק והכרחי בכדי שנקבל PDF חוקי, הינו שפונקציית הגרעיון תהיה בעצמה PDF חוקי.
+
+<br/>
+
+**בהקשר של עיבוד אותות**: למעשה אנו מבצעים קונבולוציה בין פונקציית הדלתאות לבין פונקציית הגרעין. נרצה שהגרעין ישמש כמעיין low pass filter.
+
+</section><section>
+
+## הוספת פרמטר רוחב
+
+מקובל להוסיף פרמטר $h$ אשר שולט ברוחב של הגרעין:
+
+$$
+\phi_h(\boldsymbol{x})=\frac{1}{h^D}\phi\left(\frac{\boldsymbol{x}}{h}\right)
+$$
+
+בתוספת פרמטר זה המשערך יהיה:
+
+$$
+\hat{p}_{\mathbf{x},\phi,h,\mathcal{D}}(\boldsymbol{x})=\frac{1}{Nh^D}\sum_{i=1}^N \phi\left(\frac{\boldsymbol{x}-\boldsymbol{x}^{(i)}}{h}\right)
+$$
+
+<div style="text-align:center">
+<div class="imgbox" style="display: inline-block;max-width:400px">
+
+![](./output/drive_time_kde_h_1.png)
+
+</div>
+<div class="imgbox" style="display: inline-block;max-width:400px">
+
+![](./output/drive_time_kde_h_4.png)
+
+</div>
+</div>
+
+</section><section>
+
+## פונקציות גרעין נפוצות
+
+שתי הבחירות הנפוצות ביותר לפונקציית הגרעין הינן:
+
+1. חלון מרובע:
+
+    $$
+    \phi_h(\boldsymbol{x})=\frac{1}{h^D}I\{|x_j|\leq \tfrac{h}{2}\quad\forall j\}
+    $$
+
+2. גאוסיאן:
+
+    $$
+    \phi_{\sigma}\left(x\right)=\frac{1}{\sqrt{2\pi}\sigma^D}\exp\left(-\frac{\lVert x\rVert_2^2}{2\sigma^2}\right)
+    $$
+
+כלל אצבע לבחירת רוחב הגרעין במקרה הגאוסי הסקלרי:
+
+$$
+\sigma=\left(\frac{4\cdot\text{std}(\text{x})^5}{3N}\right)^\frac{1}{5}\approx1.06\ \text{std}(\text{x})N^{-\tfrac{1}{5}}
+$$
+
+</section><section>
+
+## שיערוך של פילוגים מעורבים
+
+- נניח שאנו רוצים לשערך את הפילוג המשותף של $\text{x}$ ו $\text{y}$ כאשר $\text{x}$ הוא משתנה רציף ו $\text{y}$ הוא משתנה בדיד.
+- במקרים כאלה נוח לפרק את פונקציית הפילוג המשותף באופן הבא:
+
+$$
+p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)
+=p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)p_{\text{y}}(y)
+$$
+
+ולהפריד את בעיית השיערוך לשני חלקים:
+
+1. השיערוך של $p_{\text{y}}(y)$
+2. השיערוך של $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$ - כאן נשערך את הפילוג בנפרד לכל ערך של $\text{y}$.
+
+</section><section>
+
+## שיערוך של פילוגים מעורבים - דוגמא
+
+נחזור לדוגמא של הונאות האשראי:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_dataset.png)
+
+</div>
+
+</section><section>
+
+## שיערוך של פילוגים מעורבים - דוגמא
+
+נתחיל בשיערוך של $\text{y}$.
+
+- $\text{y}$ בדיד ולכן נוכל לשערך את ה PMF שלו על פי השכיחות של הערכים במדגם.
+- מתוך ה 200 עסקאות ישנם 160 עסקאות חוקיות ו 40 עסקאות שחשודות כהונאה. לכן:
+
+$$
+\hat{p}_{\text{y},\mathcal{D}}(y)
+=\begin{cases}
+  \frac{160}{200} & 0 \\
+  \frac{40}{200} & 1
+\end{cases}
+=\begin{cases}
+  0.8 & 0 \\
+  0.2 & 1
+\end{cases}
+$$
+
+</section><section>
+
+## שיערוך של פילוגים מעורבים - דוגמא
+
+נמשיך לשיערוך של $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$.
+
+- נשערך בנפרד את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|0)$ ואת $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)$.
+
+נתחיל מ $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|0)$. בשביל לשערך פילוג זה נסתכל רק על הדגימות השייכות של $\text{y}=0$:
+
+<div class="imgbox" style="max-width:350px">
+
+![](./output/transactions_dataset_legit.png)
+
+</div>
+
+</section><section>
+
+## שיערוך של פילוגים מעורבים - דוגמא
+
+נשתמש ב KDE על מנת לשערך את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|0)$:
+
+<br/>
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_kde_legit.png)
+
+</div>
+
+</section><section>
+
+## שיערוך של פילוגים מעורבים - דוגמא
+
+באופן דומה נשערך גם את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)$:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_kde_fraud.png)
+
+</div>
+
+</section><section>
+
+## שיערוך של פילוגים מעורבים - דוגמא
+
+$$
+\hat{p}_{\text{y},\mathcal{D}}(y)
+=\begin{cases}
+  0.8 & 0 \\
+  0.2 & 1
+\end{cases}
+$$
+
+<div style="text-align:center">
+<div class="imgbox" style="display: inline-block;max-width:350px">
+
+![](./output/transactions_kde_legit.png)
+
+</div>
+<div class="imgbox" style="display: inline-block;max-width:350px">
+
+![](./output/transactions_kde_fraud.png)
+
+</div>
+</div>
+
+שלושת הפילוגים ששיערכנו מרכיבים את הפילוג המשותף על פי:
+
+$$
+p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)
+=p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)p_{\text{y}}(y)
+$$
+
+</section><section>
+
+## שימוש בפילוג המשוערך לפתרון בעיות supervised learning
+
+#### הגישה הגנרטיבית
+
+<div style="text-align:center">
+
+מדגם<br/>
+️🠟<br/>
+פילוג על סמך המדגם<br/>
+️🠟<br/>
+חזאי אופטימאלי בהינתן הפילוג
+
+</div>
+
+<br/>
+<br/>
+
+עשינו את השלב הראשון, נעשה כעת את השלב השני.
+
+</section><section>
+
+## חזאים אופטימאליים של פונקציות מחיר מוכרות - תזכורת
+
+- **MSE**: התוחלת המותנית:
+
+    $$
+    h^*(\boldsymbol{x})=\mathbb{E}[y|x]
+    $$
+
+- **MAE**: החציון של הפילוג המותנה:
+
+    $$
+    h^*(\boldsymbol{x})=y_{\text{median}}\qquad
+    \text{s.t.}\ F_{\text{y}|\mathbf{x}}(y_{\text{median}}|\boldsymbol{x})=0.5
+    $$
+
+    (כאשר $F_{\text{y}|\mathbf{x}}$ היא פונקציית הפילוג המצרפי של $\text{y}$ בהינתן $\mathbf{x}$).
+- **Misclassification rate**: הערך הכי סביר (ה mode):
+
+    $$
+    h^*(\boldsymbol{x})=\underset{y}{\arg\max}\ p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})
+    $$
+
+</section><section>
+
+## דוגמא
+
+בעבור הפילוג שמצאנו נחפש את החזאי אשר ממזער את ה misclassification rate.
+
+$$
+h(\boldsymbol{x})=\underset{y}{\arg\max}\ p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})
+$$
+
+במקרה הבנארי חזאי זה שווה ל:
+
+$$
+h(\boldsymbol{x})=
+\begin{cases}
+  1 & p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) > p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x}) \\
+  0 & \text{else}
+\end{cases}
+$$
+
+את $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ נוכל לחשב מתוך הפילוג המשותף באופן הבא:
+
+$$
+p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})
+=\frac{p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)}
+      {p_{\mathbf{x}}(\boldsymbol{x})}
+=\frac{p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)p_{\text{y}}(y)}
+      {p_{\mathbf{x}}(\boldsymbol{x})}
+$$
+
+</section><section>
+
+## דוגמא
+
+אם כן, בכדי לבדוק האם עסקה מסויימת הינה הונאה או לא, עלינו לבדוק האם:
+
+$$
+\begin{aligned}
+p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x}) &> p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x}) \\
+\Leftrightarrow \frac{p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)p_{\text{y}}(1)}{p_{\mathbf{x}}(\boldsymbol{x})} &>
+                \frac{p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|0)p_{\text{y}}(0)}{p_{\mathbf{x}}(\boldsymbol{x})}\\
+\Leftrightarrow p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)p_{\text{y}}(1) &>
+                p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|0)p_{\text{y}}(0)\\
+\end{aligned}
+$$
+
+</section><section>
+
+## דוגמא
+
+$$
+p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)p_{\text{y}}(1) >
+p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|0)p_{\text{y}}(0)
+$$
+
+נציב את פונקציות הפילוג ששיערכנו קודם לכן ונקבל את החזאי הבא:
+
+<div class="imgbox" style="max-width:400px">
+
+![](./output/transactions_kde_predictions.png)
+
+</div>
+
+ה misclassification rate של חזאי זה על ה test set הינו 0.12.
+
+</section><section>
+
+## ה bias וה variance של משערך
+
+- המשערכים תלויים בצורה חזקה במדגם שאיתו אנו עובדים.
+- נסתכל על האקראיות של השיערוך הנובעת מהאקראיות של המדגם.
+- נשתמש בסימון $\mathbb{E}_{\mathcal{D}}$ בכדי לסמן תוחלת על פני הפילוג של המדגם.
+- נגדיר bias ו variance של משערך
+
+</section><section>
+
+## ה bias וה variance של משערך
+
+### Bias
+
+בעבור שיערוך של גודל כל שהוא $z$ בעזרת משערך $\hat{z}_{\mathcal{D}}$, ה bias (היסט) של השיערוך מוגדר כ:
+
+$$
+\text{Bias}\left(\hat{z}\right)=\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]-z
+$$
+
+כאשר ההטיה שווה ל-0, אנו אומרים שהמשערך **אינו מוטה** (**Unbiased**).
+
+### Variance
+
+ה variance (שונות) של המשערך יהיה:
+
+$$
+\text{Var}\left(\hat{z}\right)
+=\mathbb{E}_{\mathcal{D}}\left[\left(\hat{z}_{\mathcal{D}}-\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]\right)^2\right]
+=\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}^2\right]-\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]^2
+$$
+
+</section><section>
+
+## מספר ה bins במונחים של bias ו variance
+
+- ננסה לשערך את ה PDF של משתנה אקראי נורמאלי בעזרת היסטוגרמות בעלות 3, 7 ו 21 bins.
+
+### ה bias
+
+נשרטט את ההיסטוגרמה הממוצעת לצד ה PDF האמיתי.
+
+<div class="imgbox" style="max-width:900px">
+
+![](./output/gaussian_hist_bias.png)
+
+</div>
+
+ה bias הוא ההפרש בין ההיסטוגרמה הממוצעת ל PDF האמיתי. ה bias קטן ככל שמספר ה bins גדל.
+
+</section><section>
+
+## מספר ה bins במונחים של bias ו variance
+
+<div class="imgbox" style="max-width:650px">
+
+![](./output/gaussian_hist_variance.png)
+
+</div>
+
+</section><section>
+
+## מספר ה bins במונחים של bias ו variance
+
+### ה variance
+
+- בכל שורה בגרף הקודם מגרילים שלושה מדגמים ומחשבים להם את ההיסטוגרמה.
+- אנו מצפים שבעבור מקרים שבהם ה variance נמוך השינויים יהיו קטנים ובעבור variance גבוה השינויים יהיו גדולים.
+- ה variance גדל ככל שאנו מגדילים את כמות ה bins.
+
+בדומה לחזאים בגישה הדיסקרימינטיבית, גם בהיסטוגרמה ישנו bias-variance tradeoff.
 
 </section>
 </div>

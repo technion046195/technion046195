@@ -4,11 +4,10 @@ index: 6
 template: slides
 slides_pdf: true
 ---
-
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# הרצאה 6 - שיערוך פילוג בשיטות פרמטריות וסיווג גנרטיבי
+#  הרצאה 6 - SVM ושיטות גרעין
 
 <div dir="ltr">
 <a href="/assets/lecture06_slides.pdf" class="link-button" target="_blank">PDF</a>
@@ -25,906 +24,529 @@ slides_pdf: true
 </div>
 </section><section>
 
-## בעיות בגישה הלא פרמטרית
+## סיווג לינארי
 
-### פונקציות שקשה לעבוד איתם
+- בפרק זה נעסוק בבעיית סיווג בינארי.
+- נסמן את שתי המחלקות ב $\text{y}=\pm1$.
+- נעסוק במסווגים מהצורה:
 
-- מתייחס בעיקר ל KDE ול ECDF.
-- הפונקציות שקיבלנו מכילות סכום על כל האיברים ב train set.
+    $$
+    h(\boldsymbol{x})=
+    \text{sign}(\boldsymbol{w}^{\top}\boldsymbol{x}+b)
+    =\begin{cases}
+    1 & \boldsymbol{w}^{\top}\boldsymbol{x}+b>0\\
+    -1 & \text{else}
+    \end{cases}
+    $$
 
-### הערה לגבי שלב בניית המודל ושלב החיזוי
+- מחלק את המרחב לשני צידיו של על-מישור (hyperplane):
 
-- בשלב בניית המודל כמות המשאבים שיעמדו לרשותינו תהיה מאד גדולה.
-- בזמן החיזוי נרצה לבצע את החישוב על פלטפורמה יחסית ולקבל תוצאות מאד מהירות.
+    $$
+    \boldsymbol{w}^{\top}\boldsymbol{x}+b=0
+    $$
+
+- מישור זה מכונה מישור ההפרדה.
 
 </section><section>
 
-## הבעיה של כיסוי המרחב - דוגמא
+## על-מישור (hyperplane)
 
-נניח שאנו רוצים לחזות האם אדם מסויים פרק את הכתף על פי הסימפטומים שלו. לשם כך נסתכל על המדגם הבא
+- הרחבה של מושג המישור למימדים שונים מ2.
+- במרחב ממימד $D$ על-המישור יהיה ממימד $D-1$.
+- בקורס זה נשתמש בשם מישור גם בשביל להתייחס לעל-מישורים.
 
 <br/>
 
-|   | פריקה | כאב בכתף | נפיחות | סימנים כחולים | נימול ביד | נזלת |
-| - |:-----:|:--------:|:------:|:-------------:|:---------:|:----:|
-| 1 | +     | +        | +      | +             | +         | -    |
-| 2 | +     | +        | +      | +             | -         | -    |
-| 3 | +     | +        | +      | -             | +         | -    |
-| 4 | +     | +        | +      | +             | -         | +    |
-| 5 | -     | -        | -      | -             | -         | -    |
-| 6 | -     | +        | -      | -             | -         | +    |
-| 7 | -     | -        | -      | +             | -         | -    |
-| 8 | -     | +        | -      | -             | -         | -    |
+- לא להתבלבל בין $\boldsymbol{w}^{\top}\boldsymbol{x}+b=0$ לבין $ax+b=y$.
+
+</section><section>
+
+## פרידות לינארית (linear separability)
+
+במקרה שבו קיים מישור מפריד אשר מסווג את המדגם בצורה מושלמת (בלי טעויות סיווג) נאמר שהמדגם **פריד לינארית**.
 
 <br/>
+<div class="imgbox" style="max-width:800px">
 
-האם לאדם עם כל הסימפטומים יש פריקה של הכתף?
-
-</section><section>
-
-## הבעיה של כיסוי המרחב - דוגמא
-
-|   | פריקה | כאב בכתף | נפיחות | סימנים כחולים | נימול ביד | נזלת |
-| - |:-----:|:--------:|:------:|:-------------:|:---------:|:----:|
-| 1 | +     | +        | +      | +             | +         | -    |
-| 2 | +     | +        | +      | +             | -         | -    |
-| 3 | +     | +        | +      | -             | +         | -    |
-| 4 | +     | +        | +      | +             | -         | +    |
-| 5 | -     | -        | -      | -             | -         | -    |
-| 6 | -     | +        | -      | -             | -         | +    |
-| 7 | -     | -        | -      | +             | -         | -    |
-| 8 | -     | +        | -      | -             | -         | -    |
-
-על פי השיטה שראינו בשבוע שעבר הסבירות לפריקה בהינתן הכל הסימפטומים היא חצי.
-
-<br/>
-
-זאת משום שאין אף דגימה בה יש את כל הסימפטומים ולכן גם הסבירות של פריקה וגם הסבירות של אי-פריקה היא 0.
-
-</section><section>
-
-## הבעיה של כיסוי המרחב - דוגמא נוספת
-
-כמות הערכים השונים שהוקטור בינראי באורך 10 יכול לקבל הינה $2^{10}=1024$. גם אם ננסה לשערך את הפילוג של וקטור זה עם מדגם של 500 דגימות לפחות חצי מהערכים לא יופיע במדגם.
-
-</section><section>
-
-## הבעיה של כיסוי המרחב
-
-- בשיטות שראינו הפילוג בכל איזור נקבע על פי הדגימות שנמצאות באותו איזור.
-- שיטות אלו מניחות שיש בידינו מספיק דגימות בכדי לכסות את כל המרחב.
-- הנחה זו בעייתית כאשר יש הרבה משתנים אקראיים.
-- הגדול האפקטיבי של המרחב גדל בצורה מעריכית עם מספר המשתנים.
-
-</section><section>
-
-## Curse of Dimensionality
-
-- התופעה שהדגמנו מתרחשת לא רק בעבור משתנים דיסקרטיים.
-- התופעה שבה המורכבות של הבעיה גדלה בצורה מעריכית עם המימד של הבעיה מופיע בהרבה תחומים וידוע בתור ה **curse of dimensionality**.
-
-</section><section>
-
-## שיערוך נאיבי - חוסר תלות בין המשתנים
-
-שיטה מאד נאיבית (לא מתוחכמת) לפתור את הבעיה היא להתעלם מהקשר בין המשתנים השונים ולהניח שהם בלתי תלויים סטטיסטית. זאת אומרת ש:
-
-$$
-p_{\mathbf{x}}(\boldsymbol{x})=
-p_{\text{x}_1}(x_1)
-p_{\text{x}_2}(x_2)
-\dots
-p_{\text{x}_D}(x_D)
-=\prod_{d=1}^D p_{\text{x}_d}(x_d)
-$$
-
-- לא סובלת מה curse of dimesionality.
-- חיסרון: שהיא מגבילה מאד את הפילוגים שניתן ללמוד.
-
-</section><section>
-
-## מסווג בייס נאיבי - Naïve Bayes Classification
-
-נוכל להשתמש בשיערוך הנאיבי לפתרון בעיות סיווג.
-
-נניח כי:
-
-$$
-p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)=
-p_{\text{x}_1|\text{y}}(x_1|y)
-p_{\text{x}_2|\text{y}}(x_2|y)
-\dots
-p_{\text{x}_D|\text{y}}(x_D|y)
-=\prod_{d=1}^D p_{\text{x}_d|\text{y}}(x_d|y)
-$$
-
-- אנו **לא** נרצה להניח חוסר תלות בין $\mathbf{x}$ ל $\text{y}$.
-
-</section><section>
-
-## מסווג בייס נאיבי - Naïve Bayes Classification
-
-החזאי אשר ממזער את ה misclassifcation rate יהיה:
-
-$$
-\begin{aligned}
-\hat{y}=h(\boldsymbol{x})
-&=\underset{y}{\arg\max}\ p_{\text{y}|\boldsymbol{x}}(y|\boldsymbol{x})\\
-&=\underset{y}{\arg\max}\ p_{\boldsymbol{x}|\text{y}}(\boldsymbol{x}|y)p_{\text{y}}(y)\\
-&=\underset{y}{\arg\max}\ p_{\text{y}}(y)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(x_d|y)
-\end{aligned}
-$$
-
-</section><section>
-
-## דוגמא 1 - זיהוי פריקה של הכתף
-
-תחת הנחת החוסר תלות ונשערך בנפרד את ההסתברות המותנית של כל אחד מהרכיבים $p_{\text{x}_d|\text{y}}(x_d|y)$. לדוגמא:
-
-$$
-p_{\text{x}_{\text{pain}}|\text{y}}(x_{\text{pain}}|1)=\begin{cases}
-\tfrac{4}{4}=1&1\\
-\tfrac{0}{4}=0&0
-\end{cases}
-$$
-
-$$
-p_{\text{x}_{\text{pain}}|\text{y}}(x_{\text{pain}}|0)=\begin{cases}
-\tfrac{2}{4}=0.5&1\\
-\tfrac{2}{4}=0.5&0
-\end{cases}
-$$
-
-$$
-p_{\text{x}_{\text{swelling}}|\text{y}}(x_{\text{swelling}}|1)=\begin{cases}
-\tfrac{4}{4}=1&1\\
-\tfrac{0}{4}=0&0
-\end{cases}
-$$
-
-$$
-p_{\text{x}_{\text{swelling}}|\text{y}}(x_{\text{swelling}}|0)=\begin{cases}
-\tfrac{0}{4}=0&1\\
-\tfrac{1}{4}=1&0
-\end{cases}
-$$
-
-</section><section>
-
-## דוגמא 1 - זיהוי פריקה של הכתף
-
-החיזוי בעבור המקרה בו מופיעים כל הסימפטומים יהיה
-
-$$
-\hat{y}
-=\underset{y}{\arg\max}\ p_{\text{y}}(y)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|y)
-$$
-
-זאת אומרת שעלינו לבדוק האם:
-
-$$
-\begin{aligned}
-p_{\text{y}}(0)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|1)\overset{?}{>}
-&p_{\text{y}}(1)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|0)\\
-0.5 \times 1 \times 1 \times 0.75 \times 0.5 \times 0.25 \overset{?}{>}
-&0.5 \times 0.5 \times 0 \times 0.25 \times 0 \times 0.25\\
-0.09375 \overset{?}{>}
-& 0
-\end{aligned}
-$$
-
-מכיוון שהתנאי זה מתקיים, החיזוי יהיה שישנה פריקה של כתף.
-
-</section><section>
-
-## דוגמא 2 - זיהוי הונאות אשראי
-
-ננסה להשתמש בשיטה זו לבעיית חיזוי הונאות האשראי
-
-<div class="imgbox" style="max-width:500px">
-
-![](./output/transactions_dataset.png)
+![](../lecture06/assets/linear_separable.png)
 
 </div>
 
-נשתמש ב KDE חד מימד לשיערוך של $p_{\text{x}_d|\text{y}}(x_d|y)$.
+- לרוב לא נוכל לדעת מראש אם מדגם הוא פריד לינארית או לא.
 
 </section><section>
 
-## דוגמא 2 - זיהוי הונאות אשראי
+## פרידות לינארית (linear separability)
+
+למדגם פריד לינארית יהיה תמיד יותר ממשטח הפרדה אחד:
+
+<br/>
+<div class="imgbox" style="max-width:800px">
+
+![](../lecture06/assets/multiple_separation_planes.png)
+
+</div>
+
+</section><section>
+
+## תזכורת - גאומטריה של המישור
+
+נסתכל על הפונקציה $f(\boldsymbol{x})=\hat{\boldsymbol{w}}^{\top}\boldsymbol{x}$. משוואה זו מטילה נקודות במרחב על הקו המוגדר על ידי $\hat{\boldsymbol{w}}$ ומודד את המרחק של הטלה זו.
+
+<br/>
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/unit_linear.png)
+
+</div>
+
+</section><section>
+
+## תזכורת - גאומטריה של המישור
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/unit_linear.png)
+
+</div>
+
+- מודדת את המרחק מהמישור $\hat{\boldsymbol{w}}^{\top}\boldsymbol{x}$ בתוספת של סימן אשר מציין את הצד של המישור.
+- נשתמש בשם **signed distance (מרחק מסומן)** בכדי להתייחס לשילוב של המרחק מהמישור בתוספת הסימן.
+
+</section><section>
+
+## תזכורת - גאומטריה של המישור
+
+נחליף את הוקטור $\hat{\boldsymbol{w}}$ בוקטור $\boldsymbol{w}$. נקבל הפונקציה זהה המוכפלת ב $\lVert\boldsymbol{w}\rVert_2$.
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/linear.png)
+
+</div>
+
+ה signed distance יהיה $d=\frac{1}{\lVert\boldsymbol{w}\rVert}\boldsymbol{w}^{\top}\boldsymbol{x}_0$.
+
+</section><section>
+
+## תזכורת - גאומטריה של המישור
+
+נוסיף לפונקציה גם איבר היסט $b$. ההוספה של הקבוע שקולה להזזה של נקודת ה-0.
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/affine.png)
+
+</div>
+
+ה signed distance יהיה $d=\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}_0+b)$
+
+</section><section>
+
+## תזכורת - גאומטריה של המישור
+
+נסכם את כל הנאמר לעיל בשרטוט הבא:
+
+<div class="imgbox" style="max-width:700px">
+
+![](../lecture06/assets/plain_geometry.png)
+
+</div>
+
+</section><section>
+
+## אינווריאנטיות לכפל בסקלר
+
+אם נכפיל את גם את $\boldsymbol{w}$ וגם את $b$ בקבוע כל שהוא $\alpha$ שונה מאפס לא נשנה את מיקומו של המישור במרחב, זאת משום ש:
+
+$$
+\begin{aligned}
+(\alpha\boldsymbol{w})^{\top}\boldsymbol{x}+(\alpha b)&=0\\
+\Leftrightarrow\boldsymbol{w}^{\top}\boldsymbol{x}+b&=0
+\end{aligned}
+$$
+
+המשמעות הינה שיש מספר דרכים להגדיר את אותו המסווג הלינארי.
+
+</section><section>
+
+## Support Vector Machine (SVM)
+
+- אלגוריתם דיסקרימינטיבי לסיווג בינארי (מחפש מסווג טוב על המדגם).
+- Hard SVM מחפש מסווג לינארי למדגם שהוא פריד לינארית.
+- Soft SVM מרחיב את האלגוריתם למקרה שבו המדגם לא פריד לינארית.
+
+</section><section>
+
+## Hard SVM
 
 <div class="imgbox" style="max-width:800px">
 
-![](./output/transactions_naive_pdf.png)
+![](../lecture06/assets/multiple_separation_planes.png)
 
 </div>
 
-- לב שקיבלנו הסתברות גבוהה להונאה גם באיזורים שבמדגם לא היו שום דגימות של הונאות.
-- הסיבה היא הנחת החוסר תלות.
+- נרצה למצוא מישור הפרדה אשר יכליל בצורה טובה.
+- הנחה סבירה הינה שהפילוג של הנקודות יתרכז סביב הנקודות מהמדגם.
+- Hard SVM מנסה למצוא מישור הפרדה אשר יהיה רחוק ככל האפשר מהנקודות שבמדגם.
+- או: נרצה שהמרחק מהמישור לנקודה הקרובה אליו ביותר יהיה מקסימאלי.
 
 </section><section>
 
-## דוגמא 2 - זיהוי הונאות אשראי
+## Hard SVM
 
-פונקציית החיזוי תהיה
+נסתכל על המכפלה בין ה signed distance של הנקודות לתוויות שלהם $\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}$.
+
+- בכדי לקבל סיווג מושלם נרצה שכל המכפלות יהיו חיוביות.
+- בנוסף ננסה למקסם את המינימום של מכפלות אלו.
 
 <div class="imgbox" style="max-width:500px">
 
-![](./output/transactions_naive_predictions.png)
+![](../lecture06/assets/hard_svm.png)
 
 </div>
 
 </section><section>
 
-## שיטות פרמטריות
+## Hard SVM
 
-- דומה לשימוש שעשינו במודלים פרמטרים בגישה הדטרמיניסטית.
-- נגביל את הצורה של הפונקציה שאותה אנו רוצים לשערך למודל פרמטרי.
-- נסמן את וקטור הפרמטרים ב $\boldsymbol{\theta}$.
-- כאן המודל חייב לייצר פילוג חוקי בעבור כל בחירה של פרמטרים.
-- מגבלה קשה אשר מצמצמת מאד את המודלים הפרמטריים שאיתם ניתן לעבוד.
+בעיית האופטימיזציה שנרצה לפתור אם כן הינה:
+
+$$
+\boldsymbol{w}^*,b^*=\underset{\boldsymbol{w},b}{\arg\max}\quad \underset{i}{\min}\left\{\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}
+$$
+
+- ניתן לנסות לפתור באופן ישיר על ידי gradient descent.
+- בפועל העובדה שבבעיה מופיע $min$ על כל המדגם מאד מקשה.
+- ניתן לפשט את הבעיה ולמצוא בעיה שקולה, שאותה נכנה **הבעיה הפרימאלית**.
+- את הבעיה הפרימאלית יהיה ניתן לפתור באופן יעיל בשיטות נומריות אחרות.
 
 </section><section>
 
-## בחירת הפרמטרים
+## הפיתוח של הבעיה הפרימאלית
 
-- נרצה למצוא דרך לתת "ציון" לכל בחירה של פרמטרים ולחפש את הפרמטריים אשר מניבים את הציון הטוב ביותר.
-- נציג שני גישות שונות להתייחס לפרמטרים של המודל.
-- כל גישה מובילה לדרך מעט שונה לבחירה של הפרמטרים.
+- נוכל לבחור באופן שרירותי קבוע כפלי להכפיל בו את $\boldsymbol{w}$ ו $b$.
+- בפרט נוכל להוסיף דרישה ש:
+
+$$
+\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1
+$$
 
 </section><section>
 
-## דוגמא: שיערוך הפילוג של זמן הנסיעה
+## הפיתוח של הבעיה הפרימאלית
+
+אם נוסיף את האילץ הזה לבעיית האופטימיזציה נקבל:
 
 $$
-\mathcal{D}=\{x^{(i)}\}=\{55, 68, 75, 50, 72, 84, 65, 58, 74, 66\}
+\begin{aligned}
+\boldsymbol{w}^*,b^*
+=\underset{\boldsymbol{w},b}{\arg\max}\quad&\underset{i}{\min}\left\{\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}\\
+\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
+=\underset{\boldsymbol{w},b}{\arg\max}\quad&\frac{1}{\lVert\boldsymbol{w}\rVert}\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}\\
+\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
+=\underset{\boldsymbol{w},b}{\arg\max}\quad&\frac{1}{\lVert\boldsymbol{w}\rVert}\\
+\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
+=\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\lVert\boldsymbol{w}\rVert^2\\
+\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
+\end{aligned}
 $$
 
-משערך ה KDE של הפילוג הינו:
+</section><section>
+
+## הפיתוח של הבעיה הפרימאלית
+
+נוכל גם להחליף את האילוץ של $\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1$ באילוץ:
+
+$$
+(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
+$$
+
+זאת מכיוון ש שבעיית האופטימיזציה מנסה להקטין את $\boldsymbol{w}$ לכן מובטח שלפחות בעבור אחת במדגם האילוץ יתקיים בשיוון.
+
+<br/>
+
+קיבלנו את בעיית האופטימיזציה השקולה הבאה:
+
+$$
+\begin{aligned}
+\boldsymbol{w}^*,b^*
+=\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\lVert\boldsymbol{w}\rVert^2\\
+\text{s.t.}\quad&(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
+\end{aligned}
+$$
+
+בעיה זו נקראת **הבעיה הפרימאלית**.
+
+</section><section>
+
+## פרשנות
+
+האילוץ דורש שהנקודות מהמדגם יהיו מחוץ לתחום:
+
+$$
+1\geq\boldsymbol{w}^{\top}\boldsymbol{x}+b\geq-1
+$$
+
+אשר נקרא ה**שוליים (margin)**.
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/drive_time_kde.png)
+![](../lecture06/assets/margin.png)
 
 </div>
 
-<br/>
-
-נרצה לשערך פרמטרים של פילוג נורמאלי שיתאר בצורה טובה את הדגימות במדגם.
-
 </section><section>
 
-## הגישה הלא-בייסיאנית<br/>(קלאסית או תדירותית (**Frequintist**))
-
-$$
-p_{\mathbf{x}}(\boldsymbol{x};\boldsymbol{\theta})
-$$
-
-- נתייחס לפרמטרים כאל מספרים שאותם יש לקבוע על מנת שהמודל יתאר בצורה טובה את המדגם.
-- בניגוד לגישה השניה, אין כל העדפה של ערך מסויים של הפרמטרים.
-
-</section><section>
-
-## Maximum Likelyhood Estimator (MLE)
-
-- נסמן ב $p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})$ את ההסתברות לקבלת המדגם $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}$.
-- גודל זה מכונה ה**סבירות** (**likelihood**) של המדגם.
-- אנו מעוניינים למצוא את הפרמטרים $\boldsymbol{\theta}$ אשר מניבים את הסבירות הכי גבוהה.
-- מקובל לסמן את פונקציית ה likelihood באופן הבא:
-
-$$
-\mathcal{L}(\boldsymbol{\theta};\mathcal{D})\triangleq p_{\mathcal{D}}(D;\boldsymbol{\theta})
-$$
-
-משערך ה MLE של $\boldsymbol{\theta}$ הוא הערך אשר ממקסמים את פונקציית ה likelihood:
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\max}\ \mathcal{L}(\boldsymbol{\theta};\mathcal{D})
-$$
-
-</section><section>
-
-## Maximum Likelyhood Estimator (MLE)
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\max}\ \mathcal{L}(\boldsymbol{\theta};\mathcal{D})
-$$
-
-- נרשום את בעיית האופטימיזציה כבעיית מינימיזציה:
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
-$$
-
-- כאשר הדגימות במדגם הם i.i.d:
-
-$$
-p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})=\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
-$$
-
-ולכן:
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
-$$
-
-</section><section>
-
-## Maximum Likelyhood Estimator (MLE)
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
-$$
-
-במקרים רבים נוכל להחליף את המכפלה על כל הדגימות בסכום, על ידי החלפת פונקציית ה likelihood ב log-likelihood:
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
-$$
-
-</section><section>
-
-## דוגמא - זמן הנסיעה
-
-ננסה להתאים למדגם מודל של פילוג נורמאלי:
-
-$$
-p_{\text{x}}(x;\boldsymbol{\theta})=\frac{1}{\sqrt{{2\pi}}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
-$$
-
-וקטור הפרמטרים הינו $\boldsymbol{\theta}=[\mu,\sigma]^\top$.
-
-</section><section>
-
-## דוגמא - זמן הנסיעה
-
-$$
-p_{\text{x}}(x;\boldsymbol{\theta})=\frac{1}{\sqrt{{2\pi}}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
-$$
-
-נרשום את בעיית האופטימיזציה של מציאת משערך ה MLE:
-
-$$
-\begin{aligned}
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\text{x}}(x^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(\frac{1}{\sqrt{{2\pi}}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ \sum_i \log(\sigma) + \tfrac{1}{2}\log(2\pi) + \frac{(x^{(i)}-\mu)^2}{2\sigma^2}\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ N\log(\sigma) + \frac{1}{2\sigma^2}\sum_i (x^{(i)}-\mu)^2\\
-\end{aligned}
-$$
-
-נפתור על ידי גזירה והשוואה ל-0.
-
-</section><section>
-
-## דוגמא - זמן הנסיעה
-
-נסמן את ה objective ב $f$:
-
-$$
-f(\boldsymbol{\theta};\mathcal{x})=N\log(\sigma) + \frac{1}{2\sigma^2}\sum_i (x^{(i)}-\mu)^2
-$$
-
-$$
-\begin{aligned}
-&\begin{cases}
-  \frac{\partial f(\boldsymbol{\theta};\mathcal{x})}{\partial\mu} = 0\\
-  \frac{\partial f(\boldsymbol{\theta};\mathcal{x})}{\partial\sigma} = 0
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-  -\frac{1}{\sigma^2}\sum_i (x^{(i)}-\mu)=0\\
-  \frac{N}{\sigma}-\frac{1}{\sigma^3}\sum_i (x^{(i)}-\mu)^2=0
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-  N\mu-\sum_i x^{(i)}=0\\
-  N\sigma^2-\sum_i (x^{(i)}-\mu)^2=0
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-  \mu=\frac{1}{N}\sum_i x^{(i)}\\
-  \sigma=\sqrt{\frac{1}{N}\sum_i (x^{(i)}-\mu)^2}
-\end{cases}\\
-\end{aligned}
-$$
-
-</section><section>
-
-## דוגמא - זמן הנסיעה
-
-במקרה של הנסיעות בכביש החוף נקבל:
-
-$$
-\mu=66.7\ \text{[min]}
-$$
-
-$$
-\sigma=9.7\ \text{[min]}
-$$
+## פרשנות
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/drive_time_mle.png)
+![](../lecture06/assets/margin.png)
 
 </div>
 
-</section><section>
-
-## הגישה הבייסיאנית
-
-- הפרמטרים של המודל הם ריאליזציות (הגרלות) של משתנה אקראי.
-- גישה זו מניחה שיש בידינו מודל לפילוג המשותף של הפרמטרים והמדגם.
-
-$$
-p_{\mathcal{D},\boldsymbol{\theta}}(\mathcal{D},\boldsymbol{\theta})
-=p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
-$$
-
-תחת ההנחה שבהינתן הפרמטרים הדגימות במדגם הם i.i.d:
-
-$$
-p_{\mathcal{D},\boldsymbol{\theta}}(\mathcal{D},\boldsymbol{\theta})
-=p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
-$$
-
-- עלינו לקבוע את $p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{\theta})$ ואת $p_{\boldsymbol{\theta}}(\boldsymbol{\theta})$.
+- המרחק בין מישור ההפרדה לשפה של ה margin שווה ל $\frac{1}{\lVert\boldsymbol{w}\rVert}$.
+- בעיית האופטימיזציה מנסה למזער את $\lVert\boldsymbol{w}\rVert$ ותתכנס למסווג בעל ה margin הגדול ביותר.
 
 </section><section>
 
-## הגישה הבייסיאנית
+### Support Vectors
 
-### A Prioiri Distribution
+<div class="imgbox" style="max-width:600px">
 
-הפילוג השולי של הפרמרטים $p_{\boldsymbol{\theta}}(\boldsymbol{\theta})$, מכונה לרוב ה**פילוג הפריורי** (**prior distribution**) או ה**א-פריורי** (**a priori distribution**), זאת אומרת הפילוג של $\boldsymbol{\theta}$ לפני שראינו את המדגם.
+![](../lecture06/assets/margin.png)
 
-### A Posteriori Distribution
+</div>
 
-הפילוג של הפרמטרים בהינתן המדגם $p_{,\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})$ מכונה ה**פילוג הפוסטריורי** (**posterior distribution**) או **א-פוסטריורי** (**a posteriori distribution**) (או הפילוג בדיעבד), זאת אומרת, הפילוג אחרי שראינו את המדגם.
-
-</section><section>
-
-## Maximum A-posteriori Probaility (MAP)
-
-MAP משערך את הערך אשר ממקסם את הפילוג הא-פוסריורי (הערך הכי סביר של $\boldsymbol{\theta}$ בהינתן המדגם $p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})$):
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MAP}}
-=\underset{\boldsymbol{\theta}}{\arg\max}\ p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})
-$$
-
-על פי חוק בייס, נוכל לכתוב זאת כ:
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MAP}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--\frac{
-  p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})
-  p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
-}{
-  p_{\mathcal{D}}(\mathcal{D})
-}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--p_{\mathcal{D}|\boldsymbol{\theta}}(\mathcal{D}|\boldsymbol{\theta})
-p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
-$$
-
- כאשר הדגימות במדגם **בהינתן** $\boldsymbol{\theta}$ הן i.i.d, מתקיים:
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MAP}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
-\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
-$$
+- ה **support vectors** הם הנקודות שיושבות על ה margin והם מקיימות אלו מקיימות $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$.
+- רק נקודות אלו ישפיעו על הפתרון של בעיית האופטימיזציה.
 
 </section><section>
 
-## Maximum A-posteriori Probaility (MAP)
+## הבעיה הדואלית
 
-$$
-\hat{\boldsymbol{\theta}}_{\text{MAP}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--p_{\boldsymbol{\theta}}(\boldsymbol{\theta})
-\prod_i p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})
-$$
-
-גם כאן נוכל להפוך את המכפלה לסכום על ידי מזעור מינוס הלוג של הפונקציה:
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MAP}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)-\sum_i \log\left(p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})\right)
-$$
-
-</section><section>
-
-## ההבדל בין MLE ל MAP
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
-$$
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MAP}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)-\sum_i \log\left(p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}^{(i)}|\boldsymbol{\theta})\right)
-$$
-
-- האיבר $-\log\left(p_{\boldsymbol{\theta}}(\boldsymbol{\theta})\right)$ מוסיף את הידע שיש לנו לגבי איזה ערכים של $\boldsymbol{\theta}$ יותר סבירים.
-- ראינו תוספת שכזו כאשר דיברנו על רגולריזציה.
-- ניתן לחשוב על בעיית ה MAP כעל בעיית MLE עם רגולריזציה.
-- בתרגיל הבית אתם תראו את השקילות שבין בעיית MAP לבין לבעיית MLE עם רגולריזציה.
-
-</section><section>
-
-## בגישה בייסיאנית השערוך הוא בעיית חיזוי
-
-- אנו מתייחסים גם למדגם וגם לפרמטרים כאלה ריאליזציות של משתנים אקראיים.
-- אנו מניחים שאנו יודעים את הפילוג המשותף שלהם.
-- ואנו מנסים למצוא את הערך של הפרמטרים בהינתן המדגם.
-- זוהי בדיוק בעיית חיזוי קלאסית של משתנה אקראי אחד בהינתן משתנה אקראי אחר על סמך הפילוג המשותף.
+דרך שקולה נוספת לרישום של בעיית האופטימיזציה (ללא הוכחה):
 
 <br/>
+<br/>
 
-הבחירה שלל ממקסמים את הפילוג נובעת מכך שזהו הפתרון הפשוט ביותר.
-
-</section><section>
-
-## דוגמא - הוספת prior
-
-- נחזור לדוגמא של התאמת מודל של פילוג נורמאלי לפילוג של זמן הנסיעה בכביש החוף.
-- לשם הפשטות נקבע את סטיית התקן של המודל ל $\sigma=10$.
-- הפרמטר היחיד של המודל יהיה $\mu$:
-
-$$
-p_{\text{x}|\mu}(x|\mu)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
-$$
-
-</section><section>
-
-## דוגמא - הוספת prior
-
-$$
-p_{\text{x}|\mu}(x|\mu)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
-$$
-
-- נניח שיש לנו ידע קודם על פילוג הצפוי של $\mu$.
-- נניח שהפילוג הא-פריורי של $\mu$ הוא גם פילוג נורמאלי עם תוחלת $\mu_{\mu}=60$ וסטיית תקן של $\sigma_{\mu}=5$:
-
-$$
-p_{\mu}(\mu)=\frac{1}{\sqrt{2\pi}\sigma_{\mu}}\exp\left(-\frac{(\mu-\mu_{\mu})^2}{2\cdot\sigma_{\mu}^2}\right)
-$$
-
-נרשום את משערך ה MAP של $\mu$:
-
-$$
-\begin{aligned}
-\hat{\mu}_{\text{MAP}}
-=\underset{\mu}{\arg\min}\ -\log\left(p_{\mu}(\mu)\right)-\sum_i \log\left(p_{\mathbf{x}|\mu}(\boldsymbol{x}^{(i)}|\mu)\right)
-\end{aligned}
-$$
-
-</section><section>
-
-## דוגמא - הוספת prior
-
-$$
-\begin{aligned}
-\hat{\mu}_{\text{MAP}}
-=\underset{\mu}{\arg\min}\ -\log\left(p_{\mu}(\mu)\right)-\sum_i \log\left(p_{\mathbf{x}|\mu}(\boldsymbol{x}^{(i)}|\mu)\right)
-\end{aligned}
-$$
-
-גזירה והשוואה ל-0 נותנת את התוצאה הבאה:
-
-$$
-\begin{aligned}
-  \frac{\partial f(\boldsymbol{\theta};\mathcal{x})}{\partial\mu} &= 0\\
-\Leftrightarrow
-  \frac{1}{\sigma_{\mu}^2}(\mu-\mu_{\mu})-\frac{1}{\sigma^2}\sum_i (x^{(i)}-\mu)&=0\\
-\Leftrightarrow
-  \left(\frac{1}{\sigma_{\mu}^2}+\frac{N}{\sigma^2}\right)\mu&=\frac{\mu_{\mu}}{\sigma_{\mu}^2}+\frac{1}{\sigma^2}\sum_i x^{(i)}\\
-\Leftrightarrow
-  \mu&=\frac{\frac{\sigma}{N\sigma_{\mu}^2}\mu_{\mu}+\frac{1}{N}\sum_i x^{(i)}}{\frac{\sigma}{N\sigma_{\mu}^2}+1}
-\end{aligned}
-$$
-
-זו למעשה ממוצע ממושקל בין הממוצע של $x$ במדגם לבין $\mu_{\mu}$.
-
-</section><section>
-
-## דוגמא - הוספת prior
-
-בעבור הדוגמא שלנו נקבל:
-
-$$
-\mu=64.8\ \text{[min]}
-$$
-
-ערך זה מעט יותר קרוב ל60 משאר התוצאה שקיבלנו בשיערוך ה MLE. זאת משום ה prior ש"מושך" את הפרמטרים לאיזורים הסבירים יותר ולכן הוא מקרב אותו ל $\mu_{\mu}=60$.
-
-</section><section>
-
-## שימוש בשיערוך פרמטרי לפתרון בעיות supervised learning
-
-בדומה לאופן שבו השתמשנו בשיערוכים הלא פרמטריים לפתרון בעיות supervised learning נוכל לעשות זאת גם בעזרת שיערוכים פרמטריים. נציג שיטה אשר משתמשת במודל של פילוג נורמאלי וב MLE לפתרון בעיות סיווג.
-
-</section><section>
-
-## Quadric Discriminant Analysis (QDA)
-
-- נשתמש בפילוג נורמאלי וב MLE על מנת לשערך את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$.
-- אנו צריכים לשערך מודל בעבור כל אחת מ $C$ המחלקות של $\text{y}$:
-  - וקטור תוחלת $\boldsymbol{\mu}_c$ בעבור כל אחד מהמחלקות.
-  - מטריצת קווריאנס $\Sigma_c$ בעבור כל אחד מהמחלקות.
-
-$$
-p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|c;\boldsymbol{\mu}_c,\Sigma_c)=
-\frac{1}{\sqrt{(2\pi)^D|\Sigma_c|}}
-\exp\left(-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_c)^{\top}\Sigma_c^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_c)\right)
-$$
-
-הפילוג המשותף של $\mathbf{x}$ ו $\text{y}$ יהיה:
-
-$$
-p_{\mathbf{x},\text{y}}(\boldsymbol{x},y;\{\boldsymbol{\mu}_c\},\{\Sigma_c\})=
-p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y;\boldsymbol{\mu}_y,\Sigma_y)
-p_{\text{y}}(y)
-$$
-
-</section><section>
-
-## Quadric Discriminant Analysis (QDA)
-
-בעיית האופטימיזציה של MLE תהיה:
-
-$$
-\begin{aligned}
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\mathcal{L}(\boldsymbol{\theta};\mathcal{D})\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--\sum_i \log\left(
-  p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)
-  p_{\text{y}}(y^{(i)})
-\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--\sum_i
-  \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)\right)
-  +\log\left(p_{\text{y}}(y^{(i)})\right)
-\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--\sum_i \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)\right)\\
-\end{aligned}
-$$
-
-</section><section>
-
-## Quadric Discriminant Analysis (QDA)
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--\sum_i \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|y^{(i)};\boldsymbol{\mu}_y,\Sigma_y)\right)
-$$
-
-- נחלק את הסכימה לסכימות ניפרדות על כל אחת מהמחלקות.
-- נגדיר לשם כך את הסימונים הבאים:
-  - $\mathcal{I}_c=\{i:\ y^{(i)}=c\}$ - זאת אומרת, אוסף האינדקסים של הדגמים במדגם שמקיימים $y^{(i)}=c$.
-  - $|\mathcal{I}_c|$ - מספר האינדקסים ב $\mathcal{I}_c$
-
-$$
-\hat{\boldsymbol{\theta}}_{\text{MLE}}
-=\underset{\boldsymbol{\theta}}{\arg\min}\ 
--\sum_{i\in\mathcal{I}_1} \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|1;\boldsymbol{\mu}_1,\Sigma_1)\right)
--\sum_{i\in\mathcal{I}_2} \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|2;\boldsymbol{\mu}_1,\Sigma_2)\right)
--\dots
-$$
-
-</section><section>
-
-## Quadric Discriminant Analysis (QDA)
-
-בעבור המחלקה ה $c$ נקבל את בעיית האופטימיזציה הבאה:
-
-$$
-\begin{aligned}
-\hat{\boldsymbol{\mu}}_{c,\text{MLE}},\hat{\Sigma}_{c,\text{MLE}}
-&=\underset{\boldsymbol{\mu}_c,\Sigma_c}{\arg\min}\ 
--\sum_{i\in\mathcal{I}_c} \log\left(p_{\mathbf{x}|\text{y}}(\boldsymbol{x}^{(i)}|c;\boldsymbol{\mu}_c,\Sigma_c)\right)\\
-&=\underset{\boldsymbol{\mu}_c,\Sigma_c}{\arg\min}\ 
-\sum_{i\in\mathcal{I}_c}
-\log\left(\sqrt{|\Sigma_c|})\right)+
-\frac{1}{2}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)^{\top}\Sigma_c^{-1}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)\\
-\end{aligned}
-$$
-
-- ניתן לפתור את הבעיה הזו על ידי גזירה והשוואה ל-0.
-- הפיתוח בעבור $\Sigma_c$ הוא מעט מורכב ואנו לא נראה אותו בקורס זה ונקפוץ ישר לפתרון.
-
-</section><section>
-
-## Quadric Discriminant Analysis (QDA)
-
-החישוב של $\boldsymbol{\mu}_c$
-
-$$
-f(\boldsymbol{\theta};\mathcal{x})
-=\sum_{i\in\mathcal{I}_c}
-\log\left(\sqrt{|\Sigma_c|})\right)+
-\frac{1}{2}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)^{\top}\Sigma_c^{-1}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)
-$$
+נגדיר $N$ משתני עזר נוספים $\{\alpha_i\}_{i=1}^N$ בעזרתם ניתן לרשום את הבעיה הדואלית באופן הבא:
 
 <br/>
 
 $$
 \begin{aligned}
-\frac{\partial f}{\partial\boldsymbol{\mu}_c}&=0\\
-\Leftrightarrow-\sum_{i\in\mathcal{I}_c}\Sigma_c^{-1}(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c)&=0\\
-\Leftrightarrow|\mathcal{I}_c|\boldsymbol{\mu}_c-\sum_{i\in\mathcal{I}_c}\boldsymbol{x}^{(i)}&=0\\
-\Leftrightarrow\boldsymbol{\mu}_c&=\frac{1}{|\mathcal{I}_c|}\sum_{i\in\mathcal{I}_c}\boldsymbol{x}^{(i)}\\
+\left\lbrace\alpha_i\right\rbrace^*
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+\text{s.t.}\quad
+    &\alpha_i\geq0\quad\forall i\\
+    &\sum_i\alpha_iy^{(i)}=0
 \end{aligned}
 $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
-
-הפרמטרים של המודל יהיו:
-
-$$
-p_{\text{y}}(c)=\frac{|\mathcal{I}_c|}{N}
-$$
-
-$$
-\boldsymbol{\mu}_c=\frac{1}{|\mathcal{I}_c|}\sum_{i\in\mathcal{I}_c}\boldsymbol{x}^{(i)}
-$$
-
-$$
-\Sigma_c = \frac{1}{|\mathcal{I}_c|}\sum_{i\in\mathcal{I}_c}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_c\right)^T
-$$
-
-</section><section>
-
-## Quadric Discriminant Analysis (QDA)
-
-בעבור פונקציית מחיר של miscalssification rate, החזאי האופטימאלי יהיה:
+## הבעיה הדואלית
 
 $$
 \begin{aligned}
-\hat{y}=h(\boldsymbol{x})
-&=\underset{y}{\arg\max}\ 
-  p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y;\boldsymbol{\mu}_y,\Sigma_y)
-  p_{\text{y}}(y)\\
-&=\underset{y}{\arg\max}\ 
-  -\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_y)^{\top}\Sigma_y^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_y)
-  +\log\left(\frac{p_{\text{y}}(y))}{\sqrt{|\Sigma_y|}}\right)\\
+\left\lbrace\alpha_i\right\rbrace^*
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+\text{s.t.}\quad
+    &\alpha_i\geq0\quad\forall i\\
+    &\sum_i\alpha_iy^{(i)}=0
 \end{aligned}
 $$
 
-</section><section>
-
-## המקרה הבנארי - משטח הפרדה ריבועי
-
-בעבור המקרה של סיווג בינארי (סיווג לשני מחלקות) מתקבל החזאי הבא:
+מתוך המשתנים $\{\alpha_i\}_{i=1}^N$ ניתן לשחזר את $\boldsymbol{w}$ אופן הבא:
 
 $$
-h\left(x\right)
-=\begin{cases}
-  1\qquad \boldsymbol{x}^T C \boldsymbol{x} + \boldsymbol{a}^T \boldsymbol{x} + b > 0 \\
-  0\qquad \text{otherwise}\\
-\end{cases}
-$$
-
-כאשר:
-
-$$
-C=\frac{1}{2}(\Sigma^{-1}_0-\Sigma^{-1}_1)
-$$
-
-$$
-\boldsymbol{a}=\Sigma^{-1}\boldsymbol{\mu}_1-\Sigma^{-1}_0\boldsymbol{\mu}_0
-$$
-
-$$
-b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma_0^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma_1^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{\sqrt{|\Sigma_0|}p_\text{y}(1)}{\sqrt{|\Sigma_1|}p_\text{y}(0)}\right)
-$$
-
-התנאי שקיבלנו $\boldsymbol{x}^T C \boldsymbol{x} + \boldsymbol{a}^T \boldsymbol{x} + b > 0$ הוא ריבועי ב $\boldsymbol{x}$ ומכאן מקבל האלגוריתם את שמו.
-
-</section><section>
-
-## Linear Discriminant Analysis (LDA)
-
-- מניח שלפונקציות הפילוג של המחלקות השונות יש את אותה מטריצת הקווריאנס.
-- שהפרמטרים של המודל יהיו כעת:
-  - וקטור תוחלת $\boldsymbol{\mu}_c$ בעבור כל אחד מהמחלקות.
-  - מטריצת covariance אחת $\Sigma$ משותפת לכל המחלקות.
-
-$$
-p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|c;\boldsymbol{\mu}_c,\Sigma)=
-\frac{1}{\sqrt{(2\pi)^D|\Sigma|}}
-\exp\left(-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_c)^{\top}\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_c)\right)
+\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\boldsymbol{x}^{(i)}
 $$
 
 </section><section>
 
-## Linear Discriminant Analysis (LDA)
+## הקשר בין $\alpha_i$ ו support vectors.
 
-פתרון בעיית ה MLE:
+<div class="imgbox" style="max-width:600px">
 
-$$
-p_{\text{y}}(c)=\frac{|\mathcal{I}_c|}{N}
-$$
+![](../lecture06/assets/margin.png)
 
-$$
-\boldsymbol{\mu}_c = \frac{1}{|\mathcal{I}_c|}\sum_{i\in \mathcal{I}_c}\boldsymbol{x}^{(i)}
-$$
+</div>
+<br/>
 
-$$
-\Sigma = \frac{1}{N}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
-$$
+| .                                      | .                                                      | .               |
+| -------------------------------------- | ------------------------------------------------------ | --------------- |
+| נקודות רחוקות מה margin                   | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ | $\alpha_i=0$    |
+| נקודות על ה margin (שהם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ | $\alpha_i\geq0$ |
 
 </section><section>
 
-## Linear Discriminant Analysis (LDA)
+## חישוב $b$
 
-בעבור פונקציית מחיר של miscalssification rate, החזאי האופטימאלי המתקבל ממודל זה הינו:
+- נבחר נקודה מסויימת שבעבורה $\alpha_i>0$.
+- נקודה כזו בהכרח תהיה support vectors ותקיים $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$.
+- מתוך משוואה זו ניתן לחלץ את $b$.
+
+</section><section>
+
+## Soft SVM
+
+<div class="imgbox" style="max-width:400px">
+
+![](../lecture06/assets/svm_xi.png)
+
+</div>
+
+- מתייחס למקרה שבו המדגם אינו פריד לינארית.
+- מאפשרים למשתנים להיכנס לתוך ה margin ואף לחצות אותו.
+- על כל חריגה כזו משלמים קנס ב objective.
+
+</section><section>
+
+## Soft SVM
+
+<div class="imgbox" style="max-width:400px">
+
+![](../lecture06/assets/svm_xi.png)
+
+</div>
+
+- את החריגה של הדגימה ה $i$ נסמן ב $\frac{1}{\lVert\boldsymbol{w}\rVert}\xi_i$.
+- המשתנים $\xi_i$ נקראים **slack variables**.
+
+</section><section>
+
+## Soft SVM
+
+ובעיית האופטימיזציה הפרימאלית תהיה:
+
+<br/>
 
 $$
 \begin{aligned}
-\hat{y}=h(\boldsymbol{x})
-&=\underset{y}{\arg\max}\ 
-  p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y;\boldsymbol{\mu}_c,\Sigma)
-  p_{\text{y}}(y)\\
-&=\underset{y}{\arg\max}\ 
-  -\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_y)^{\top}\Sigma^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_y)
-  +\log(p_{\text{y}}(y))\\
-&=\underset{y}{\arg\min}\ 
-  \boldsymbol{x}^{\top}\Sigma^{-1}\boldsymbol{\mu}_y
-  -\frac{1}{2}\boldsymbol{\mu}_y^{\top}\Sigma^{-1}\boldsymbol{\mu}_y
-  -\log(p_{\text{y}}(y))\\
+\boldsymbol{w}^*,b^*,\{\xi_i\}^*=
+\underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
+\text{s.t.}\quad
+    &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
+    &\xi_i\geq0\quad\forall i
+\end{aligned}
+$$
+
+<br/>
+
+כאשר $C$ הוא hyper-parameter אשר קובע את גודל הקנס שאותו ה objective נותן על כל חריגה.
+
+</section><section>
+
+## Soft SVM
+
+הבעיה הדואלית הינה:
+
+<br/>
+
+$$
+\begin{aligned}
+\left\lbrace\alpha_i\right\rbrace^*
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+\text{s.t.}\quad
+    &0\leq\alpha_i\leq C\quad\forall i\\
+    &\sum_i\alpha_iy^{(i)}=0
 \end{aligned}
 $$
 
 </section><section>
 
-## המקרה הבנארי - הפרדה לינארית
+## Soft SVM
 
-בעבור המקרה של סיווג בינארי (סיווג לשני מחלקות) מתקבל החזאי הבא:
+<div class="imgbox" style="max-width:300px">
 
-$$
-h\left(x\right)
-=\begin{cases}
-  1\qquad \boldsymbol{a}^T \boldsymbol{x} + b > 0 \\
-  0\qquad \text{otherwise}\\
-\end{cases}
-$$
+![](../lecture06/assets/svm_xi.png)
 
-כאשר:
+</div>
 
-$$
-\boldsymbol{a}=\Sigma^{-1}\left(\boldsymbol{\mu}_1-\boldsymbol{\mu}_0\right)
-$$
+בעבור ה support vectors מתקיים: $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
 
-$$
-b=\tfrac{1}{2}\left(\boldsymbol{\mu}_0^T\Sigma^{-1}\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1^T\Sigma^{-1}\boldsymbol{\mu}_1\right) + \log\left(\frac{p_\text{y}\left(1\right)}{p_\text{y}\left(0\right)}\right)
-$$
+<br>
 
-התנאי שקיבלנו $\boldsymbol{a}^T \boldsymbol{x} + b > 0$ הוא לינארי ב $\boldsymbol{x}$ ומכאן מקבל האלגוריתם את שמו.
+תכונות:
+
+| .                                         | .                                                            | .                     |
+| ----------------------------------------- | ------------------------------------------------------------ | --------------------- |
+| נקודות שמסווגות נכון ורחוקות מה margin            | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$       | $\alpha_i=0$          |
+| נקודות על ה margin (שהם support vectors)    | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$       | $0\leq\alpha_i\leq C$ |
+| נקודות שחורגות מה margin (גם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1-\xi_i$ | $\alpha_i=C$          |
 
 </section><section>
 
-## המקרה הכללי (לא בינארי)
+## מאפיינים: תזכורת
 
-במקרה הכללי המרחב יהיה מחולק ל $C$ איזורים שהשפות שלהם יהיו מורכבות מהמישורים המתקבלים מהשפות שבין כל זוג מחלקות. דוגמא למקרה עם 3 מחלקות תופיע בתרגול.
+- נוכל תמיד לחליף את וקטור המשתנים $\boldsymbol{x}$ בוקטור חדש:
+
+    $$
+    \boldsymbol{x}_{\text{new}}=\Phi(\boldsymbol{x})
+    $$
+
+- $\Phi$ היא פונקציה אשר נבחרה מראש ונקראת פונקציית המאפיינים.
+
+</section><section>
+
+## פונקציות גרעין
+
+- במקרים רבים החישוב של $\Phi(\boldsymbol{x})$ יכול להיות מסובך אך קיימת דרך לחשב בצורה יעילה את הפונקציה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\Phi(\boldsymbol{x}_1)^{\top}\Phi(\boldsymbol{x}_2)$.
+- הפונקציה $K$ נקראת פונקציית גרעין.
+- יתרה מזאת, יתכנו מצבים שבהם הוקטור המאפיינים הוא אין סופיים ועדיין פונקציית הגרעין היא פשוטה לחישוב.
+
+נציג שתי פונקציות גרעין נפוצות:
+
+- גרעין גאוסי: $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\frac{\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert_2^2}{2\sigma^2}\right)$ כאשר $\sigma$ פרמטר שיש לקבוע.
+- גרעין פולינומיאלי: $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=(1+\boldsymbol{x}_1^{\top}\boldsymbol{x}_2)^p$ כאשר $p\geq1$ פרמטר שיש לקבוע.
+
+</section><section>
+
+## Kernel Trick in SVM
+
+הרעיון ב kernel trick הינו לעשות שימוש בפונקציית הגרעין על מנת להשתמש ב SVM עם מאפיינים מבלי לחשב את $\Phi$ באופן ישיר.
+
+<br/>
+
+בעבור פונקציית מאפיינים $\Phi$ עם פונקציית גרעין $K$ הבעיה הדואלית של SVM הינה:
+
+$$
+\begin{aligned}
+\left\lbrace\alpha_i\right\rbrace^*
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_jK(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)}) \\
+\text{s.t.}\quad
+    &\alpha_i\geq0\quad\forall i\\
+    &\sum_i\alpha_iy^{(i)}=0
+\end{aligned}
+$$
+
+בעיית אופטימיזציה זו מגדירה את המשתנים $\{\alpha_i\}$ בלי צורך לחשב את $\Phi$ באופן מפורש בשום שלב.
+
+</section><section>
+
+## Kernel Trick in SVM
+
+באופן כללי, הפרמטר $\boldsymbol{w}$ נתון על ידי:
+
+$$
+\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})
+$$
+
+אשר מצריך חישוב של $\Phi$. ניתן להימנע מכך על ידי הצבה של $\boldsymbol{w}$ כמו שהוא ישירות לחזאי.
+
+$$
+\begin{aligned}
+h(\boldsymbol{x})
+&=\text{sign}(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})+b)\\
+&=\text{sign}(\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})^{\top}\Phi(\boldsymbol{x})+b)\\
+&=\text{sign}(\sum_i\alpha_iy^{(i)}K(\boldsymbol{x}^{(i)},\boldsymbol{x})+b)\\
+\end{aligned}
+$$
+
+בדרך זו אנו יכולים לאמן להשתמש בחזאי אשר אומן בעבור וקטור מאפיינים $\Phi$ מבלי לחשב בשום שלב את $\Phi$ באופן מפורש.
 
 </section>
 </div>

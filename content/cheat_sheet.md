@@ -671,7 +671,7 @@ $$
 
 <div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
 
-![](./lecture08/assets/neuron_scheme2.png)
+![](./lecture10/assets/neuron_scheme2.png)
 
 </div>
 
@@ -697,7 +697,7 @@ $$
 
 <div class="imgbox no-shadow" style="max-width:500px;margin-top:0px;margin-bottom:0px">
 
-![](./lecture08/assets/mlp.png)
+![](./lecture10/assets/mlp.png)
 
 </div>
 
@@ -712,7 +712,7 @@ $$
 
 <div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
 
-![](./lecture09/assets/conv.gif)
+![](./lecture11/assets/conv.gif)
 
 </div>
 
@@ -724,7 +724,7 @@ $$
 
 <div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
 
-![](./lecture09/assets/conv_multi_chan.gif)
+![](./lecture11/assets/conv_multi_chan.gif)
 
 </div>
 
@@ -745,9 +745,9 @@ $$
     <td><center>Dilation</center></td>
   </tr>
   <tr>
-    <td><center><img width="250px" src="./lecture09/assets/padding.gif"></center></td>
-    <td><center><img width="250px" src="./lecture09/assets/stride.gif"></center></td>
-    <td><center><img width="250px" src="./lecture09/assets/dilation.gif"></center></td>
+    <td><center><img width="250px" src="./lecture11/assets/padding.gif"></center></td>
+    <td><center><img width="250px" src="./lecture11/assets/stride.gif"></center></td>
+    <td><center><img width="250px" src="./lecture11/assets/dilation.gif"></center></td>
   </tr>
 </table>
 
@@ -764,7 +764,7 @@ $$
 
 <div class="imgbox no-shadow" style="max-width:300px;margin-top:0px;margin-bottom:0px">
 
-![](./lecture09/assets/max_pooling.gif)
+![](./lecture11/assets/max_pooling.gif)
 
 </div>
 

@@ -55,16 +55,16 @@
      <h4><a href="/lecture04">הרצאה 4</a></h4>
    </div><div>17/11</div>
    <div>
-     <h4><a href="/tutorial05">תרגול 5</a></h4>
+     <h4><a href="/tutorial07">תרגול 5</a></h4>
    </div><div>18,23,24/11</div>
  </div>
  <h3>שיערוך א-פרמטרי</h3>
  <div>
    <div>
-     <h4><a href="/lecture05">הרצאה 5</a></h4>
+     <h4><a href="/lecture07">הרצאה 5</a></h4>
    </div><div>24/11</div>
    <div>
-     <h4><a href="/tutorial06">תרגול 6</a></h4>
+     <h4><a href="/tutorial08">תרגול 6</a></h4>
    </div><div>25,31/11 , 1/12</div>
  </div>
  <h3>שיערוך פרמטרי</h3>
@@ -73,7 +73,7 @@
      <h4><a class="disabled">הרצאה 6</a></h4>
    </div><div>1/12</div>
    <div>
-     <h4><a href="/tutorial07/">תרגול 7</a></h4>
+     <h4><a href="/tutorial09/">תרגול 7</a></h4>
    </div><div>2,7,8/12</div>
  </div>
  <h3>סיווג גנרטיבי</h3>
@@ -94,7 +94,7 @@
      <h4><a class="disabled">הרצאה 8</a></h4>
    </div><div>22/12</div>
    <div>
-     <h4><a href="/tutorial09/">תרגול 9</a></h4>
+     <h4><a href="/tutorial11/">תרגול 9</a></h4>
    </div><div>23,28,29/12</div>
  </div>
  <h3>Neural networks - methods</h3>

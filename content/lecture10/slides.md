@@ -7,7 +7,7 @@ slides_pdf: true
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-#  הרצאה 10 - SVM ושיטות גרעין
+# הרצאה 10 - Neural Networks
 
 <div dir="ltr">
 <a href="/assets/lecture10_slides.pdf" class="link-button" target="_blank">PDF</a>
@@ -24,529 +24,415 @@ slides_pdf: true
 </div>
 </section><section>
 
-## סיווג לינארי
+## רשת נוירונים מלאכותית כמודל פרמטרי
 
-- בפרק זה נעסוק בבעיית סיווג בינארי.
-- נסמן את שתי המחלקות ב $\text{y}=\pm1$.
-- נעסוק במסווגים מהצורה:
-
-    $$
-    h(\boldsymbol{x})=
-    \text{sign}(\boldsymbol{w}^{\top}\boldsymbol{x}+b)
-    =\begin{cases}
-    1 & \boldsymbol{w}^{\top}\boldsymbol{x}+b>0\\
-    -1 & \text{else}
-    \end{cases}
-    $$
-
-- מחלק את המרחב לשני צידיו של על-מישור (hyperplane):
-
-    $$
-    \boldsymbol{w}^{\top}\boldsymbol{x}+b=0
-    $$
-
-- מישור זה מכונה מישור ההפרדה.
+- נתקלנו במספר מקרים בהם ניסינו למצוא פונקציה שתבצע פעולה או תתאר תופעה כל שהיא (מציאת חזאי או פונקציית פילוג).
+- דרך נוחה לעשות זאת היא בעזרת מודל פרמטרי ומציאת הפרמטרים האופטימאלים.
+- עד כה עבדנו עם מודלים לינאריים בפרמטרים.
+- ניתן לקרב הרבה מאד פונקציות בעזרת פולינום מסדר מספיק גבוהה.
+- מודלים אלו הם לא מאד מוצלחים ובעיתיים וכאשר $\boldsymbol{x}$ הוא ממימד גבוה.
+- האם ישנם מודלים מתאימים יותר?
 
 </section><section>
 
-## על-מישור (hyperplane)
+## רשתות נוירונים מלאכותיות<br/>Artificail Neural Networks - ANN
 
-- הרחבה של מושג המישור למימדים שונים מ2.
-- במרחב ממימד $D$ על-המישור יהיה ממימד $D-1$.
-- בקורס זה נשתמש בשם מישור גם בשביל להתייחס לעל-מישורים.
-
-<br/>
-
-- לא להתבלבל בין $\boldsymbol{w}^{\top}\boldsymbol{x}+b=0$ לבין $ax+b=y$.
+- בשנים האחרונות מודלים אלו הוכיחו את עצמם כמודלים פרמטריים מאד יעילים לפתרון מגוון רחב של בעיות.
+- הההשראה לצורה שבה הם בנויים מגיעה מרשתות נויירונים ביולוגיות.
 
 </section><section>
 
-## פרידות לינארית (linear separability)
-
-במקרה שבו קיים מישור מפריד אשר מסווג את המדגם בצורה מושלמת (בלי טעויות סיווג) נאמר שהמדגם **פריד לינארית**.
+## נוירון ביולוגי
 
 <br/>
+<br/>
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/neuron.png)
+
+</div>
+
+</section><section>
+
+## נוירון ביולוגי
+
+בצורה פשטנית ניתן לתאר את האופן בו נוירון ביולוגי פועל כך:
+
 <div class="imgbox" style="max-width:800px">
 
-![](../lecture10/assets/linear_separable.png)
+![](./assets/neuron_model.png)
 
 </div>
 
-- לרוב לא נוכל לדעת מראש אם מדגם הוא פריד לינארית או לא.
+</section><section>
+
+## נוירון ביולוגי
+
+ באופן סכימתי ניתן למדל את פעולת הנוירון באופן הבא:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/neuron_scheme.png)
+
+</div>
+
+$$
+y=I\{\boldsymbol{x}^{\top}\boldsymbol{w}+b>0\}
+$$
 
 </section><section>
 
-## פרידות לינארית (linear separability)
+## נוירונים ברשת נוירונים מלאכותית
 
-למדגם פריד לינארית יהיה תמיד יותר ממשטח הפרדה אחד:
+- פונקציית המדרגה היא בפועל מאד בעייתית.
+- לשם כך נחליף את פונקציית המדרגה בפונקציה אחרת כל שהיא $\varphi(\cdot)$.
+- פונקציה זו מכונה **פונקציית ההפעלה (activation function)**.
+- בחירות נפוצות של פונקציית ההפעלה כוללות את:
+    - הפונקציה הלוגיסטית (סיגמואיד): $\varphi(x)=\sigma(x)=\frac{1}{1+e^{-x}}$
+    - טנגנס היפרבולי: $\varphi(x)=\tanh\left(x/2\right)$
+    - $\varphi(x)=\max(x,0)$ :ReLU (Rectified Linear Unit).
+
+- פונקציות נוספות שנמצאות הם כל מיני וריאציות של ReLU.
+
+</section><section>
+
+## נוירונים ברשת נוירונים מלאכותית
+
+באופן סכימתי נסמן נוירון בודד באופן הבא:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/neuron_scheme2.png)
+
+</div>
+
+</section><section>
+
+## רשת נוירונים
+
+נשלב מספר נוירונים יחד על מנת לבנות רשת נוירונים:
 
 <br/>
-<div class="imgbox" style="max-width:800px">
-
-![](../lecture10/assets/multiple_separation_planes.png)
-
-</div>
-
-</section><section>
-
-## תזכורת - גאומטריה של המישור
-
-נסתכל על הפונקציה $f(\boldsymbol{x})=\hat{\boldsymbol{w}}^{\top}\boldsymbol{x}$. משוואה זו מטילה נקודות במרחב על הקו המוגדר על ידי $\hat{\boldsymbol{w}}$ ומודד את המרחק של הטלה זו.
-
-<br/>
-<div class="imgbox" style="max-width:600px">
-
-![](./assets/unit_linear.png)
-
-</div>
-
-</section><section>
-
-## תזכורת - גאומטריה של המישור
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/unit_linear.png)
-
-</div>
-
-- מודדת את המרחק מהמישור $\hat{\boldsymbol{w}}^{\top}\boldsymbol{x}$ בתוספת של סימן אשר מציין את הצד של המישור.
-- נשתמש בשם **signed distance (מרחק מסומן)** בכדי להתייחס לשילוב של המרחק מהמישור בתוספת הסימן.
-
-</section><section>
-
-## תזכורת - גאומטריה של המישור
-
-נחליף את הוקטור $\hat{\boldsymbol{w}}$ בוקטור $\boldsymbol{w}$. נקבל הפונקציה זהה המוכפלת ב $\lVert\boldsymbol{w}\rVert_2$.
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/linear.png)
-
-</div>
-
-ה signed distance יהיה $d=\frac{1}{\lVert\boldsymbol{w}\rVert}\boldsymbol{w}^{\top}\boldsymbol{x}_0$.
-
-</section><section>
-
-## תזכורת - גאומטריה של המישור
-
-נוסיף לפונקציה גם איבר היסט $b$. ההוספה של הקבוע שקולה להזזה של נקודת ה-0.
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/affine.png)
-
-</div>
-
-ה signed distance יהיה $d=\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}_0+b)$
-
-</section><section>
-
-## תזכורת - גאומטריה של המישור
-
-נסכם את כל הנאמר לעיל בשרטוט הבא:
 
 <div class="imgbox" style="max-width:700px">
 
-![](../lecture10/assets/plain_geometry.png)
+![](./assets/ann.png)
 
 </div>
 
+<br/>
+
+רשת שכזו יכולה לקרב מגוון מאד רחב של פונקציות. הפרמטרים של המודל יהיו הפרמטרים של כל הנוירונים.
+
 </section><section>
 
-## אינווריאנטיות לכפל בסקלר
+## רשת נוירונים
 
-אם נכפיל את גם את $\boldsymbol{w}$ וגם את $b$ בקבוע כל שהוא $\alpha$ שונה מאפס לא נשנה את מיקומו של המישור במרחב, זאת משום ש:
+<div class="imgbox" style="max-width:700px">
+
+![](./assets/ann.png)
+
+</div>
+
+<br/>
+
+לרוב הנוירונים יהיו מהצורה של:
 
 $$
-\begin{aligned}
-(\alpha\boldsymbol{w})^{\top}\boldsymbol{x}+(\alpha b)&=0\\
-\Leftrightarrow\boldsymbol{w}^{\top}\boldsymbol{x}+b&=0
-\end{aligned}
+h_j(\boldsymbol{x};\boldsymbol{w}_j,b_j)=\varphi(\boldsymbol{x}^{\top}\boldsymbol{w}_j+b_j)
 $$
 
-המשמעות הינה שיש מספר דרכים להגדיר את אותו המסווג הלינארי.
+אך ניתן גם לבחור פונקציות אחרות. בקורס זה, אלא אם נאמר אחרת, אנו נניח כי כי הנוירונים הם מהצורה הזו.
 
 </section><section>
 
-## Support Vector Machine (SVM)
+## הארכיטקטורה של הרשת
 
-- אלגוריתם דיסקרימינטיבי לסיווג בינארי (מחפש מסווג טוב על המדגם).
-- Hard SVM מחפש מסווג לינארי למדגם שהוא פריד לינארית.
-- Soft SVM מרחיב את האלגוריתם למקרה שבו המדגם לא פריד לינארית.
+המבנה של הרשת אשר כולל מספר הנוירונים שהיא מכילה ואת הדרך שבה הם מחוברים אחד לשני.
+
+- בחירת הארכיטקטורה היא קריטית לביצועים.
+- לשימושים שונים מתאימות ארכיטקטורות שונות.
+- חלק גדול מאד מהמחקר שנעשה כיום הוא סביב הנושא של חיפוש ארכיטקטורות.
+- התהליך של מציאת הארכיטקטורה דורש לא מעט ניסיון, אינטואיציה והרבה ניסוי וטעיה.
+- לרוב נמצא בעיה דומה ונשתמש בארכיטקטורה שעבדה טובה במקרה זה (נרפרנס).
 
 </section><section>
 
-## Hard SVM
+## הארכיטקטורה של הרשת
+
+<div class="imgbox" style="max-width:700px">
+
+![](./assets/ann.png)
+
+</div>
+
+- **יחידות נסתרות** (**hidden units**): הנוירונים אשר אינם מחוברים למוצא הרשת.
+- **רשת עמוקה** (**deep network**): רשת אשר מכילה מסלולים אשר עוברים דרך יותר מיחידה נסתרת אחת.
+
+</section><section>
+
+## Feed-forward vs. Recurrent
+
+אנו מבדילים בין שני סוגי ארכיטקטורות:
+
+- **רשת הזנה קדמית (feed-forward network)**: ארכיטקטורות אשר אינם מכילות מסלולים מעגליים.
+- **רשתות נשנות (recurrent neural network - RNN)**: בקורס זה לא נעסוק ברשתות מסוג זה. אלו ארכיטקטורות אשר כן מכילות מסלולים מעגליים.
+
+</section><section>
+
+## על החשיבות של פונקציות ההפעלה
+
+- ללא פונקציית ההפעלה הנורונים היו לינאריים ולכן כל הרשת תהיה פשוט מודל לינארי.
+
+</section><section>
+
+## המוצא של הרשת
+
+### Regression + ERM
+
+- הרשת תמדל חזאי אשר אמור להוציא סקלר שמקבל ערכים רציפים בתחום לא מוגבל.
+- אנו נרצה שהמוצא של הרשת יתנקז לנוירון בודד ללא פונקציית אקטיבציה.
+
+</section><section>
+
+## המוצא של הרשת
+
+### סיווג בינארי + הדיסקרימינטיבית הסתברותית
+
+- הרשת תמדל את $p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x})$.
+- אנו נרצה שהרשת תוציא ערך סקלרי רציף בתחום בין 0 ל-1.
+- שהמוצא של הרשת יתנקז לנוירון בודד עם פונקציית הפעלה שמוציאה ערכים בתחום $[0,1]$ כדוגמאת הפונקציה הלוגיסטית.
+
+### סיווג לא בינארי + הדיסקרימינטיבית הסתברותית
+
+- הרשת תמדל את כל ההסתברותיות $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$.
+- נרצה שהרשת תוציא וקטור באורך $C$ שעליו נפעיל את פונקציית ה softmax.
+
+</section><section>
+
+## מציאת הפרמטרים של המודל
+
+בעיית האופטימיזציה:
+
+- ב ERM אנו ננסה למזער את ה risk האמפרי
+- בגישה הדיסקרימינטיבית הסתברותית נשתמש ב MLE או MAP.
+
+בכדי לפתור את בעיית האופטימיזציה נשתמש ב grdaient descent.
+
+</section><section>
+
+## MultiLayer Percepron (MLP)
 
 <div class="imgbox" style="max-width:800px">
 
-![](../lecture10/assets/multiple_separation_planes.png)
+![](./assets/mlp.png)
 
 </div>
 
-- נרצה למצוא מישור הפרדה אשר יכליל בצורה טובה.
-- הנחה סבירה הינה שהפילוג של הנקודות יתרכז סביב הנקודות מהמדגם.
-- Hard SVM מנסה למצוא מישור הפרדה אשר יהיה רחוק ככל האפשר מהנקודות שבמדגם.
-- או: נרצה שהמרחק מהמישור לנקודה הקרובה אליו ביותר יהיה מקסימאלי.
+- הנוירונים מסודרים בשתייים או יותר שכבות (layers)
+- השכבות הם **Fully Connected (FC)** (כל נוירון מוזן מ**כל** הנוריונים שבשכבה שלפני).
 
 </section><section>
 
-## Hard SVM
+## MultiLayer Percepron (MLP)
 
-נסתכל על המכפלה בין ה signed distance של הנקודות לתוויות שלהם $\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}$.
+<div class="imgbox" style="max-width:800px">
 
-- בכדי לקבל סיווג מושלם נרצה שכל המכפלות יהיו חיוביות.
-- בנוסף ננסה למקסם את המינימום של מכפלות אלו.
-
-<div class="imgbox" style="max-width:500px">
-
-![](../lecture10/assets/hard_svm.png)
+![](./assets/mlp.png)
 
 </div>
 
-</section><section>
-
-## Hard SVM
-
-בעיית האופטימיזציה שנרצה לפתור אם כן הינה:
-
-$$
-\boldsymbol{w}^*,b^*=\underset{\boldsymbol{w},b}{\arg\max}\quad \underset{i}{\min}\left\{\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}
-$$
-
-- ניתן לנסות לפתור באופן ישיר על ידי gradient descent.
-- בפועל העובדה שבבעיה מופיע $min$ על כל המדגם מאד מקשה.
-- ניתן לפשט את הבעיה ולמצוא בעיה שקולה, שאותה נכנה **הבעיה הפרימאלית**.
-- את הבעיה הפרימאלית יהיה ניתן לפתור באופן יעיל בשיטות נומריות אחרות.
+מה שמגדיר את הארכיטקטורה במקרה של MLP הוא מספר השכבות וכמות הנוירונים בכל שכבה (**רוחב השכבה**). בדוגמה הזו, יש ברשת 3 שכבות ברוחב 2, 3 ו 2.
 
 </section><section>
 
-## הפיתוח של הבעיה הפרימאלית
-
-- נוכל לבחור באופן שרירותי קבוע כפלי להכפיל בו את $\boldsymbol{w}$ ו $b$.
-- בפרט נוכל להוסיף דרישה ש:
-
-$$
-\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1
-$$
-
-</section><section>
-
-## הפיתוח של הבעיה הפרימאלית
-
-אם נוסיף את האילץ הזה לבעיית האופטימיזציה נקבל:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*
-=\underset{\boldsymbol{w},b}{\arg\max}\quad&\underset{i}{\min}\left\{\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}\\
-\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
-=\underset{\boldsymbol{w},b}{\arg\max}\quad&\frac{1}{\lVert\boldsymbol{w}\rVert}\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}\\
-\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
-=\underset{\boldsymbol{w},b}{\arg\max}\quad&\frac{1}{\lVert\boldsymbol{w}\rVert}\\
-\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
-=\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\lVert\boldsymbol{w}\rVert^2\\
-\text{s.t.}\quad&\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1\\
-\end{aligned}
-$$
-
-</section><section>
-
-## הפיתוח של הבעיה הפרימאלית
-
-נוכל גם להחליף את האילוץ של $\underset{i}{\min}\left\{(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}=1$ באילוץ:
-
-$$
-(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
-$$
-
-זאת מכיוון ש שבעיית האופטימיזציה מנסה להקטין את $\boldsymbol{w}$ לכן מובטח שלפחות בעבור אחת במדגם האילוץ יתקיים בשיוון.
-
-<br/>
-
-קיבלנו את בעיית האופטימיזציה השקולה הבאה:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*
-=\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\lVert\boldsymbol{w}\rVert^2\\
-\text{s.t.}\quad&(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
-\end{aligned}
-$$
-
-בעיה זו נקראת **הבעיה הפרימאלית**.
-
-</section><section>
-
-## פרשנות
-
-האילוץ דורש שהנקודות מהמדגם יהיו מחוץ לתחום:
-
-$$
-1\geq\boldsymbol{w}^{\top}\boldsymbol{x}+b\geq-1
-$$
-
-אשר נקרא ה**שוליים (margin)**.
-
-<div class="imgbox" style="max-width:600px">
-
-![](../lecture10/assets/margin.png)
-
-</div>
-
-</section><section>
-
-## פרשנות
-
-<div class="imgbox" style="max-width:600px">
-
-![](../lecture10/assets/margin.png)
-
-</div>
-
-- המרחק בין מישור ההפרדה לשפה של ה margin שווה ל $\frac{1}{\lVert\boldsymbol{w}\rVert}$.
-- בעיית האופטימיזציה מנסה למזער את $\lVert\boldsymbol{w}\rVert$ ותתכנס למסווג בעל ה margin הגדול ביותר.
-
-</section><section>
-
-### Support Vectors
-
-<div class="imgbox" style="max-width:600px">
-
-![](../lecture10/assets/margin.png)
-
-</div>
-
-- ה **support vectors** הם הנקודות שיושבות על ה margin והם מקיימות אלו מקיימות $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$.
-- רק נקודות אלו ישפיעו על הפתרון של בעיית האופטימיזציה.
-
-</section><section>
-
-## הבעיה הדואלית
-
-דרך שקולה נוספת לרישום של בעיית האופטימיזציה (ללא הוכחה):
-
-<br/>
-<br/>
-
-נגדיר $N$ משתני עזר נוספים $\{\alpha_i\}_{i=1}^N$ בעזרתם ניתן לרשום את הבעיה הדואלית באופן הבא:
-
-<br/>
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-</section><section>
-
-## הבעיה הדואלית
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-מתוך המשתנים $\{\alpha_i\}_{i=1}^N$ ניתן לשחזר את $\boldsymbol{w}$ אופן הבא:
-
-$$
-\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\boldsymbol{x}^{(i)}
-$$
-
-</section><section>
-
-## הקשר בין $\alpha_i$ ו support vectors.
-
-<div class="imgbox" style="max-width:600px">
-
-![](../lecture10/assets/margin.png)
-
-</div>
-<br/>
-
-| .                                      | .                                                      | .               |
-| -------------------------------------- | ------------------------------------------------------ | --------------- |
-| נקודות רחוקות מה margin                   | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ | $\alpha_i=0$    |
-| נקודות על ה margin (שהם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ | $\alpha_i\geq0$ |
-
-</section><section>
-
-## חישוב $b$
-
-- נבחר נקודה מסויימת שבעבורה $\alpha_i>0$.
-- נקודה כזו בהכרח תהיה support vectors ותקיים $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$.
-- מתוך משוואה זו ניתן לחלץ את $b$.
-
-</section><section>
-
-## Soft SVM
+## רישום מטריצי
 
 <div class="imgbox" style="max-width:400px">
 
-![](../lecture10/assets/svm_xi.png)
+![](./assets/mlp.png)
 
 </div>
 
-- מתייחס למקרה שבו המדגם אינו פריד לינארית.
-- מאפשרים למשתנים להיכנס לתוך ה margin ואף לחצות אותו.
-- על כל חריגה כזו משלמים קנס ב objective.
+- $W_i=
+\begin{bmatrix}
+-&\boldsymbol{w}_{i,1}&-\\
+-&\boldsymbol{w}_{i,2}&-\\
+&\vdots&\\
+\end{bmatrix}$
+- $\boldsymbol{b}_i=[b_{i,1},b_{i,2},\dots]^{\top}$
+
+הפונקציה שאותה ממשת השכבה כולה הינה:
+
+$$
+\boldsymbol{z}_i=\varphi(W_i\boldsymbol{z}_{i-1}+\boldsymbol{b}_i)
+$$
 
 </section><section>
 
-## Soft SVM
+## "משפט הקירוב האוניברסלי"
 
-<div class="imgbox" style="max-width:400px">
+בהינתן:
 
-![](../lecture10/assets/svm_xi.png)
+- פונקציית הפעלה רציפה כל שהיא $\varphi$ ש**אינה פולינומאילית** (או חסומה ואינטגרבילית).
+- ופונקציה רציפה כל שהיא על קוביית היחידה $f:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$.
+
+אזי ניתן למצוא פונקציה $f_{\varepsilon}:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$ מהצורה:
+
+$$
+f_{\varepsilon}(\boldsymbol{x})=W_2\varphi(W_1\boldsymbol{x}+\boldsymbol{b}_1)+\boldsymbol{b}_2
+$$
+
+כך ש:
+
+$$
+\underset{x\in[0,1]^{D_{\text{in}}}}{\text{sup}}\lVert
+f(\boldsymbol{x})-f_{\varepsilon}(\boldsymbol{x})
+\rVert<\varepsilon
+$$
+
+</section><section>
+
+## Back-Propagation
+
+שיטה המקלה על חישוב הנגזרות על ידי שימוש בכלל השרשרת.
+
+### כלל השרשרת - תזכורת
+
+במקרה הסקלרי:
+
+$$
+\left(f(g(x))\right)'=f'(g(x))\cdot g'(x)
+$$
+
+במקרה של מספר משתנים:
+
+$$
+\begin{aligned}
+\frac{d}{dx} f(z_1(x),z_2(x),z_3(x))
+=& &\left(\frac{d}{dz_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
+ &+&\left(\frac{d}{dz_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
+ &+&\left(\frac{d}{dz_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
+\end{aligned}
+$$
+
+</section><section>
+
+## Back-Propagation
+
+לאלגוריתם 2 שלבים:
+
+- **Forward pass**: העברה של הדגימות דרך הרשת ושמירה של כל ערכי הביניים.
+- **Backward pass**: חישוב של הנגזרות של הנוירונים מהמוצא של הרשת לכיוון הכניסה.
+
+</section><section>
+
+## Back-Propagation - דוגמא פשוטה
+
+<div class="imgbox" style="max-width:700px">
+
+![](./assets/back_prop_simple.png)
 
 </div>
 
-- את החריגה של הדגימה ה $i$ נסמן ב $\frac{1}{\lVert\boldsymbol{w}\rVert}\xi_i$.
-- המשתנים $\xi_i$ נקראים **slack variables**.
-
-</section><section>
-
-## Soft SVM
-
-ובעיית האופטימיזציה הפרימאלית תהיה:
-
 <br/>
 
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*,\{\xi_i\}^*=
-\underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
-\text{s.t.}\quad
-    &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
-    &\xi_i\geq0\quad\forall i
-\end{aligned}
-$$
-
-<br/>
-
-כאשר $C$ הוא hyper-parameter אשר קובע את גודל הקנס שאותו ה objective נותן על כל חריגה.
-
-</section><section>
-
-## Soft SVM
-
-הבעיה הדואלית הינה:
-
-<br/>
+נרשום את הנגזרת של $y$ לפי $\theta_2$:
 
 $$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &0\leq\alpha_i\leq C\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
+\frac{dy}{d\theta_2}=\frac{dy}{dz_2}\frac{dz_2}{d\theta_2}=\frac{dy}{dz_2}\frac{d}{d\theta_2}h_2(z_1;\theta_2)
+$$
+
+נוכל לפרק גם את הנגזרת של $\frac{dy}{dz_2}$:
+
+$$
+\frac{dy}{dz_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)
+$$
+
+לכן:
+
+$$
+\frac{dy}{d\theta_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}\frac{dz_2}{d\theta_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)\frac{d}{d\theta_2}h_2(z_1;\theta_2)
 $$
 
 </section><section>
 
-## Soft SVM
+## Back-Propagation - דוגמא פשוטה
 
-<div class="imgbox" style="max-width:300px">
+<div class="imgbox" style="max-width:700px">
 
-![](../lecture10/assets/svm_xi.png)
+![](./assets/back_prop_simple.png)
 
 </div>
 
-בעבור ה support vectors מתקיים: $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
-
-<br>
-
-תכונות:
-
-| .                                         | .                                                            | .                     |
-| ----------------------------------------- | ------------------------------------------------------------ | --------------------- |
-| נקודות שמסווגות נכון ורחוקות מה margin            | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$       | $\alpha_i=0$          |
-| נקודות על ה margin (שהם support vectors)    | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$       | $0\leq\alpha_i\leq C$ |
-| נקודות שחורגות מה margin (גם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1-\xi_i$ | $\alpha_i=C$          |
-
-</section><section>
-
-## מאפיינים: תזכורת
-
-- נוכל תמיד לחליף את וקטור המשתנים $\boldsymbol{x}$ בוקטור חדש:
-
-    $$
-    \boldsymbol{x}_{\text{new}}=\Phi(\boldsymbol{x})
-    $$
-
-- $\Phi$ היא פונקציה אשר נבחרה מראש ונקראת פונקציית המאפיינים.
-
-</section><section>
-
-## פונקציות גרעין
-
-- במקרים רבים החישוב של $\Phi(\boldsymbol{x})$ יכול להיות מסובך אך קיימת דרך לחשב בצורה יעילה את הפונקציה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\Phi(\boldsymbol{x}_1)^{\top}\Phi(\boldsymbol{x}_2)$.
-- הפונקציה $K$ נקראת פונקציית גרעין.
-- יתרה מזאת, יתכנו מצבים שבהם הוקטור המאפיינים הוא אין סופיים ועדיין פונקציית הגרעין היא פשוטה לחישוב.
-
-נציג שתי פונקציות גרעין נפוצות:
-
-- גרעין גאוסי: $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\frac{\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert_2^2}{2\sigma^2}\right)$ כאשר $\sigma$ פרמטר שיש לקבוע.
-- גרעין פולינומיאלי: $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=(1+\boldsymbol{x}_1^{\top}\boldsymbol{x}_2)^p$ כאשר $p\geq1$ פרמטר שיש לקבוע.
-
-</section><section>
-
-## Kernel Trick in SVM
-
-הרעיון ב kernel trick הינו לעשות שימוש בפונקציית הגרעין על מנת להשתמש ב SVM עם מאפיינים מבלי לחשב את $\Phi$ באופן ישיר.
+$$
+\frac{dy}{d\theta_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}\frac{dz_2}{d\theta_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)\frac{d}{d\theta_2}h_2(z_1;\theta_2)
+$$
 
 <br/>
 
-בעבור פונקציית מאפיינים $\Phi$ עם פונקציית גרעין $K$ הבעיה הדואלית של SVM הינה:
+בכדי לחשב את הביטוי שקיבלנו עלינו לבצע את שני השלבים הבאים:
 
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_jK(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)}) \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-בעיית אופטימיזציה זו מגדירה את המשתנים $\{\alpha_i\}$ בלי צורך לחשב את $\Phi$ באופן מפורש בשום שלב.
+- לחשב את כל ה $z_i$ לאורך הרשת (forward pass).
+- לחשב את כל הנגזרות מהמוצא של הרשת ועד לנקודה בה נמצא הפרמטר שלפיו רוצים לגזור (backword-pass).
 
 </section><section>
 
-## Kernel Trick in SVM
+## Back-Propagation - דוגמא מעט יותר מורכבת
 
-באופן כללי, הפרמטר $\boldsymbol{w}$ נתון על ידי:
+<div class="imgbox" style="max-width:900px">
 
-$$
-\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})
-$$
+![](./assets/back_prop.png)
 
-אשר מצריך חישוב של $\Phi$. ניתן להימנע מכך על ידי הצבה של $\boldsymbol{w}$ כמו שהוא ישירות לחזאי.
+</div>
+
+<br/>
+
+נחשב את הנגזרת של $y_1$ לפי $\theta_3$.
+
+</section><section>
+
+## Back-Propagation - דוגמא מעט יותר מורכבת
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/back_prop.png)
+
+</div>
+
+<br/>
+
+נפרק את הנגזרת של $\frac{dy_1}{d\theta_3}$ בדומה למה שחישבנו קודם:
 
 $$
 \begin{aligned}
-h(\boldsymbol{x})
-&=\text{sign}(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}(\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}(\sum_i\alpha_iy^{(i)}K(\boldsymbol{x}^{(i)},\boldsymbol{x})+b)\\
+\frac{dy_1}{d\theta_3}
+&=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}\frac{dz_6}{dz_3}\frac{dz_3}{d\theta_3}\\
+&=\frac{d}{dz_7}h_8(z_7;\theta_8)\frac{d}{dz_6}h_7(z_6;\theta_7)\frac{d}{dz_3}h_6(z_5;\theta_6)\frac{d}{d\theta_3}h_3(z_2;\theta_3)
 \end{aligned}
 $$
 
-בדרך זו אנו יכולים לאמן להשתמש בחזאי אשר אומן בעבור וקטור מאפיינים $\Phi$ מבלי לחשב בשום שלב את $\Phi$ באופן מפורש.
+</section><section>
+
+## Back-Propagation - דוגמא מעט יותר מורכבת
+
+<div class="imgbox" style="max-width:600px">
+
+![](./assets/back_prop.png)
+
+</div>
+
+$$
+\begin{aligned}
+\frac{dy_1}{d\theta_3}
+&=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}\frac{dz_6}{dz_3}\frac{dz_3}{d\theta_3}\\
+&=\frac{d}{dz_7}h_8(z_7;\theta_8)\frac{d}{dz_6}h_7(z_6;\theta_7)\frac{d}{dz_3}h_6(z_5;\theta_6)\frac{d}{d\theta_3}h_3(z_2;\theta_3)
+\end{aligned}
+$$
+
+- נריץ את ה forward-pass בשביל לחשב את ערכי ה $z_i$.
+- נריץ את ה backword-pass בו נחשב את הנגזרות מהמוצא של הרשת עד לנגזרת של $h_3$.
 
 </section>
 </div>

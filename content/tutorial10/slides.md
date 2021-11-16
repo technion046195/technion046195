@@ -5,941 +5,419 @@ template: slides
 slides_pdf: true
 ---
 
-
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
-<section>
 
-# תרגול 10 - SVM ופונקציות גרעין (Kernels)
+# תרגול 10 - MLP and Back-propagetion
 
 <div dir="ltr">
 <a href="/assets/tutorial10_slides.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 </section><section>
 
-
 ## תקציר התיאוריה
-
-**הערה**: בפרק זה נעסוק בסיווג בינארי ונסמן את התוויות של שתי המחלקות ב $1$ ו $-1$.
 
 </section><section>
 
-### תזכורת - גאומטריה של המישור
+### Artificial Neural Networks (ANN)
+
+* רשתות ניורונים מלאכותיות הינן שיטה לבניה של פונקציות פרמטריות.
+* במקור, השיטה הינה בהשראת רשתות נוירונים ביולוגיות.
+* ברשתות נוירונים מלאכותיות נשלב הרבה פונקציות פרמטריות פשוטות על מנת לקבל מודל אשר יכול לייצג פונקציות מורכבות.
+* לרוב, הפונקציות הפשוטות יקבלו מספר משתנים ויחזירו סקלר.
+
+</section><section>
+
+<div class="imgbox" style="max-width:800px">
+
+
+
+![](../lecture10/assets/ann.png)
+
+</div>
+
+
+
+</section><section>
+
+ לרוב נבחר את הפונקציות הפשוטות להיות מהצורה של:
+$$
+h(\boldsymbol{x};\boldsymbol{w},b)=\varphi(\boldsymbol{w}^{\top}\boldsymbol{x}+b)
+$$
+
+*  $\varphi$ סקאלרית לא לינארית ומכונה פונקציית ההפעלה.
+* בחירות נפוצות של הפונקציית ההפעלה הינן:
+  * הפונקציה הלוגיסטית (סיגמואיד): $\varphi(x)=\sigma(x)=\frac{1}{1+e^{-x}}$
+  * טנגנס היפרבולי: $\varphi(x)=\tanh\left(x/2\right)$
+  * ReLU (Rectified Linear Unit):  $\varphi(x)=\max(x,0)$
+
+</section><section>
+
+### מושגים:
+
+- **יחידות נסתרות** (**hidden units**): הנוירונים אשר אינם מחוברים למוצא הרשת (אינם נמצאים בסוף הרשת).
+- **רשת עמוקה** (**deep network**): רשת אשר מכילה מסלולים מהכניסה למוצא, אשר עוברים דרך יותר מיחידה נסתרת אחת.
+- **ארכיטקטורה**: הצורה שבה הנוירונים מחוברים בתוך הרשת.
+
+</section><section>
+
+### 
+
+### מוטיבציה
+
+* רשתות נוירונים  יכולות לשמש כפונקציה פרמטרית לכל דבר.
+* נשתמש בהן בקורס למטרות הבאות:
+  * פתרון בעיות סיווג בגישה הדיסקרימינטיבית הסתברותית.
+  * פתרון בעיות רגרסיה בשיטת ה ERM.
+* לרוב, נפתור את בעיות האופטימיזציה של מציאת הפרמטרים בעזרת gradient descent.
+  * ניעזר ב- back-propagation על מנת לחשב את הנגזרות של הרשת על פי הפרמטריים.
+
+
+
+הערה: נשתמש בוקטור $\boldsymbol{\theta}$ אשר יאגד את כל הפרמטרים של הרשת (הפרמטרים של כל הנוירונים).
+
+</section><section>
+
+#### הערה לגבי השם loss
+
+* עד כה השתמשנו בשם loss בהקשר של פונקציות risk (הקנס שמקבלים על שגיאת חיזוי בודדת מסויימת).
+* בהקשר של רשתות נוירונים משתמשים לרוב במושג זה על מנת לתאר את הפונקציית המטרה (ה objective) שאותו רוצים למזער בבעיית האופטימיזציה.
+
+* בכדי למנוע בלבול, בקורס זה נשתדל להיצמד להגדרה המקורית של פונקציית ה loss (שמגדירה את פונקציית ה risk) ונמשיך להשתמש בשם פונקציית מטרה או objective בכדי לתאר את הביטוי שאותו אנו רוצים למזער.
+
+</section><section>
+
+### Back-Propagation
+
+* Back-propagation שימוש בכלל השרשת על מנת לחשב את הנגזרות של רשת נוירונים.
+
+* תזכורת לכלל השרשרת:
+
+$$
+\begin{aligned}
+\frac{d}{dx} f(z_1(x),z_2(x),z_3(x))
+=& &\left(\frac{d}{dz_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
+ &+&\left(\frac{d}{dz_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
+ &+&\left(\frac{d}{dz_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
+\end{aligned}
+$$
+
+</section><section>
+
+#### דוגמא (מההרצאה)
+
+נסתכל על הרשת הבאה:
+
+<div class="imgbox" style="max-width:900px">
+
+
+![](../lecture10/assets/back_prop.png)
+
+</div>
+
+* עבור $\boldsymbol{x}$ ו $\boldsymbol{\theta}$ נתונים:
+* נרצה לחשב את הנזרות של מוצא הרשת $\boldsymbol{y}$ לפי הפרמטרים $\boldsymbol{\theta}$.
+
+</section><section>
+
+נסתכל לדוגמא על הנזגרת של $y_1$ לפי $\theta_3$. לשם הנוחות נסמן ב $z_i$ את המוצא של הניורון $h_i$.
+
+נוכל לפרק את $\frac{dy}{d\theta_3}$ על פי כלל השרשת:
+
+$$
+\frac{dy_1}{d\theta_3}
+=\frac{dy_1}{dz_3}\frac{dz_3}{d\theta_3}
+=\frac{dy_1}{dz_3}\frac{dh_3}{d\theta_3}
+$$
+
+נוכל לפרק גם את $\frac{dy_1}{dz_3}$ על פי כלל השרשרת:
+
+$$
+\frac{dy_1}{dz_3}
+=\frac{dy_1}{dz_6}\frac{dz_6}{dz_3}
+=\frac{dy_1}{dz_6}\frac{dh_6}{dz_3}
+$$
+
+ונוכל להמשיך ולפרק את $\frac{dy_1}{dz_6}$:
+
+$$
+\frac{dy_1}{dz_6}
+=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}
+=\frac{dh_8}{dz_7}\frac{dh_7}{dz_6}
+$$
+
+</section><section>
+
+* זאת אומרת שאם נדע לחשב את הנגזרות של $\frac{dh_i}{dz_i}$ ו $\frac{dh_i}{d\theta_i}$ נוכל לחשב את הגזרות לפי כל הפרמטרים.
+* נסתכל לדוגמא על הנגזרת:
+
+$$
+\frac{d}{d\theta_6}h_6(z_3,z_4;\theta_6)
+$$
+
+* ראשית, נגזור את הפונקציה $h_6$ ונציב את הערכים של $z_3$, $z_4$ ו $\theta_6$.
+* בכדי לחשב את הערכים של $z_i$ עלינו להעביר את $\boldsymbol{x}$ דרך הרשת ולשמור את כל ערכי הביניים $z_i$. חישוב זה של ערכי הביניים נקרא ה **forward pass**.
+
+</section><section>
+
+לאחר שחישבנו את ערכי הביניים $z_i$, נוכל להתחיל לחשב את כל הנגזרות של הרשת מהמוצא לכיוון הכניסה. זאת אומרת:
+
+1. נחשב את: $\frac{dy_1}{d\theta_8}$, $\frac{dy_1}{dz_7}$.
+2. נשתמש ב $\frac{dy_1}{dz_7}$ בכדי לחשב את $\frac{dy_1}{d\theta_7}$, $\frac{dy}{dz_5}$, $\frac{dy}{dz_6}$.
+3. נשתמש ב $\frac{dy_1}{dz_6}$ בכדי לחשב את $\frac{dy_1}{d\theta_6}$, $\frac{dy}{dz_3}$, $\frac{dy}{dz_4}$.
+
+וכן הלאה. מכיוון שבשלב זה אנו מחשבים את הנזגרות מהמוצא לכיוון הכניסה שלב זה נקרא ה **backward pass** ומכאן גם מקבלת השיטה את שמה.
+
+</section><section>
+
+### MultiLayer Perceptron (MLP)
+
+* ארכיטקטורה נפוצה לרשת נוירונים  ה- **MLP**. 
+* במודל זה הנוירונים מסודרים בשתייים או יותר שכבות (layers) של נוירונים.
+* השכבות ב MLP הם שכבות שמכונות **Fully Connected (FC)**:
+  * כל נוירון מוזן מ**כל** הנוריונים שבשכבה שלפניו.
+
+<div class="imgbox" style="max-width:400px">
+
+
+
+![](../lecture10/assets/mlp.png)
+
+</div>
+
+
+
+</section><section>
 
 <div class="imgbox" style="max-width:300px">
 
 
-![](../lecture10/assets/plain_geometry.png)
+
+![](../lecture10/assets/mlp.png)
 
 </div>
 
-* מישור מתואר באופן הבא $\boldsymbol{w}^{\top}\boldsymbol{x}+b=0$.
-* המישור מחלק את המרחב ומגדיר צד חיובי וצד שלילי.
+הניורונים הם מהצורה:
+$$
+h_{i,j}(\boldsymbol{z}_{i-1};\boldsymbol{w}_{i,j},b_{i,j})=\varphi(\boldsymbol{w}_{i,j}^T\boldsymbol{z}_{i-1}+b_{i,j})
+$$
 
--  $\boldsymbol{w}$ הינו הנורמל למישור.
-- המרחק של המישור מהראשית הינו $\frac{b}{\lVert\boldsymbol{w}\rVert}$.
-- המרחק של נקודה $\boldsymbol{x}_0$ מהמישור הינה $\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}_0+b)$. 
-- $\boldsymbol{w}$ ו $b$ מוגדרים עד כדי קבוע.
+* הפרמטרים הנלמדים הינם המשקולות $\boldsymbol{w}_{i,j}$ ואברי היסט $b_{i,j}$ בקומבינציה הלניארית שמכיל כל נוירון $h_{i,j}$.
+
+ה Hyperparameters של MLP הינם:
+
+- מספר השכבות
+- מספר הנוירונים בכל שכבה
+- פונקציית האקטיבציה
 
 </section><section>
 
-### מסווג לינארי
 
-מסווג לינארי הוא מסווג מהצורה של
 
-$$
-h(\boldsymbol{x})=
-\text{sign}(\boldsymbol{w}^{\top}\boldsymbol{x}+b)
-=\begin{cases}
-1 & \boldsymbol{w}^{\top}\boldsymbol{x}+b>0\\
--1 & \text{else}
-\end{cases}
-$$
+## תרגיל 8.1 - Back propagation in MLP
 
-עם $\boldsymbol{w}$ ו- $b$ כל שהם.
+נפתור בעיית רגרסיה בעזרת ERM ורשת ה MLP הבאה:
 
-* המסווג מחלק את המרחב לשני צידיו של המישור:
-  *  $\boldsymbol{w}^{\top}\boldsymbol{x}+b=0$
-  * מישור זה מכונה מישור ההפרדה.
+* כניסה באורך 2
+* שכבה נסתרת אחת ברוחב 2
+* יציאה באורך 1 (מוצא סקלרי) 
 
-</section><section>
+<div class="imgbox" style="max-width:600px">
 
-### Signed distance (מרחק מסומן)
-
-נסתכל על בעיית סיווג בינארית עם תוויות $\text{y}=\pm1$.
-
-*  נגדיר את ה- signed distance של דגימה כל שהיא ממשטח ההפרדה באופן הבא:
-
-$$
-d=\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}+b)y
-$$
-
-* זהו המרחק של נקודה ממהמישור.
-* כאשר  $y$ תואם למיקום הנקודה $x$ ביחס למישור, הערך חיובי.
-
-</section><section>
-
-### 
-
-<div class="imgbox" style="max-width:500px">
-
-![](../lecture10/assets/signed_distance.png)
+![](../tutorial10/assets/ex8_1.png)
 
 </div>
 
 
 
-</section><section>
 
-### 
-
-### פרידות לינארית (linear separability)
-
-* בבעיות סיווג בינארי,  נאמר על המדגם שהוא פריד לינארית אם קיים מסווג לינארי אשר מסווג את המדגם בצורה מושלמת (בלי טעויות סיווג).
-
-* כאשר המדגם פריד לינארית יהיו יותר ממסווג לינארי אחד אשר יכול לסווג בצורה מושלמת את המדגם.
-
-<div class="imgbox" style="max-width:700px">
-
-![](../lecture10/assets/linear_separable.png)
-
-</div>
-
-</section><section>
-
-### 
-
-### Support Vector Machine (SVM)
-
-* אלגוריתם דיסקרימינטיבי לסיווג בינארי אשר מחפש מסווג לינארי אשר יסווג בצורה טובה את המדגם.
-* אלגוריתם זה יבחר את המסווג בעל השוליים המירביות מכל המסווגים שמצליחים לסווג את המדגם.
 
 
 
 </section><section>
-
-### 
-
-#### Hard SVM
-
-*  ניתן לשימוש אך ורק כאשר המדגם פריד לינארית.
-* נחפש את המסווג הלינארי אשר בעבורו ה signed distance המינימאלי על ה train set הוא המקסימאלי:
-
-$$
-\boldsymbol{w}^*,b^*=\underset{\boldsymbol{w},b}{\arg\max}\quad \underset{i}{\min}\left\{\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\right\}
-$$
-
-*  בעיה זו שקולה לבעיית האופטימיזציה הבאה:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*=
-\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1\quad\forall i
-\end{aligned}
-$$
-
-בעיית אופטימיזציה זו מכונה הבעיה הפרימאלית.
-
-
-
-</section><section>
-
-### 
-
-##### Margin - שוליים
-
-* בכדי להבין את המשמעות של בעיית האופטימיזציה שקיבלנו נגדיר את המושג השוליים (margin) של המסווג.
-* האיזור של ה margin מוגדר כאיזור כאיזור סביב משטח ההפרדה אשר נמצא בתחום:
-
-$$
-1\geq\boldsymbol{w}^{\top}\boldsymbol{x}+b\geq-1
-$$
-
-<div class="imgbox" style="max-width:500px">
-
-
-![](../lecture10/assets/margin.png)
-
-</div>
-
-
-
-</section><section>
-
-<div class="imgbox" style="max-width:500px">
-
-![](../lecture10/assets/margin.png)
-
-</div>
-
-
-
-* רוחב איזור זה נקבע על פי הגודל של הוקטור $\boldsymbol{w}$ ושווה ל $\frac{2}{\lVert\boldsymbol{w}\rVert}$.
-
-* האילוץ $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1$, אשר מופיע בבעיית האופטימיזציה הפרימאלית, דורש למעשה שכל הנקודות יסווגו נכונה ו**ימצאו מחוץ ל margin**.
-* בעיית האופטימיזציה מחפשת את הפרמטרים של המישור בעל ה margin הגדול ביותר אשר מקיים תנאי זה.
-
-
-
-</section><section>
-
-### 
-
-##### Support Vectors
-
-* ה- support vectors מוגדרים כנקודות אשר יושבות על השפה של ה margin, עבור פתרון של בעיית האופטימיזציה.
-* נקודות אלו מקיימות  $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$.
-* אלו הנקודות אשר ישפיעו על הפתרון של בעיית האופטימיזציה.
-* לכן, שהסרה או הזזה קטנה של נקודות שאינם support vectors לא תשנה את הפתרון.
-
-
-
-</section><section>
-
-### 
-
-##### הבעיה הדואלית
-
-* דרך שקולה נוספת לרישום בעיית האופטימיזציה הינה על ידי הגדרת $N$ משתני עזר נוספים $\{\alpha_i\}_{i=1}^N$.
-* בעזרת משתנים אלו ניתן לרשום את בעיית האופטימיזציה באופן הבא:
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-מתוך המשתנים $\{\alpha_i\}_{i=1}^N$ ניתן לשחזר את $\boldsymbol{w}$ אופן הבא:
-
-$$
-\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\boldsymbol{x}^{(i)}
-$$
-
-
-
-</section><section>
-
-### 
-
-### קשר בין הבעיה הדואלית והפרימאלית:
-
-| .                                      | .                                                      | .               |
-| -------------------------------------- | ------------------------------------------------------ | --------------- |
-| נקודות רחוקות מה margin                   | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ | $\alpha_i=0$    |
-| נקודות על ה margin (שהם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ | $\alpha_i\geq0$ |
-
-- אם $\alpha_i>0$ אז $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$ (אבל לא להיפך)
-- אם $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$ אז $\alpha_i=0$ (אבל לא להיפך)
-
-* את $b$ נחשב על ידי בחירת SV אחד וחילוץ את $b$ מתוך $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$.
-
-
-
-</section><section>
-
-### 
-
-### Soft SVM
-
-* Soft SVM מתייחס למקרה שבו המדגם אינו פריד לינארית.
-* במקרה זה עדיין מגדירים את ה margin בצורה דומה אך מאפשרים למשתנים להיכנס לתוך ה margin ואף לחצות אותה לצד הלא נכון של מישור ההפרדה.
-* על כל חריגה כזו משלמים קנס ב objective שאותו מנסים למזער.
-
-</section><section>
-
-### 
-
-* את החריגה של הדגימה ה $i$ נסמן ב $\frac{1}{\lVert\boldsymbol{w}\rVert}\xi_i$. לנקודות שהם בצד הנכון של המישור ומחוץ ל margin $xi_i$ יהיה 0.
-
-<div class="imgbox" style="max-width:400px">
-
-
-![](../lecture10/assets/svm_xi.png)
-
-</div>
-
-* המשתנים $\xi_i$ נקראים **slack variables**.
-
-
-
-</section><section>
-
-### 
-
-* בעיית האופטימיזציה הפרימאלית תהיה:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*,\{\xi_i\}^*=
-\underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
-\text{s.t.}\quad
-    &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
-    &\xi_i\geq0\quad\forall i
-\end{aligned}
-$$
-
-*  $C$ הוא hyper-parameter שקובע את גודל הקנס  על חריגה.
-
-* הבעיה הדואלית הינה:
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &0\leq\alpha_i\leq C\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-
-
-</section><section>
-
-### 
-
-* ה support vectors מוגדרות להיות הנקודות שמקיימות $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
-
-תכונות:
-
-| .                                         | .                                                            | .                     |
-| ----------------------------------------- | ------------------------------------------------------------ | --------------------- |
-| נקודות שמסווגות נכון ורחוקות מה margin            | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)>1$       | $\alpha_i=0$          |
-| נקודות על ה margin (שהם support vectors)    | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$       | $0\leq\alpha_i\leq C$ |
-| נקודות שחורגות מה margin (גם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1-\xi_i$ | $\alpha_i=C$          |
-
-
-
-</section><section>
-
-### 
-
-## פונקציות גרעין
-
-### מאפיינים: תזכורת
-
-* נוכל תמיד לחליף את וקטור המשתנים $\boldsymbol{x}$ שעליו פועל האלגוריתם בוקטור חדש $\boldsymbol{x}_{\text{new}}=\Phi(\boldsymbol{x})$.
-* $\Phi$ היא פונקציה אשר נבחרה מראש ונקראת פונקציית המאפיינים.
-
-
-
-</section><section>
-
-### 
-
-### פונקציות גרעין
-
-* החישוב של $\Phi(\boldsymbol{x})$ יכול להיות יקר.
-* לעיתים, קיימת דרך לחשב בצורה יעילה את הפונקציה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\Phi(\boldsymbol{x}_1)^{\top}\Phi(\boldsymbol{x}_2)$ אשר נקראת פונקציית גרעין
-  * ישנם אפילו מקרים שבהם הוקטור המאפיינים אינסופי!
-
-
-
-* ישנם קריטריונים תחתם פונקציה מסויימת $K(\boldsymbol{x}_1,\boldsymbol{x}_2)$ היא פונקציית גרעין בעבור וקטור מאפיינים מסויים. בקורס לא נכנס לכך.
-
-</section><section>
-
-### 
-
-
-
-נציג שתי פונקציות גרעין נפוצות:
-
-* גרעין גאוסי:
-*  $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\frac{\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert_2^2}{2\sigma^2}\right)$
-  * כאשר $\sigma$ פרמטר שיש לקבוע.
-
-* גרעין פולינומיאלי: $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=(1+\boldsymbol{x}_1^{\top}\boldsymbol{x}_2)^p$
-  * כאשר $p\geq1$ פרמטר שיש לקבוע.
-
-פונקציית המאפיינים שמתאימות לגרעינים אלו הם מסורבלות לכתיבה ולא נציג אותם כאן.
-
-
-
-</section><section>
-
-### 
-
-### Kernel Trick in SVM
-
-* טריק זה מאפשר להשתמש ב SVM עם מאפיינים מבלי לחשב את $\Phi$ באופן ישיר באמצעות פונקציית גרעין.
-
-*  עבור פונקציית מאפיינים $\Phi$ עם פונקציית גרעין $K$ הבעיה הדואלית של SVM הינה:
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_jK(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)}) \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-* בעיית זו מגדירה את המשתנים $\{\alpha_i\}$ בלי צורך לחשב את $\Phi$ באופן מפורש בשום שלב.
-
-</section><section>
-
-* הפרמטר $\boldsymbol{w}$ נתון על ידי:
-
-$$
-\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})
-$$
-
-* כדי לחשב את $\boldsymbol{w}$ באופן מפורש יש לחשב את $\Phi$.
-* עם זאת, אך ניתן להמנע מכך - 
-* נציב את הנוסחא ל $\boldsymbol{w}$ ישירות לתוך המסווג:
-  בכדי להמנע מהחישוב של $\Phi$ גם במסווג נשתמש בעובדה ש:
-
-$$
-\begin{aligned}
-h(\boldsymbol{x})
-&=\text{sign}(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}(\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}(\sum_i\alpha_iy^{(i)}K(\boldsymbol{x}^{(i)},\boldsymbol{x})+b)\\
-\end{aligned}
-$$
-
-
-
-</section><section>
-
-### 
-
-## תרגיל 10.1 - 2 Support Vectors
-
-עבור מדגם המכיל 2 נקודת, אחת מכל מחלקה, הפתרון של בעיית hard SVM מישור ההפרדה יעבור בדיוק במרכז בין 2 הנקודות, יהיה ניצב לוקטור המחבר את שתי הנקודות והשוליים של ה margin:
-
-$$
-\boldsymbol{w}=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right), \quad b=-\frac{1}{2}\left(\boldsymbol{x}^{(1)}+\boldsymbol{x}^{(2)}\right)^{\top}\boldsymbol{w}
-$$
 
 
 
 <div class="imgbox" style="max-width:400px">
 
-
-![](./assets/ex_10_1.png)
+![](../tutorial10/assets/ex8_1.png)
 
 </div>
 
 
 
+* ב- $h_{1,1}$ ו $h_{1,2}$ יש פונקציית אקטיבציה מסוג ReLU
+* ב- $h_2$ אין פונקציה אקטיבציה.
+
+$$
+\begin{aligned}
+h_{1,1}(\boldsymbol{x};\boldsymbol{w}_{1,1},b_1)&=\max(\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1,0)\\
+h_{1,2}(\boldsymbol{x};\boldsymbol{w}_{1,2},b_1)&=\max(\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1,0)\\
+h_2(\boldsymbol{z};\boldsymbol{w}_2,b_2)&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2
+\end{aligned}
+$$
+
+**שימו לב:** איבר ההיסט בשכבה הראשונה $b_1$ משותף לשתי הנוירונים בשכבה זו.
+
+
+
 </section><section>
 
-### 
 
-**1) הראו זאת על ידי פתרון הבעיה הדואלית.**
+
+נרכז את כל הפרמטרים של הרשת לוקטור פרמטרים אחד:
+$$
+\boldsymbol{\theta}=[\boldsymbol{w}_{1,1}^{\top},\boldsymbol{w}_{1,2}^{\top},b_1,\boldsymbol{w}_2^{\top},b_2]^{\top}
+$$
+
+ונסמן את הפונקציה שאותה הרשת מממשת ב $\hat{\boldsymbol{y}}=f(\boldsymbol{x};\boldsymbol{\theta})$.
+
+</section><section>
+
+**1)** בעבור מדגם נתון $\mathcal{D}=\{\boldsymbol{x}^{(i)},y^{(i)}\}_{i=1}^N$ ופונקציית מחיר מסוג RMSE רשמו את בעיית האופטימיזציה שיש לפתור. בטאו את תשובתכם בעזרת הפונקציה $f$.
+
+</section><section>
 
 #### פתרון:
 
-הבעיה הדואלית הינה:
+פונקציית המחיר (סיכון) של RMSE נתונה על ידי:
 
 $$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
+\sqrt{\mathbb{E}\left[(\hat{\text{y}}-\text{y})^2\right]}
+=\sqrt{\mathbb{E}\left[(f(\mathbf{x};\boldsymbol{\theta})-\text{y})^2\right]}
 $$
-
-* נניח בלי הגבלת הכלליות ש $y^{(1)}=1$ ו $y^{(2)}=-1$.
-
-</section><section>
-
-נסתכל על האילוץ בשורה האחרונה:
-$$
-\begin{aligned}
-\sum_{i=1}^2\alpha_i y^{(i)}=0\\
-\Leftrightarrow\alpha_1-\alpha_2=0\\
-\Leftrightarrow\alpha_1=\alpha_2=\alpha
-\end{aligned}
-$$
-
-* מכאן שהמשתנה היחד בבעיה הינו $\alpha$.
-
-</section><section>
-
-* בעיית האופטימיזציה (ללא האילוצים) תהיה:
-
-$$
-\begin{aligned}
-\alpha
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\sum_{i,j}y^{(i)}y^{(j)}\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad &\alpha\geq0\\
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\left(
-  \lVert\boldsymbol{x}^{(1)}\rVert_2^2
-  -\boldsymbol{x}^{(1)\top}\boldsymbol{x}^{(2)}
-  -\boldsymbol{x}^{(2)\top}\boldsymbol{x}^{(1)}
-  +\lVert\boldsymbol{x}^{(2)}\rVert_2^2
-  \right)\\
-\text{s.t.}\quad &\alpha\geq0\\
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2\\
-\text{s.t.}\quad &\alpha\geq0\\
-\end{aligned}
-$$
-
-
-
-</section><section>
-
-### 
-
-ניתן לפתור את הבעיה על ידי גזירה והשוואה ל0:
-$$
-\begin{aligned}
-&\frac{d}{d\alpha}2\alpha-\frac{\alpha^2}{2}\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2=0\\
-\Leftrightarrow&2=\alpha\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2\\
-\Leftrightarrow&\alpha=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\\
-\end{aligned}
-$$
-
-את $\boldsymbol{w}$ נמצא על ידי:
-
-$$
-\boldsymbol{w}
-=\sum_i\alpha_iy^{(i)}\boldsymbol{x}^{(i)}
-=\alpha(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})
-=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right)
-$$
-
-</section><section>
-
-את $b$ מוצאים על ידי בחירת support vector אחד מתוך המשוואה $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$.
-
-* נסתכל על הנקודה הראשונה:
-
-$$
-\begin{aligned}
-&y^{(1)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b\right)=1\\
-\Leftrightarrow&\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b=1\\
-\Leftrightarrow&b=1-\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}
-=\frac{\boldsymbol{w}^{\top}\boldsymbol{w}}{\lVert\boldsymbol{w}\rVert_2^2}-\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}
-=\boldsymbol{w}^{\top}\left(\frac{\boldsymbol{w}}{\lVert\boldsymbol{w}\rVert_2^2}-\boldsymbol{x}^{(1)}\right)\\
-\Leftrightarrow&b=\boldsymbol{w}^{\top}\left(\frac{1}{2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right)-\boldsymbol{x}^{(1)}\right)\\
-\Leftrightarrow&b=-\frac{1}{2}\left(\boldsymbol{x}^{(1)}+\boldsymbol{x}^{(2)}\right)^{\top}\boldsymbol{w}
-\end{aligned}
-$$
-
-</section><section>
-
-### 
-
-
-
-#### 2) הראו זאת על ידי פתרון הבעיה הפרימאלית.
-
-
-
-הבעיה הפרימלית הינה:
-
-$$
-\begin{aligned}
-\boldsymbol{w}^*,b^*=
-\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1\quad\forall i
-\end{aligned}
-$$
-
-* במקרה שבו יש רק נקודהאחת מכל מחלקה שניהם בהכרח יהיו support vectors ויקיימו $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$.
-
-* נניח בלי הגבלת הכלליות ש $y^{(1)}=1$ ו $y^{(2)}=2$.
-
-</section><section>
-
-שני האילוצים שהנקודות אלו מגדירות הם:
-$$
-\begin{aligned}
-&\begin{cases}
-    y^{(1)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b\right)=1\\
-    y^{(2)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(2)}+b\right)=1
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-    \left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b\right)=1\\
-    -\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(2)}+b\right)=1
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-    \boldsymbol{w}^{\top}\boldsymbol{x}^{(1)}+b=1\\
-    \boldsymbol{w}^{\top}\boldsymbol{x}^{(2)}+b=-1
-\end{cases}\\
-\Leftrightarrow&\begin{cases}
-    b=-\frac{1}{2}\left(\boldsymbol{x}^{(1)}+\boldsymbol{x}^{(2)}\right)^{\top}\boldsymbol{w}\\
-    \boldsymbol{w}^{\top}(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})=2
-\end{cases}\\
-\end{aligned}
-$$
-
-</section><section>
-
-נוכל להשתמש באילוץ השני ולכתוב בעזרתו את בעיית האופטימיזציה רק על $\boldsymbol{w}$:
-$$
-\begin{aligned}
-\boldsymbol{w}^*=
-\underset{\boldsymbol{w}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&\boldsymbol{w}^{\top}(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})=2
-\end{aligned}
-$$
-
-* בעיה זו מחפשת את ה $\boldsymbol{w}$ בעל האורך המינימאלי כך שהמכפלה הוקטורית שלו עם $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ היא 2. הוקטור הזה יהיה וקטור בכיוון של $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ ובאורך של $2/\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2$
-* מכאן:
-
-$$
-\boldsymbol{w}
-=\frac{2}{\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2^2}\left(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\right)
-$$
-
-
-
-</section><section>
-
-### 
-
-## תרגיל 10.2 - Hard SVM
-
-נתון המדגם הבא:
-
-<div dir="ltr">
-
-| .            | 1  | 2  | 3  | 4  | 5  | 6  |
-| ------------ | -- | -- | -- | -- | -- | -- |
-| $\text{y}$   | -1 | -1 | -1 | 1  | 1  | 1  |
-| $\text{x}_1$ | 1  | 1  | 4  | 6  | 7  | 10 |
-| $\text{x}_2$ | 6  | 10 | 11 | 1  | 6  | 4  |
-
-</div>
-
-</section><section>
-
-### 
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/ex_10_2.png)
-
-</div>
-
-
-
-
-
-</section><section>
-
-### 
-
-#### **1)** מצא את מסווג ה soft SVM המתאים למדגם זה. מי הם וקטורי התמיכה?
 
 <div class="fragment">
 
-* בעיית האופטימיזציה הפרימאלית אותה נרצה לפתור הינה:
-
+הסיכון האמפירי מתקבל על ידי החלפה של התחולת בממוצע על המדגם:
 $$
-\begin{aligned}
-\boldsymbol{w}^*,b^*=
-\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2 \\
-\text{s.t.}\quad&y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1\quad\forall i
-\end{aligned}
+\sqrt{\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2}
 $$
 
 </div><div class="fragment">
 
-* באופן כללי פתרון בעיות מסוג זה באופן ידני הוא קשה, אך בעבור מקרים פשוטים נוכל לפתור זאת תוך שימוש בעיקרון הבא:
-  * *במידה ומצאנו את הפיתרון האופטימאלי על תת מדגם מתוך המדגם המלא, ומתקיים שבעבור הפתרון שמצאנו, הנקודות שאינם חלק מתת המדגם נמצאות מחוץ ל margin, אז הפתרון הוא בהכרח הפתרון האופטימאלי בעבור המדגם כולו.*
-
-</div>
-
-
-
-</section><section>
-
-
-
-* עקרון זה נכון בגלל העuבדה שהוספה של אילוצים לבעיית מינימיזציה יכולה רק להגדיל את ה objective המינימאלי.
-* המשמעות היא שניתן לנחש את ה support vectors ולפתור את הבעיה רק בעבור נקודות אלו תוך התעלמות משאר הנקודות.
-* לאחר שנפתור את הבעיה על הנקודות שניחשנו יהיה עלינו לבדוק אם שאר נקודות במדגם מחוץ ל margin.
-* אם אכן שאר הנקודות מחוץ ל margin אז פתרנו את הבעיה ואם לא אז עלינו לנחש נקודות אחרות.
-* בעבור ה support vectors האילוצים של $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1$ הופכים להיות אילוצי שיוון שאיתם הרבה יותר קל לעבוד.
-
-</section><section>
-
-ננסה לנחש מהם ה support vectors. נתחיל ב 0 ונגדיל בהדרגה את כמות ה support vectors.
-
-</section><section>
-
-
-
-##### <span dir="ltr">0 or 1 Support Vectors</span>
-
-<div class="fragment">
-
-* באופן כללי בעבור מדגם "נורמלי" אשר מכיל נקודות משני המחלקות שאותם יש לסווג, מקרים אלו לא יכול להתקיים.
-* באופן תיאורטי במקרה המוונן שבו המדגם מכיל רק תוויות מסוג אחד אז ניתן להגדיר את בצורות שונות את כמות ה support vectors, אך מקרים אלו לא מאד רלוונטיים)
-
+בעיית האופטימיזציה שנרצה לפתור הינה למצוא את הפרמטרים שימזערו את הסיכון האמפירי:
+$$
+\underset{\boldsymbol{\theta}}{\arg\min}\sqrt{\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2}
+=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
+$$
 </div>
 
 </section><section>
 
-### 
+**2)** נפתור את בעיית האופטימיזציה בעזרת gradient descent עם גדול קצב לימוד $\eta$.
 
-
-
-##### <span dir="ltr">2 Support Vectors</span>
-
-<div class="fragment">
-
-* על פי התרגיל הקודם בעבור שני support vectors שמישור ההפרדה יעבור בדיוק במרכז בין 2 הנקודות, יהיה ניצב לוקטור המחבר את שתי הנקודות והשוליים של ה- margin יעברו דרך הנקודות.
-* ננסה לחפש 2 נקודות שיכולות להיות support vectors.
-
-
-
-<div class="imgbox" style="max-width:500px">
-
-![](./assets/ex_10_2.png)
-
-</div>
+* רשמו את כלל העדכון של הפרמטרים של המודל $\boldsymbol{\theta}$ על ידי שימוש בגרדיאנט של הרשת לפי הפרמטרים, $\nabla_{\boldsymbol{\theta}}f(\boldsymbol{x};\boldsymbol{\theta})$.
 
 </section><section>
 
-### 
-
-*  נראה שכל בחירה של זוג נקודות יצור איזור של margin שמכיל נקודה אחרת ולכן לא מקיים את האילוצים.
-* לכן הפתרון לא יכול להכיל רק שני support vectors.
-
-<div class="imgbox" style="max-width:900px">
-
-![](./assets/ex_10_2_2_sv.png)
-
-</div>
-
-</section><section>
-
-### 
-
-
-
-##### <span dir="ltr">3 Support Vectors</span>
-
-
-
-
-
-<div class="imgbox" style="max-width:350px">
-
-
-![](./assets/ex_10_2.png)
-
-</div>
-
-<div class="fragment">
-
-ישנם שתי שלשות שיתכן שיהיו ה support vectors של הפתרון:
-
-- $\{1,3,5\}$
-- $\{3,4,5\}$
-
-</div>
-
-
-</section><section>
-
-* נסתכל, ראשית על תת המדגם {3,4,5}. 
-
-<div class="imgbox" style="max-width:350px">
-
-
-![](./assets/ex_10_2.png)
-
-</div>
-* נשים לב שפתרון שבו {3,5} הן SV מתאים לתת המדגם
-
-* אולם ראינו שפתרון זה לא מקיים את האילוצים!
-
-</section><section>
- 
- 
-
-### 
-
-* השלשה של $\{1,3,5\}$ מגדירה איזור margin שאינו מכיל נקודות אחרות ולכן מקיים את האילוצים:
-
-<div class="imgbox" style="max-width:350px">
-
-![](./assets/ex_10_2_3_sv.png)
-
-</div>
-
-* נקודות אלו יהיו שלושת ה support vectors שיגדיר את הפתרון לבעיה. נחשב את הפתרון המתקבל משלושת הנקודות האלה.
-
-</section><section>
-
-מתוך האילוצים נקבל 3 משוואות ב3 נעלמים. בעבור הנקודות $\{1,3,5\}$ משוואות אלו יהיו:
-$$
-\begin{aligned}
-\begin{cases}
--\left((1,6)\boldsymbol{w}+b\right)=1\\
--\left((4,11)\boldsymbol{w}+b\right)=1\\
-\left((7,6)\boldsymbol{w}+b\right)=1
-\end{cases}\\
-\Leftrightarrow\begin{cases}
-w_1+6w_2+b=-1\\
-4w_1+11w_2+b=-1\\
-7w_1+6w_2+b=1
-\end{cases}
-\end{aligned}
-$$
-
-הפתרון של מערכת המשוואות הזו הינה $\boldsymbol{w}=\frac{1}{15}(5,-3)^{\top}$ ו $b=-\frac{2}{15}$
-
-
-</section><section>
-
-### 
-
-**2)** מבלי לפתור את הבעיה הדואלית. אלו ערכים של $\{\alpha_i\}$ בהכרח יתאפסו?
-
-<div class="fragment">
-
-* בעבור נקודת שאינם support vectors $\alpha_i$ בהכרח יתאפס
-* בבעיה זו הנקודות שאינם support vectors הם $\{2,4,6\}$ ולכן $\alpha_2=\alpha_4=\alpha_6=6$.
-
-</div>
-
-</section><section>
-
-### 
-
-**3)** מהו הרוחב של ה margin של הפתרון?
-
-<div class="fragment">
-
-ה margin תלוי בגודל של הוקטור $\boldsymbol{w}$ והוא שווה ל:
-$$
-\frac{2}{\lVert\boldsymbol{w}\rVert}=\frac{2\cdot15}{\sqrt{5^2+3^2}}=5.145
-$$
-
-</div>
-
-
-
-</section><section>
-
-### 
-
-## תרגיל 10.3 - גרעין גאוסי
-
-נתון מדגם המכיל 2 נקודות אחת מכל מחלקה:
+נסמן את ה objective שאותו נרצה למזער ב:
 
 $$
-\begin{aligned}
-&x^{(1)}=(1,1)^{\top},\quad & y^{(1)}=+1 \\
-&x^{(2)}=(-1,-1)^{\top},\quad &y^{(2)}=-1 \\
-\end{aligned}
-$$
-
-חשבו את המסווג המתקבל מ soft SVM עם בגרעין גאוסי מהצורה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert^2\right)$.
-
-
-
-</section><section>
-
-### 
-
-### פתרון 10.3
-
-הבעיה הדואלית עם הגרעין הגאוסי הינה:
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_jK(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)})\\
-\text{s.t.}\quad
-    &\alpha_i\geq0\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
-
-בדומה לתרגיל הראשון נקבל ש:
-
-$$
-\alpha_1=\alpha_2=\alpha
-$$
-
-</section><section>
-
-### 
-
-נחשב את הערכים של $K(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)})$:
-$$
-\begin{aligned}
-K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})=\exp(0)=1\\
-K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(2)})=\exp(0)=1\\
-K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)})=\exp(-(2^2+2^2))=e^{-8}
-\end{aligned}
-$$
-
-
-
-</section><section>
-
-### 
-
-בעיית האופטימיזציה הינה:
-$$
-\begin{aligned}
-\alpha^*
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\frac{\alpha^2}{2}\left(
-  K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})
-  -2K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(2)})
-  +K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(2)})
-\right)\\
-\text{s.t.}\quad &\alpha_i\geq0\quad\forall i\\
-=\underset{\alpha}{\arg\max}\quad&2\alpha-\alpha^2(1-e^{-8})\\
-\text{s.t.}\quad &\alpha_i\geq0\quad\forall i\\
-\end{aligned}
+g(\boldsymbol{\theta})=\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})-y^{(i)})^2
 $$
 
 <div class="fragment">
 
-נגזור ונשווה ל-0:
+כלל העדכון של הפרמטרים הינו:
 $$
 \begin{aligned}
-&\frac{d}{d\alpha}2\alpha-\alpha^2(1-e^{-8})=0\\
-\Leftrightarrow&1=\alpha(1-e^{-8})\\
-\Leftrightarrow&\alpha=\frac{2}{1-e^{-8}}
+\boldsymbol{\theta}^{(t+1)}
+&=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}g(\boldsymbol{x};\boldsymbol{\theta}^{(t)})\\
+&=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}\frac{1}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})^2\\
+&=\boldsymbol{\theta}^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\\
 \end{aligned}
 $$
 
 </div>
 
+
+
 </section><section>
 
-### 
+#### 
 
-הוקטור $\boldsymbol{w}$ נתון על ידי: $\boldsymbol{w}=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})$. נכתוב את הביטוי $\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})$ בעבור נקודה כל שהיא $\boldsymbol{x}$:
+**3)** נתון המדגם הבא באורך 2:
 $$
 \begin{aligned}
-\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})
-&=\sum_i\alpha_iy^{(i)}\Phi(\boldsymbol{x}^{(i)})^{\top}\Phi(\boldsymbol{x})\\
-&=\sum_i\alpha_iy^{(i)}K(\boldsymbol{x}^{(i)},\boldsymbol{x})\\
-&=\frac{1}{1-e^{-4}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)
+\boldsymbol{x}^{(1)}&=[1,2]^{\top}\qquad &y^{(1)}=70\\
+\boldsymbol{x}^{(2)}&=[0,-1]^{\top}\qquad &y^{(2)}=50\\
 \end{aligned}
+$$
+
+כמו כן, נתון כי בצעד מסויים $t$ הערכים של הפרמטרים הינם:
+
+$$
+\begin{aligned}
+b_1^{(t)}&=1\\
+\boldsymbol{w}_{1,1}^{(t)}&=[2,3]^{\top}\\
+\boldsymbol{w}_{1,2}^{(t)}&=[4,-5]^{\top}\\
+b_2^{(t)}&=6\\
+\boldsymbol{w}_{2}^{(t)}&=[7,8]^{\top}\\
+\end{aligned}
+$$
+
+חשבו את הערך של $b_1^{(t+1)}$ בעבור $\eta=0.01$.
+
+</section><section>
+
+נרצה לחשב את:
+
+$$
+\boldsymbol{b}_1^{(t+1)}
+=\boldsymbol{b}_1^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
 $$
 
 <div class="fragment">
 
-נחשב את $b$ על ידי שימוש בנקודה הראשונה:
+נחשב את $\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})$ בעזרת back-propagation.
+
+</div>
+
+
+
+</section><section>
+
+##### $i=1$
+
+נחשב את ה forward-pass בשביל למצוא את משתני הביניים ואת המוצא:
+
 $$
 \begin{aligned}
-1&=y^{(1)}\left(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})+b\right)\\
-\Leftrightarrow b&=1-\boldsymbol{w}^{\top}\Phi(\boldsymbol{x}^{(1)})\\
-\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x}^{(1)})-K(\boldsymbol{x}^{(2)},\boldsymbol{x}^{(1)})\right)\\
-\Leftrightarrow b&=1-\frac{1}{1-e^{-8}}\left(1-e^{-4}\right)=0
+z_1&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([1,2][2,3]^{\top}+1,0)=\max(9,0)=9\\
+z_2&=\max(\boldsymbol{x}^{(1)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([1,2][4,-5]^{\top}+1,0)=\max(-5,0)=0\\
+y&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2=[9,0][7,8]^{\top}+6=69
+\end{aligned}
+$$
+
+</section><section>
+
+* נחשב את הנגזרות ב backward-pass.
+* נתחיל בחישוב של $\frac{d\hat{y}}{dz_1}$ ו $\frac{d\hat{y}}{dz_1}$:
+
+$$
+\begin{aligned}
+\frac{d\hat{y}}{dz_1}&=\frac{d}{dz_1}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,1}=7\\
+\frac{d\hat{y}}{dz_2}&=\frac{d}{dz_2}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,2}=8\\
+\end{aligned}
+$$
+
+
+
+<div class="fragment">
+
+נשתמש בחישוב זה בכדי לחשב את $\frac{d}{db_1}f(\boldsymbol{x};\boldsymbol{\theta})=\frac{d\hat{y}}{db_1}$, נשים לב ש $b_1$ מופיע פעמים ברשת, ב $h_{1,1}$ וב $h_{1,2}$:
+
+(נשתמש בעובדה ש $\frac{d}{dx}\max(x,0)=I\{x>0\}$)
+
+$$
+\begin{aligned}
+\frac{d\hat{y}}{db_1}
+  &= \frac{d\hat{y}}{dz_1}\frac{dz_1}{db_1}
+    +\frac{d\hat{y}}{dz_2}\frac{dz_2}{db_1}\\
+  &= 7\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1>0\}
+    +8\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1>0\}
+   =7
 \end{aligned}
 $$
 
@@ -949,24 +427,36 @@ $$
 
 </section><section>
 
-המסווג הינו:
+##### $i=2$
+
+נחשב באופן דומה את ה- Foreward Pass:
+
 $$
 \begin{aligned}
-h(\boldsymbol{x})
-&=\text{sign}(\boldsymbol{w}^{\top}\Phi(\boldsymbol{x})+b)\\
-&=\text{sign}\left(\frac{1}{1-e^{-8}}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)\right)\\
-&=\text{sign}\left(K(\boldsymbol{x}^{(1)},\boldsymbol{x})-K(\boldsymbol{x}^{(2)},\boldsymbol{x})\right)\\
-&=\text{sign}\left(
-  \exp\left(-\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}\rVert^2\right)
-  -\exp\left(-\lVert\boldsymbol{x}^{(2)}-\boldsymbol{x}\rVert^2\right)
-\right)\\
-&=\text{sign}\left(
-  \lVert\boldsymbol{x}^{(2)}-\boldsymbol{x}\rVert^2
-  -\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}\rVert^2
-\right)\\
-&=\text{sign}\left((x_1+1)^2+(x_2+1)^2-(x_1-1)^2-(x_2-1)^2\right)\\
-&=\text{sign}\left(2x_1+2x_2\right)\\
-&=\text{sign}\left(x_1+x_2\right)\\
+z_1&=\max(\boldsymbol{x}^{(2)\top}\boldsymbol{w}_{1,1}+b_1,0)=\max([0,-1][2,3]^{\top}+1,0)=\max(-2,0)=0\\
+z_2&=\max(\boldsymbol{x}^{(2)\top}\boldsymbol{w}_{1,2}+b_1,0)=\max([0,-1][4,-5]^{\top}+1,0)=\max(6,0)=6\\
+y&=\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2=[0,6][7,8]^{\top}+6=54
+\end{aligned}
+$$
+
+</section><section>
+
+Backward-pass:
+$$
+\begin{aligned}
+\frac{d\hat{y}}{dz_1}&=\frac{d}{dz_1}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,1}=7\\
+\frac{d\hat{y}}{dz_2}&=\frac{d}{dz_2}(\boldsymbol{z}^{\top}\boldsymbol{w}_2+b_2)=w_{2,2}=8\\
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\frac{d\hat{y}}{db_1}
+  &= \frac{d\hat{y}}{dz_1}\frac{dz_1}{db_1}
+    +\frac{d\hat{y}}{dz_2}\frac{dz_2}{db_1}\\
+  &= 7\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,1}+b_1>0\}
+    +8\cdot I\{\boldsymbol{x}^{\top}\boldsymbol{w}_{1,2}+b_1>0\}
+   =8
 \end{aligned}
 $$
 
@@ -974,193 +464,281 @@ $$
 
 </section><section>
 
+
+
+חישוב צעד העדכון
+
+נציב את התוצאות שקיבלנו ואת $\eta=0.01$:
+
+$$
+\begin{aligned}
+\boldsymbol{b}_1^{(t+1)}
+  &=\boldsymbol{b}_1^{(t)}-\frac{2\eta}{N}\sum_i(f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})-y^{(i)})\frac{d}{db_1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\\
+  &=1-0.01\left(
+      (f(\boldsymbol{x}^{(1)};\boldsymbol{\theta}^{(t)})-y^{(1)})\frac{d}{db_1}f(\boldsymbol{x}^{(1)};\boldsymbol{\theta}^{(t)})
+      +(f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})-y^{(2)})\frac{d}{db_1}f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})
+    \right)\\
+  &=1-0.01\left((69-70)\cdot7+(54-50)\cdot8\right)
+   =1-0.01\cdot25=-0.75
+\end{aligned}
+$$
+
+
+
+</section><section>
+
+
+
+## תרגיל 8.2
+
+**1)** הראו כיצד ניתן לייצג את הפונקציה הבאה בעזרת רשת MLP עם פונקציית אקטיבציה מסוג ReLU.
+
+<div class="imgbox" style="max-width:600px">
+
+
+![](../tutorial10/assets/ex8_3.png)
+
+</div>
+
+שרטטו את הרשת ורשמו את הערכים של פרמטרי הרשת.
+
+
+
+</section><section>
+
+### פתרון:
+
+* נבנה פונקציות רציפות ולינאריות למקוטעין, בעלות מספר סופי של קטעים, כמו זו בשבשאלה זו.
+* נשתמש בנויירונים בעלי פונקציית אקטיבציה מסוג ReLU הפועלים על קומבינציה לינארית של הכניסות.
+
+* נבנה פונקציה זו בעזרת MLP בעל שיכבה נסתרת אחת אשר דואגת לייצג את המקטעים השונים ושיכבת מוצא אשר דואגת לשיפוע בכל מקטע.
+* נקבע את קבוע הbias בכל נוירון כך שהשינוי בשיפוע של ה ReLU (ב $x=0$) יהיה ממוקם על נקודה בה משתנה השיפוע של הפונקציה המקורית.
+
+</section><section>
+
+<div class="imgbox" style="max-width:400px">
+
+![](../tutorial10/assets/ex8_3_1.png)
+
+</div>
+
+$$
+\begin{aligned}
+h_{1,1}(x)=\max(x+1,0) \\
+h_{1,2}(x)=\max(x,0) \\
+h_{1,3}(x)=\max(x-1,0) \\
+\end{aligned}
+$$
+
+</section><section>
+
 ### 
 
-## חלק מעשי: זיהוי מין הדובר
+כעת נדאג לשיפועים. נסתכל על מקטעים משמאל לימין.
+
+- המקטע השמאלי ביותר הינו בעל שיפוע 0 ולכן הוא כבר מסודר, שכן כל הפונקציות אקטיבציה מתאפסות באיזור זה.
+- המקטע $[-1,0]$ מושפע רק מן הנוירון הראשון. השיפוע במקטע זה הינו 1 ולכן ניתן משקל של 1 לנירון זה.
+- המקטע $[0,1]$ מושפע משני הנוירונים הראשונים. הנוירון הראשון כבר תורם שיפוע של 1 במקטע זה ולכן עלינו להוסיף לו עוד שיפוע של $-2$ על מנת לקבל את השיפוע של $-1$ הנדרש. ולכן ניתן משקל של $-2$ לנירון השני.
+- באופן דומה ניתן לנוירון השלישי משקל של $2$.
+
+סה"כ קיבלנו כי $h_2(z_1,z_2,z_3)=z_1-2z_2\times2z_3$
+
+</section><section>
+
+
+
+**2)** האם ניתן לייצג **במדוייק** את הפונקציה $f(x)=x^2+\lvert x\rvert$ בעזרת רשת MLP עם אקטיבציה מסוג ReLU? הסבירו ו/או הדגימו.
+
+</section><section>
+
+מכיוון ש:
+
+1. נוירון בעל פונקציית הפעלה מסוג ReLU מייצג פונקציה רציפה ולינארית למקוטעין.
+2. כל הרכבה או סכימה של פונקציות רציפות ולינאריות למקוטעין יצרו תמיד פונקציה חדשה שגם היא רציפה ולינארית למקוטעין.
+
+מכאן, שנוכל באמצעת נוירונים מסוג ReLU לייצג רק פונקציות רציפות ולנאריות למקוטעין.
+
+
+
+* מכיוון ש$$x^2$$ אינה לינארית אנו נוכל רק לקרב אותה, אך לא לייצג אותה במדוייק.
+
+</section><section>
+
+
+
+## תרגיל מעשי - איבחון סרטן שד עם MLP
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
 
-בחלק זה, ננסה להשתמש ב- SVM כדי לזהות את מינו של הדובר באמצעות קולו. מוטיבציה למערכת כזאת יכולה להיות עוזר וירטואלי שרוצה לפנות לדובר לפי מינו. הרחבה לניסיון זה יכולה להיות זיהוי דובר על סמך קולו וכו'.
-
-</section><section>
-
-הרעיון וה- DATA נלקחו מ- Dataset והערכת ביצועים של קורי בקר, אשר נמצאים [באתר הבא](http://www.primaryobjects.com/2016/06/22/identifying-the-gender-of-a-voice-using-machine-learning/). בפרוייקט זה נאספו 3168 דגימות קול מתוייגות מהמקורות הבאים:
-
-- [The Harvard-Haskins Database of Regularly-Timed Speech](http://www.nsi.edu/~ani/download.html)
-- [Telecommunications & Signal Processing Laboratory (TSP) Speech Database at McGill University](http://www-mmsp.ece.mcgill.ca/Documents../Data/index.html)
-- [VoxForge Speech Corpus](http://www.repository.voxforge1.org/downloads/SpeechCorpus/Trunk/Audio/Main/8kHz_16bit/)
-- [Festvox CMU_ARCTIC Speech Database at Carnegie Mellon University](http://festvox.org/cmu_arctic/)
-
-
-
-</section><section>
-
-### 
-
-כל רצועת קול עברה עיבוד באמצעות כלי בשם [WarbleR](https://cran.r-project.org/web/packages/warbleR/warbleR.pdf) בכדי לייצר 20 Features לכל דגימה:
+נסתכל שוב על הבעיה של איבחון סרטן שד על סמך תצלום מיקרוסקופי של ריקמה.
 
 <div dir="ltr">
 
-- **label**: The label of each track: male/female
-- **meanfreq**: mean frequency (in kHz)
-- **sd**: standard deviation of frequency
-- **median**: median frequency (in kHz)
-- **Q25**: first quantile (in kHz)
-- **Q75**: third quantile (in kHz)
-- **IQR**: interquantile range (in kHz)
-- **skew**: skewness (see note in specprop description)
-- **kurt**: kurtosis (see note in specprop description)
-- **sp.ent**: spectral entropy
-- **sfm**: spectral flatness
-- **mode**: mode frequency
-- **centroid**: frequency centroid (see specprop)
-- **meanfun**: average of fundamental frequency measured across acoustic signal
-- **minfun**: minimum fundamental frequency measured across acoustic signal
-- **maxfun**: maximum fundamental frequency measured across acoustic signal
-- **meandom**: average of dominant frequency measured across acoustic signal
-- **mindom**: minimum of dominant frequency measured across acoustic signal
-- **maxdom**: maximum of dominant frequency measured across acoustic signal
-- **dfrange**: range of dominant frequency measured across acoustic signal
-- **modindx**: modulation index. Calculated as the accumulated absolute difference between
+
+|      | diagnosis | radius_mean | texture_mean | perimeter_mean | area_mean | smoothness_mean | compactness_mean | concavity_mean |
+| ---: | :-------- | ----------: | -----------: | -------------: | --------: | --------------: | ---------------: | -------------: |
+|    0 | M         |       17.99 |        10.38 |          122.8 |      1001 |          0.1184 |           0.2776 |         0.3001 |
+|    1 | M         |       20.57 |        17.77 |          132.9 |      1326 |         0.08474 |          0.07864 |         0.0869 |
+|    2 | M         |       19.69 |        21.25 |            130 |      1203 |          0.1096 |           0.1599 |         0.1974 |
+|    3 | M         |       11.42 |        20.38 |          77.58 |     386.1 |          0.1425 |           0.2839 |         0.2414 |
+|    4 | M         |       20.29 |        14.34 |          135.1 |      1297 |          0.1003 |           0.1328 |          0.198 |
+|    5 | M         |       12.45 |         15.7 |          82.57 |     477.1 |          0.1278 |             0.17 |         0.1578 |
+|    6 | M         |       18.25 |        19.98 |          119.6 |      1040 |         0.09463 |            0.109 |         0.1127 |
+|    7 | M         |       13.71 |        20.83 |           90.2 |     577.9 |          0.1189 |           0.1645 |        0.09366 |
+|    8 | M         |          13 |        21.82 |           87.5 |     519.8 |          0.1273 |           0.1932 |         0.1859 |
+|    9 | M         |       12.46 |        24.04 |          83.97 |     475.9 |          0.1186 |           0.2396 |         0.2273 |
 
 </div>
 
 </section><section>
 
-### 
 
-נציג מספר עמודות ושורות מן המדגם:
 
-<div dir="ltr">
+נתחיל שוב בביצוע איבחון על סמך שתי העמודות הראשונות בלבד. אנו עושים זאת כמובן רק בכדי שנוכל להציג את הבעיה בגרף דו מימדי.
 
-|    | label   |   meanfreq |        sd |    median |        Q25 |       Q75 |       IQR |     skew |       kurt |
-|---:|:--------|-----------:|----------:|----------:|-----------:|----------:|----------:|---------:|-----------:|
-|  0 | male    |  0.059781  | 0.0642413 | 0.0320269 | 0.0150715  | 0.0901934 | 0.075122  | 12.8635  |  274.403   |
-|  1 | male    |  0.0660087 | 0.06731   | 0.0402287 | 0.0194139  | 0.0926662 | 0.0732523 | 22.4233  |  634.614   |
-|  2 | male    |  0.0773155 | 0.0838294 | 0.0367185 | 0.00870106 | 0.131908  | 0.123207  | 30.7572  | 1024.93    |
-|  3 | male    |  0.151228  | 0.0721106 | 0.158011  | 0.0965817  | 0.207955  | 0.111374  |  1.23283 |    4.1773  |
-|  4 | male    |  0.13512   | 0.0791461 | 0.124656  | 0.0787202  | 0.206045  | 0.127325  |  1.10117 |    4.33371 |
-|  5 | male    |  0.132786  | 0.0795569 | 0.11909   | 0.067958   | 0.209592  | 0.141634  |  1.93256 |    8.3089  |
-|  6 | male    |  0.150762  | 0.0744632 | 0.160106  | 0.0928989  | 0.205718  | 0.112819  |  1.53064 |    5.9875  |
-|  7 | male    |  0.160514  | 0.0767669 | 0.144337  | 0.110532   | 0.231962  | 0.12143   |  1.39716 |    4.76661 |
-|  8 | male    |  0.142239  | 0.0780185 | 0.138587  | 0.0882063  | 0.208587  | 0.120381  |  1.09975 |    4.07028 |
-|  9 | male    |  0.134329  | 0.08035   | 0.121451  | 0.07558    | 0.201957  | 0.126377  |  1.19037 |    4.78731 |
+<div class="imgbox" style="max-width:600px">
+
+
+![](../tutorial10/output/breast_cancer_2d_dataset.png)
 
 </div>
 
 </section><section>
 
-### 
+* נפצל אותו שוב ל 60% train / 20% validation / 20% test.
 
-הפילוג של התוויות (גברים נשים) במדגם הינו:
+* וננסה להתאים לו את המודל הבא:
 
-<div class="imgbox" style="max-width:400px">
-
-![](./output/voices_labels_dist.png)
-
-</div>
-
-</section><section>
-
-### 
-
-נציג את ההיסטוגרמה של כל אחד מהמאפיינים בעבור כל אחד מתוויות:
-
-<div class="imgbox" style="max-width:700px">
+<div class="imgbox" style="max-width:600px">
 
 
-![](./output/voices_distributions.png)
+![](../tutorial10/assets/example_mlp1.png)
 
 </div>
 
-</section><section>
-
-### 
-
-### Soft SVM
-
-ננסה לפתור את בעיית הסיווג של מין הדובר בעזרת soft SVM. נרצה לשם כך לפתור את בעיית האופטימיזציה הבאה (הבעיה הדואלית):
-
-$$
-\begin{aligned}
-\left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
-\text{s.t.}\quad
-    &0\leq\alpha_i\leq C\quad\forall i\\
-    &\sum_i\alpha_iy^{(i)}=0
-\end{aligned}
-$$
+*  FC 2x10 מציין שכבה של fully connected שבכניסה אליה יש וקטור באורך 2 וביציאה יש וקטור ברוחב 10
 
 </section><section>
 
-### 
-
-* נמצא את $\boldsymbol{w}$  בעזרת:
-
-$$
-\boldsymbol{w}=\sum_i\alpha_iy_i\boldsymbol{x}_i
-$$
-
-* ניתן לחשב את $b$ על ידי בחירה של נקודה שעבורה $0<\alpha_i$ ולהשתמש במשוואה: $y_i\left(\boldsymbol{w}^T\boldsymbol{x}_i+b\right)=1-\xi_i$.
-
-* בכדי לפתור את הבעיה נצטרך לבחור פרמטר משקל $C$ אשר קובע את גודל הקנס לנקודות שחורגות מה margin. נתחיל ב $C=1$ ואחר כך ננסה למצוא את הערך המיטבי.
-
-</section><section>
-
-### 
-
-
-
-#### חלוקת המדגם
-
-כרגיל נחלק את המדגם ל 80%-20%-20% שהם train-validation-test.
-
-#### נרמול
-
-חשוב לנרמל את העמודות של המדגם לפני הרצת האלגוריתם משתי סיבות עיקריות:
-
-1. המדגם מכיל מאפיינים ביחידות וסקלות שונות.
-2. האלגוריתם מנסה למזער objective אשר מבוסס מרחק, מה שהופך אותו לרגיש לגודל של כל מאפיין. לדוגמא, אם נכפיל מאפיין מסויים בקבוע גדול מ-1 אנו ניתן לו חשיבות יתרה ב objective.
-
-
-
-</section><section>
-
-### 
-
-### תוצאות
-
-שנשתמש באופטימיזציה נומרית על מנת למצוא את הפרמטרים של משטח ההפרדה. לשם המחשה נשרטט את הפילוג של ה signed distance של הנקודות בכל אחת מהמחלקות
-
-<div class="imgbox" style="max-width:900px">
-
-![](./output/voices_signed_dist.png)
-
-</div>
-
-ניתן לראות כי המשטח באמת מצליח לחלק את המדגםעד כדי כמה נקודות שחורגות.
-
-ה miscalssification rate שמתקבל על ה test set הינו 0.028.
-
-</section><section>
-
-### 
-
-
-
-### מציאת ה $C$ האופטימאלי
-
-נבחן סדרה של ערכי $C$ בתחום $10^{-3}$ עד $10^3$. כרגיל, בעבור כל ערך נבנה מסווג ונבחן אותו על ה validation set. נקבל את התוצאה הבאה:
+ נריץ את אלגוריתם ה gradient descent למספר קטן של צעדים כדי לבחור את קצב הלימוד $\eta$
 
 <div class="imgbox" style="max-width:500px">
 
-![](./output/voices_selecting_c.png)
+
+
+![](../tutorial10/output/breast_cancer_mlp1_select_eta.png)
 
 </div>
 
-קיבלנו כי הערך שאיתו התחלנו של $C=1$ הוא האופטימאלי מבין הערכים שבחרנו.
+בדומה לתרגול הקודם, אנו נבחר את הערך הגדול ביותר שבו הגרף יורד בצורה מונוטונית שבמקרה זה הינו $\eta=0.03$.
+
+</section><section>
+
+נריץ כעת האלגוריתם למספר גדול של צעדים:
+
+<div class="imgbox" style="max-width:300px">
+
+
+
+![](../tutorial10/output/breast_cancer_mlp1_train.png)
 
 </div>
+
+* החל מנקודה מסויימת, ה- objective על ה validation set מתחיל לעלות.
+* הסיבה לכך היא תופעת ה- overfitting.
+* ניתן להימנע מכך על ידי עצירת האלגוריתם לפני שהוא מתכנס. פעולה זו מכונה early stopping.
+* נשתמש בפרמטרים מהצעד עם הערך של ה objective הנמוך ביותר על ה validation, במקרה זה זהו הצעד ה 25236.
+
+
+
+</section><section>
+
+
+
+החזאי המתקבל ממודל זה הינו:
+
+<div class="imgbox" style="max-width:500px">
+
+
+
+![](../tutorial10/output/breast_cancer_mlp1.png)
+
+</div>
+
+</section><section>
+
+
+
+נשרטט גרף זה ללא הדגימות על מנת לראות את קו ההפרדה בין שני השטחים
+
+<div class="imgbox" style="max-width:400px">
+
+![](../tutorial10/output/breast_cancer_mlp1_no_samples.png)
+
+</div>
+
+
+
+* הרשת מצליחה לייצר חזאי עם קו הפרדה מורכב בהשוואה ל LDA, QDA ו- linear logistic regression.
+
+* ביצועי חזאי זה על ה valudation set הינם: 0.08. ביצועים אלו דומים לביצועים של QDA ו linear logistic regresssion.
+
+</section><section>
+
+
+
+### שימוש בכל 30 העמודות במדגם
+
+נעבור כעת להשתמש בכל 30 העמודות במדגם. לשם כך נשתמש ברשת הבאה:
+
+<div class="imgbox" style="max-width:600px">
+
+
+![](../tutorial10/assets/example_mlp2.png)
+
+</div>
+
+
+
+</section><section>
+
+
+
+נחפש שוב את הערך המתאים ביותר של $\eta$:
+
+<div class="imgbox" style="max-width:600px">
+
+
+![](../tutorial10/output/breast_cancer_mlp2_select_eta.png)
+
+</div>
+
+במקרה זה נבחר את $\eta=0.003$.
+
+</section><section>
+
+
+
+האימון המלא נראה כך:
+
+<div class="imgbox" style="max-width:300px">
+
+
+
+![](../tutorial10/output/breast_cancer_mlp2_train.png)
+
+</div>
+
+* הביצועים הטובים ביותר על ה validation set מתקבלים בצעד ה 107056.
+* החזאי המתקבל בצעד זה מניב miscalssifiaction rate של 0.01 על ה validation set.
+
+* ביצועים המודל על ה test set הינם 0.03
+  * לעומת 0.04 ב linear logistic regression.
+
+</div>
+
+</section>
+

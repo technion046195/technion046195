@@ -32,40 +32,40 @@
 - [הרצאה 4](/lecture04/) - בעיות סיווג, K-NN ועצי החלטה
 - [תרגול 4](/tutorial04/) - K-NN ועצי החלטה.
 
-### שבוע 5 - שיערוך א-פרמטרי
+### שבוע 5 - Bagging ו Boosting
 
-- [הרצאה 5](/lecture05/) - שיערוך פילוג דיסקרטי, ECDF, היסטוגרמה, KDE ותוחלת מותנית.
-- [תרגול 5](/tutorial05/) -  שיערוך פילוג דיסקרטי, ECDF, היסטוגרמה ושיעורך פילוג מעורב
+- [הרצאה 5](/lecture05/) - Bagging and Boosting
+- [תרגול 5](/tutorial05/) - Bagging and Boosting
 
-### שבוע 6 - שיערוך פרמטרי וסיווג גנרטיבי
+### שבוע 6 - SVM
 
-- [הרצאה 6](/lecture06/) - MLE, MAP, Naive Bayes, LDA, QDA
-- [תרגול 6](/tutorial06/) - MLE, MAP ו LDA
+- [הרצאה 6](/lecture06/) - SVM ושיטות גרעין
+- [תרגול 6](/tutorial06/) - SVM ושיטות גרעין
 
-### שבוע 7 - שיטות דיסקרימינטביות הסתברותיות
+### שבוע 7 - שיערוך א-פרמטרי
 
-- [הרצאה 7](/lecture07/) - שיטות דיסקרימינטביות הסתברותיות, logistic regression
-- [תרגול 7](/tutorial07/) - Logistic Regression 7 Gradient Descent
+- [הרצאה 7](/lecture07/) - שיערוך פילוג דיסקרטי, ECDF, היסטוגרמה, KDE ותוחלת מותנית.
+- [תרגול 7](/tutorial07/) -  שיערוך פילוג דיסקרטי, ECDF, היסטוגרמה ושיעורך פילוג מעורב
 
-### שבוע 8 - רשתות נוירונים
+### שבוע 8 - שיערוך פרמטרי וסיווג גנרטיבי
 
-- [הרצאה 8](/lecture08/) - רשתות נוירונים, MLP ו Back-propogation
-- [תרגול 8](/tutorial08/) - רשתות נוירונים, MLP ו Back-propogation
+- [הרצאה 8](/lecture08/) - MLE, MAP, Naive Bayes, LDA, QDA
+- [תרגול 8](/tutorial08/) - MLE, MAP ו LDA
 
-### שבוע 9  - שיטות ברשתות נוירונים
+### שבוע 9 - שיטות דיסקרימינטביות הסתברותיות
 
-- [הרצאה 9](/lecture09/) - שיטות ברשתות נוירונים
-- [תרגול 9](/tutorial09/) - CNN ואיתחולים
+- [הרצאה 9](/lecture09/) - שיטות דיסקרימינטביות הסתברותיות, logistic regression
+- [תרגול 9](/tutorial09/) - Logistic Regression 7 Gradient Descent
 
-### שבוע 10 - SVM
+### שבוע 10 - רשתות נוירונים
 
-- [הרצאה 10](/lecture10/) - SVM ושיטות גרעין
-- [תרגול 10](/tutorial10/) - SVM ושיטות גרעין
+- [הרצאה 10](/lecture10/) - רשתות נוירונים, MLP ו Back-propogation
+- [תרגול 10](/tutorial10/) - רשתות נוירונים, MLP ו Back-propogation
 
-### שבוע 11 - Bagging ו Boosting
+### שבוע 11  - שיטות ברשתות נוירונים
 
-- [הרצאה 11](/lecture11/) - Bagging and Boosting
-- [תרגול 11](/tutorial11/) - Bagging and Boosting
+- [הרצאה 11](/lecture11/) - שיטות ברשתות נוירונים
+- [תרגול 11](/tutorial11/) - CNN ואיתחולים
 
 ### שבוע 12 - שיטות ב unsupervised learning
 

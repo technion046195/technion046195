@@ -2,13 +2,13 @@
 type: tutorial
 index: 7
 template: page
-make_docx: True
-print_pdf: True
+make_docx: true
+print_pdf: true
 ---
 
 <div dir="rtl" class="site-style">
 
-# תרגול 7 - Logistic Regression and Gradient Descent
+# תרגול 7 - שיערוך פילוג בשיטות לא פרמטריות
 
 <div dir="ltr">
 <!-- <a href="./slides/" class="link-button" target="_blank">Slides</a> -->
@@ -18,658 +18,820 @@ print_pdf: True
 
 ## תקציר התיאוריה
 
-### הגישה הדיסקרימינטיבית הסתברותית
+### הגישה הגנרטיבית
 
-בגישה זו ננסה ללמוד מודל פרמטרי אשר ימדל ישירות את $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ (מבלי ללמוד את הפילוג של $\mathbf{x}$). גישה זו יעילה מאד לבעיות סיווג, בהם קל לבנות מודלים פרמטריים $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})$ שהם פונקציות הסתברות חוקיות (חיובית שהסכום עליה הוא 1). את הפרמטרים של המודל הפרמטרי נלמד לרוב בעזרת MLE או MAP.
+בגישה הגנרטיבית אנו נשתמש במדגם על מנת לשערך את הפילוג של $\mathbf{x}$ ו $\text{y}$ מתוך המדגם. על סמך פילוג זה נוכל לבנות חזאי ל $\text{y}$ בהיתנן $\mathbf{x}$.
 
-### הפונקציה הלוגיסטית (סיגמואיד)
+### חזאים אידאליים לפונקציות מחיר נפוצות - תזכורת
 
-הפונקציה הלוגיסטית מקבלת מספר בתחום $[-\infty,\infty]$ ומחזירה מספר בין 0 ל 1. היא לרוב מסומנת ב $\sigma$:
+לרוב אנו נעבוד עם פונקציות מחיר שבהינתן פונקציית הפילוג יש ביטוי סגור לחזאי האידאלי. נזכיר את החזאים האידאליים של פונקציות המחיר הנפוצות:
 
-$$
-\sigma(z)=\frac{1}{1+e^{-z}}
-$$
-
-והיא נראית כך:
-
-<div class="imgbox" style="max-width:600px">
-
-![](../lecture07/output/sigmoid.png)
-
-</div>
-
-פונקציה זו שימושית לצורך הגדרת מודלים הסתברותיים של משתנים בינארים.
-
-**הערה**: בתחום של מערכות לומדות מקובל לכנות את הפונקציה הזו **סיגמואיד (sigmoid)** למרות שמבחינה מתמטית השם הזה מתאר משפחה הרבה יותר רחבה של פונקציות בעלות צורה של S.
-
-#### תכונות
-
-- $\sigma(-z)=1-\sigma(z)$.
-- $\frac{\partial}{\partial z}\log(\sigma(z))=1-\sigma(z)$
-
-### פונקציית ה Softmax
-
-פונקציית ה softmax היא הרחבה של הפונקציה הלוגיסטית, והיא יכולה לשמש למידול פונקציות הסתברות של משתנים דיסקרטיים לא בינאריים (אך סופיים). הפונקציה לוקחת וקטור כלשהו $\boldsymbol{z}$ באורך $C$ ומייצרת ממנו וקטור חדש חיובי שסכום האיברים שלו הוא 1. הפונקציה מוגדרת באופן הבא:
-
-$$
-\text{softmax}(\boldsymbol{z})=\frac{1}{\sum_{c=1}^C e^{z_c}}[e^{z_1},e^{z_2},\dots,e^{z_C}]^{\top}
-$$
-
-או לחילופין, הערך של האיבר ה $i$ של הפונקציה הינו:
-
-$$
-\text{softmax}(\boldsymbol{z})_i=\frac{e^{z_i}}{\sum_{c=1}^C e^{z_c}}
-$$
-
-#### תכונות
-
-- אינווריאנטיות לתוספת של קבוע (לכל אברי הוקטור): $\text{softmax}(\boldsymbol{z} + a)_i=\text{softmax}(\boldsymbol{z})_i\ \forall i$.
-- $\frac{\partial}{\partial z_j} \log(\text{softmax}(\boldsymbol{z}))_i=\underbrace{\delta_{i,j}}_{=I\{i=j\}}-\text{softmax}(\boldsymbol{z})_j$
-
-### Logistic Regression
-
-בניגוד לשם, logistic regression היא שיטה לפתרון בעיות סיווג בגישה הדיסקרימינטיבית הסתברותית. בשיטה זו אנו נבחר $C$ פונקציות פרמטריות כלשהן $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)$ ונשתמש בהן על מנת לבנות מודל פרמטרי. נסמן:
-
-- את הוקטור $\boldsymbol{\theta}$ כוקטור אשר כולל את כל $C$ וקטורי הפרמטרים: $\boldsymbol{\theta}=[\boldsymbol{\theta}_1^{\top},\boldsymbol{\theta}_2^{\top},\dots,\boldsymbol{\theta}_C^{\top}]^{\top}$.
-- את הפונקציה $\boldsymbol{f}$ כפונקציה המאגדת את כל $C$ הפונקציות הפרמטריות: $\boldsymbol{f}=[f_1(\boldsymbol{x};\boldsymbol{\theta}_1),f_2(\boldsymbol{x};\boldsymbol{\theta}_2),\dots,f_C(\boldsymbol{x};\boldsymbol{\theta}_C)]^{\top}$
-
-את הפילוג המותנה נמדל באופן הבא:
-
-$$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-=\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y}
-=\frac{e^{f_y(\boldsymbol{x};\boldsymbol{\theta}_y)}}{\sum_{c=1}^C e^{f_c(\boldsymbol{x};\boldsymbol{\theta}_c)}}
-$$
-
-לבעיות ה MLE וה MAP של מודל זה אין פתרון סגור ואנו נחפש את הפתרון לבעיית האופטימיזציה בעזרת gradient descent.
-
-#### ביטול היתירות של המודל
-
-בגלל האינווריאנטיות של פונקציית ה softmax המודל הפרמטרי המוגדר על ידי הפונקציות $f_c$ יהיה אינווריאנטי לשינויים מהצורה של: $f_c(\boldsymbol{x};\boldsymbol{\theta}_c)\rightarrow f_c(\boldsymbol{x};\boldsymbol{\theta}_c)+g(\boldsymbol{x})$.
- דרך נפוצה לבטל יתירות זו הינה על ידי קיבוע של אחת הפונקציות הפרמטריות, לרוב הראשונה $c=1$, להיות שווה זהותית ל 0: $f_1(\boldsymbol{x};\boldsymbol{\theta}_1)=0$.
-
-#### המקרה הבינארי
-
-במקרה הבינארי ישנם רק שתי מחלקות ($C=2$), אותן נסמן ב 0 ו 1. נקבע את הפונקציה הפרמטרית של המחלקה $\text{y}=0$ להיות זהותית 0. נקבל את המודל הפרמטרי הבא:
-
-$$
-p_{\text{y}|\mathbf{x}}(0|\boldsymbol{x};\boldsymbol{\theta})
-=\frac{1}{1+e^{f(\boldsymbol{x};\boldsymbol{\theta})}}
-=1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
-$$
-
-$$
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})
-=\frac{e^{f(\boldsymbol{x};\boldsymbol{\theta})}}{e^{f(\boldsymbol{x};\boldsymbol{\theta})}+1}
-=\frac{1}{1+e^{-f(\boldsymbol{x};\boldsymbol{\theta})}}
-=\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))
-$$
-
-#### רגרסיה לוגיסטית לינארית
-
-הגרסא הלינארית של הרגרסיה הלוגיסטית היא המקרה שבו בוחרים את הפונקציות הפרמטריות להיות פונקציות לינאריות:
-
-$$
-f_c(\boldsymbol{x};\boldsymbol{\theta}_c)=\boldsymbol{\theta}_c^{\top}\boldsymbol{x}
-$$
-
-במקרה זה פונקציית ה objective שיש למזער היא קמורה (convex) ולכן מובטח ש gradient descnet, במידה והוא מתכנס, יתכנס למינימום גלובלי.
-
-### Gradient descent (שיטת הגרדיאנט)
-
-בעבור בעיית המינימיזציה:
-
-$$
-\underset{\boldsymbol{\theta}}{\arg\min}\quad g(\boldsymbol{\theta})
-$$
-
-Gradient descent מנסה למצוא מינימום לוקאלי של $g(\boldsymbol{\theta})$ על ידי כך שהוא מתחיל בנקודה אקראית כלשהי במרחב ואז מתקדם בצעדים קטנים בכיוון ההפוך מהגרדיאנט, שהוא הכיוון שבו ה objective קטן בקצב המהיר ביותר. זהו אלגוריתם חמדן (greedy) אשר מנסה בכל צעד לשפר במעט את מצבו ביחס לשלב הקודם.
-
-#### האלגוריתם
-
-- מאתחלים את $\boldsymbol{\theta}^{(0)}$ בנקודה אקראית כלשהי.
-- חוזרים על צעד העדכון הבא עד שמתקיים תנאי עצירה כל שהוא:
+- **MSE**: התוחלת המותנית:
 
     $$
-    \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta \nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta}^{(t)})
+    h^*(\boldsymbol{x})=\mathbb{E}[y|x]
     $$
 
-הפרמטר $\eta$ קובע את גודל הצעדים שהאלגוריתם יעשה.
+- **MAE**: החציון של הפילוג המותנה:
 
-#### תנאי עצירה
+    $$
+    h^*(\boldsymbol{x})=y_{\text{median}}\qquad
+    \text{s.t.}\ F_{\text{y}|\mathbf{x}}(y_{\text{median}}|\boldsymbol{x})=0.5
+    $$
 
-ישנם מספר דרכים להגדיר תנאי עצירה לאגוריתם:
+    (כאשר $F_{\text{y}|\mathbf{x}}$ היא פונקציית הפילוג המצרפי של $\text{y}$ בהינתן $\mathbf{x}$).
+- **Misclassification rate**: הערך הכי סביר (ה mode):
 
-- הגעה למספר צעדי עדכון שנקבע מראש: $t>\text{max-iter}$.
-- כאשר הנורמה של הגרדיאנט קטנה מתחת לערך סף מסויים שנקבע מראש: $\lVert\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})\rVert_2<\epsilon$
-- כאשר השיפור ב objective קטן מערך סף מסויים שנקבע מראש: $g(\boldsymbol{\theta}^{(t-1)})-g(\boldsymbol{\theta}^{(t)})<\epsilon$
-- שימוש בעצירה מוקדמת על מנת להתמודד עם overfitting (נרחיב על כך בהרצאה הבאה)
+    $$
+    h^*(\boldsymbol{x})=\underset{y}{\arg\max}\ p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})
+    $$
 
-#### בעיית הבחירה של גודל הצעד
+#### שימוש בהסתברות המותנית
 
-בכדי לגרום לאלגוריתם להתכנס (ולא להתבדר) אנו נאלץ לבחור גודל צעד שהוא לא גדול מידי. בפועל, בצורתו הפשוטה אלגוריתם ה gradient descent הוא מאד בעייתי משום שבכדי למנוע התבדרות גודל הצעד צריך להיות מאד קטן שידרוש מספר לא פרקטי של צעדים לצורך התכנסות.
-
-## תרגיל 7.1 - אלגוריתם הגרדיאנט
-
-נתונה בעיית האופטימיזציה הבאה:
-
-$$
-\underset{\theta}{\arg\min}\ \tfrac{1}{2}\theta^2+5\sin(\theta)
-$$
-
-**1)** נסו לפתור את הבעיה על ידי גזירה והשוואה ל-0. הגיעו למשוואה (סתומה) אשר מגדירה את נקודות המינימום האפשריות.
-
-**2)** רשמו את צעד העידכון של אלגוריתם הגרדיאנט.
-
-**3)** חשבו את שלושת צעדי העדכון הראשונים עבור אתחול של $\theta^{(0)}=0$, וצעד לימוד של $\eta=0.1$.
-
-**4)** חשבו את שלושת צעדי העדכון הראשונים עבור אתחול של $\theta^{(0)}=2.5$, וצעד לימוד של $\eta=0.1$. מודע האלגוריתם יתכנס כעת לפתרון אחר מבסעיף הקודם? 
-
-**5)** הגרפים הבאים מציגים עשר איטרציות של gradient descent בעבור ארבעה ערכים שונים של גודל צעד: $\eta=\{0.003, 0.03,0.3,3\}$. התאם בין גודל הצעד לגרפים.
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/ex_7_1_5.png)
-
-</div>
-
-### פתרון 7.1
-
-#### 1)
-
-נסמן את ה objective (פונקציית המטרה) של בעיית האופטימיזציה ב:
+בעיות סיווג (שבהם $\text{y}$ מקבל סט ערכים בדיד) נוח לשערך את הפילוג המשותף של $\mathbf{x}$ ו $\text{y}$ בעזת הפירוק הבא:
 
 $$
-t(\theta)=\tfrac{1}{2}\theta^2+5\sin(\theta)
+p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)
+=p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)p_{\text{y}}(y)
 $$
 
-<div class="imgbox" style="max-width:600px">
+על פי פירוק זה ניתן למעשה לחשב את הפילוג המשותף על ידי כך שנשערך בנפרד את כל אחת מהפילוגים הבאים:
 
-![](./output/ex_7_1_objective.png)
+- $p_{\text{y}}(y)$ - הפילוג של $\text{y}$ ללא תלות בערכו של $\mathbf{x}$. שיערוך זה יהיה לרוב פשוט מכיוון ש $\text{y}$ הוא משתנה דיסקרטי (בדיד).
+- $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$ כאשר גם כאן יהיה לרוב נוח לפצל את השיערוך למספר שיערוכים שונים בעבור כל ערך אפשרי של $\text{y}$. זאת אומרת $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|1)$, $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|2)$, וכו'. הדרך לעשות זאת היא על ידי פיצול המדגם על פי הערכים של $\text{y}$ ושיערוך הפילוג של $\mathbf{x}$ בנפרד על כל חלק של המדגם.
 
-</div>
+### שיערוך של פונקציות פילוג בשיטות א-פרמטריות
 
-נגזור אותו ונשווה אותו ל-0:
+נציג מספר שיטות לשיערוך של הסתברויות ופונקציות פילוג של משתנה / וקטור אקראי כל שהוא $\mathbf{x}$ על סמך מדגם כל שהוא $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}$. בתרגול זה נעסוק בשיטות אשר לא עושות שימוש במודל פרמטרי ולכן הם מכונות א-פרמטריות, בשבוע הבא נעסוק בשיטות פרמטריות.
+
+#### מדידה אמפירית / משערך הצבה (Empirical Measure)
+
+המדידה האמפירית, $\hat{p}_{A,\mathcal{D}}$, הינה שיערוך של הההסתברות, $Pr\left(A\right)$, להתרחשות המאורע $A$:
+
+$$
+\hat{p}_{A,\mathcal{D}}=\tfrac{1}{N}\sum_{i=1}^N I\{\boldsymbol{x}^{(i)}\in A\}
+$$
+
+לדגומא, השיערוך של ההסתברות שהנורמה של $\mathbf{x}$ קטנה מ $3$, זאת אומרת $A=\{\lVert\mathbf{x}\rVert_2<3\}$, תהיה:
+
+$$
+\hat{p}_{\{\lVert\mathbf{x}\rVert_2<3\},\mathcal{D}}=\tfrac{1}{N}\sum_{i=1}^N I\{\lVert\boldsymbol{x}^{(i)}\rVert_2<3\}
+$$
+
+למעשה אנו משערכים כי ההסתברות להתרחשות של מאורע שווה למספר הפעמים היחסי שהמאורע מופיע בסט המדידות.
+
+#### שיערוך פונקציית ההסתברות PMF (המקרה של משתנה דיסקרטי)
+
+נוכל לשערך את פונקציית ההסתברות (PMF) של משתנה / וקטור אקראי דיסקרטי על ידי שימוש במדידה האמפירית:
+
+$$
+\hat{p}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\hat{p}_{\{\mathbf{x}=\boldsymbol{x}\},\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N I\{\boldsymbol{x}^{(i)}=\boldsymbol{x}\}
+$$
+
+#### ECDF (Empirical Cumulative Distribution Function)
+
+ECDF הינה שיטה לשערך את פונקציית הפילוג המצרפי (ה CDF):
+
+$$
+\hat{F}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\hat{p}_{\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\},\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N  I\{\boldsymbol{x}^{(i)}_j\leq\boldsymbol{x}_j\ \forall j\}
+$$
+
+#### היסטוגרמה
+
+היסטוגרמה היא שיטה לשערוך פונקציית צפיפות ההסתברות (PDF). שיטה זו נפוצה בעיקר לשם ויזואליזציה של הפילוג של משתנים אקראיים סקלריים. השיערוך מתבצע באופן הבא:
+
+1. מחלקים את תחום הערכים ש $\mathbf{x}$ יכול לקבל ל bins (תאים) לא חופפים אשר מכסים את כל התחום.
+2. לכל תא משערכים את ההסתברות של המאורע ש $\mathbf{x}$ נמצא בתוך התא.
+3. הערך של פונקציית הצפיפות בכל תא תהיה ההסתברות המשוערכת להיות בתא חלקי גודל התא.
+
+נרשום זאת בעבור המקרה של משתנה אקראי סקלרי. נסמן ב $B$ את מספר התאים וב $l_b$ ו $r_b$ את הגבול השמאלי והימני בהתאמה של התא ה $b$. ההסטוגרמה תהיה נתונה על ידי:
 
 $$
 \begin{aligned}
-\frac{\partial}{\partial\theta}t(\theta)&=0 \\
-\Leftrightarrow \theta+5\cos(\theta)&=0 \\
-\Leftrightarrow \theta&=-5\cos(\theta)
+\hat{p}_{\text{x},\mathcal{D}}(x)
+&=\begin{cases}
+  \frac{1}{\text{size of bin }1}\hat{p}_{\{\text{x in bin }1\},\mathcal{D}}&\text{x in bin }1\\
+  \vdots\\
+  \frac{1}{\text{size of bin }B}\hat{p}_{\{\text{x in bin }B\},\mathcal{D}}&\text{x in bin }B
+\end{cases}\\
+&=\begin{cases}
+  \frac{1}{N(r_1-l_1)}\sum_{i=1}^N I\{l_1\leq x^{(i)}<r_1\}&l_1\leq x<r_1\\
+  \vdots\\
+  \frac{1}{N(r_B-l_B)}\sum_{i=1}^N I\{l_B\leq x^{(i)}<r_B\}&l_B\leq x<r_B\\
+\end{cases}
 \end{aligned}
 $$
 
-בפועל זה אומר שעלינו למצוא את נקודות החיתוך של הפונקציות הבאות:
+הערות:
 
-<div class="imgbox" style="max-width:600px">
+- בחירת התאים משפיעה באופן משמעותי על תוצאת השערוך של ה PDF.
+- כלל אצבע: לחלק את טווח הערכים ל-$$\sqrt{N}$$ תאים בגודל אחיד.
 
-![](./output/ex_7_1_1_analytic_solution.png)
+#### Kernel Density Estimation (KDE)
 
-</div>
-
-למשוואה זו אין פתרון אנליטי.
-
-#### 2)
-
-צעד העדכון של הגרדיאנט יהיה:
+KDE הינה שיטה נוספת לשערוך ה PDF. בשיטה זו אנו נבחר פונקציה המכונה **פונקציית גרעין** (**kernel**) או **Parzan window** מהם נבנה $N$ פונקציות גרעין מוזזות בעבור כל נקודה מהמדגם. נסמן ב $\phi(\boldsymbol{x})$ את פונקציות הגרעין. פונקציית הגרעין המוזזת לנקודה ה $\boldsymbol{x}^{(i)}$ תהיה $\phi(\boldsymbol{x}-\boldsymbol{x}^{(i)})$. פונקציית הצפיפות המשוערכת תהיה הממוצע של כל הפונקציות המוזזות:
 
 $$
-\theta^{(t+1)}=\theta^{(t)}-\eta\frac{\partial}{\partial\theta}t(\theta)=\theta^{(t)}-\eta\left(\theta^{(t)}+5\cos(\theta^{(t)})\right)
+\hat{p}_{\mathbf{x},\phi,\mathcal{D}}(\boldsymbol{x})=\frac{1}{N}\sum_{i=1}^N \phi(\boldsymbol{x}-\boldsymbol{x}^{(i)})
 $$
 
-#### 3)
+**הערה**: תנאי מספיק והכרחי בכדי שנקבל PDF חוקי, הינו שפונקציית הגרעיון תהיה בעצמה PDF חוקי. זאת אומרת שהיא חייבת להיות חיוביות ושהאינטרגל עליה יהיה שווה ל 1.
 
-נאתחל את האלגוריתם עם $\theta^{(0)}=0$ ונבצע שלושה צעדים (עם $\eta=0.1$):
+##### הוספת פרמטר רוחב
 
-$$
-\theta^{(1)}
-=\theta^{(0)}-\eta\left(\theta^{(0)}+5\cos(\theta^{(0)})\right)
-=0-0.1\left(0+5\cos(0)\right)=-0.5
-$$
+מקובל להוסיף לפונקציות הגרעין פרמטר $h$ אשר שולט ברוחב שלה באופן הבא:
 
 $$
-\theta^{(2)}
-=\theta^{(1)}-\eta\left(\theta^{(1)}+5\cos(\theta^{(1)})\right)
-=-0.5-0.1\left(-0.5+5\cos(-0.5)\right)=-0.889
+\phi_h(\boldsymbol{x})=\frac{1}{h^D}\phi\left(\frac{\boldsymbol{x}}{h}\right)
 $$
 
-$$
-\theta^{(3)}
-=\theta^{(2)}-\eta\left(\theta^{(2)}+5\cos(\theta^{(2)})\right)
-=-0.889-0.1\left(-0.889+5\cos(-0.889)\right)=-1.115
-$$
+החלוקה ב $h^D$ היא על מנת לשמור על הנרמול של הפונקציה. כאשר $D$ הוא המימד של $\mathbf{x}$.
 
-<div class="imgbox" style="max-width:600px">
-
-![](./output/ex_7_1_3.png)
-
-</div>
-
-(נקודת האופטימום האמיתי הינה $\theta=-1.30644$)
-
-#### 4)
-
-נחזור על הפתרון עם אתחול של $\theta^{(0)}=2.5$ ונבצע שלושה צעדים:
+בתוספת פרמטר זה המשערך יהיה:
 
 $$
-\theta^{(1)}=2.65
+\hat{p}_{\mathbf{x},\phi,h,\mathcal{D}}(\boldsymbol{x})=\frac{1}{Nh^D}\sum_{i=1}^N \phi\left(\frac{\boldsymbol{x}-\boldsymbol{x}^{(i)}}{h}\right)
 $$
 
-$$
-\theta^{(2)}=2.83
-$$
+##### פונקציות גרעין נפוצות
+
+שתי הבחירות הנפוצות ביותר לפונקציית הגרעין הינן:
+
+1. חלון מרובע:
+
+    $$
+    \phi_h(\boldsymbol{x})=\frac{1}{h^D}I\{|x_j|\leq \tfrac{h}{2}\quad\forall j\}
+    $$
+
+2. גאוסיאן:
+
+    $$
+    \phi_{\sigma}\left(x\right)=\frac{1}{\sqrt{2\pi}\sigma^D}\exp\left(-\frac{\lVert x\rVert_2^2}{2\sigma^2}\right)
+    $$
+
+כלל אצבע לבחירת רוחב הגרעין במקרה הגאוסי הסקלרי הינו $\sigma=\left(\frac{4\cdot\text{std}(\text{x})^5}{3N}\right)^\frac{1}{5}\approx1.06\ \text{std}(\text{x})N^{-\tfrac{1}{5}}$, כאשר $\text{std}(\text{x})$ הינה הסטיית תקן של $\text{x}$ (אשר לרוב תהיה משוערכת גם היא מתוך המדגם)
+
+#### תוחלת אמפירית (Empirical mean)
+
+התוחלת האמפירית משערכת את התוחלת של פונקציה מסויימת של המשתנה האקראי $f(\mathbf{x})$, על ידי החלפת התוחלת במיצוע של הפונקציה על הדגימות במדגם:
 
 $$
-\theta^{(2)}=3.02
+\hat{\mu}_{f(\mathbf{x}),\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N f(\boldsymbol{x}^{(i)})
 $$
 
-<div class="imgbox" style="max-width:600px">
+### ה bias וה variance של משערך
 
-![](./output/ex_7_1_4.png)
+כפי שציינו כאשר עסקנו ב bias-variance tradeoff, בכדי לשערך את הביצועים של שיטה מסויימת נרצה להסתכל על הפילוג של תוצאות השערוך הנובע מהאקראיות של המדגם. נשתמש שוב בסימון $\mathbb{E}_{\mathcal{D}}$ בכדי לסמן תוחלת על פני הפילוג של המדגם.
 
-</div>
+#### Bias
 
-בעבור האתחול הזה אלגוריתם יתכנס לפתרון אחר מאשר הפתרון בסעיף הקודם. זאת כמובן משום ש gradient descent מתכנס למינימום לוקאלי, לכן בעבור איתחולים שונים האלגוריתם עלול להתכנס לפתרונות שונים.
-
-#### 5)
-
-הפרמטר $\eta$ קובע כאמור את גדול הצעד.
-
-- גודל צעד גדול מידי עשוי להרחיק בכל צעד את האלגוריתם מנקודת המינימום, כפי שקורה במקרה של $\eta_1$. גודל הצעד שמתאים למקרה זה הינו הערך הגדול ביותר, זאת אומרת 3.
-
-- גודל הצעד השני הכי גדול הינו 0.3 והוא מתאים ל $\eta_3$. במקרה זה הצעדים עושים "over shoot" ועוברים במרבית הפעמים את המינימום אך עדיין מתקרבים אליו בכל צעד.
-
-- גודל הצעד השלישי הכי גדול הינו 0.03 הוא מתאים ל $\eta_4$. כאן האופטימיזציה מתקדמת לאט לאט באופן עקבי לכיוון המינימים.
-
-- גודל הצעד הקטן ביות הינו $0.003$ והוא מתאים ל $\eta_2$ במקרה זה ההתקדמות היא מאד איטית ויקח לאלגוריתם מספר רב של צעדים על מנת להתקרב למינימום.
-
-## תרגיל 7.2 - צעד העדכון של logistic regression
-
-**1)** בעבור המקרה של רגרסיה לוגיסטית בינארית, הראו כי ניתן לרשום את המודל של פונקציית ההסתברות המותנית באופן הבא:
+בעבור שיערוך של גודל כל שהוא $z$ בעזרת משערך $\hat{z}_{\mathcal{D}}$, ה bias (היסט) של השיערוך מוגדר כ:
 
 $$
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})=\sigma\left((-1)^{y+1} f(\boldsymbol{x};\boldsymbol{\theta})\right)
+\text{Bias}\left(\hat{z}\right)=\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]-z
 $$
 
-**2)** נסתכל על אלגוריתם gradient descent אשר מנסה למצוא פיתרון לבעיית ה MLE בעבור רגרסיה לוגיסטית בינארית. הראו שניתן לרשום את צעד העדכון של האלגוריתם באופן הבא:
+כאשר ההטיה שווה ל-0, אנו אומרים שהמשערך **אינו מוטה** (**Unbiased**).
+
+#### Variance
+
+ה variance (שונות) של המשערך יהיה:
 
 $$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
+\text{Var}\left(\hat{z}\right)
+=\mathbb{E}_{\mathcal{D}}\left[\left(\hat{z}_{\mathcal{D}}-\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]\right)^2\right]
+=\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}^2\right]-\mathbb{E}_{\mathcal{D}}\left[\hat{z}_{\mathcal{D}}\right]^2
 $$
 
-**3)** ננסה לתת פרשנות אינטואיטיבית לתפקיד של האיברים השונים בצעד העדכון מהסעיף הקודם.
+אנו נהיה מעוניינים כמובן במשערך שגם ה bias וגם ה variance שלו קטנים.
 
-נתחיל בכך שנתעלם מהביטוי $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. ונקבל את צעד העדכון הבא:
+## תרגיל 5.1 - משתנה בינארי (ברנולי)
 
-$$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
-$$
+**1)** המשתנה האקראי $\text{x}$ הוא משתנה בינארי (משתנה אשר יכול לקבל את הערכים 0 או 1). נתון לנו מדגם המכיל $N$ דגימות של $\text{x}$. חשבו את השיערוך של פונקציית ההסתברות של $\text{x}$. בטאו את התשובה בעזרת $N_0$ ו $N_1$, כאשר $N_0$ הוא מספר הדגימות ששוות ל 0 ו $N_1$ הוא מספר הדגימות ששוות ל 1.
 
-הסבירו כיצד ישפיע כל צעד עידכון על הפונקציה $f(\boldsymbol{x};\boldsymbol{\theta})$. ספציפית הסבירו מה יקרה לערך של הפונקציה בנקודות $\boldsymbol{x}^{(i)}$? התייחסו להשפעה השונה יש לדגימות עם $y=1$ ולדגימות עם $y=0$ מהמדגם.
-
-**4)** נחזיר כעת את האיבר $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. למה שווה איבר זה במקרים בהם המודל הפרמטרי נותן הסתברות גבוהה לדגימה כלשהי $\{\boldsymbol{x}^{(i)},y^{(i)}\}$? ולמה הוא שווה במקרים בהם המודל נותן הסתברות נמוכה לדגימה כלשהי?
-
-התייחסו לאיבר זה כאל איבר מישקול, אשר נותן משקל שונה לכל דגימה מהמדגם. הסבירו מה תהיה ההשפעה של משקול זה על צעד העדכון.
-
-**5)** (לקריאה עצמית) נרחיב את הדוגמא למקרה הלא בינארי. הראו שניתן לכתוב את צעד העדכון של אלגוריתם ה gradient discent במקרה הלא בינארי באופן הבא:
+נתון כי הפילוג האמיתי של $\text{x}$ הינו:
 
 $$
-\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
+p_{\text{x}}(x)=\begin{cases}
+1&&p\\
+0&&(1-p)
+\end{cases}
 $$
 
-הסבירו את התפקיד של $\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x};\boldsymbol{\theta}^{(t)})$ ושל $\left(\delta_{y,c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)$ בצעד העדכון.
+שני הסעיפים הבאים לא קשורים למדגם הנתון.
 
-### פתרון 7.2
+**2)** חשבו את ה bias של המשערך ב $\text{x}=1$.
+
+**3)** חשבו את ה variance של המשערך $\text{x}=1$.
+
+### פתרון 5.1
 
 #### 1)
 
-נשחק מעט עם הצורה של המודל הפרמטרי בכדי להגיע לצורה אותה בקשו בשאלה:
+השיערוך של פונקציית ההסתברות בעבור $\text{x}=0$ הינו:
 
 $$
-\begin{aligned}
-p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x};\boldsymbol{\theta})
-&=\begin{cases}
-    \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=1 \\
-    1-\sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=0 \\
-\end{cases}\\
-&=\begin{cases}
-    \sigma(f(\boldsymbol{x};\boldsymbol{\theta})) & y=1 \\
-    \sigma(-f(\boldsymbol{x};\boldsymbol{\theta})) & y=0 \\
-\end{cases}\\
-&=\sigma\left((-1)^{y+1} f(\boldsymbol{x};\boldsymbol{\theta})\right)
-\end{aligned}
+\hat{p}_{\mathbf{x},\mathcal{D}}(0)=\frac{1}{N}\sum_{i=1}^N I\{x^{(i)}=0\}=\frac{N_0}{N}
+$$
+
+ובאופן דומה
+
+$$
+\hat{p}_{\mathbf{x},\mathcal{D}}(1)=\frac{1}{N}\sum_{i=1}^N I\{x^{(i)}=1\}=\frac{N_1}{N}
+$$
+
+סה"כ
+
+$$
+p_{\text{x}}(x)=\begin{cases}
+\frac{N_1}{N}&x=1\\
+\frac{N_0}{N}&x=0
+\end{cases}
 $$
 
 #### 2)
 
-נציב את המודל הפרמטרי כפי שרשמנו אותו בסעיף הקודם:
+נחשב את התחולת של המשערך $\hat{p}_{\text{x},\mathcal{D}}(1)$:
+
+$$
+\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)\right]
+=\mathbb{E}_{\mathcal{D}}\left[\frac{1}{N}\sum_{i=1}^N I\{\text{x}^{(i)}=1\}\right]
+$$
+
+שימו לב שבחישוב זה אנו לא מתייחסים ל $\text{x}^{(i)}$ כאל מספר ידוע אלא כאל משתנה אקראי. נוציא את החלוקה ב $N$ ואת הסכימה אל מחוץ לתוחלת:
+
+$$
+=\frac{1}{N}\sum_{i=1}^N \mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}\right]
+$$
+
+משום שכל ה $\text{x}^{(i)}$ הם משתנים אקראיים זהים ומפולגים לפי הפילוג של $\text{x}$, ניתן להסיר את האינדקס של $(i)$:
 
 $$
 \begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
-\underbrace{
-    -\sum_{i=1}^{N}\log\left(\sigma\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)
-}_{\overset{\Delta}{=}t(\boldsymbol{\theta})}
+&=\frac{1}{N}\sum_{i=1}^N \mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]\\
+&=\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]=p
 \end{aligned}
 $$
 
-לשם הנוחות, סימנו את ה objective של בעיית האופטימיזציה ב $t(\boldsymbol{\theta})$. נחשב את הגרדיאנט של ה objective וננסה להביא אותו לצורה דומה לזו שבקשו בשאלה:
+ה bias יהיה:
 
 $$
-\begin{aligned}
-\nabla_{\boldsymbol{\theta}}t(\boldsymbol{\theta})
-&=-\sum_{i=1}^{N}\nabla_{\boldsymbol{\theta}}\log\left(\sigma\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)\\
-&=-\sum_{i=1}^{N}\left(1-\sigma\left((-1)^{y^{(i)}+1}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\right)\nabla_{\boldsymbol{\theta}}\left((-1)^{y^{(i)}+1} f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\\
-\end{aligned}
+\text{Bias}\left(\hat{p}_{\text{x}}(1)\right)=\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)\right]-p=p-p=0
 $$
 
-צעד העדכון של אלגוריתם ה gradient descent יהיה אם כן:
-
-$$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}))(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
-$$
+מכאן שהמשערך של ההסתברות של משתנים בדידים הוא **משערך לא מוטה**.
 
 #### 3)
 
-נתייחס לצעד עדכון מהצורה של:
+נחשב את התחולת של $\hat{p}_{\text{x},\mathcal{D}}(1)^2$:
 
 $$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\sum_{i=1}^{N}(-1)^{y^{(i)}} \nabla_{\boldsymbol{\theta}}f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})
+\begin{aligned}
+\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)^2\right]
+&=\mathbb{E}_{\mathcal{D}}\left[\left(\frac{1}{N}\sum_{i=1}^N I\{\text{x}^{(i)}=1\}\right)^2\right]\\
+&=\frac{1}{N^2}\mathbb{E}_{\mathcal{D}}\left[\left(\sum_{i=1}^N I\{\text{x}^{(i)}=1\}\right)\left(\sum_{j=1}^N I\{\text{x}^{(j)}=1\}\right)\right]\\
+&=\frac{1}{N^2}\sum_{i,j}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}I\{\text{x}^{(j)}=1\}\right]\\
+\end{aligned}
 $$
 
-נסתכל על התרומה של הדגימות מהמדגם ששייכים למחלקה $y=1$ (אשר גורר: $(-1)^y=-1$). איברים אלו ינסו לשנות את $\boldsymbol{\theta}$ בכיוון הגרדיאנט בנקודות $\boldsymbol{x}^{(i)}$ ששיכות למחלקה. זאת אומרת, שהם ינסו לגרום לשינוי של הפרמטריים כך שהערך של הפונקציה הפרמטרית $f(\boldsymbol{x};\boldsymbol{\theta})$ בנקודות $\boldsymbol{x}^{(i)}$ יהיה גדול יותר.
+מכיוון שבעבור $i\neq j$ המשתנים $\text{x}^{(i)}$ ו $\text{x}^{(j)}$ הם משתנים בלתי תלויים, נוכל במקרים אלו לפרק את התוחלת של המכפלה למכפלת התוחלות. נפריד אם כן את הסכום למקרים בהם $i=j$ (יש $N$ מקרים כאלה) ולמקרים שבהם $i\neq j$ (יש $N^2-N$ מקרים כאלה):
 
-באופן הפוך, התרומה של הדגימות מהמחלקה $y=0$ (ו $(-1)^y=1$) תהיה לנסות ולעדכן את $\boldsymbol{\theta}$ בכיוון ההפוך מהגרדיאנט. זאת אומרת, שהם ינסו להקטין את הערך של $f(\boldsymbol{x};\boldsymbol{\theta})$ בנקודות $\boldsymbol{x}^{(i)}$ מהמחלקה $y=0$.
+$$
+\begin{aligned}
+&=\frac{1}{N^2}\sum_{i}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}I\{\text{x}^{(i)}=1\}\right]
++\frac{1}{N^2}\sum_{i\neq j}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}I\{\text{x}^{(j)}=1\}\right]\\
+&=\frac{1}{N^2}\sum_{i}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}\right]
++\frac{1}{N^2}\sum_{i\neq j}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(i)}=1\}\right]\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}^{(j)}=1\}\right]\\
+\end{aligned}
+$$
 
-בסה"כ הכל נקבל שהאלגוריתם ינסה בכל צעד לשנות את  $f(\boldsymbol{x};\boldsymbol{\theta})$ כך שיניב ערכים גבוהים על הנקודות $\boldsymbol{x}$ שמתאימות ל $y=1$ וערכים נמוכים על הנקודות שמתאימות ל $y=0$. התנהגות זו הגיונית משום שזה בדיוק מה שאנחנו רוצים מהמודל שלנו, שאמור לחזות את ההסתברות ש $\text{y}=1$ בהינתן $\mathbf{x}$. משום שהסתברות זו שווה ל $\sigma(f(\boldsymbol{x};\boldsymbol{\theta}))$ אנו רוצים רוצים ש $f$ יניב ערכים גבוהים באיזורים שבהם $\text{y}=1$ בסבירות גבוהה בהינתן $\mathbf{x}$ וערכים נמוכים בשאר המקומות.
+בדומה לסעיף הקודם נוכל להסיר את האינדקסים:
+
+$$
+\begin{aligned}
+&=\frac{1}{N}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]
++\frac{N^2-N}{N^2}\mathbb{E}_{\mathcal{D}}\left[I\{\text{x}=1\}\right]^2\\
+&=\frac{1}{N}p+\frac{N^2-N}{N^2}p^2\\
+&=\frac{1}{N}(p-p^2)+p^2\\
+&=\frac{1}{N}p(1-p)+p^2\\
+\end{aligned}
+$$
+
+ה variance יהיה:
+
+$$
+\text{Var}\left(\hat{p}_{\text{x}}(1)\right)=
+\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)^2\right]
+-\mathbb{E}_{\mathcal{D}}\left[\hat{p}_{\text{x},\mathcal{D}}(1)\right]^2
+=\frac{1}{N}p(1-p)+p^2-p^2
+=\frac{1}{N}p(1-p)
+$$
+
+כפי שהיינו מצפים ניתן לראות כי השונות הולכת וקטנה עם מספר הדגימות, שכן ככל שיש לנו יותר דגימות כך השיערוך יהיה מדוייק יותר. בנוסף, בתור אימות, ניתן להבחין כי בעבור $N=1$ נקבל שהשיערוך הוא הערך של הדגימה היחידה ובמקרה זה השונות בדיוק שווה לשונות של משתנה בינארי $p(1-p)$.
+
+## תרגיל 5.2 - EDCF
+
+בעבור משתנה אקראי רציף כל שהוא $\text{x}$, מהו ה bias וה variance של משערך ה ECDF בנקודה מסויימת $x_0$? בטאו את התשובה בעזרת הפילוג המצרפי האמיתי
+
+### פתרון 5.3
+
+למעשה לפתרון תרגיל זה נוכל להשתמש בתוצאת הסעיף הקודם. שיערוך ה ECDF בנקודה $x_0$ נתון על ידי:
+
+$$
+\hat{F}_{\text{x},\mathcal{D}}(x_0)=\hat{p}_{\{\text{x}\leq x_0\},\mathcal{D}}
+$$
+
+נוכל אם כן אז להגדיר משתנה אקראי בינארי חדש $\text{z}$ אשר שווה ל-1 אם $\text{x}\leq x_0$ ו-0 אחרת. בעזרת משתנה זה נוכל לכתוב את שיערוך ה ECDF כשיערוך של ההסתברות ש $\text{z}=1$:
+
+$$
+\hat{F}_{\text{x},\mathcal{D}}(x_0)=\hat{p}_{\{\text{z}=1\},\mathcal{D}}=\hat{p}_{\text{z},\mathcal{D}}(1)
+$$
+
+את ה bias וה variance של המשערך הזה חישבנו בסעיף הקודם וקיבלנו ש:
+
+$$
+\text{Bias}\left(\hat{p}_{\text{z}}(1)\right)=0
+$$
+
+$$
+\text{Var}\left(\hat{p}_{\text{z}}(1)\right)=\frac{1}{N}p(1-p)
+$$
+
+כאשר $p$ הוא ההסתברות האמתית ש $\text{z}=1$. במקרה שלנו $p=F_{\text{x}}(x_0)$, ולכן נקבל ש:
+
+$$
+\text{Bias}\left(\hat{F}_{\text{x}}(x_0)\right)=0
+$$
+
+$$
+\text{Var}\left(\hat{F}_{\text{x}}(x_0)\right)=\frac{1}{N}F_{\text{x}}(x_0)(1-F_{\text{x}}(x_0))
+$$
+
+## תרגיל 5.3 - פילוג משותף
+
+נתון כי $\text{y}$ הינו משתנה אקראי בינארי ו $\text{x}$ משתנה אקראי רציף אשר יכול לקבל ערכים בתחום $[0,15]$. כמו כן נתון לנו המדגם הבא של זוגות של $\text{x}$ ו $\text{y}$:
+
+<div style="direction:ltr">
+
+|            | 1 | 2 | 3 | 4  | 5 | 6 | 7 |
+| ---------- | - | - | - | -- | - | - | - |
+| $\text{x}$ | 1 | 7 | 9 | 12 | 4 | 4 | 7 |
+| $\text{y}$ | 0 | 0 | 0 | 0  | 1 | 1 | 1 |
+
+</div>
+
+**1)** חשבו את הפילוג המשותף של $\text{x}$ ו $\text{y}$ על ידי שימוש בהסטוגרמה לשיערוך של $\text{x}$ בהינתן $\text{y}$. חלקו את התחום $[0,15]$ לשלושה חלקים שווים.
+
+**2)** בעבור $x=6$ מהו החיזוי האופטימאלי של $\text{y}$ תחת פנקציית המחיר של missclassification rate.
+
+**3)** חזרו על שני הסעיפים עם הסטוגרמה שמחלקת את התחום ל15 תאים.
+
+**4)** חזרו על שני הסעיפים הראשונים עם KDE עם פונקציית גרעין של מסוג חלון מרובע ופרמטר רוחב $h=5$
+
+### פתרון 5.3
+
+#### 1)
+
+נחשב עת הפילוג המשותף על ידי שימוש בתוחלת המותנית:
+
+$$
+p_{\text{x},\text{y}}(x,y)=p_{\text{x}|\text{y}}(x|y)p_{\text{y}}(y)
+$$
+
+##### $p_{\text{y}}$
+
+נתחיל בלשערך את $p_{\text{y}}$. מכיוון ש $\text{y}$ הוא משתנה בינארי, השיערוך של הפילוג שלו יהיה:
+
+$$
+p_{\text{y}}(y)=\begin{cases}
+\frac{N_1}{N}=\frac{3}{7}&y=1\\
+\frac{N_0}{N}=\frac{4}{7}&y=0
+\end{cases}
+$$
+
+השיערוך של $p_{\text{x}|\text{y}}(x|y)$ הוא למעשה שני שיערוכים של שתי פונקציות פילוג, $p_{\text{x}|\text{y}}(x|0)$ ו  $p_{\text{x}|\text{y}}(x|1)$. נתחיל מהמקרה של $\text{y}=0$
+
+##### $p_{\text{x}|\text{y}}(x|0)$
+
+נסתכל רק על הדגימות שבהן $y^{(i)}=0$. ישנם ארבע דגימות כאלה. על פי ההנחיה נחלק את התחום ל3 תאים שווים, $[0,5]$, $[5,10]$ ו $[10,15]$. נחשב את צפיפות ההסתברות בכל תא בעזרת היסטוגרמה. על פי הגדרת ההיסטוגרמה הצפיפות הסתברות בכל תא שווה לכמות הדגימות מהמדגם ששיכות לתא זה חלקי מספר הדגימות הכולל, חלקי גודל התא.
+
+מתוך הדגימות שבהם $y^{(i)}=0$ ישנה דגימה בודד שהגיעה לתא של $[0,5]$ ולכן צפיפות ההסתברות בתא זה תהיה:
+
+$$
+\frac{1}{4(5-0)}=0.05
+$$
+
+באפן דומה נחשב את הצפיפות ההסתברות בשאר התאים:
+
+$$
+\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|0)=\begin{cases}
+\frac{1}{4(5-0)}=\frac{1}{20}&0\leq x<5\\
+\frac{2}{4(10-5)}=\frac{1}{10}&5\leq x<10\\
+\frac{1}{4(15-10)}=\frac{1}{20}&10\leq x<15
+\end{cases}
+$$
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/ex_5_3_1_hist_y_0.png)
+
+</div>
+
+##### $p_{\text{x}|\text{y}}(x|1)$
+
+בעבור הדגימות שבהם $\text{y}^{(i)}=1$ נקבל:
+
+$$
+\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|1)=\begin{cases}
+\frac{2}{3(5-0)}=\frac{2}{15}&0\leq x<5\\
+\frac{1}{3(10-5)}=\frac{1}{15}&5\leq x<10\\
+\frac{0}{3(15-10)}=0&10\leq x<15
+\end{cases}
+$$
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/ex_5_3_1_hist_y_1.png)
+
+</div>
+
+הפילוג המשותף יהיה אם כן:
+
+<div style="direction:ltr">
+
+|       | $0\leq x<5$                             | $5\leq x<10$                             | $10\leq x\leq 15$                      |
+| ----- | --------------------------------------- | ---------------------------------------- | -------------------------------------- |
+| $y=0$ | $\frac{1}{20}\frac{4}{7}=\frac{1}{35}$  | $\frac{1}{10}\frac{4}{7}=\frac{2}{35}$   | $\frac{1}{20}\frac{4}{7}=\frac{1}{35}$ |
+| $y=1$ | $\frac{2}{15}\frac{3}{7}=\frac{2}{35}$  | $\frac{1}{15}\frac{3}{7}=\frac{1}{35}$   | $0\frac{3}{7}=0$                       |
+
+</div>
+
+#### 2)
+
+אנו יודעים כי החזאי האופטימאלי תחת פונקציית המחיר של misclassification rate הינו הערך הכי סביר של $\text{y}$ בהינתן $\text{x}$. אם כן עלינו להשוות בין $p_{\text{y}|\text{x}}(1|6)$ לבין  $p_{\text{y}|\text{x}}(0|6)$.
+
+באופן עקרוני עלינו לחשב את:
+
+$$
+p_{\text{y}|\text{x}}(y|x)=\frac{p_{\text{x},\text{y}}(x,y)}{p_{\text{x}}(x)}=\frac{p_{\text{x}|\text{y}}(x|y)p_{\text{y}}(y)}{p_{\text{x}}(x)}
+$$
+
+אך נשיב לב שהמכנה אינו משנה כלל לתוצאה מפני שהוא משותף לשתי ההסתברויות המותנות שברצונינו להשוות ולכן מספיק להסתכל על:
+
+$$
+p_{\text{y}|\text{x}}(0|6)\propto p_{\text{x}|\text{y}}(6|0)p_{\text{y}}(0)=\frac{1}{10}\frac{4}{7}=\frac{2}{35}
+$$
+
+$$
+p_{\text{y}|\text{x}}(1|6)\propto p_{\text{x}|\text{y}}(6|1)p_{\text{y}}(1)=\frac{1}{15}\frac{3}{7}=\frac{1}{35}
+$$
+
+ולכן הערך היותר סביר הוא 0 וזה יהיה החיזוי שלנו.
+
+#### 3)
+
+נחשב את הפילוג המשותף באופן דומה ונקבל:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/ex_5_3_3_hist_y_0.png)
+
+</div>
+<div class="imgbox" style="max-width:500px">
+
+![](./output/ex_5_3_3_hist_y_1.png)
+
+</div>
+<div style="direction:ltr">
+
+|       | $0\leq x<1$ | $1\leq x<2$   | $2\leq x<3$ | $3\leq x<4$ | $4\leq x<5$   | $5\leq x<6$ | $6\leq x<7$   | $7\leq x<8$   | $8\leq x<9$ | $9\leq x<10$  | $10\leq x<11$ | $11\leq x<12$ | $12\leq x<13$ | $13\leq x<14$ | $14\leq x\leq 15$ |
+| ----- | ----------- | ------------- | ----------- | ----------- | ------------- | ----------- | ------------- | ------------- | ----------- | ------------- | ------------- | ------------- | ------------- | ------------- | ----------------- |
+| $y=0$ | $0$         | $\frac{1}{7}$ | $0$         | $0$         | $0$           | $0$         | $0$           | $\frac{1}{7}$ | $0$         | $\frac{1}{7}$ | $0$           | $0$           | $\frac{1}{7}$ | $0$           | $0$           | $0$               |
+| $y=1$ | $0$         | $0$           | $0$         | $0$         | $\frac{2}{7}$ | $0$         | $0$           | $\frac{1}{7}$ | $0$         | $0$           | $0$           | $0$           | $0$           | $0$           | $0$               |
+
+</div>
+
+בפילוג זה גם $p_{\text{y}|\text{x}}(1|6)$ וגם $p_{\text{y}|\text{x}}(0|6)$ שיווים ל0 ולכן שני הערכים של $\text{y}$ סבירים באותה המידה.
+
+הבעיה עם הפילוג הזה הינה שנראה שלקחנו כמות תאים גדולה מידי ולכן ברוב התאים אין לנו דגימות בכלל וכנראה שהשיערוך שם לא מייצג כלל את הפילוג האמיתי.
 
 #### 4)
 
-נסתכל על הביטוי $(1-p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta}))$. נזכור שההסתברות $p_{\text{y}|\mathbf{x}}$ היא מספר בין 0 ל 1.האיבר כולו יהיה לכן קרוב ל-0 כאשר הסתברות של $y$ מסויים בהינתן $\boldsymbol{x}$ היא גבוהה והוא יהיה קרוב ל-1 כאשר ההסתברות נמוכה.
+בכדי לבנות כעת את פונקציות הפילוג של $p_{\text{x}|\text{y}}(x|y)$ עלינו לקחת כל נקודה מהמדגם (עם ה $\text{y}$ המתאים) ולמקם סביבה חלון ריבועי ברוחב 5 ובגובה $\tfrac{1}{5}$. החלונות של הדגימות המתאימות ל $\text{y}=0$ הם:
 
-נזכור גם כי $p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ היא אינה ההסתברות האמיתית של $\mathbf{x}$ ו $\text{y}$ אלא ההסתברות שהמודל שלנו נותן לדגימה כלשהי מהמדגם. (אנו רוצים שבסופו של דבר שמודל זה יהיה קרוב להסתברות האמיתית). היינו מעניינים שככל שנעשה יותר צעדי עדכון המודל יגדיל לאט לאט את ההסתברות שהוא נותן לדגימות במדגם (זו בעצם המטרה של MLE ו MAP).
+<div class="imgbox" style="max-width:300px">
 
-נסתכל על איבר זה כעל משקל בין 0 ל 1 שמשוייך לכל דגימה במדגם. לדגימות שהמודל חושב הם סבירות הוא נותן משקל קרוב ל 0 ולדגימות שהמודל נותן להם סבירות נמוכה הוא נותן משקל 1. מה שאיבר זה עושה לצעד העידכון הוא לגרום לו יחסית להתעלם מדגימות שכבר מקבלות סבירות גבוהה ולהתמקד בדגימות שהוא עדיין "טועה" עליהם, זאת אומרת, שהוא נותן להם הסתברות נמוכה.
+![](./output/ex_5_3_4_kernel_1.png)
 
-#### 5)
+</div>
+<div class="imgbox" style="max-width:300px">
 
-בעיית ה MLE הינה:
+![](./output/ex_5_3_4_kernel_2.png)
 
-$$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ 
-\underbrace{
-    -\sum_{i=1}^N \log\left(\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}\right)
-}_{\overset{\Delta}{=}t(\boldsymbol{\theta})}
-\end{aligned}
-$$
+</div>
+<div class="imgbox" style="max-width:300px">
 
-נחשב את הגרדיאנט של ה objective:
+![](./output/ex_5_3_4_kernel_3.png)
 
-$$
-\begin{aligned}
-\nabla_{\boldsymbol{\theta}_c}t(\boldsymbol{\theta})
-&=-\sum_{i=1}^{N}\nabla_{\boldsymbol{\theta}_c}
-\log\left(\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}}\right)\\
-&=-\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_c\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\\
-&=-\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
-\end{aligned}
-$$
+</div>
+<div class="imgbox" style="max-width:300px">
 
-צעד העדכון יהיה:
+![](./output/ex_5_3_4_kernel_4.png)
 
-$$
-\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
-\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
-\nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
-$$
+</div>
 
-האיבר $\left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)$ הוא חיובי כאשר $c=y^{(i)}$ ושלילי אחרת. איבר זה גורם לכך שבעבור כל דגימה מהמדגם צעד העדכון ינסה לגדיל את הפונקציה הפרמטרית $f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)$ שבה $c=y^{(i)}$ ויקטין את הפונקציות הפרמטריות שבהם $c\neq y^{(i)}$.
+ פונקציית הפילוג תהיה הממוצע של כל החלונות הריבועיים:
 
-בדומה למקרה הבינארי ככל שהסבירות של הדגימה במדגם $p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})$ כך ההשפעה של הדגימה על העדכון יהיה קטן יותר.
+<div class="imgbox" style="max-width:500px">
 
-## תרגיל 7.3 - MLE and KL divergence
+![](./output/ex_5_3_4_kde_y_0.png)
 
-בתרגיל זה נציג דרך אחרת לפתח את בעיית האופטימיזציה של משערך ה MLE.
+</div>
 
-נתון לנו מדגם של $N$ דגימות i.i.d. של משתנה אקראי כלשהו $\text{x}$:
+ובאופן דומה בעבור $\text{y}=1$:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/ex_5_3_4_kde_y_1.png)
+
+</div>
+
+מכאן ש:
 
 $$
-\mathcal{D}=\{x^{(i)}\}_{i=1}^N
+p_{\text{x}|\text{y}}(6|0)=\frac{1}{20}
 $$
 
-ומודל פרמטרי כל שהוא $p_{\text{x}}(x;\boldsymbol{\theta})$. נרצה לבחור את הפרמטרים של המודל $\boldsymbol{\theta}$ כך שהמודל יתאר בצורה טובה את הדגימות במדגם.
-
-לשם כך נשתמש במדד הבא אשר מודד עד כמה פונקציית צפיפות הסתברות כלשהי $q_{\text{x}}(x)$ תהיה טובה בכדי לתאר דגימות המגיעות מצפיפות הסתברות אחרת $p_{\text{x}}(x)$. המדד נקרא Kullback-Leibler divergence והוא מוגד באופן הבא:
-
 $$
-D_{\text{KL}}(p_{\text{x}}(x)||q_{\text{x}}(x))
-=\int p_{\text{x}}(x)\log\left(\frac{p_{\text{x}}(x)}{q_{\text{x}}(x)}\right)
-=\mathbb{E}_{(p)}\left[\log\left(\frac{p_{\text{x}}(x)}{q_{\text{x}}(x)}\right)\right]
+p_{\text{x}|\text{y}}(6|1)=\frac{1}{5}
 $$
 
-הסימון $\mathbb{E}_{(p)}$ הוא תוחלת לפי הפילוג $p_{\text{x}}$. מדד זה מגיע מתורת האינפורמציה ואנו לא ניכנס למשמעות ולמקור של מדד זה. ככל שהמדד נמוך יותר כך הפילוגים קרובים יותר.
-
-השתמשו במדד זה על מנת להגדיר בעיית אופטימיזציה שבוחרת את הפרמטרים של המודל כפרמטרים כך שהם ממזערים את ה Kullback-Leibler divergence בין המודל הפרמטרי לפילוג האמיתי. בכדי להיפתר מהתוחלת על הפילוג הלא ידוע החליפו אותו בתוחלת אמפירית על המדגם. הראו כי בעיית האופטימיזציה המתקבלת זהה לזו של משערך ה MLE.
-
-### פתרון 7.3
-
-נסמן את הפילוג האמיתי (הלא ידוע) של $\text{x}$ ב $p_{\text{x}}(x)$ (בלי $\boldsymbol{\theta}$). בעיית האופטימיזציה שהיינו רוצים לפתור הינה:
+וההסתברות המותנית של $\text{y}$ ב $\text{x}$ היא
 
 $$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ D_{\text{KL}}(p_{\text{x}}(x)||p_{\text{x}}(x;\boldsymbol{\theta})) \\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ \mathbb{E}_{(p)}\left[\log\left(\frac{p_{\text{x}}(x)}{p_{\text{x}}(x;\boldsymbol{\theta})}\right)\right] \\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ \mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x))\right]
-                                          - \mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x;\boldsymbol{\theta}))\right] \\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\mathbb{E}_{(p)}\left[\log(p_{\text{x}}(x;\boldsymbol{\theta}))\right] \\
-\end{aligned}
+p_{\text{y}|\text{x}}(0|6)\propto p_{\text{x}|\text{y}}(6|0)p_{\text{y}}(0)=\frac{1}{20}\frac{4}{7}=\frac{1}{35}
 $$
 
-נחליף את התוחלת בתוחלת אמפירית על המדגם:
-
 $$
-\begin{aligned}
-\boldsymbol{\theta}^*
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\frac{1}{N}\sum_{i=1}^N \log(p_{\text{x}}(x^{(i)};\boldsymbol{\theta})) \\
-\end{aligned}
+p_{\text{y}|\text{x}}(1|6)\propto p_{\text{x}|\text{y}}(6|1)p_{\text{y}}(1)=\frac{1}{5}\frac{3}{7}=\frac{3}{35}
 $$
 
-שזה בדיוק המינימיזציה של ה log-likelihood עד כדי החלוקה ב $N$ שלא משנה את בעיית האופטימיזציה.
+לכן הערך הסביר יותר הינו $\text{y}=1$.
 
-## תרגיל מעשי - איבחון סרטן שד
+למעשה בעבור כל שיטת שיערוך קיבלנו תוצאה שונה. עובדה זו מחזקת את הנקודה שלשיערוכים שנקבל ישנה תלות גבוהה בשיטה שנבחר להשתמש בה.
+
+## תרגיל מעשי - שיערוך הפילוג של זמני נסיעה בניו יורק
 
 <div dir="ltr">
 <a href="./example/" class="link-button" target="_blank">Code</a>
 </div>
 
-שיטה נפוצה כיום לאבחון של סרטן הינה בשיטת Fine-needle aspiration. בשיטה זו נלקחת דגימה של רקמה בעזרת מחט ומבוצעת אנליזה בעזרת מיקרוסקופ על מנת לאבחן שני מקרים:
+נחזור למדגם של נסיעות המונית בניו יורק:
 
-- Malignant - רקמה סרטנית
-- or Benign - רקמה בריאה
+|    |   passenger count |   trip distance |   payment type |   fare amount |   tip amount |   pickup easting |   pickup northing |   dropoff easting |   dropoff northing |   duration |   day of week |   day of month |   time of day |
+|---:|------------------:|----------------:|---------------:|--------------:|-------------:|-----------------:|------------------:|------------------:|-------------------:|-----------:|--------------:|---------------:|--------------:|
+|  0 |                 2 |        2.76806  |              2 |           9.5 |         0    |          586.997 |           4512.98 |           588.155 |            4515.18 |   11.5167  |             3 |             13 |      12.8019  |
+|  1 |                 1 |        3.21868  |              2 |          10   |         0    |          587.152 |           4512.92 |           584.85  |            4512.63 |   12.6667  |             6 |             16 |      20.9614  |
+|  2 |                 1 |        2.57494  |              1 |           7   |         2.49 |          587.005 |           4513.36 |           585.434 |            4513.17 |    5.51667 |             0 |             31 |      20.4128  |
+|  3 |                 1 |        0.965604 |              1 |           7.5 |         1.65 |          586.649 |           4511.73 |           586.672 |            4512.55 |    9.88333 |             1 |             25 |      13.0314  |
+|  4 |                 1 |        2.46229  |              1 |           7.5 |         1.66 |          586.967 |           4511.89 |           585.262 |            4511.76 |    8.68333 |             2 |              5 |       7.70333 |
+|  5 |                 5 |        1.56106  |              1 |           7.5 |         2.2  |          585.926 |           4512.88 |           585.169 |            4511.54 |    9.43333 |             3 |             20 |      20.6672  |
+|  6 |                 1 |        2.57494  |              1 |           8   |         1    |          586.731 |           4515.08 |           588.71  |            4514.21 |    7.95    |             5 |              8 |      23.8419  |
+|  7 |                 1 |        0.80467  |              2 |           5   |         0    |          585.345 |           4509.71 |           585.844 |            4509.55 |    4.95    |             5 |             29 |      15.8314  |
+|  8 |                 1 |        3.6532   |              1 |          10   |         1.1  |          585.422 |           4509.48 |           583.671 |            4507.74 |   11.0667  |             5 |              8 |       2.09833 |
+|  9 |                 6 |        1.62543  |              1 |           5.5 |         1.36 |          587.875 |           4514.93 |           587.701 |            4513.71 |    4.21667 |             3 |             13 |      21.7831  |
 
-להלן דוגמא לתמונת מיקרוסקופ של דגימה שכזו:
+בתרגול זה אנו נשתמש רק בשני השדות הבאים:
 
-<div class="imgbox" style="max-width:600px">
+- **duration**: משך הנסיעה הכולל בדקות.
+- **time_of_day**: שעת תחילת הנסיעה כמספר (לא שלם)
 
-![](./assets/fna.jpg)
+(תיאור מלא של כל השדות בטבלה ניתן למצוא [פה](https://www1.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf))
 
-</div>
+### המשימה: שיערוך הפילוג של זמן הנסיעה של מוניות
 
-בתרגול זה נעבוד עם מדגם בשם **Breast Cancer Wisconsin Diagnostic** אשר נאסף על ידי חוקרים מאוניברסיטת ויסקונסין. הוא כולל 30 ערכים מספריים, כגון שטח התא הממוצע והרדיוס ההמוצע, אשר חושבו בעבור 569 דגימות שונות. בנוסף יש לכל דגימה במדגם תווית של האם הדגימה הינה סרטנית או לא.
+נהג מונית מעוניין לשערך את הפילוג של משך הנסיעות שלו. הוא לקח את הקורס מבוא למערכות לומדות והוא יודע שהוא יוכל לעשות זאת מתוך המידע ההיסטורי אותו אספה עיריית New York. בחלק זה של התרגול אנו נעזור לאותו נהג מונית לבצע שיערוך זה.
 
-את המדגם המקורי ניתן למצוא פה: [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29), אנחנו נשתמש בגרסא מעט מעובדת שלו הנמצאת [פה](https://technion046195.netlify.app/datasets/wdbc.csv).
+באופן פורמלי, אנו מעוניינים לשערך את הפילוג של משך נסיעות המונית בעיר כפונקציית פילוג מצרפי (CDF) או כפונקציית צפיפות הסתברות (PDF).
 
-נציג כמה עמודות ושורות מייצגות מהמדגם:
+המדגם שלנו לבעיה זו יהיה אוסף משכי הנסיעה מהמדגם הכולל של פרטי הנסיעה. נסמן את המדגם של משך הנסיעה ב $\{x^{(i)}\}$.
 
-<div dir="ltr">
+### שיטה 1: ECDF
 
-|    | diagnosis   |   radius_mean |   texture_mean |   perimeter_mean |   area_mean |   smoothness_mean |   compactness_mean |   concavity_mean |
-|---:|:------------|--------------:|---------------:|-----------------:|------------:|------------------:|-------------------:|-----------------:|
-|  0 | M           |         17.99 |          10.38 |           122.8  |      1001   |           0.1184  |            0.2776  |          0.3001  |
-|  1 | M           |         20.57 |          17.77 |           132.9  |      1326   |           0.08474 |            0.07864 |          0.0869  |
-|  2 | M           |         19.69 |          21.25 |           130    |      1203   |           0.1096  |            0.1599  |          0.1974  |
-|  3 | M           |         11.42 |          20.38 |            77.58 |       386.1 |           0.1425  |            0.2839  |          0.2414  |
-|  4 | M           |         20.29 |          14.34 |           135.1  |      1297   |           0.1003  |            0.1328  |          0.198   |
-|  5 | M           |         12.45 |          15.7  |            82.57 |       477.1 |           0.1278  |            0.17    |          0.1578  |
-|  6 | M           |         18.25 |          19.98 |           119.6  |      1040   |           0.09463 |            0.109   |          0.1127  |
-|  7 | M           |         13.71 |          20.83 |            90.2  |       577.9 |           0.1189  |            0.1645  |          0.09366 |
-|  8 | M           |         13    |          21.82 |            87.5  |       519.8 |           0.1273  |            0.1932  |          0.1859  |
-|  9 | M           |         12.46 |          24.04 |            83.97 |       475.9 |           0.1186  |            0.2396  |          0.2273  |
+נחשב ונשרטט את ה ECDF על פני grid של ערכים בין 0 ל $\max(\{x^{(i)}\})$ בקפיצות של 0.001:
 
-</div>
+<div class="imgbox" style="max-width:500px">
 
-רק לשם המחשה נתחיל בניסיון לחזות האם הרקמה סרטנית או לא רק על פי שני השדות הראשונים:
-
-- **radius_mean** - רדיוס התא הממוצא בדגימה.
-- **texture_mean** - סטיית התקן הממוצעת של רמת האפור בצבע של כל תא בדגימה.
-
-השדה של התוויות $\text{y}$ הינו:
-
-- **diagnosis** - התווית של הדגימה: M = malignant (סרטני), B = benign (בריא)
-
-(בחרנו להתחיל עם 2 שדות משום שמעבר לכך כבר לא נוכל לשרטט את הפילוג של הדגימות ואת החיזוי).
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/breast_cancer_2d_dataset.png)
+![](./output/nyc_duration_ecdf.png)
 
 </div>
 
-נרצה למצוא חזאי אשר יפריד בין הנקודות הכתומות לנקודות הכחולות. לשם כך נפצל את המדגם ל 60% train / 20% validation / 20% test. נתאים שלושה מודלים: LDA, QDA, linear logistic regression.
+נסתכל מקרוב על איך נראית פונקציית ה ECDF:
 
-### LDA
+<div class="imgbox" style="max-width:500px">
 
-נחשב את פרמטרים של המודל:
-
-$$
-p_{\text{y}}(0)=\frac{|\mathcal{I}_0|}{N}=0.37
-$$
-
-$$
-p_{\text{y}}(1)=\frac{|\mathcal{I}_1|}{N}=0.63
-$$
-
-$$
-\boldsymbol{\mu}_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\boldsymbol{x}^{(i)}=[12.3,17.9]^{\top}
-$$
-
-$$
-\boldsymbol{\mu}_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\boldsymbol{x}^{(i)}=[17.5,21.3]^{\top}
-$$
-
-$$
-\Sigma = \frac{1}{N}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
-=\begin{bmatrix}
-5.8 & 0.67 \\
-0.67 & 13.5
-\end{bmatrix}
-$$
-
-פרמטרים אלו יתנו את החיזוי הבא:
-
-<div class="imgbox" style="max-width:600px">
-
-![](./output/breast_cancer_lda.png)
+![](./output/nyc_duration_ecdf_zoom.png)
 
 </div>
 
-נזכיר כי החזאי המתקבל ממודל ה LDA הינו חזאי אשר מחלק את המרחב לשני חלקים על ידי משטח לינארי (במקרה זה קו ישר).
+נשים לב שמערך ה ECDF יהיה תמיד מורכב מאוסף של פונקציות מדרגה.
 
-ביצועי חזאי זה על ה validation set (במובן של misclassification rate) הינם: 0.09. זאת אומרת שאנו צפויים לצדוק באבחון ב 91% מהמקרים.
+#### שאלה
 
-### QDA
+על פי פונקציית הפילוג המצרפי המשוערכת, מהו הסיכוי שנסיעת מונית תערך יותר מ20 דקות?
 
-נחשב את פרמטרים של המודל. הפרמטרים של $p_{\text{y}}(y)$ ו $\boldsymbol{\mu}_c$ לא ישתנו. נחשב לכן רק את מטריצות הקווריאנס:
+##### תשובה
 
-$$
-\Sigma_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_0\right)^T
-=\begin{bmatrix}
-3.3 & -0.13 \\
--0.13 & 13.8
-\end{bmatrix}
-$$
+על פי הגדרת הפילוג המצרפי:
 
 $$
-\Sigma_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_1\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_1\right)^T
-=\begin{bmatrix}
-10.2 & 2 \\
-2 & 13.2
-\end{bmatrix}
+\text{Pr}(\text{x}>20)=1-\text{Pr}(\text{x}\leq 20)=1-F_{\text{x}}(20)\approx1-0.89=0.11
 $$
 
-פרמטרים אלו יתנו את החיזוי הבא:
+#### התלות בגודל המדגם
 
-<div class="imgbox" style="max-width:600px">
+על מנת לראות את התלות של ה ECDF בגודל המדגם נחזור על החישוב עם כמויות קטנות יותר של דגימות במדגם. אנו נבחר בארקאי $N=10,10,1000$ דגימות מהמדגם ונחזור על החישוב. התוצאה:
 
-![](./output/breast_cancer_qda.png)
+<div class="imgbox" style="max-width:500px">
+
+![](./output/nyc_duration_ecdf_smaller.png)
 
 </div>
 
-החזאי המתקבל ממודל ה QDA מחלק את המרב על ידי משטח ריבועי. בשרטוט זה המשטח אומנם נראה כמעט ישר אך אם נגדיל טיפה את השרטוט נראה שהוא אכן ריבועי:
+באופן לא מפתיע ניתן לראות כי ככל שאנו מגדילים את מספר הדגימות במדגם המשערך מתקרב יותר ויותר לפונקציה חלקה וניתן גם להראות כי השערוך מתקרב (במובן סטיסטי) לפונקציית הפילוג המצרפי האמיתית.
 
-<div class="imgbox" style="max-width:600px">
+### שיטה 2: היסטוגרמה
 
-![](./output/breast_cancer_qda_zoom_out.png)
+נחשב את ההסטוגרמה של משך הנסיעה בעבור חלוקה של התחום ל30, 300 ו 3000 תאים.
 
-</div>
+*תזכורת*: כלל האצבע לבחירה של מספר התאים הינו $\sqrt{B}=\sqrt{80000}\approx 280$$.
 
-ביצועי חזאי זה על ה validation set הינם: 0.08. זהו שיפור של 1% מביצועיו של מודל ה LDA.
+תוצאה:
 
-### שימוש בכל 30 העמודות במדגם
+<div class="imgbox" style="max-width:900px">
 
-אם נחזור על החישוב של מודל ה QDA רק עם כל 30 העמודות שבמדגם נקבל miscalssification rate של 0.02.
-
-### Linear Logistic Regression
-
-ננסה כעת להתאים מודל של linear logistic regression מהצורה:
-
-$$
-p_{\text{y}|\mathbf{x}}(1|\boldsymbol{x};\boldsymbol{\theta})
-=\sigma(\boldsymbol{x}^{\top}\boldsymbol{\theta}))
-$$
-
-בעיית האופטימיזציה של MLE תהיה:
-
-$$
-\boldsymbol{\theta}^*
-=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-I\{y^{(i)}=1\}\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-+I\{y^{(i)}=0\}\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-$$
-
-נשתמש ב gradient descent על מנת למצוא את הפרמטרים של המודל. בכדי לבחור את גודל הצעד ננסה כמה ערכים שונים ונריץ את האלגוריתם מספר קטן של צעדים (1000) ונבחר את גודל הצעד הגדול ביותר אשר גורם למודל להתכנס. בדוגמא זו נציג את התוצאות בעבור 4 ערכים של גודל הצעד:
-
-<div class="imgbox" style="max-width:800px">
-
-![](./output/breast_cancer_logistic_select_eta.png)
+![](./output/nyc_duration_histogram.png)
 
 </div>
 
-בגרפים האלה רואים את החישוב של ה objective על ה train set ועל ה validation set כפונקציה של מספר הצעדים. נשים לב שבעבור בחירה של $\eta=0.1$ או $\eta=1$ המודל מתבדר לערכים מאד גדולים וזה ימנע ממנו להתכנס למינימום של הפונקציית המטרה. נבחר אם כן את גודל הצעד להיות $\eta=0.01$ ונריץ את האלגוריתם מספר רב של צעדים (1000000):
+לפני שנבחן את התוצאות, נריץ מבחן נוסף. ננסה לשערך באופן איכותי את ה variance של כל אחת מההיסטוגרמות. לשם כך נפצל את המגדם ל8 תתי מדגמים שווים ונחשב היסטוגרמה בעבור כל אחד משמונת תתי המדגם.
 
-<div class="imgbox" style="max-width:600px">
+<div class="imgbox" style="max-width:900px">
 
-![](./output/breast_cancer_logistic_train.png)
+![](./output/nyc_duration_histogram_variance.png)
 
 </div>
 
-נראה אם כן שגם אחרי מליון צעדים האלגוריתם עדיין לא התכנס. כפי שציינו זוהי אחת הבעיות העיקריות של אלגוריתם הגרדיאנט בצורתו הפשוטה. למזלנו, ישנן מספר שיטות פשוטות לשפר את האלגוריתם בכדי לפתור בעיה זו אך אנו לא נפרט עליהן בקורס זה.
+בכדי להגדיר את השונות של השיערוך בצורה טובה יותר נחסר משמונת השיערוכים את הממוצע שלהם:
 
-הביצועים של המודל עם הפרמטרים המתקבלים אחרי מיליון צעדים נותנים miscalssification rate של 0.02 שזה דומה לתוצאה שקיבלנו על ידי שימוש ב QDA.
+<div class="imgbox" style="max-width:900px">
 
-ביצועי המודל על ה test set הינם: 0.04.
+![](./output/nyc_duration_histogram_variance_no_mean.png)
+
+</div>
+
+ניתן לראות כי:
+
+- בעבור **מספר גדול של תאים**, ההבדלים בין תתי המדגם השונים (**שונות גדולה**) גדול והתאים צרים ולכן ההיסטוגרמה יכולה לקרב בצורה יותר טובה את פונקציית הצפיפות האמיתית (**הטיה קטנה**)
+- בעבור **מספר קטן של תאים**, ההבדלים בין תתי מדגמים שונים קטן (**שונות קטנה**) אך התאים מאד רחבים ולכן לא יכולים לקרב את הפונקציה האמיתי בצורה טובה (**הטיה גדולה**)
+
+זהו למעשה אותו bias-variance tradeoff:
+
+- כאשר **מספר התאים גדול**, כל תא יהיה צר ומקור השגיאה העיקרי ינבע מה**אקראיות** של המדגם הגורמת לשינויים גדולים במספר היחסי של נקודות אשר נופלות בכל תא. שגיאה זו נובעת מה variance של המשערך. שגיאה זו תלך ותקטן ככל שנגדיל את כמות הדגימות במדגם.
+- כאשר **מספר התאים קטן**, מקור השגיאה העקרי ינבע מ**יכולת הייצוג המוגבלת** של המודל שלנו. שגיאה זו נובעת מה bias של המשערך.
+
+אנו כמובן נשאף לבחור ערך ביניים אשר לא סובל מ variance גדול מידי וגם לא מ bias גדולה מידי. כלל ההאבצע מנסה לתת לעזור לנו לבחור ערך שכזה.
+
+### שיטה 3: KDE
+
+נשערך כעת את פונקציית צפיפות ההסתברות בעזרת KDE עם חלון גאוסי. נבחן ערכים שונים לרוחב החלון $$\sigma=0.08,0.8,8$$.
+
+תזכורת, כלל האצבע מציע לבחור רוחב של: $\sigma=1.06\ \text{std}(\text{x}) N^{-\tfrac{1}{5}}\approx0.775$
+
+לשם השוואה, נשרטט גם את ההסטוגרמה עם ה 300 תאים:
+
+<div class="imgbox" style="max-width:900px">
+
+![](./output/nyc_duration_kde.png)
+
+</div>
+
+שוב אנו רואים את ה bias-variance tradeoff:
+
+- עבור בחירה של **רוחב צר** המשערך יכולה לקרב פרטים "עדינים" יותר, אבל השיערוך רועש יותר.זוהי שגיאת ה variance.
+- עבור בחירה של **רוחב רחב** המשערך מחליק את הפרטים הקטנים, אבל השיערוך פחות רועש יותר. זוהי שגיאת bias.
+
+### בעיית חיזוי: האם נסיעה התרחשה בזמן שעות העבודה
+
+נניח ושעות העבודה ב NYC מוגדרות כשעות שבין 7:00 ו18:00. נגדיר משתנה אקראי בינארי $\text{y}$ אשר שווה ל 1 אם נסיעה התרחשה בזמן שעות העבודה ו-0 אחרת.
+
+נרצה לבנות חזאי ל $\text{y}$ על סמך $\text{x}$ אשר ימזער את ה**missclassification rate**. נעשה זאת תחת הגישה הגנרטיבית.
+
+נפעל בדומה לתרגיל 5.3. השלבים לפתרון הבעיה:
+
+1. שיערוך הפילוג השולי של $\text{y}$, זאת אומרת $\hat{p}_{\text{y},\mathcal{D}}(y)$.
+2. שיערוך הפילוג המותנה של $\text{x}$ בהינתן $\text{y}$, זאת אומרת $\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)$, בעבור כל אחד משני הערכים של $\text{y}$.
+3. בניית החזאי האופטימאלי בהינתן הפילוג המשוערך על פי: $h(x)=\underset{y}{\arg\max}\ \hat{p}_{\text{y}|\text{x},\mathcal{D}}(y|x)$.
+
+#### שלב 1: שיערוך של $\hat{p}_{\text{y},\mathcal{D}}(y)$
+
+$\text{y}$ הוא משתנה דיסקרטי ולכן השיערוך של הפילוג שלו פשוט:
+
+$$
+\hat{p}_{\text{y},\mathcal{D}}(y)=\frac{1}{N}\sum_{i=1}^N I\{y^{(i)}=y\}
+$$
+
+נקבל כי:
+
+$$
+\hat{p}_{\text{y},\mathcal{D}}(y)=
+\begin{cases}
+0.51&y=1\\
+0.49&y=0\\
+\end{cases}
+$$
+
+##### חיזוי עיוור
+
+אם היה ברצונינו לתת חיזוי עיוור (ללא ידיעת $\text{x}$) להאם נסיעה התרחשה במהלך שעות העבודה היינו מעוניינים לתת את החיזוי הבא:
+
+$$
+\hat{y}=\underset{y}{\arg\max}\ \hat{p}_{\text{y},\mathcal{D}}(y)=1
+$$
+
+הסיבה שזהו החיזוי האידאלי נובעת ישירות מן העובדה שיש במדגם יותר נסיעות שהתרחשו בשעות העבודה. שיערכנו שיש סיכוי מעט יותר גדול שנסיעה אקראית תתרחש בשעות העבודה מכיוון שיש לנו סיכוי קטן יותר לטעות בעבור חיזוי זה.
+
+##### הערכת ביצועים לחיזוי עיוור
+
+נחשב את ה missclassification rate של החיזוי העיוור (חיזוי קבוע של 1) על ה test set. נקבל את הציון של: $0.49$.
+
+#### שלב 2: שיערוך $\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)$
+
+נשתמש פעמיים ב KDE על מנת לשערך את הפילוג המותנה פעם אחת בעבור הדגימות שבהן $\text{y}=0$ ופעם נוספת בעבור הדגימות שבהן $\text{y}=1$:
+
+<div class="imgbox" style="max-width:900px">
+
+![](./output/nyc_work_hour_x_given_y.png)
+
+</div>
+
+ניתן לראות כי ישנו שוני קטן בין הפילוגים. לנסיעות מחוץ לשעות העבודה ישנה נטיה קלה יותר לטובת זמני נסיעה קצרים יותר. הבדל קטן זה יעזור לנו לשפר את במעט את יכולת החיזוי שלנו.
+
+#### שלב 3: בניית החזאי
+
+עלינו לחשב את:
+
+$$
+h(x)=\underset{y}{\arg\max}\ \hat{p}_{\text{y}|\text{x},\mathcal{D}}(y|x)
+$$
+
+נתחיל בלהפוך את הפילוג המותנה בביטוי בעזרת חוק בייס על מנת לקבל ביטוי אשר תלוי בפילוגים שחישבנו:
+
+$$
+=\underset{y}{\arg\max}\quad
+\frac{
+  \hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)
+  \hat{p}_{\text{y},\mathcal{D}}(y)
+}{
+  \hat{p}_{\text{x},\mathcal{D}}(x)
+}
+$$
+
+כפי שציינו בתרגיל 5.3, ניתן להיפתר מהאיבר במכנה משום שהוא אינו תלוי ב $y$:
+
+$$
+=\underset{y}{\arg\max}\quad
+\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|y)
+\hat{p}_{\text{y},\mathcal{D}}(y)
+=\begin{cases}
+1&\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|1)\hat{p}_{\text{y},\mathcal{D}}(1)>
+  \hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|0)\hat{p}_{\text{y},\mathcal{D}}(0)\\
+0&\text{else}
+\end{cases}
+$$
+
+מכאן שהחיזוי יהיה 1 באיזורים שבהם $\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|1)\hat{p}_{\text{y},\mathcal{D}}(1)>\hat{p}_{\text{x}|\text{y},\mathcal{D}}(x|0)\hat{p}_{\text{y},\mathcal{D}}(0)$ ו-0 בכל השאר.
+
+חישוב תנאי זה על פני כל התחום נותן את פונקציית החיזוי הבאה:
+
+<div class="imgbox" style="max-width:900px">
+
+![](./output/nyc_work_hour_predict.png)
+
+</div>
+
+מכאן שהחיזוי שלנו יהיה:
+
+$$
+\hat{y}\left(x\right)=
+\begin{cases}
+1 & x\geq11.4 \\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+#### הערכת ביצועים
+
+נחשב את ה missclassification rate על ה test set. נקבל את הציון של: $0.46$. ציון זה הוא רק מעט יותר טוב מהחיזוי העיוור אשר היה נותן ציון של $0.49$. כפי שציינו קודם השיפור הקטן מגיע מההבדלים הקלים שבין שני הפילוגים של הנסיעות בשעות העבודה ומחוצה להן. במקרה זה קיבלנו אומנם שיפור קטן אך ככל שנסתמך בחיזוי שלנו על יותר משתנים השיפורים הקטנים האלו יצברו ונוכל בסוף להגיע לחיזויים מאד מדוייקים.
 
 </div>
