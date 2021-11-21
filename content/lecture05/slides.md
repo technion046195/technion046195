@@ -7,8 +7,7 @@ slides_pdf: true
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# הרצאה 5
- - Bagging and Boosting
+# הרצאה 5 - Bagging and Boosting
 
 <div dir="ltr">
 <a href="/assets/lecture05_slides.pdf" class="link-button" target="_blank">PDF</a>
