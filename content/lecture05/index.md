@@ -13,7 +13,7 @@ print_pdf: true
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
 <a href="/assets/lecture05.pdf" class="link-button" target="_blank">PDF</a>
-<!-- <a href="./code/" class="link-button" target="_blank">Code</a> -->
+<a href="./code/" class="link-button" target="_blank">Code</a>
 </div>
 
 ## מה נלמד היום

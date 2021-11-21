@@ -67,16 +67,43 @@ gen_diag ./content/lecture04/assets/binary_tree.png -f png -p0 -t -b20 -s3 ./con
 gen_diag ./content/lecture04/assets/tree_fraud_detection.png -f png -p1 -t -b20 -s4 ./content/lecture04/assets/trees.drawio
 gen_diag ./content/lecture04/assets/engineering_flowchart.png -f png -p2 -t -b20 -s3 ./content/lecture04/assets/trees.drawio
 
-gen_diag ./content/lecture07/assets/course_diagram.png -f png -p4 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture05/assets/course_diagram.png -f png -p4 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture05/assets/models_bias_variance.png -f png -p0 -b20 -s3 ./content/lecture05/assets/models_bias_variance.drawio
+gen_diag ./content/lecture05/assets/bootstrapping.png -f png -p0 -b20 -s3 ./content/lecture05/assets/bootstrapping.drawio
+gen_diag ./content/lecture05/assets/bagging.png -f png -p0 -b20 -s3 ./content/lecture05/assets/bagging.drawio
 
-gen_diag ./content/lecture08/assets/course_diagram.png -f png -p5 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/tutorial05/assets/ex_12_1.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1.drawio
+gen_diag ./content/tutorial05/assets/ex_12_1_b_0.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1_b_0.drawio
+gen_diag ./content/tutorial05/assets/ex_12_1_b_2.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1_b_2.drawio
+gen_diag ./content/tutorial05/assets/ex_12_1_b_4.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1_b_4.drawio
 
-gen_diag ./content/lecture09/assets/course_diagram.png -f png -p6 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture06/assets/course_diagram.png -f png -p5 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture06/assets/linear_separable.png -f png -p0 -b20 -s3 ./content/lecture06/assets/linear_separable.drawio
+gen_diag ./content/lecture06/assets/multiple_separation_planes.png -f png -p0 -b20 -s3 ./content/lecture06/assets/multiple_separation_planes.drawio
+gen_diag ./content/lecture06/assets/unit_linear.png -f png -p0 -b20 -s3 ./content/lecture06/assets/unit_linear.drawio
+gen_diag ./content/lecture06/assets/linear.png -f png -p0 -b20 -s3 ./content/lecture06/assets/linear.drawio
+gen_diag ./content/lecture06/assets/affine.png -f png -p0 -b20 -s3 ./content/lecture06/assets/affine.drawio
+gen_diag ./content/lecture06/assets/plain_geometry.png -f png -p0 -b20 -s3 ./content/lecture06/assets/plain_geometry.drawio
+gen_diag ./content/lecture06/assets/hard_svm.png -f png -p0 -b20 -s3 ./content/lecture06/assets/hard_svm.drawio
+gen_diag ./content/lecture06/assets/signed_distance.png -f png -p0 -b20 -s3 ./content/lecture06/assets/signed_distance.drawio
+gen_diag ./content/lecture06/assets/margin.png -f png -p0 -b20 -s3 ./content/lecture06/assets/svm_geometry.drawio
+gen_diag ./content/lecture06/assets/svm_xi.png -f png -p1 -b20 -s3 ./content/lecture06/assets/svm_geometry.drawio
+
+gen_diag ./content/tutorial06/assets/ex_10_1.png -f png -p0 -b20 -s3 ./content/tutorial06/assets/ex_10_1.drawio
+gen_diag ./content/tutorial06/assets/ex_10_2.png -f png -p0 -b20 -s3 ./content/tutorial06/assets/ex_10_2.drawio
+gen_diag ./content/tutorial06/assets/ex_10_2_2_sv.png -f png -p1 -b20 -s3 ./content/tutorial06/assets/ex_10_2.drawio
+gen_diag ./content/tutorial06/assets/ex_10_2_3_sv.png -f png -p2 -b20 -s3 ./content/tutorial06/assets/ex_10_2.drawio
+
+gen_diag ./content/lecture07/assets/course_diagram.png -f png -p6 -b20 -s3 ./content/assets/course_diagram.drawio
+
+gen_diag ./content/lecture08/assets/course_diagram.png -f png -p7 -b20 -s3 ./content/assets/course_diagram.drawio
+
+gen_diag ./content/lecture09/assets/course_diagram.png -f png -p8 -b20 -s3 ./content/assets/course_diagram.drawio
 gen_diag ./content/lecture09/assets/gradient_descent_small_step.png -f png -p0 -b0 -s1 ./content/lecture09/assets/gradient_descent.drawio
 gen_diag ./content/lecture09/assets/gradient_descent_large_step.png -f png -p1 -b0 -s1 ./content/lecture09/assets/gradient_descent.drawio
 gen_diag ./content/lecture09/assets/gradient_descent_too_large_step.png -f png -p2 -b0 -s1 ./content/lecture09/assets/gradient_descent.drawio
 
-gen_diag ./content/lecture10/assets/course_diagram.png -f png -p7 -b20 -s3 ./content/assets/course_diagram.drawio
+gen_diag ./content/lecture10/assets/course_diagram.png -f png -p9 -b20 -s3 ./content/assets/course_diagram.drawio
 gen_diag ./content/lecture10/assets/neuron_model.png -f png -p0 -b20 -s3 ./content/lecture10/assets/neuron.drawio
 gen_diag ./content/lecture10/assets/neuron_scheme.png -f png -p1 -b20 -s4 ./content/lecture10/assets/neuron.drawio
 gen_diag ./content/lecture10/assets/neuron_scheme2.png -f png -p2 -b20 -s4 ./content/lecture10/assets/neuron.drawio
@@ -112,33 +139,6 @@ gen_diag ./content/tutorial11/assets/ex_09_1_network.png -f png -p1 -b20 -s3 ./c
 gen_diag ./content/tutorial11/assets/ex_09_1_1_1.png -f png -p1 -b20 -s3 ./content/tutorial11/assets/ex_09_1_1_1.drawio
 gen_diag ./content/tutorial11/assets/ex_09_1_1_2.png -f png -p1 -b20 -s3 ./content/tutorial11/assets/ex_09_1_1_2.drawio
 gen_diag ./content/tutorial11/assets/lenet_arch2.png -f png -p1 -b20 -s3 ./content/tutorial11/assets/lenet.drawio
-
-gen_diag ./content/lecture06/assets/course_diagram.png -f png -p8 -b20 -s3 ./content/assets/course_diagram.drawio
-gen_diag ./content/lecture06/assets/linear_separable.png -f png -p0 -b20 -s3 ./content/lecture06/assets/linear_separable.drawio
-gen_diag ./content/lecture06/assets/multiple_separation_planes.png -f png -p0 -b20 -s3 ./content/lecture06/assets/multiple_separation_planes.drawio
-gen_diag ./content/lecture06/assets/unit_linear.png -f png -p0 -b20 -s3 ./content/lecture06/assets/unit_linear.drawio
-gen_diag ./content/lecture06/assets/linear.png -f png -p0 -b20 -s3 ./content/lecture06/assets/linear.drawio
-gen_diag ./content/lecture06/assets/affine.png -f png -p0 -b20 -s3 ./content/lecture06/assets/affine.drawio
-gen_diag ./content/lecture06/assets/plain_geometry.png -f png -p0 -b20 -s3 ./content/lecture06/assets/plain_geometry.drawio
-gen_diag ./content/lecture06/assets/hard_svm.png -f png -p0 -b20 -s3 ./content/lecture06/assets/hard_svm.drawio
-gen_diag ./content/lecture06/assets/signed_distance.png -f png -p0 -b20 -s3 ./content/lecture06/assets/signed_distance.drawio
-gen_diag ./content/lecture06/assets/margin.png -f png -p0 -b20 -s3 ./content/lecture06/assets/svm_geometry.drawio
-gen_diag ./content/lecture06/assets/svm_xi.png -f png -p1 -b20 -s3 ./content/lecture06/assets/svm_geometry.drawio
-
-gen_diag ./content/tutorial06/assets/ex_10_1.png -f png -p0 -b20 -s3 ./content/tutorial06/assets/ex_10_1.drawio
-gen_diag ./content/tutorial06/assets/ex_10_2.png -f png -p0 -b20 -s3 ./content/tutorial06/assets/ex_10_2.drawio
-gen_diag ./content/tutorial06/assets/ex_10_2_2_sv.png -f png -p1 -b20 -s3 ./content/tutorial06/assets/ex_10_2.drawio
-gen_diag ./content/tutorial06/assets/ex_10_2_3_sv.png -f png -p2 -b20 -s3 ./content/tutorial06/assets/ex_10_2.drawio
-
-gen_diag ./content/lecture05/assets/course_diagram.png -f png -p9 -b20 -s3 ./content/assets/course_diagram.drawio
-gen_diag ./content/lecture05/assets/models_bias_variance.png -f png -p0 -b20 -s3 ./content/lecture05/assets/models_bias_variance.drawio
-gen_diag ./content/lecture05/assets/bootstrapping.png -f png -p0 -b20 -s3 ./content/lecture05/assets/bootstrapping.drawio
-gen_diag ./content/lecture05/assets/bagging.png -f png -p0 -b20 -s3 ./content/lecture05/assets/bagging.drawio
-
-gen_diag ./content/tutorial05/assets/ex_12_1.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1.drawio
-gen_diag ./content/tutorial05/assets/ex_12_1_b_0.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1_b_0.drawio
-gen_diag ./content/tutorial05/assets/ex_12_1_b_2.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1_b_2.drawio
-gen_diag ./content/tutorial05/assets/ex_12_1_b_4.png -f png -p0 -b20 -s3 ./content/tutorial05/assets/ex_11_1_b_4.drawio
 
 gen_diag ./content/lecture12/assets/course_diagram.png -f png -p10 -b20 -s3 ./content/assets/course_diagram.drawio
 gen_diag ./content/lecture12/assets/encoder_decoder.png -f png -p0 -b20 -s3 ./content/lecture12/assets/encoder_decoder.drawio
