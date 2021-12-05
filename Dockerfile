@@ -68,7 +68,8 @@ WORKDIR /project/app
 ## Setup python packages
 ## =====================
 COPY ./pip_requirements.txt /project/app/pip_requirements.txt
-RUN pip3 install -r /project/app/pip_requirements.txt && sudo rm -r /root/.cache/pip
+RUN cat /project/app/pip_requirements.txt | xargs -n 1 -L 1 pip3 install && \
+    sudo rm -r /root/.cache/pip
 ENV MPLBACKEND=Agg
 ## Import matplotlib the first time to build the font cache.
 RUN python3 -c "import matplotlib.pyplot"
