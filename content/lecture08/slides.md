@@ -661,7 +661,7 @@ $$
 
 ## Quadric Discriminant Analysis (QDA)
 
-- נשתמש בפילוג נורמאלי וב MLE על מנת לשערך את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$.
+- נשתמש בפילוג נורמאלי וב MLE על מנת לשערך את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$
 - אנו צריכים לשערך מודל בעבור כל אחת מ $C$ המחלקות של $\text{y}$:
   - וקטור תוחלת $\boldsymbol{\mu}_c$ בעבור כל אחד מהמחלקות.
   - מטריצת קווריאנס $\Sigma_c$ בעבור כל אחד מהמחלקות.
