@@ -207,10 +207,10 @@ exports.createPages = async ({ cache, graphql, actions }) => {
 
   for (const node of data.md_pages.nodes){ 
     if (node.fields != null) {
-      if (node.fields.print_pdf_filename != null) {
-        const args = {'slug': node.fields.slug, 'pdfFilename': node.fields.print_pdf_filename, 'profile': 'page'};
-        addPageToPrint(args, node.fileAbsolutePath , cache);
-      }
+      // if (node.fields.print_pdf_filename != null) {
+      //   const args = {'slug': node.fields.slug, 'pdfFilename': node.fields.print_pdf_filename, 'profile': 'page'};
+      //   addPageToPrint(args, node.fileAbsolutePath , cache);
+      // }
       if (node.fields.slides_pdf_filename != null) {
         const args = {'slug': node.fields.slug + '?print-pdf', 'pdfFilename': node.fields.slides_pdf_filename, 'profile': 'slides'};
         addPageToPrint(args, node.fileAbsolutePath , cache);
