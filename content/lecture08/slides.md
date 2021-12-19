@@ -35,7 +35,7 @@ slides_pdf: true
 ### הערה לגבי שלב בניית המודל ושלב החיזוי
 
 - בשלב בניית המודל כמות המשאבים שיעמדו לרשותינו תהיה מאד גדולה.
-- בזמן החיזוי נרצה לבצע את החישוב על פלטפורמה יחסית ולקבל תוצאות מאד מהירות.
+- בזמן החיזוי נרצה לבצע את החישוב על פלטפורמה יחסית חלשה ולקבל תוצאות מאד מהירות.
 
 </section><section>
 
@@ -79,13 +79,13 @@ slides_pdf: true
 
 <br/>
 
-זאת משום שאין אף דגימה בה יש את כל הסימפטומים ולכן גם הסבירות של פריקה וגם הסבירות של אי-פריקה היא 0.
+זאת משום שאין אף דגימה בה יש את כל הסימפטומים ולכן גם השכיחות של פריקה וגם השכיחות של אי-פריקה הן 0.
 
 </section><section>
 
 ## הבעיה של כיסוי המרחב - דוגמא נוספת
 
-כמות הערכים השונים שהוקטור בינראי באורך 10 יכול לקבל הינה $2^{10}=1024$. גם אם ננסה לשערך את הפילוג של וקטור זה עם מדגם של 500 דגימות לפחות חצי מהערכים לא יופיע במדגם.
+כמות הערכים השונים שהוקטור בינראי באורך 10 יכול לקבל הינה $2^{10}=1024$. אם ננסה לשערך את הפילוג של וקטור זה עם מדגם של 500 דגימות לפחות חצי מהערכים לא יופיע במדגם.
 
 </section><section>
 
@@ -239,8 +239,8 @@ $$
 
 </div>
 
-- לב שקיבלנו הסתברות גבוהה להונאה גם באיזורים שבמדגם לא היו שום דגימות של הונאות.
-- הסיבה היא הנחת החוסר תלות.
+- שימו לב שקיבלנו הסתברות גבוהה להונאה גם באיזורים שבמדגם לא היו שום דגימות של הונאות.
+- הסיבה היא הנחת חוסר התלות.
 
 </section><section>
 
@@ -926,5 +926,119 @@ $$
 
 במקרה הכללי המרחב יהיה מחולק ל $C$ איזורים שהשפות שלהם יהיו מורכבות מהמישורים המתקבלים מהשפות שבין כל זוג מחלקות. דוגמא למקרה עם 3 מחלקות תופיע בתרגול.
 
+</section><section>
+
+## דוגמא
+
+נסתכל שוב על הבעיה של חיזוי עסקאות שחשודות כהונאות:
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_dataset.png)
+
+</div>
+</section><section>
+
+## התאמה של מודל QDA
+
+$$
+p_{\text{y}}(0)=\frac{|\mathcal{I}_0|}{N}=0.81
+$$
+
+$$
+p_{\text{y}}(1)=\frac{|\mathcal{I}_1|}{N}=0.19
+$$
+
+$$
+\boldsymbol{\mu}_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i\in \mathcal{I}_0}\boldsymbol{x}^{(i)}=[55.1,54.6]^{\top}
+$$
+
+$$
+\boldsymbol{\mu}_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i\in \mathcal{I}_1}\boldsymbol{x}^{(i)}=[54.4,55.2]^{\top}
+$$
+
+$$
+\Sigma_0 = \frac{1}{|\mathcal{I}_0|}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+=\begin{bmatrix}
+350.9 & -42.9 \\
+-42.9 & 336
+\end{bmatrix}
+$$
+
+$$
+\Sigma_1 = \frac{1}{|\mathcal{I}_1|}\sum_{i}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{y^{(i)}}\right)^T
+=\begin{bmatrix}
+817.9 & 730.5 \\
+730.5 & 741.7
+\end{bmatrix}
+$$
+
+</section><section>
+
+## התאמה של מודל QDA
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture09/output/transactions_qda.png)
+
+</div>
+
+שגיאת החיזוי (miscalssification rate) על ה test set הינה 0.08.
+
+<br/>
+
+התוצאה סבירה, אך ניתן לראות  שגאוסיאן לא מאד מתאים לפילוג של ההונאות.
+
+</section><section>
+
+## הבעיה של הגישה הגנרטיבת פרמטרית
+
+<div class="imgbox" style="max-width:300px">
+
+![](../lecture09/output/transactions_qda.png)
+
+</div>
+
+- הינו רוצים מודל אשר יכול לייצג בנפרד את שני האיזורים.
+- לצערינו המבחר של המודלים בהם אנו יכולים לא גדול.
+- המגבלה הזו נובעת מהצורך שהמודל ייצג פילוג חוקיים.
+
+**הערה**: במקרה זה ניתן להשתמש ב GMM + EM.
+
+</section><section>
+
+## דוגמא למדגם שמתאים למודל של QDA
+
+לצורך הדגמה נסתכל על גירסא של המדגם שבה יש רק איזור אחד של ההונאות:
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture09/output/transactions_single_dataset.png)
+
+</div>
+
+</section><section>
+
+## מודל QDA
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture09/output/transactions_single_qda.png)
+
+</div>
+
+שגיאת החיזוי (miscalssification rate) על ה test set במקרה הזה הינה 0.
+
+</section><section>
+
+## מודל LDA
+
+נציג גם את התוצאה המתקבלת ממודל ה LDA:
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture09/output/transactions_single_lda.png)
+
+</div>
 </section>
 </div>
