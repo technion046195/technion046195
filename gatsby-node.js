@@ -215,10 +215,10 @@ exports.createPages = async ({ cache, graphql, actions }) => {
         const args = {'slug': node.fields.slug + '?print-pdf', 'pdfFilename': node.fields.slides_pdf_filename, 'profile': 'slides'};
         addPageToPrint(args, node.fileAbsolutePath , cache);
       }
-      if (node.fields.slides_compact_pdf_filename != null) {
-        const args = {'slug': node.fields.slug + '?print-pdf&compact', 'pdfFilename': node.fields.slides_compact_pdf_filename, 'profile': 'slides'};
-        addPageToPrint(args, node.fileAbsolutePath , cache);
-      }
+      // if (node.fields.slides_compact_pdf_filename != null) {
+      //   const args = {'slug': node.fields.slug + '?print-pdf&compact', 'pdfFilename': node.fields.slides_compact_pdf_filename, 'profile': 'slides'};
+      //   addPageToPrint(args, node.fileAbsolutePath , cache);
+      // }
     }
   }
 
