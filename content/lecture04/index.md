@@ -3,7 +3,7 @@ type: lecture
 index: 4
 template: page
 make_docx: true
-print_pdf: true
+print_pdf: false
 ---
 
 

@@ -2,7 +2,7 @@
 type: lecture-slides
 index: 1
 template: slides
-slides_pdf: true
+slides_pdf: false
 ---
 
 <div class="slides" style="direction:rtl">
