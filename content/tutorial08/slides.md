@@ -158,8 +158,6 @@ $$
 ## 
 
 ##### משערך Maximum A-posteriori Probaility (MAP)
-
-<div class="fragment">
  
 * בגישה זו נבחר את הערך של $\boldsymbol{\theta}$ ע"י משערך MAP.
 * בשיטה זו נחפש את הערך הכי סביר של $\boldsymbol{\theta}$ בהינתן המדגם $p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})$.
