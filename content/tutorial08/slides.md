@@ -38,17 +38,17 @@ slides_pdf: true
 
 ### הגישה הפרמטרית
 
+<div class="fragment">
+ 
 * נעשה שימוש במודלים פרמטריים בדומה לאופן שבו הדבר נעשה בגישה הדיסקרימינטיבית.
 * נחפש פילוג מתוך משפחה פרמטרית מסויימת, על ידי מציאת הפרמטרים האופטימליים.
   *  לרוב ננסה למדל את צפיפות הפילוג (הPDF). 
 
-<div class="fragment">
+</div><div class="fragment">
 
 *  באופן כללי ישנן 2 דרכים להתייחס לפרמטרי המודל: הגישה הבייסיאנית, והגישה התדירותית (לא בייסיאנית).
 
-</div>
-
-<div class="fragment">
+</div><div class="fragment">
 
 * בגישה הבייסיאנית אנו מתייחסים לפרמטרים כאל משתנים אקראיים.
 
@@ -81,8 +81,6 @@ $$
 * נסמן ב $p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})$ את ההסתברות לקבלת מדגם $\mathcal{D}=\{\boldsymbol{x}^{(i)}\}$.
 
 </div><div class="fragment">
-
-<div class="fragment">
 
 * גודל זה מכונה ה**סבירות** (**likelihood**) של המדגם כפונקציה של $\boldsymbol{\theta}$. 
 
@@ -142,17 +140,13 @@ $$
 
 #### הגישה הבייסיאנית
 
-</div><div class="fragment">
+<div class="fragment">
 
 * וקטור הפרמטרים $\boldsymbol{\theta}$ הינו ריאליזציה של וקטור אקראי בעל פילוג כלשהוא $p_{\boldsymbol{\theta}}(\boldsymbol{\theta})$.
-
-</div>
 
 </div><div class="fragment">
 
 * פילוג זה מכונה ה**א-פריורי** (**a priori distribution**), הפילוג של $\boldsymbol{\theta}$ לפני שראינו את המדגם.
-
-</div>
 
 </div><div class="fragment">
 
@@ -170,14 +164,18 @@ $$
 
 ##### משערך Maximum A-posteriori Probaility (MAP)
 
-</div><div class="fragment">
+<div class="fragment">
+ 
 * בגישה זו נבחר את הערך של $\boldsymbol{\theta}$ ע"י משערך MAP.
-</div>
+ 
 </div><div class="fragment">
+ 
 * נחפש את הערך הכי סביר של $\boldsymbol{\theta}$ בהינתן המדגם $p_{\boldsymbol{\theta}|\mathcal{D}}(\boldsymbol{\theta}|\mathcal{D})$.
-</div>
+
 </div><div class="fragment">
+ 
 * פילוג זה מכונה הפילוג **א-פוסטריורי** (**a posteriori distribution**) (או הפילוג בדיעבד) - הפילוג אחרי שראינו את המדגם.
+ 
 </div>
 
 </section><section>
