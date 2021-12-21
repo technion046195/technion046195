@@ -42,17 +42,13 @@ slides_pdf: true
  
 * נעשה שימוש במודלים פרמטריים בדומה לאופן שבו הדבר נעשה בגישה הדיסקרימינטיבית.
 * נחפש פילוג מתוך משפחה פרמטרית מסויימת, על ידי מציאת הפרמטרים האופטימליים.
-  *  לרוב ננסה למדל את צפיפות הפילוג (הPDF). 
+  * לרוב ננסה למדל את צפיפות הפילוג (הPDF). 
 
 </div><div class="fragment">
 
-*  באופן כללי ישנן 2 דרכים להתייחס לפרמטרי המודל: הגישה הבייסיאנית, והגישה התדירותית (לא בייסיאנית).
-
-</div><div class="fragment">
-
-* בגישה הבייסיאנית אנו מתייחסים לפרמטרים כאל משתנים אקראיים.
-
-* בגישה התדירותית אנו מתייחסים לפרמטרים כקבועים.
+* באופן כללי ישנן 2 דרכים להתייחס לפרמטרי המודל: הגישה הבייסיאנית, והגישה התדירותית (לא בייסיאנית).
+ * בגישה הבייסיאנית אנו מתייחסים לפרמטרים כאל משתנים אקראיים.
+ * בגישה התדירותית אנו מתייחסים לפרמטרים כקבועים.
 
 </div>
 
@@ -112,8 +108,6 @@ $$
 p_{\mathcal{D}}(\mathcal{D};\boldsymbol{\theta})=\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
 $$
 
-</div><div class="fragment">
-
 ולכן:
 
 $$
@@ -131,6 +125,7 @@ $$
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\log\mathcal{L}(\boldsymbol{\theta};\mathcal{D})
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
 $$
+
 
 </div>
 
@@ -152,11 +147,11 @@ $$
 
 * תחת גישה זו, המודל שלנו יהיה הפילוג של $\mathbf{x}$ **בהינתן** $\boldsymbol{\theta}$:
 
-</div>
-
 $$
 p_{\mathbf{x}|\boldsymbol{\theta}}(\boldsymbol{x}|\boldsymbol{\theta})
 $$
+
+</div>
 
 </section><section>
 
