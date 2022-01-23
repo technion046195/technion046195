@@ -296,6 +296,92 @@ $$
 
 </section><section style="direction:ltr">
 
+## Hard SVM
+
+- Problem type:
+  <span class="fragment" style="color:#006992">
+  Binary classification
+  </span>
+- Approach:
+  <span class="fragment" style="color:#006992">
+  Discriminative
+  </span>
+- Model:
+  <span class="fragment" style="color:#006992">
+  $h(\boldsymbol{x})=\text{sign}(\boldsymbol{w}^T\boldsymbol{x}+b)$
+  </span>
+- Optimization:
+  <div class="fragment" style="color:#006992">
+
+  $$
+  \begin{aligned}
+  \boldsymbol{w}^*,b^*
+  =\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\lVert\boldsymbol{w}\rVert^2\\
+  \text{s.t.}\quad&(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
+  \end{aligned}
+  $$
+
+  </div>
+
+- How to solve:
+  <span class="fragment" style="color:#006992">
+  Numerical convex optimization solvers.
+  </span>
+- Property:
+  <span class="fragment" style="color:#006992">
+  Requiers the data to be linear sperable.
+  </span>
+
+</section><section style="direction:ltr">
+
+## Soft SVM
+
+- Problem type:
+  <span class="fragment" style="color:#006992">
+  Binary classification
+  </span>
+- Approach:
+  <span class="fragment" style="color:#006992">
+  Discriminative
+  </span>
+- Model:
+  <span class="fragment" style="color:#006992">
+  $h(\boldsymbol{x})=\text{sign}(\boldsymbol{w}^T\boldsymbol{x}+b)$
+  </span>
+- Hyper-parameter:
+  <span class="fragment" style="color:#006992">
+  The slack penalty term $C$.
+  </span>
+- Optimization:
+  <div class="fragment" style="color:#006992">
+
+  $$
+  \begin{aligned}
+  \boldsymbol{w}^*,b^*,\{\xi_i\}^*=
+  \underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
+  \text{s.t.}\quad
+      &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
+      &\xi_i\geq0\quad\forall i
+  \end{aligned}
+  $$
+
+  </div>
+
+</section><section style="direction:ltr">
+
+## Soft SVM - Cont.
+
+- How to solve:
+  <span style="color:#006992">
+  Numerical convex optimization solvers.
+  </span>
+- Property:
+  <span class="fragment" style="color:#006992">
+  Can be very efficient when combined with the right kernal using the kernal-trick.
+  </span>
+
+</section><section style="direction:ltr">
+
 ## Histogram
 
 - Approach:
@@ -543,92 +629,6 @@ $$
   Very efficient when $\boldsymbol{x}$ has some spatial structure.
   </span>
 
-</section><section style="direction:ltr">
-
-## Hard SVM
-
-- Problem type:
-  <span class="fragment" style="color:#006992">
-  Binary classification
-  </span>
-- Approach:
-  <span class="fragment" style="color:#006992">
-  Discriminative
-  </span>
-- Model:
-  <span class="fragment" style="color:#006992">
-  $h(\boldsymbol{x})=\text{sign}(\boldsymbol{w}^T\boldsymbol{x}+b)$
-  </span>
-- Optimization:
-  <div class="fragment" style="color:#006992">
-
-  $$
-  \begin{aligned}
-  \boldsymbol{w}^*,b^*
-  =\underset{\boldsymbol{w},b}{\arg\min}\quad&\frac{1}{2}\lVert\boldsymbol{w}\rVert^2\\
-  \text{s.t.}\quad&(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
-  \end{aligned}
-  $$
-
-  </div>
-
-- How to solve:
-  <span class="fragment" style="color:#006992">
-  Numerical convex optimization solvers.
-  </span>
-- Property:
-  <span class="fragment" style="color:#006992">
-  Requiers the data to be linear sperable.
-  </span>
-
-</section><section style="direction:ltr">
-
-## Soft SVM
-
-- Problem type:
-  <span class="fragment" style="color:#006992">
-  Binary classification
-  </span>
-- Approach:
-  <span class="fragment" style="color:#006992">
-  Discriminative
-  </span>
-- Model:
-  <span class="fragment" style="color:#006992">
-  $h(\boldsymbol{x})=\text{sign}(\boldsymbol{w}^T\boldsymbol{x}+b)$
-  </span>
-- Hyper-parameter:
-  <span class="fragment" style="color:#006992">
-  The slack penalty term $C$.
-  </span>
-- Optimization:
-  <div class="fragment" style="color:#006992">
-
-  $$
-  \begin{aligned}
-  \boldsymbol{w}^*,b^*,\{\xi_i\}^*=
-  \underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
-  \text{s.t.}\quad
-      &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
-      &\xi_i\geq0\quad\forall i
-  \end{aligned}
-  $$
-
-  </div>
-
-</section><section style="direction:ltr">
-
-## Soft SVM - Cont.
-
-- How to solve:
-  <span style="color:#006992">
-  Numerical convex optimization solvers.
-  </span>
-- Property:
-  <span class="fragment" style="color:#006992">
-  Can be very efficient when combined with the right kernal using the kernal-trick.
-  </span>
-
 </section><section>
 
 ## Bagging and Boosting
@@ -682,15 +682,30 @@ $$
 
 ## חברי סגל בתחום
 
+<div style="display:grid;">
+<div style="grid-column:1;">
+
 - אביב תמרי
+- איילת טל
+- גיא גלבוע
 - דניאל סודרי
+- יואב שכנר
 - יניב רומנו
 - כפיר לוי
-- נחום שימקין (דיקן הפקולטה)
+
+</div>
+<div style="grid-column:2;">
+
+- ליהי צלניק-מנור
+- נחום שימקין
+- ענת לוין
 - קובי קרמר
 - רון מאיר
 - שי מנור
 - תומר מכאלי
+
+</div>
+</div>
 
 </section><section class="center">
 
