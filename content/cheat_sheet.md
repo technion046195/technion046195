@@ -217,7 +217,7 @@ $$
 גם כאן יש פתרון סגור:
 
 $$
-\boldsymbol{\theta}=(\boldsymbol{X}^{\top}\boldsymbol{X}+\lambda \boldsymbol{I})^{-1}\boldsymbol{X}^{\top}\boldsymbol{y}
+\boldsymbol{\theta}=(\boldsymbol{X}^{\top}\boldsymbol{X}+N\lambda \boldsymbol{I})^{-1}\boldsymbol{X}^{\top}\boldsymbol{y}
 $$
 
 #### Least Absolute Shrinkage and Selection Operator (LASSO)
