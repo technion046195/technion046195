@@ -314,7 +314,7 @@ $$
 **5)** (לקריאה עצמית) נרחיב את הדוגמא למקרה הלא בינארי. הראו שניתן לכתוב את צעד העדכון של אלגוריתם ה gradient discent במקרה הלא בינארי באופן הבא:
 
 $$
-\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
+\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c+\eta\sum_{i=1}^{N}
 \left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
 \nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
 $$
@@ -430,7 +430,7 @@ $$
 צעד העדכון יהיה:
 
 $$
-\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c-\eta\sum_{i=1}^{N}
+\boldsymbol{\theta}^{(t+1)}_c=\boldsymbol{\theta}^{(t)}_c+\eta\sum_{i=1}^{N}
 \left(\delta_{y^{(i)},c}-p_{\text{y}|\mathbf{x}}(c|\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)})\right)
 \nabla_{\boldsymbol{\theta}_c} f_c(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(t)}_c)\quad\forall c
 $$
