@@ -4,8 +4,7 @@ index: 1
 template: slides
 slides_pdf: true
 ---
-
-<div class="slides" style="direction:rtl">
+<div class="slides site-style" style="direction:rtl">
 <section class="center">
 
 # הרצאה 1 - מבוא
@@ -228,7 +227,7 @@ $$
 
 הרעיון מאחורי רוב השיטות במערכות לומדות הוא זהה:
 
-1. נגדיר קריטריון מתמטי אשר מודד עד כמה מודל מסויים מצליח לבצע את המשימה
+1. נגדיר קריטריון מתמטי אשר מודד עד כמה מודל מסויים מצליח לבצע את המשימה.
 2. נבחר משפחה רחבה של מודלים בתקווה שלפחות אחד מהם יהיה מוצלח מספיק.
 3. נחפש מבין כל המודלים במשפחה את המודל המוצלח ביותר.
 
@@ -258,7 +257,7 @@ $$
 
 </li><li class="fragment">
 
-קומבינציה לינרארית של פונקציות: $f_{\boldsymbol{\theta}}(x)=\theta_1 e^x + \theta_2 \sin(x)$.
+קומבינציה לינארית של פונקציות: $f_{\boldsymbol{\theta}}(x)=\theta_1 e^x + \theta_2 \sin(x)$.
 
 </li><li class="fragment">
 
@@ -550,7 +549,7 @@ Nothing but Words by Liam Porr<br/>
 
 </div><div class="fragment" data-fragment-index="2">
 
-**Online**<br/>
+**מקוונות (Online)**<br/>
 אנו מעוניינים להמשיך לעדכן את המודל שלנו בעקבות מידע שממשיך להגיע באופן שוטף.
 
 </div><div class="imgbox fragment" class="fragment" data-fragment-index="3" style="max-height:140px">
@@ -597,7 +596,7 @@ Nothing but Words by Liam Porr<br/>
 
 </div><div>
 
-**Online**<br/>
+**מקוונות (Online)**<br/>
 סינון דואר זבל עם עידכון על כל דואר חדש שמגיע.<br/>
 חיזוי מחירי מניות עם עדכון על כל מידע חדש שמגיע.
 
