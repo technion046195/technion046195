@@ -68,7 +68,9 @@ slides_pdf: true
 
 - בsupervised learning (ובמערכות לומדות) אנו מניחים כי הפילוג אינו ידוע.
 
-</div><div class="fragment">
+</div>
+
+<div class="fragment">
 
 - במקום הפילוג יש לנו מדגם.
 
