@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"hediet.vscode-drawio",
+		"davidanson.vscode-markdownlint",
+		"esbenp.prettier-vscode",
+		"mechatroner.rainbow-csv"
+	]
+}
