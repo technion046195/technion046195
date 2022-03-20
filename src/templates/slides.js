@@ -53,7 +53,8 @@ class RevealJS extends React.Component {
             // history: true,
             hash: true,
             pdfMaxPagesPerSlide: 1,
-            pdfSeparateFragments: (!compact)
+            pdfSeparateFragments: (!compact),
+            plugins: [RevealNotes]
           });
         }
       }
@@ -78,6 +79,7 @@ const Slides = ({ data }) => {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <script src={withPrefix('reveal.js')} type="text/javascript"></script>
+        <script src={withPrefix('plugin/notes/notes.js')} type="text/javascript"></script>
       </Helmet>
       <RevealJS html={data.slides.html}/>
     </div>
