@@ -241,12 +241,14 @@ $$
 <div class="fragment">
 
 <br/>
+
+</div>
 (הרעיון פשוט, הביצוע קצת פחות).
-
+<div class="fragment">
 <br/><br/>
-
+</div>
 מרבית הקורס יעסוק בשיטות לביצוע שלושת השלבים האלו.
-
+<div class="fragment">
 </section><section>
 
 ## מודלים פרמטריים
