@@ -241,7 +241,11 @@ $$
 
 ## פונקציות loss (risk) נפוצות
 
+<div style="direction:rtl">
+
 #### Zero-one loss (misclassification rate):
+
+</div>
 
 $$
   l(\hat{y},y)=I\{\hat{y}\neq y\},
@@ -252,8 +256,11 @@ $$
   נפוצה בבעיות classificaiton.
 
 <div class="fragment">
+<div style="direction:rtl">
 
 #### $l_2$ loss (mean squared error (MSE))
+
+</div>
 
 $$
   l(\hat{y},y)=(\hat{y}-y)^2,
@@ -265,8 +272,11 @@ $$
   בנוסף קיים גם root mean squared error (RMSE).
 
 </div><div class="fragment">
+<div style="direction:rtl">
 
 #### $l_1$ loss (mean absolute error (MAE))
+
+</div>
 
 $$
   l(\hat{y},y)=|\hat{y}-y|,
