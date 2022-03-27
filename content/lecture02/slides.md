@@ -241,7 +241,7 @@ $$
 
 ## פונקציות loss (risk) נפוצות
 
-<div style="direction:rtl">
+<div style="direction:ltr">
 
 #### Zero-one loss (misclassification rate):
 
@@ -256,7 +256,7 @@ $$
   נפוצה בבעיות classificaiton.
 
 <div class="fragment">
-<div style="direction:rtl">
+<div style="direction:ltr">
 
 #### $l_2$ loss (mean squared error (MSE))
 
@@ -272,7 +272,7 @@ $$
   בנוסף קיים גם root mean squared error (RMSE).
 
 </div><div class="fragment">
-<div style="direction:rtl">
+<div style="direction:ltr">
 
 #### $l_1$ loss (mean absolute error (MAE))
 
