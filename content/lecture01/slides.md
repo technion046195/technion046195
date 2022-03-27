@@ -683,7 +683,9 @@ Nothing but Words by Liam Porr<br/>
 ![](./assets/csranking.png)
 
 </div>
-CSRenking (2010-2020)
+
+CSRanking (2010-2020)
+
 </a>
 </div>
 
