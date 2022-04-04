@@ -59,34 +59,34 @@ slides_pdf: true
 
 </section><section>
 
-## הערכת הביצועיים / יכולת ההכללה של חזאי
+## הערכת הביצועים / יכולת ההכללה של חזאי
 
 - נרצה להעריך את יכולת ההכללה של החזאי שבנינו על דגימות שלא הופיעו בשלב הלימוד.
 - נצטרך מדגם נוסף המכיל דגימות שונות מהמדגם שבו השתמשנו בשלב הלימוד.
-- נקצה חלק מתוך המדגם לטובת הערכת הביצועיים.
+- נקצה חלק מתוך המדגם לטובת הערכת הביצועים.
 
 נחלק את המדגם שלנו לשני חלקים:
 
-- **Train set** - $\mathcal{D}_\text{train}$ - המדגם שעלפיו אנו נבנה את חזאי.
+- **Train set** - $\mathcal{D}_\text{train}$ - המדגם שעל פיו אנו נבנה את חזאי.
 - **Test set** - $\mathcal{D}_\text{test}$ - המדגם שבו נשתמש להעריכת ביצועים.
 
 </section><section>
 
-## הערכת הביצועיים של פונקציית risk
+## הערכת הביצועים של פונקציית risk
 
-כאשר פונקציית המחיר שלנו היא ממהצורה של פונקציית risk הערכת הביצועים תעשה בעזרת תוחלת אמפירית על ה test set:
+כאשר פונקציית המחיר שלנו היא מהצורה של פונקציית risk, הערכת הביצועים תעשה בעזרת תוחלת אמפירית על ה test set:
 
 $$
-\text{test score}=\frac{1}{N}\sum_{\boldsymbol{x}^{(i)},y^{(i)}\in\mathcal{D}_{\text{test}}} l(h(\boldsymbol{x}^{(i)}),y^{(i)})
+\text{test cost}=\frac{1}{N_{\text{test}}}\sum_{\boldsymbol{x}^{(i)},y^{(i)}\in\mathcal{D}_{\text{test}}} l(h(\boldsymbol{x}^{(i)}),y^{(i)})
 $$
 
 </section><section>
 
-## גדולו של ה test set
+## גודלו של ה test set
 
 - אנו נרצה שיהיה גדול מספיק בכדי שההערכה תהיה מדוייקת.
-- לא גדול מידי, בכדי לשמור את ה train set כמה שיותר גדול.
-- כאשר המדגם לא מאד גדול מקובל לפצל את המדגם ל 80% train ו 20% test.
+- לא גדול מדי, בכדי לשמור את ה train set כמה שיותר גדול.
+- כאשר המדגם לא מאד גדול מקובל לפצל את המדגם ל<br>80% train ו 20% test.
 
 </section><section>
 
@@ -108,8 +108,8 @@ $$
 
 </div>
 
-- Train score (RMSE): 11.34 min
-- Test scroe (RMSE): 15.58 min
+- Train cost (RMSE): 11.34 min
+- Test cost (RMSE): 15.58 min
 
 </section><section>
 
@@ -209,9 +209,9 @@ $$
 
 נסמן:
 
-- $h^*(\boldsymbol{x};\boldsymbol{\theta})$: החזאי ה**פרמטרי** האופטימאלי.
+- $h(\boldsymbol{x};\boldsymbol{\theta}^*)$: החזאי ה**פרמטרי** האופטימאלי.
 
-- $h^*_{\mathcal{D}}(\boldsymbol{x};\boldsymbol{\theta})$: החזאי המושערך.
+- $h_{\mathcal{D}}(\boldsymbol{x};\boldsymbol{\theta}^*)$: החזאי המושערך.
 
 </section><section>
 
@@ -232,16 +232,22 @@ $$
 - **יכולת ביטוי נמוכה** -> יודע לייצג משפחה מצומצמת. לדוגמא: מודל לינארי.
 - **יכולת ביטוי גבוהה** -> יודע לייצג **או לקרב** משפחה רחבה. לדוגמא: פולינום מסדר גבוהה.
 
+<div class="fragment">
+
 איזה יכולת ביטוי נעדיף?
+
+</div>
+<div class="fragment">
 
 - מצד אחד אנו נרצה מודל עם יכולת ביטוי גבוה על מנת שיוכל לקרב את החזאי האידאלי.
 - מצד שני יכולת יצוג גבוה תאפשר הרבה overfitting.
 
+</div>
 </section><section>
 
 ## Hyper-parameters
 
-Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים בשיטה או במודל הפרמטרי ואך אנו לא מבצעים את האופטימיזציה על-פיהם.
+Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים בשיטה או במודל הפרמטרי, אך הם אינם חלק ממשתני האופטימיזציה בשלב האופטימיזציה על ה train-set.
 
 <br/>
 
@@ -267,21 +273,21 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 - hyper-parameters אינם חלק מבעיית האופטימיזציה.
 - אנו צריכים דרך אחרת לקבוע אותם.
-- לרוב לנאלץ לקבוע אותם בעזרת ניסוי וטעיה.
+- לרוב נאלץ לקבוע אותם בעזרת ניסוי וטעיה.
 - לא נוכל להשתמש ב test set לצורך זה.
-- נצטרך לייצר מדגם ניפרד חדש.
+- נצטרך לייצר מדגם נפירד חדש.
 - נפצל עוד את ה train set ל:
   - train set חדש.
-  - validation set
+  - validation set.
 
 </section><section>
 
 ## שלבי הבחירה של hyper-prameters
 
 - נפצל את ה train set ל train ו validation.
-- נחזור על הפעולות הבאות בעבור ערכים שונים של hyper-parameters:
+- נחזור על הפעולות הבאות בעבור ערכים שונים של<br>ה hyper-parameters:
   - נבנה את המודל על סמך ה train.
-  - נשערך את ביצועי המודל על הvalidation
+  - נשערך את ביצועי המודל על הvalidation.
 - נבחר את הפרמטרים עם הביצועים הטובים ביותר על ה validation.
 - נאחד בחזרה את ה train וה validation.
 - נבנה את המודל הסופי על סמך ה hyper-parameters שנבחרו.
@@ -368,12 +374,12 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 </div>
 
-- Train score (RMSE): 2.53 min
-- Test scroe (RMSE): 6.88 min
+- Train cost (RMSE): 2.53 min
+- Test cost (RMSE): 6.88 min
 
 </section><section>
 
-## Aprroxiamtion-estimation decomposition
+## Approximation-estimation decomposition
 
 נתייחס לשני גורמים אשר מונעים מאיתנו למצוא את החזאי האופטימאלי $h^*(\boldsymbol{x})$:
 
@@ -381,7 +387,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 **Approximation error - שגיאת קירוב**
 
-השגיאה עקב ההגבלה למודל פרמטרי.
+השגיאה עקב ההגבלה למשפחה פרמטרית מסויימת.
 
 נובעת מההבדל בין $h^*(\boldsymbol{x})$ לבין $h^*(\boldsymbol{x},\boldsymbol{\theta})$.
 
@@ -416,7 +422,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 <br/>
 <br/>
 
-**Noise - ה"רעש" של התויות**
+**Niose - ה"רעש" של התויות**
 
 השגיאה שהחזאי האופטימאלי צפוי לעשות.
 
@@ -424,11 +430,11 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 </section><section>
 
-## Approximaion-estimation Tradeoff
+## Approximation-estimation Tradeoff
 
 - ככל שיכולת הביטוי תגדל המרחק בין $h^*(\boldsymbol{x};\boldsymbol{\theta})$ לבין $h^*(\boldsymbol{x})$ יקטן ושגיאת הקירוב תקטן.
 
-- לרוב ככל שיכולת הביטוי תגדל גם שיגאת השיערוך תגדל.
+- בלא מעט מקרים ככל שיכולת הביטוי תגדל גם שגיאת השיערוך תגדל.
 
 <div class="imgbox" style="max-width:600px;background-color:white">
 
@@ -446,7 +452,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 - בכדי לבטל את התלות במדגם נמצע את הביצועים על פני כל המדגמים האפשריים.
 
 $$
-\text{average score}=\mathbb{E}_{\mathcal{D}}\left[\text{score using}\ \mathcal{D}\right]
+\text{average cost}=\mathbb{E}_{\mathcal{D}}\left[\text{cost using}\ \mathcal{D}\right]
 $$
 
 כאשר $\mathbb{E}_\mathcal{D}$ היא התוחלת על פני המדגמים האפשריים
@@ -630,8 +636,8 @@ LASSO = Linear Absolute Shrinkage and Selection Opperator
 </div>
 
 - $\lambda=10^{-4}$
-- Train score (RMSE): 2.62 min
-- Test scroe (RMSE): 6.83 min
+- Train cost (RMSE): 2.62 min
+- Test cost (RMSE): 6.83 min
 
 </section>
 </div>
