@@ -422,7 +422,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 <br/>
 <br/>
 
-**Niose - ה"רעש" של התויות**
+**Noise - ה"רעש" של התויות**
 
 השגיאה שהחזאי האופטימאלי צפוי לעשות.
 
@@ -452,7 +452,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 - בכדי לבטל את התלות במדגם נמצע את הביצועים על פני כל המדגמים האפשריים.
 
 $$
-\text{average cost}=\mathbb{E}_{\mathcal{D}}\left[\text{cost using}\ \mathcal{D}\right]
+\text{average cost}=\mathbb{E}_{\mathcal{D}}\left[R(h_{\mathcal{D}})\right]
 $$
 
 כאשר $\mathbb{E}_\mathcal{D}$ היא התוחלת על פני המדגמים האפשריים
@@ -465,10 +465,10 @@ $$
 
 <br/>
 
-החזאי אשר מחזיר את החיזוי הממוצא על פני כלל החזאיים המתאימים למדגמים השונים:
+החזאי אשר מחזיר את החיזוי הממוצע על פני כלל החזאיים המתאימים למדגמים השונים:
 
 $$
-\bar{h}(x)=\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]
+\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]
 $$
 
 </section><section>
@@ -485,8 +485,8 @@ $$
 \right]\\
 &\qquad=
 \mathbb{E}\left[
-    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
-    +\underbrace{(\bar{h}(\text{x})-h^*(\text{x}))^2}_{\text{Bias}^2}
+    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
+    +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}
     +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
 \right]
 \end{aligned}
@@ -494,7 +494,6 @@ $$
 
 כאשר
 
-- $\bar{h}(x)=\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]$
 - $h^*(x)=\mathbb{E}\left[\text{y}|x\right]$.
 
 </section><section>
@@ -508,8 +507,8 @@ $$
 \right]\\
 &\qquad=
 \mathbb{E}\left[
-    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\bar{h}(\text{x}))^2\right]}_{\text{Variance}}
-    +\underbrace{(\bar{h}(\text{x})-h^*(\text{x}))^2}_{\text{Bias}^2}
+    \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
+    +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}
     +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
 \right]
 \end{aligned}
@@ -559,8 +558,8 @@ $$
 ## בחירת הרגולריזציה
 
 - באופן כללי, הבחירה של פונקציית הרגולריזציה $g(\theta)$ תלויה באופי הבעיה.
-- לרוב הבחירה תהיה בשיטה של ניסוי טעיה על פונקציות רגולריזציה נפוצות.
-- פונקציות הרגולריזציות הנפוצות ביותר הינן:
+- לרוב הבחירה תהיה בשיטה של ניסוי וטעיה על פונקציות רגולריזציה נפוצות.
+- פונקציות הרגולריזציה הנפוצות ביותר הינן:
   - $l_1$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_1$.
   - $l_2$ - מוסיף $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_2^2$.
 
@@ -570,8 +569,8 @@ $$
 
 ## $l_1$ ו $l_2$ הדומה
 
-- מנסות לשמור את הפרמטריים כמה שיותר קטנים.
-- מוטיבציה: מודל בעל הפרמטרים קטנים יותר יהיה לרוב עם בעל נגזרות קטונות יותר ולכן הוא ופחות "ישתולל".
+- מנסות לשמור את הפרמטרים כמה שיותר קטנים.
+- מוטיבציה: מודל בעל פרמטרים קטנים יותר יהיה לרוב בעל נגזרות קטונות יותר, ולכן הוא יהיה יותר "חלק".
 
 </section><section>
 
@@ -580,7 +579,7 @@ $$
 ### $l_2$
 
 - גדל בצורה ריבועית עם הפרמטרים
-- ינסה להקטין בעיקר את הפרמטרים הגודלים ופחות את הקטנים.
+- ינסה להקטין בעיקר את הפרמטרים הגדולים ופחות את הקטנים.
 - הרגולריזציה שואפת לפרמטרים בעלי גודל יותר אחיד.
 
 </section><section>
@@ -617,13 +616,13 @@ $$
 \boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})+\lambda\lVert\boldsymbol{\theta}\rVert_1
 $$
 
-לבעיה זו אין פתרון סגור ויש צורך להשתמש באלגוריתמים איטרטיביים כגון gradient descent.
+לבעיה זו אין פתרון סגור ויש צורך להשתמש באלגוריתמים איטרטיביים אשר מבוססים על gradient descent.
 
 <br/>
 <br/>
 <br/>
 
-LASSO = Linear Absolute Shrinkage and Selection Opperator
+LASSO = Linear Absolute Shrinkage and Selection Operator
 
 </section><section>
 
