@@ -411,7 +411,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 </section><section>
 
-## Nosie error
+## Noise error
 
 כאשר נרצה לדבר על השגיאה הכוללת נרצה להתייחס להבדל בין החיזוי של החזאי המשוערך $h^*_{\mathcal{D}}(\boldsymbol{x};\boldsymbol{\theta})$ ו $y$.
 
@@ -597,7 +597,7 @@ $$
 ## Ridge regression: LLS + $l2$ regularization
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})+\lambda\lVert\boldsymbol{\theta}\rVert_2^2
+\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_2^2
 $$
 
 גם לבעיה זו יש פתרון סגור והוא נתון על ידי:
@@ -613,7 +613,7 @@ $$
 ## LASSO: LLS + $l1$ regularization
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})+\lambda\lVert\boldsymbol{\theta}\rVert_1
+\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_1
 $$
 
 לבעיה זו אין פתרון סגור ויש צורך להשתמש באלגוריתמים איטרטיביים אשר מבוססים על gradient descent.
