@@ -430,12 +430,66 @@ $$
 
 </section><section>
 
-### תנאי עצירה
+## תנאי עצירה
 
 - בחלק גדול מהמקרים AdaBoost ילך ויקטין את שגיאת החיזוי על ה train set עד שהוא יגיע לסיווג מושלם.
 - AdaBoost ממשיך לשפר את יכולת ההכללה שלהו גם אחרי שהוא הגיע לסיווג מושלם.
 - כמות ה overfitting גדלה בקצב מאד איטי.
 - נרצה להריץ את האלגוריתם מספר רב של צעדים ולבדוק את הביצועים על validation set.
+
+</section><section>
+
+## Before training
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture05/assets/example_1.png)
+
+</div>
+
+</section><section>
+
+## Round 1
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture05/assets/example_2.png)
+
+</div>
+
+</section><section>
+
+## Round 2
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture05/assets/example_3.png)
+
+</div>
+
+</section><section>
+
+</section><section>
+
+## Round 3
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture05/assets/example_4.png)
+
+</div>
+
+</section><section>
+
+</section><section>
+
+## Final
+
+<div class="imgbox" style="max-width:500px">
+
+![](../lecture05/assets/example_5.png)
+
+</div>
 
 </section><section>
 
