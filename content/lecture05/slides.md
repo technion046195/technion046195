@@ -24,7 +24,7 @@ slides_pdf: true
 </div>
 </section><section>
 
-## Ensembles Methods
+## Ensemble Methods
 
 בהרצאה הזו נציג שתי שיטות אשר בעזרתם ניתן לשפר את הביצועים של אלגוריתמים קיימים על ידי שימוש בסט של חזאים. סט זה מכוונה לרוב ensemble (מכלול).
 
