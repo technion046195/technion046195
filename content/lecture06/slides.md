@@ -282,7 +282,7 @@ $$
 האילוץ דורש שהנקודות מהמדגם יהיו מחוץ לתחום:
 
 $$
-1\geq\boldsymbol{w}^{\top}\boldsymbol{x}+b\geq-1
+1>\boldsymbol{w}^{\top}\boldsymbol{x}+b>-1
 $$
 
 אשר נקרא ה**שוליים (margin)**.
