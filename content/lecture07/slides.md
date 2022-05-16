@@ -164,7 +164,7 @@ $$
 
 ## משתנה אקראי דיסקרטי
 
-### דוגמא 1 - משתנה ביארי
+### דוגמא 1 - משתנה בינארי
 
 - $\text{x}$ תוצאת הטלה של מטבע לא הוגן.
 - הטלנו את המטבע 10 פעמים וקיבלנו:
@@ -179,7 +179,7 @@ $$
 
 ## משתנה אקראי דיסקרטי
 
-### דוגמא 1 - משתנה ביארי
+### דוגמא 1 - משתנה בינארי
 
 $$
 \mathcal{D}=\{x^{(i)}\}=\{0, 0, 0, 0, 1, 0, 0, 1, 0, 0\}
@@ -195,7 +195,7 @@ p_{\text{x}}(x)\approx\hat{p}_{\text{x},\mathcal{D}}(x)=
 \end{cases}
 $$
 
-- זו למעשה במדידה אמפירית של המאורע ש $\{\text{x}=x\}$.
+- זו למעשה מדידה אמפירית של המאורע ש $\{\text{x}=x\}$.
 
 </section><section>
 
@@ -255,13 +255,13 @@ $$
 נזכור כי פונקציית הפילוג המצרפי (ה CDF) מוגדרת באופן הבא:
 
 $$
-F_{\mathbf{x}}(\boldsymbol{x})=\text{Pr}\left(\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\}\right)
+F_{\mathbf{x}}(\boldsymbol{x})=\text{Pr}\left(\{\text{x}_j\leq {x}_j\ \forall j\}\right)
 $$
 
-נוכל אם כן לשערך גודל זה על ידי שימוש במדידה האמפירית בעבור המאורע של $\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\}$ באופן הבא:
+נוכל אם כן לשערך גודל זה על ידי שימוש במדידה האמפירית בעבור המאורע של $A=\{\text{x}_j\leq {x}_j \, \forall j\}$ באופן הבא:
 
 $$
-\hat{F}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\hat{p}_{\{\mathbf{x}_j\leq\boldsymbol{x}_j\ \forall j\},\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N  I\{\boldsymbol{x}^{(i)}_j\leq\boldsymbol{x}_j\ \forall j\}
+\hat{F}_{\mathbf{x},\mathcal{D}}(\boldsymbol{x})=\hat{p}_{A,\mathcal{D}}=\frac{1}{N}\sum_{i=1}^N  I\{\text{x}_j\leq {x}_j \, \forall j\}
 $$
 
 משערך זה נקרא empirical cumulative distribtuion function (ECDF).
@@ -419,7 +419,7 @@ $$
 - $l_b$ ו $r_b$ את הגבול השמאלי והימני התא ה $b$.
 
 $$
-\hat{p}_{\text{x},\mathcal{D}}(x)
+\hat{p}_{\text{x},\mathcal{D}}(x)=
 \begin{cases}
   \frac{1}{N(r_1-l_1)}\sum_{i=1}^N I\{l_1\leq x^{(i)}<r_1\}&l_1\leq x<r_1\\
   \vdots\\
@@ -475,7 +475,7 @@ Overfitting: ההיסטוגרמה תתאר בצורה טובה את הדגימו
 ## בחירת התאים
 
 - מקובל לחלק ל $k$ תאים אחידים בגודלם.
-- מיכוון שה $k$ האופטימאלי ישתנה מבעיה לבעיה, נאלץ לרוב לבחור אותו בעזרת ניסוי וטעיה.
+- מכיוון שה $k$ האופטימאלי ישתנה מבעיה לבעיה, נאלץ לרוב לבחור אותו בעזרת ניסוי וטעיה.
 - ישנם מספר כללי אצבע אשר במרבית המקרים יתנו תוצאה לא רעה.
 - הכלל הנפוץ ביותר הינו לבחור את $k$ להיות שורש מספר הדגימות במדגם (מעוגל כלפי מעלה): $k=\left\lceil\sqrt{N}\right\rceil$
 
@@ -581,21 +581,23 @@ $$
 
 1. חלון מרובע:
 
-    $$
+    $
     \phi_h(\boldsymbol{x})=\frac{1}{h^D}I\{|x_j|\leq \tfrac{h}{2}\quad\forall j\}
-    $$
+    $
+
+כלל אצבע עבור חלון ריבועי הוא לבחור בצורה אדפטיבית את גודל החלון כך שיכלול מספר נתון  ($k$) של דגימות מסביב לנקודה   הנחקרת. בחירה סבירה הינה  $k\propto\sqrt{n}$, בדומה למה שעשינו בהיסטוגרמות.
 
 2. גאוסיאן:
 
-    $$
+    $
     \phi_{\sigma}\left(x\right)=\frac{1}{\sqrt{2\pi}\sigma^D}\exp\left(-\frac{\lVert x\rVert_2^2}{2\sigma^2}\right)
-    $$
+    $
 
 כלל אצבע לבחירת רוחב הגרעין במקרה הגאוסי הסקלרי:
 
-$$
+$
 \sigma=\left(\frac{4\cdot\text{std}(\text{x})^5}{3N}\right)^\frac{1}{5}\approx1.06\ \text{std}(\text{x})N^{-\tfrac{1}{5}}
-$$
+$
 
 </section><section>
 
