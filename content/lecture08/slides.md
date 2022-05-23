@@ -294,7 +294,7 @@ $$
 
 </section><section>
 
-## הגישה הלא-בייסיאנית<br/>(קלאסית או תדירותית (**Frequintist**))
+## הגישה הלא-בייסיאנית<br/>(קלאסית או תדירותית (**Frequentist**))
 
 $$
 p_{\mathbf{x}}(\boldsymbol{x};\boldsymbol{\theta})
@@ -316,7 +316,7 @@ $$
 \mathcal{L}(\boldsymbol{\theta};\mathcal{D})\triangleq p_{\mathcal{D}}(D;\boldsymbol{\theta})
 $$
 
-משערך ה MLE של $\boldsymbol{\theta}$ הוא הערך אשר ממקסמים את פונקציית ה likelihood:
+משערך ה MLE של $\boldsymbol{\theta}$ הוא הערך אשר ממקסם את פונקציית ה likelihood:
 
 $$
 \hat{\boldsymbol{\theta}}_{\text{MLE}}
@@ -659,7 +659,7 @@ $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
+## Quadratic Discriminant Analysis (QDA)
 
 - נשתמש בפילוג נורמאלי וב MLE על מנת לשערך את $p_{\mathbf{x}|\text{y}}(\boldsymbol{x}|y)$
 - אנו צריכים לשערך מודל בעבור כל אחת מ $C$ המחלקות של $\text{y}$:
@@ -682,7 +682,7 @@ $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
+## Quadratic Discriminant Analysis (QDA)
 
 בעיית האופטימיזציה של MLE תהיה:
 
@@ -707,7 +707,7 @@ $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
+## Quadratic Discriminant Analysis (QDA)
 
 $$
 \hat{\boldsymbol{\theta}}_{\text{MLE}}
@@ -730,7 +730,7 @@ $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
+## Quadratic Discriminant Analysis (QDA)
 
 בעבור המחלקה ה $c$ נקבל את בעיית האופטימיזציה הבאה:
 
@@ -751,7 +751,7 @@ $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
+## Quadratic Discriminant Analysis (QDA)
 
 החישוב של $\boldsymbol{\mu}_c$
 
@@ -775,7 +775,7 @@ $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
+## Quadratic Discriminant Analysis (QDA)
 
 הפרמטרים של המודל יהיו:
 
@@ -793,7 +793,7 @@ $$
 
 </section><section>
 
-## Quadric Discriminant Analysis (QDA)
+## Quadratic Discriminant Analysis (QDA)
 
 בעבור פונקציית מחיר של miscalssification rate, החזאי האופטימאלי יהיה:
 
@@ -991,7 +991,7 @@ $$
 
 </section><section>
 
-## הבעיה של הגישה הגנרטיבת פרמטרית
+## הבעיה של הגישה הגנרטיבית הפרמטרית
 
 <div class="imgbox" style="max-width:300px">
 
