@@ -204,8 +204,8 @@ $$
 
 $$
 \begin{aligned}
-p_{\text{y}}(0)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|1)\overset{?}{>}
-&p_{\text{y}}(1)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|0)\\
+p_{\text{y}}(1)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|1)\overset{?}{>}
+&p_{\text{y}}(0)\prod_{d=1}^D p_{\text{x}_d|\text{y}}(1|0)\\
 0.5 \times 1 \times 1 \times 0.75 \times 0.5 \times 0.25 \overset{?}{>}
 &0.5 \times 0.5 \times 0 \times 0.25 \times 0 \times 0.25\\
 0.09375 \overset{?}{>}
