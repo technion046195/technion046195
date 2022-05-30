@@ -460,7 +460,7 @@ $$
 \begin{aligned}
 \boldsymbol{\theta}^*
 &=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log\left(p_{\text{y}|\mathbf{x}}(y^{(i)}|\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)\\
-&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log(\text{softmax}(\boldsymbol{f}(\boldsymbol{x};\boldsymbol{\theta}))_{y})
+&=\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}\log(\text{softmax}(\boldsymbol{f}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}))_{y^{(i)}})
 \end{aligned}
 $$
 
@@ -647,8 +647,8 @@ $$
 $$
 \boldsymbol{\theta}^*
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_{i=1}^{N}
-    y\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-   +(1-y)\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+    y^{(i)}\log(\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+   +(1-y^{(i)})\log(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
 $$
 
 כלל העדכון של האלגוריתם יהיה:
@@ -656,8 +656,8 @@ $$
 $$
 \boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}+\eta\sum_{i=1}^{N}
     \left(
-        y(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
-        -(1-y)\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta})
+        y^{(i)}(1-\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}))
+        -(1-y^{(i)})\sigma(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta})
     \right)\boldsymbol{x}^{(i)}
 $$
 
