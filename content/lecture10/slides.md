@@ -29,7 +29,7 @@ slides_pdf: true
 - נתקלנו במספר מקרים בהם ניסינו למצוא פונקציה שתבצע פעולה או תתאר תופעה כל שהיא (מציאת חזאי או פונקציית פילוג).
 - דרך נוחה לעשות זאת היא בעזרת מודל פרמטרי ומציאת הפרמטרים האופטימאלים.
 - עד כה עבדנו עם מודלים לינאריים בפרמטרים.
-- ניתן לקרב הרבה מאד פונקציות בעזרת פולינום מסדר מספיק גבוהה.
+- ניתן לקרב הרבה מאד פונקציות בעזרת פולינום מסדר מספיק גבוה.
 - מודלים אלו הם לא מאד מוצלחים ובעייתיים וכאשר $\boldsymbol{x}$ הוא ממימד גבוה.
 - האם ישנם מודלים מתאימים יותר?
 
@@ -218,7 +218,7 @@ $$
 - ב ERM אנו ננסה למזער את ה risk האמפירי.
 - בגישה הדיסקרימינטיבית ההסתברותית נשתמש ב MLE או MAP.
 
-בכדי לפתור את בעיית האופטימיזציה נשתמש ב grdaient descent.
+בכדי לפתור את בעיית האופטימיזציה נשתמש ב gradient descent.
 
 </section><section>
 
@@ -263,7 +263,7 @@ $$
 \end{bmatrix}$
 - $\boldsymbol{b}_i=[b_{i,1},b_{i,2},\dots]^{\top}$
 
-הפונקציה שאותה ממשת השכבה כולה הינה:
+הפונקציה שאותה מממשת השכבה כולה הינה:
 
 $$
 \boldsymbol{z}_i=\varphi(W_i\boldsymbol{z}_{i-1}+\boldsymbol{b}_i)
@@ -275,8 +275,8 @@ $$
 
 בהינתן:
 
-- פונקציית הפעלה רציפה כל שהיא $\varphi$ ש**אינה פולינומיאלית** (או חסומה ואינטגרבילית).
-- ופונקציה רציפה כל שהיא על קוביית היחידה $f:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$.
+- פונקציית הפעלה רציפה כלשהיא $\varphi$ ש**אינה פולינומיאלית**.
+- ופונקציה רציפה כלשהיא על קוביית היחידה $f:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$.
 
 אזי ניתן למצוא פונקציה $f_{\varepsilon}:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$ מהצורה:
 
@@ -328,7 +328,7 @@ $$
 
 </section><section>
 
-## Back-Propagation - דוגמא פשוטה
+## Back-Propagation :דוגמא פשוטה
 
 <div class="imgbox" style="max-width:700px">
 
@@ -358,7 +358,7 @@ $$
 
 </section><section>
 
-## Back-Propagation - דוגמא פשוטה
+## Back-Propagation :דוגמא פשוטה
 
 <div class="imgbox" style="max-width:700px">
 
@@ -379,7 +379,7 @@ $$
 
 </section><section>
 
-## Back-Propagation-דוגמא מעט יותר מורכבת
+## Back-Propagation :דוגמא מעט יותר מורכבת
 
 <div class="imgbox" style="max-width:900px">
 
@@ -393,7 +393,7 @@ $$
 
 </section><section>
 
-## Back-Propagation-דוגמא מעט יותר מורכבת
+## Back-Propagation :דוגמא מעט יותר מורכבת
 
 <div class="imgbox" style="max-width:600px">
 
@@ -415,7 +415,7 @@ $$
 
 </section><section>
 
-## Back-Propagation-דוגמא מעט יותר מורכבת
+## Back-Propagation :דוגמא מעט יותר מורכבת
 
 <div class="imgbox" style="max-width:600px">
 
@@ -472,14 +472,14 @@ $$
 \frac{\partial y}{\partial\boldsymbol{u}_2}
 =\frac{\partial y}{\partial\boldsymbol{z}_2}
 \frac{\partial\boldsymbol{z}_2}{\partial\boldsymbol{u}_2}
-=\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3
+=\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3
 $$
 
 $$
 \frac{\partial y}{\partial\boldsymbol{z}_1}
 =\frac{\partial y}{\partial\boldsymbol{u}_2}
 \frac{\partial\boldsymbol{u}_2}{\partial\boldsymbol{z}_1}
-=W_2^T\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3
+=W_2^T\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3
 $$
 
 $$
@@ -500,14 +500,14 @@ $$
 
 $$
 \frac{\partial y}{\partial\boldsymbol{u}_2}
-=\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3
+=\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3
 $$
 
 $$
 \frac{\partial y}{\partial W_2}
 =\frac{\partial y}{\partial\boldsymbol{u}_2}
 \frac{\partial\boldsymbol{u}_2}{\partial W_2}
-=\boldsymbol{z}_1(\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3)^T
+=\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3\boldsymbol{z}_1^T
 $$
 
 
