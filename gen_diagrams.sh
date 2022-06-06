@@ -111,6 +111,7 @@ gen_diag ./content/lecture10/assets/ann.png -f png -p0 -b20 -s3 ./content/lectur
 gen_diag ./content/lecture10/assets/mlp.png -f png -p0 -b20 -s3 ./content/lecture10/assets/mlp.drawio
 gen_diag ./content/lecture10/assets/back_prop_simple.png -f png -p0 -b20 -s4 ./content/lecture10/assets/back_prop_simple.drawio
 gen_diag ./content/lecture10/assets/back_prop.png -f png -p0 -b20 -s4 ./content/lecture10/assets/back_prop.drawio
+gen_diag ./content/lecture10/assets/back_prop_mlp.png -f png -p0 -b20 -s4 ./content/lecture10/assets/back_prop_mlp.drawio
 
 gen_diag ./content/tutorial10/assets/ex9_1.png -f png -p0 -b20 -s3 ./content/tutorial10/assets/ex8_1.drawio
 gen_diag ./content/tutorial10/assets/ex9_3.png -f png -p0 -b20 -s3 ./content/tutorial10/assets/ex8_3.drawio

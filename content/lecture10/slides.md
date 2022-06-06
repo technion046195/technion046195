@@ -379,7 +379,7 @@ $$
 
 </section><section>
 
-## Back-Propagation - דוגמא מעט יותר מורכבת
+## Back-Propagation-דוגמא מעט יותר מורכבת
 
 <div class="imgbox" style="max-width:900px">
 
@@ -393,7 +393,7 @@ $$
 
 </section><section>
 
-## Back-Propagation - דוגמא מעט יותר מורכבת
+## Back-Propagation-דוגמא מעט יותר מורכבת
 
 <div class="imgbox" style="max-width:600px">
 
@@ -415,7 +415,7 @@ $$
 
 </section><section>
 
-## Back-Propagation - דוגמא מעט יותר מורכבת
+## Back-Propagation-דוגמא מעט יותר מורכבת
 
 <div class="imgbox" style="max-width:600px">
 
@@ -433,6 +433,84 @@ $$
 
 - נריץ את ה forward-pass בשביל לחשב את ערכי ה $z_i$.
 - נריץ את ה backword-pass בו נחשב את הנגזרות מהמוצא של הרשת עד לנגזרת של $h_3$.
+
+</section><section>
+
+## Back-Propagation - MLP
+
+<div class="imgbox" style="max-width:400px">
+
+![](./assets/back_prop_mlp.png)
+
+</div>
+
+משוואות ה forward-pass:
+
+$$
+\boldsymbol{z}_1=\varphi(\underbrace{W_1\boldsymbol{x}+\boldsymbol{b}_1}_{\boldsymbol{u}_1}) \\
+\boldsymbol{z}_2=\varphi(\underbrace{W_2\boldsymbol{z}_1+\boldsymbol{b}_2}_{\boldsymbol{u}_2}) \\
+y=\boldsymbol{w}_3^T\boldsymbol{z}_2+\boldsymbol{b}_3 \\
+$$
+
+</section><section>
+
+## Back-Propagation - MLP
+
+<div class="imgbox" style="max-width:400px">
+
+![](./assets/back_prop_mlp.png)
+
+</div>
+
+משוואות ה backward-pass:
+
+$$
+\frac{\partial y}{\partial\boldsymbol{z}_2}=\boldsymbol{w}_3
+$$
+
+$$
+\frac{\partial y}{\partial\boldsymbol{u}_2}
+=\frac{\partial y}{\partial\boldsymbol{z}_2}
+\frac{\partial\boldsymbol{z}_2}{\partial\boldsymbol{u}_2}
+=\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3
+$$
+
+$$
+\frac{\partial y}{\partial\boldsymbol{z}_1}
+=\frac{\partial y}{\partial\boldsymbol{u}_2}
+\frac{\partial\boldsymbol{u}_2}{\partial\boldsymbol{z}_1}
+=W_2^T\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3
+$$
+
+$$
+\dots
+$$
+
+</section><section>
+
+## Back-Propagation - MLP
+
+<div class="imgbox" style="max-width:400px">
+
+![](./assets/back_prop_mlp.png)
+
+</div>
+
+משוואות ה backward-pass:
+
+$$
+\frac{\partial y}{\partial\boldsymbol{u}_2}
+=\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3
+$$
+
+$$
+\frac{\partial y}{\partial W_2}
+=\frac{\partial y}{\partial\boldsymbol{u}_2}
+\frac{\partial\boldsymbol{u}_2}{\partial W_2}
+=\boldsymbol{z}_1(\varphi'(\boldsymbol{u}_2)\boldsymbol{w}_3)^T
+$$
+
+
 
 </section>
 </div>
