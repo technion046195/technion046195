@@ -20,7 +20,7 @@ slides_pdf: true
 צעד העדכון ב gradient descent נתון על ידי:
 
 $$
-\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta})
+\boldsymbol{\theta}^{(t+1)}=\boldsymbol{\theta}^{(t)}-\eta\nabla_{\boldsymbol{\theta}}g(\boldsymbol{\theta^{(t)}})
 $$
 
 1. ב ERM:
