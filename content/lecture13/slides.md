@@ -77,7 +77,7 @@ $$
 
 ## פירמול הבעיה
 
-במרבית השיטות נשתמש במודל פרמטרי (לחזאי או לפילוג) ונרשום את בעיה כבעיית אופטימיזציה על הפרמטרים $\boldsymbol{\theta}$ של המודל:
+במרבית השיטות נשתמש במודל פרמטרי (לחזאי או לפילוג) ונרשום את הבעיה כבעיית אופטימיזציה על הפרמטרים $\boldsymbol{\theta}$ של המודל:
 
 $$
 \boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\quad f\left(\boldsymbol{\theta};\mathcal{D}\right) \\
@@ -112,7 +112,7 @@ $$
 
 </section><section>
 
-## מעבר על האלגוריתמים שנלמדו בקרוס
+## מעבר על האלגוריתמים שנלמדו בקורס
 
 נעברו במהירות על האלגוריתמים שאותם ראינו בקורס ונבחן את המאפיינים שלהם.
 
@@ -131,7 +131,7 @@ $$
 
 - Problem type:
   <span class="fragment" style="color:#006992">
-  Regression
+  Regression (Classifcation)
   </span>
 - Approach:
   <span class="fragment" style="color:#006992">
@@ -164,7 +164,7 @@ $$
   </span>
 - How to solve:
   <span class="fragment" style="color:#006992">
-  Closed solution: $\boldsymbol{\theta}=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}$.
+  Closed-form solution: $\boldsymbol{\theta}=(X^{\top}X)^{-1}X^{\top}\boldsymbol{y}$.
   </span>
 
 </section><section style="direction:ltr">
@@ -193,7 +193,7 @@ $$
   </span>
 - How to solve:
   <span class="fragment" style="color:#006992">
-  $\boldsymbol{\theta}=(X^{\top}X+\lambda I)^{-1}X^{\top}\boldsymbol{y}$.
+  $\boldsymbol{\theta}=(X^{\top}X+\lambda I)^{-1}X^{\top}\boldsymbol{y}$, or using Gradient Descent methods.
   </span>
 
 </section><section style="direction:ltr">
@@ -291,6 +291,7 @@ $$
   - Very efficient runtime.
   - Usually overfits but can efficiently be combined with bagging or boosting.
   - Can work with categorical features.
+  - More interptable (without ensembles).
 
   </div>
 
@@ -329,7 +330,7 @@ $$
   </span>
 - Property:
   <span class="fragment" style="color:#006992">
-  Requiers the data to be linear sperable.
+  Requiers the data to be linear seperable.
   </span>
 
 </section><section style="direction:ltr">
@@ -454,7 +455,7 @@ $$
   </span>
 - How to solve:
   <span class="fragment" style="color:#006992">
-  Has a close form solution.
+  Has a closed-form solution.
   </span>
 - Properties:
   <div class="fragment" style="color:#006992">
@@ -487,7 +488,7 @@ $$
   </span>
 - How to solve:
   <span class="fragment" style="color:#006992">
-  Has a close form solution.
+  Has a closed-form solution.
   </span>
 - Properties:
   <div class="fragment" style="color:#006992">
@@ -585,11 +586,11 @@ $$
 
 - How to solve:
   <span class="fragment" style="color:#006992">
-  Gradient descent + backpropogation.
+  Stochastic Gradient descent (and variants) + backpropogation.
   </span>
 - Property:
   <span class="fragment" style="color:#006992">
-  Requiers large amount of data in order to avoid overfiting.
+  Requires large amounts of data in order to avoid overfiting.
   </span>
 
 </section><section style="direction:ltr">
@@ -626,7 +627,7 @@ $$
   </span>
 - Property:
   <span class="fragment" style="color:#006992">
-  Very efficient when $\boldsymbol{x}$ has some spatial structure.
+  Very efficient when $\boldsymbol{x}$ has some spatial structure (e.g. images).
   </span>
 
 </section><section>
@@ -635,28 +636,21 @@ $$
 
 בנוסף לכל השיטות הנ"ל ראינו גם כיצד ניתן לשלב מספר חזאים באופן הבא:
 
-- בעזרת **bagging** בכדי להקטין את ה variance (overfitting) של החזאים.
-- בעזרת **AdaBoost** בכדי להקטין את ה bias (underfitting) של החזאים.
-
-</section><section>
-
-## Bagging and Boosting
-
-בנוסף לכל השיטות הנ"ל ראינו גם כיצד ניתן לשלב מספר חזאים באופן הבא:
-
-- בעזרת **bagging** בכדי להקטין את ה variance (overfitting) של החזאים.
+- בעזרת **Bagging** בכדי להקטין את ה variance (overfitting) של החזאים.
 - בעזרת **AdaBoost** בכדי להקטין את ה bias (underfitting) של החזאים.
 
 </section><section>
 
 ## מה הלאה - קורסים?
 
-קרוסים נוספים בפקולטה בתחום:
+קורסים נוספים בפקולטה בתחום:
 
 - 046202 - עיבוד וניתוח מידע (unsupervised).
 - 046211 - למידה עמוקה.
 - 046203 - תכנון ולמידה מחיזוקים (reinfocment).
 - 046746 - אלגוריתמים ויישומים בראיה ממוחשבת.
+- 046853 - .ארכיטקטורות מחשבים מתקדמות
+
 
 </section><section>
 
