@@ -15,7 +15,7 @@ slides_pdf: true
 
 </section><section>
 
-## תהליך פתרון בעיית supervised learning
+## תהליך פתרון בעיית Supervised learning
 
 <div class="imgbox no-shadow" style="max-height:600px">
 
