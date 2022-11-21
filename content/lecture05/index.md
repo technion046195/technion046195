@@ -156,7 +156,7 @@ $$
 \frac{1}{N}\sum_{i=1}^N\exp\left(-\sum_{m=1}^M\alpha_m y^{(i)}\tilde{h}_m(\boldsymbol{x}^{(i)})\right)
 $$
 
-נתחיל בעובדה שבעבור $y=\pm1$ וערך כל שהוא $z$ מתקיים ש:
+נתחיל בעובדה שבעבור $y=\pm1$ וערך כל שהוא $z$ מתקיים:
 
 $$
 I\{\text{sign}(z)\neq y\}=
