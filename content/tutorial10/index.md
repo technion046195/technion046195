@@ -340,7 +340,7 @@ $$
       +(f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})-y^{(2)})\frac{d}{db_1}f(\boldsymbol{x}^{(2)};\boldsymbol{\theta}^{(t)})
     \right)\\
   &=1-0.01\left((69-70)\cdot7+(54-50)\cdot8\right)
-   =1-0.01\cdot25=-0.75
+   =1-0.01\cdot25=0.75
 \end{aligned}
 $$
 
