@@ -561,14 +561,17 @@ $$
 - Output layer: Fully connected layer: output vector length=10
 
 על מנת לייצג את הסתברות שהתמונה שייכת לאחת מהמחלקות נעשה ביציאה שימוש בשכבת Softmax.
-
+ 
 דרך אחת לשרטט את הרשת הינה באופן הבא:
 
 <div class="imgbox" style="max-width:800px">
 
-![](./assets/lenet_arch2.png)
-
+![](./assets/lenet_arch2.png)  
+  
 </div>
+  
+ארכיטקטורה זו היא לא הארכיטקטורה המדויקת של LeNet אלא ארכיטקטורה בהשראת LeNet עם מעט שינויים הכרחיים. 
+
 
 ### הגדרת הבעיה
 
