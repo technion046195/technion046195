@@ -314,7 +314,7 @@ $$
 &=\text{Pr}(\text{p}_1\geq70)\text{Pr}(\text{p}_2\geq70)\cdot\ldots\cdot\text{Pr}(\text{p}_{10}\geq70)\\
 &=\prod_{i=1}^{10}\text{Pr}(\text{p}_i\geq70)
 =0.4^{10}
-=10^{-4}
+\approx10^{-4}
 \end{aligned}
 $$
 
