@@ -10,17 +10,17 @@
 ### שבוע 0 - רקע מתימטי
 
 - ✍️ תרגיל בית 0 - <a href="https://colab.research.google.com/github/technion046195/technion046195/blob/master/content/assignments/assignment_0_ex.ipynb" target="_blank">רטוב</a> (לא להגשה) - הכירות עם Python ו Colab
-- [תרגול 0](/tutorial00/) - (<a href="https://moodle.technion.ac.il/mod/resource/view.php?id=882936" target="_blank">שקפים</a>) בעיות אופטימיזציה וגזירה וקטורית
+- [תרגול 0](/tutorial00/) - בעיות אופטימיזציה וגזירה וקטורית
 
 ### שבוע 1
 
 - [הרצאה 1](/lecture01/slides/) - מבוא
-- [תרגול 1](/tutorial01/) - (<a href="https://moodle.technion.ac.il/mod/resource/view.php?id=882940" target="_blank">שקפים</a>) רקע מתמטי: חזרה על הסתברות וחיזוי
+- [תרגול 1](/tutorial01/) - רקע מתמטי: חזרה על הסתברות וחיזוי
 
 ### שבוע 2 - מבוא ל supervised learning
 
 - [הרצאה 2](/lecture02/) - מושגים, שימוש במדגם, גישה דיסקרימינטיבית, מודלים פרמטרים, מאפיינים
-- [תרגול 2](/tutorial02/) - (<a href="https://moodle.technion.ac.il/mod/resource/view.php?id=890443" target="_blank">שקפים</a>) LLS ומאפיינים
+- [תרגול 2](/tutorial02/) - LLS ומאפיינים
 
 ### שבוע 3 - הכללה ו overfitting
 
