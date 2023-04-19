@@ -648,7 +648,7 @@ $$
 &=\frac{1}{N}\sum_{i=0}^N\nabla_{\boldsymbol{\theta}}\left(
     (\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^3\text{sign}(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})
     \right)\\
-&=\frac{1}{N}\sum_{i=0}^N 3\boldsymbol{x}
+&=\frac{1}{N}\sum_{i=0}^N 3\boldsymbol{x}^{(i)\top}
     (\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2\text{sign}(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})\\
 \end{aligned}
 $$
