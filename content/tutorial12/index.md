@@ -43,7 +43,7 @@ PCA הוא אלגוריתם מאוד נפוץ אשר משמש במקומות ר�
 $$
 U=\begin{pmatrix}
   | & |  &  & | \\
-  \boldsymbol{u}_1 & \boldsymbol{u}_2 & \dots & \boldsymbol{u}_3 \\
+  \boldsymbol{u}_1 & \boldsymbol{u}_2 & \dots & \boldsymbol{u}_D \\
   | & |  &  & |
 \end{pmatrix}
 $$
