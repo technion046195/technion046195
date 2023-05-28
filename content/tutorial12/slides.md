@@ -51,7 +51,7 @@ slides_pdf: true
 $$
 U=\begin{pmatrix}
   | & |  &  & | \\
-  \boldsymbol{u}_1 & \boldsymbol{u}_2 & \dots & \boldsymbol{u}_3 \\
+  \boldsymbol{u}_1 & \boldsymbol{u}_2 & \dots & \boldsymbol{u}_D \\
   | & |  &  & |
 \end{pmatrix}
 $$
