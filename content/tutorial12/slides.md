@@ -32,7 +32,7 @@ slides_pdf: true
 - מטריצת הדגימות:
 
     $$
-    bar{X}=\begin{pmatrix}
+    \bar{X}=\begin{pmatrix}
       - & (\boldsymbol{x}^{(1)}-\boldsymbol{\mu})^{\top} & -\\
       - & (\boldsymbol{x}^{(2)}-\boldsymbol{\mu})^{\top} & -\\
         & \vdots &  \\
