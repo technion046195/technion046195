@@ -744,7 +744,7 @@ $$
 
 ### חלוקת ה dataset
 
-- נחלק את המדגם ל 80% train set ו 20% tset set.
+- נחלק את המדגם ל 80% train set ו 20% test set.
 
 - נחלק את ה train set פעם נוספת ל 75% train set ו 25% validation set.
 
