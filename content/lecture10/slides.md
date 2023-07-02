@@ -222,7 +222,7 @@ $$
 
 </section><section>
 
-## MultiLayer Percepron (MLP)
+## MultiLayer Perceptron (MLP)
 
 <div class="imgbox" style="max-width:800px">
 
@@ -235,7 +235,7 @@ $$
 
 </section><section>
 
-## MultiLayer Percepron (MLP)
+## MultiLayer Perceptron (MLP)
 
 <div class="imgbox" style="max-width:800px">
 
