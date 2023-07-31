@@ -407,7 +407,7 @@ $$
 \end{aligned}
 $$
 
-בעיה זו מחפשת את ה $\boldsymbol{w}$ בעל האורך המינימאלי כך שהמכפלה הוקטורית שלו עם $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ היא 2. הוקטור הזה יהיה וקטור בכיוון של $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ ובאורך של $2/\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2$ ולכן $\boldsymbol{w}$ הינו:
+בעיה זו מחפשת את ה $\boldsymbol{w}$ בעל האורך המינימאלי כך שהמכפלה הסקלרית שלו עם $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ היא 2. הוקטור הזה יהיה וקטור בכיוון של $(\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)})$ ובאורך של $2/\lVert\boldsymbol{x}^{(1)}-\boldsymbol{x}^{(2)}\rVert_2$ ולכן $\boldsymbol{w}$ הינו:
 
 $$
 \boldsymbol{w}
@@ -434,7 +434,7 @@ $$
 
 </div>
 
-**1)** מצא את מסווג ה soft SVM המתאים למדגם זה. מי הם וקטורי התמיכה?
+**1)** מצא את מסווג ה Hard SVM המתאים למדגם זה. מי הם וקטורי התמיכה?
 
 **2)** מבלי לפתור את הבעיה הדואלית. אלו ערכים של $\{\alpha_i\}$ בהכרח יתאפסו?
 
@@ -539,7 +539,7 @@ $$
 \end{aligned}
 $$
 
-חשבו את המסווג המתקבל מ soft SVM עם גרעין גאוסי מהצורה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert^2\right)$.
+חשבו את המסווג המתקבל מ Hard SVM עם גרעין גאוסי מהצורה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\exp\left(-\lVert\boldsymbol{x}_1-\boldsymbol{x}_2\rVert^2\right)$.
 
 ### פתרון 6.3
 
