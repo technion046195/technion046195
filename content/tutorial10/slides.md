@@ -8,7 +8,7 @@ slides_pdf: true
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
-# תרגול 10 - MLP and Back-propagetion
+# תרגול 10 - MLP and Back-propagation
 
 <div dir="ltr">
 <a href="/assets/tutorial10_slides.pdf" class="link-button" target="_blank">PDF</a>
