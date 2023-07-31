@@ -8,7 +8,7 @@ print_pdf: True
 
 <div dir="rtl" class="site-style">
 
-# תרגול 10 - MLP and Back-propagetion
+# תרגול 10 - MLP and Back-propagation
 
 <div dir="ltr">
 <a href="./slides/" class="link-button" target="_blank">Slides</a>
