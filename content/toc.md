@@ -59,8 +59,8 @@
 
 ### שבוע 10 - רשתות נוירונים
 
-- [הרצאה 10](/lecture10/) - רשתות נוירונים, MLP ו Back-propogation
-- [תרגול 10](/tutorial10/) - רשתות נוירונים, MLP ו Back-propogation
+- [הרצאה 10](/lecture10/) - רשתות נוירונים, MLP ו Back-propagation
+- [תרגול 10](/tutorial10/) - רשתות נוירונים, MLP ו Back-propagation
 
 ### שבוע 11  - שיטות ברשתות נוירונים
 
