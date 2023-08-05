@@ -323,7 +323,7 @@ $$
 המודל של פונקציית ה PDF יהיה:
 
 $$
-p(x;\boldsymbol{\theta})=\frac{1}{\sqrt{2\pi\sigma^2}_2}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)
+p(x;\boldsymbol{\theta})=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)
 $$
 
 
