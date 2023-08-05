@@ -54,8 +54,8 @@
 
 ### שבוע 9 - שיטות דיסקרימינטביות הסתברותיות
 
-- [הרצאה 9](/lecture09/) - שיטות דיסקרימינטביות הסתברותיות, logistic regression
-- [תרגול 9](/tutorial09/) - Logistic Regression 7 Gradient Descent
+- [הרצאה 9](/lecture09/) - שיטות דיסקרימינטביות הסתברותיות, Logistic Regression
+- [תרגול 9](/tutorial09/) - Logistic Regression and Gradient Descent
 
 ### שבוע 10 - רשתות נוירונים
 
