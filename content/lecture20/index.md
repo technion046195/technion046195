@@ -68,7 +68,7 @@ $$
 - **דיוק הלמידה** - באיזה דיוק ניתן ללמוד את פונקצית המטרה $h_0(x)$ מתוך $N$ דוגמאות?
 - **קצב הלמידה** - כמה דוגמאות נדרשות כדי להשיג דיוק נתון?
 
-## מזעור המחרי האמפירי (Emperical RIsk Minimization)
+## מזעור המחיר האמפירי (Emperical RIsk Minimization)
 
 בהיעדר מידע לגב הפילוג, ניתן להחליף את המזעור של קריטריון הביצועים במזעור של פונקציית המחיר האמפירית, אותה אנחנו יכולים לחשב. 
 
@@ -90,7 +90,7 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
  \hat{L}_{\mathcal{D}}(h) = \frac{1}{N}\sum_{i=1}^{N}I(h(x^{(i)})\neq h_0(x^{(i)}))
  $$
 
-     זהו מספר השגיאות הממוצע של המסווג על סט הלימוד.
+זהו מספר השגיאות הממוצע של המסווג על סט הלימוד.
 
 נניח מעתה כי  $\hat{h}_N$ היא אכן הפונקציה הנבחרת על ידי אלגוריתם הלמידה שלנו.  בפרט, אנו מניחים כי ניתן למצוא את המינימום הגלובאלי של $\hat{L}_N(h)$ , מבלי להתייחס לקושי החישובי הכרוך בכך.
 
@@ -272,10 +272,12 @@ $$
 לשם פשטות נניח כי קיים $h^* \in H$ כך שמתקיים $L^*=L(h^*)$ אזי 
 
 $$
-L(\hat{h}_{\mathcal{D}})-L^* =
-L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}}) + L(\hat{h}_{\mathcal{D}}) - L^* \le
-[L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}})] + [L(h^*) - L^*] \le
+\begin{aligned}
+L(\hat{h}_{\mathcal{D}})-L^* &= \\
+L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}}) + L(\hat{h}_{\mathcal{D}}) - L^* &\le \\
+[L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}})] + [L(h^*) - L^*] &\le \\
 2 \underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})|
+\end{aligned}
 $$
 
 כעת, נרצה להשתמש בחסם Hoeffding. לשם כך נשים לב כי מתקיים: 
@@ -293,10 +295,12 @@ $$
 סה"כ, נוכל להשתמש באי השוויונות שהוכחנו ובחסם האיחוד כך שנקבל
 
 $$
-P(|L(\hat{h}_{\mathcal{D}})-L^*|) > \varepsilon) \le
-P\biggl(\underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})| > \frac{\varepsilon}{2}\biggr) \le 
-|H|\underset{h \in H}{\max}P\biggl(|L(h)-L(\hat{h}_{\mathcal{D}})|\frac{\varepsilon}{2}\biggr) \le 
+\begin{aligned}
+P(|L(\hat{h}_{\mathcal{D}})-L^*|) > \varepsilon) &\le \\
+P\biggl(\underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})| > \frac{\varepsilon}{2}\biggr) &\le \\
+|H|\underset{h \in H}{\max}P\biggl(|L(h)-L(\hat{h}_{\mathcal{D}})|\frac{\varepsilon}{2}\biggr) &\le \\
 2 |H| \exp(-N\frac{\varepsilon^2}{2})
+\end{aligned}
 $$
 
 והוכחנו את המשפט השני. 
