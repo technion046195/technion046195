@@ -11,7 +11,7 @@ print_pdf: true
 # הרצאה 5 - יסודות בלמידה חישובית
 
 <div dir="ltr">
-<a href="/assets/lecture05.pdf" class="link-button" target="_blank">PDF</a>
+<a href="/assets/lecture20.pdf" class="link-button" target="_blank">PDF</a>
 </div>
 
 ## מה נלמד היום
@@ -29,7 +29,7 @@ print_pdf: true
 
 ## מודל הלמידה הבסיסי
 
-נזכור כי בבעיית הלמידה המודרכת אנו נדרשים "ללמוד" פונקציה $\hat{y}=h(\boldsymbol{x})$ על סמך מדגם $\mathcal{D}=\{\boldsymbol{x}^{(i)}, y^{(i)}\}_{i=0}^N$. 
+נזכור כי בבעיית הלמידה המודרכת אנו נדרשים "ללמוד" פונקציה $\hat{y}=h(\boldsymbol{x})$ על סמך מדגם $\mathcal{D}=\{ \boldsymbol{x}^{(i)}, y^{(i)} \}_{i=0}^N$. 
 
 המודל הבסיסי בו נעסוק כולל את המרכיבים הבאים: 
 
@@ -41,7 +41,9 @@ print_pdf: true
 
 **מדד הביצועים** עבור השערה $h \in H$ כלשהי יהיה מהצורה 
 
-$$L(h)=E[\mathcal{l}(h(x),h_0(x))]$$
+$$
+L(h)=E[\mathcal{l}(h(x),h_0(x))]
+$$
 
 כאשר:
 
@@ -76,11 +78,17 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
 לדוגמה: 
  
- - עבור מחיר ריבועי נקבל: $\hat{L}_{\mathcal{D}}(h) = \frac{1}{N}\sum_{i=1}^{N}(h(x^{(i)})-h_0(x^{(i)}))^2 $
+ - עבור מחיר ריבועי נקבל:
+   $$
+   \hat{L}_{\mathcal{D}}(h) = \frac{1}{N}\sum_{i=1}^{N}(h(x^{(i)})-h_0(x^{(i)}))^2
+   $$
 
      שזאת פונקציית המחיר ששימשה אותנו בהקשר של בעיות רגרסיה.
 
-- עבור בעיות סיווג נקבל: $\hat{L}_{\mathcal{D}}(h) = \frac{1}{N}\sum_{i=1}^{N}I(h(x^{(i)})\neq h_0(x^{(i)}))$
+- עבור בעיות סיווג נקבל:
+ $$
+ \hat{L}_{\mathcal{D}}(h) = \frac{1}{N}\sum_{i=1}^{N}I(h(x^{(i)})\neq h_0(x^{(i)}))
+ $$
 
      זהו מספר השגיאות הממוצע של המסווג על סט הלימוד.
 
@@ -89,13 +97,15 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 **הערה:**  למרות שאנו מניחים מזעור של השגיאה האמפירית אין לראות בכך  המלצה לעשות זאת! גישה זו יכולה להוביל להתאמת-יתר חמורה עבור מרחב השערות גדול. 
 
 
-**שגיאת ההכללה לעומת שגיאת הקירוב**
+### שגיאת ההכללה לעומת שגיאת הקירוב
 
 נסמן - $h^* \in \arg_{h\in H} \min \hat{L}(h)$ - ההשערה האופטימלית שאינה ניתנת לחישוב. 
 
  קריטריון הביצועים המתקבל עבור  ניתן לרישום באופן הבא:
 
- $$L(\hat{h}_{\mathcal{D}})=L(h^*)+[L(\hat{h}_{\mathcal{D}})-L(h^*)]$$
+ $$
+ L(\hat{h}_{\mathcal{D}})=L(h^*)+[L(\hat{h}_{\mathcal{D}})-L(h^*)]
+ $$
  
 -	האיבר הראשון הוא שגיאת הקירוב (בדומה למשתנה ההטיה, bias), אשר נובע מכך שאנו מגבילים את הפונקציה הנלמדת לקבוצת ההשערות $H$. הוא אינו תלוי במספר הדגימות.
 
@@ -118,9 +128,12 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
  ראשית נעסוק במקרה בו $h_0\in H$, כלומר במקרה בו פונקציה המטרה $h_0$ כלולה בתוך קבוצת ההשערות $H$, כלומר $L^*_{H}=\underset{h \in H}{\min}L(h)=0$. 
 
- **משפט 1** נניח כי $|H| < \infty$ וכן $h_0 \in H$, כלומר $L^*=0$. אזי, השערה $\hat{h}_{\mathcal{D}}$ הממזערת את השגיאה האמפירית מקיימת לכל $\varepsilon > 0$
+ ### משפט 1
+ נניח כי $|H| < \infty$ וכן $h_0 \in H$, כלומר $L^*=0$. אזי, השערה $\hat{h}_{\mathcal{D}}$ הממזערת את השגיאה האמפירית מקיימת לכל $\varepsilon > 0$
 
- $$P(L(\hat{h}_{\mathcal{D}})>\varepsilon) < |H|e^{-\varepsilon n}$$
+ $$
+ P(L(\hat{h}_{\mathcal{D}})>\varepsilon) < |H|e^{-\varepsilon n}
+ $$
 
 ניתן להגדיר את המשפט גם בצורה שקולה באמצעות "רווח סמך" (confidence interval). 
 
@@ -131,11 +144,15 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
 בהינתן מדגם $\mathcal{D}=\{x^{(i)}\}$ מהתפלגות $F_{\theta}$ הידועה למעט ערכו של הפרמטר $\theta$, רווח סמך בעל רמת מובהקות $\alpha$ הוא קטע שקצוותיו מחושבים על פי המדגם כך שההסתברות של הפרמטר $\theta$ להיות בתוך קטע זה היא $1-\alpha$.
 
-**משפט 1 - בניסוח רווח סמך** על ידי השוואת אגף ימין ל-$\delta$, כלומר בחירת $\varepsilon=\frac{1}{N} \log\frac{|H|}{\delta}$, ניתן לקבל את הצורה הבאה של המשפט, כאשר הפרמטר $\delta$ נקרא רווח הסמך:
+#### משפט 1 - בניסוח רווח סמך
+
+על ידי השוואת אגף ימין ל-$\delta$, כלומר בחירת $\varepsilon=\frac{1}{N} \log\frac{|H|}{\delta}$, ניתן לקבל את הצורה הבאה של המשפט, כאשר הפרמטר $\delta$ נקרא רווח הסמך:
 
 - לכל $\delta>0$ מתקיים בהתסברות של $(1-\delta)$ לפחות $L(\hat{h}_{\mathcal{D}}) < \frac{1}{N} \log\frac{|H|}{\delta}$
 
-**משפט 1 - ניסוח סיבוכיות המדגם** החסם שקיבלנו מאפשר לנו לבחור את גודל המדגם $N$ המבטיח שגיאה קטנה כרצוננו, ובהתסברות גבוה כרצוננו, 
+#### משפט 1 - ניסוח סיבוכיות המדגם 
+
+החסם שקיבלנו מאפשר לנו לבחור את גודל המדגם $N$ המבטיח שגיאה קטנה כרצוננו, ובהתסברות גבוה כרצוננו, 
 
 - אם $N>\frac{1}{\varepsilon} \log\frac{|H|}{\delta}$, נקבל כי $L(\hat{h}_{\mathcal{D}})$ בהסתברות $(1-\delta$) לפחות. 
 
@@ -148,9 +165,13 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
   נעבור כעת למקרה הכללי יותר שבו פונקצית המטרה $h_0$  אינה כלולה בהכרח בקבוצת ההשערות $H$ , ולמעשה איננו מניחים הנחה כלשהי לגביה. במקרה זה $L^* \neq 0$.   
 
-**משפט 2** נניח כי $|H| < \infty$ ונסמך שוב $L^*=\underset{h \in H}{\min}L(h)$. אזי, לכל $\varepsilon > 0$ 
+### משפט 2
 
- $$P(L(\hat{h}_{\mathcal{D}})>L^* + \varepsilon) < 2|H|e^{-\frac{1}{2}\varepsilon^2 n}$$
+נניח כי $|H| < \infty$ ונסמך שוב $L^*=\underset{h \in H}{\min}L(h)$. אזי, לכל $\varepsilon > 0$ 
+
+ $$
+ P(L(\hat{h}_{\mathcal{D}})>L^* + \varepsilon) < 2|H|e^{-\frac{1}{2}\varepsilon^2 n}
+ $$
 
 הערות:
 
@@ -160,17 +181,23 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
 - מהי סיבוכיות המדגם?
 
+ ### הוכחת המשפטים
+
 על מנת להוכיח את המשפטים נגדיר את ההגדרות הבאות: 
 
 אוסף ההשערות ב-$H$ העקביות עם הנתונים מוגדר להיות ה-**version space**. אוסף השערות זה מוגדר בצורה הבאה
 
-$$VS_{H} = \{h_i \in H : \hat{L}_{\mathcal{D}}(h^{(i)})=0, i=1,2,...,|H| \}$$
+$$
+VS_{H} = \{h_i \in H : \hat{L}_{\mathcal{D}}(h^{(i)})=0, i=1,2,...,|H| \}
+$$
 
 עבור אלגוריתם ההמזער את השגיאה האמפירית ידוע כי מתקיים $\hat{h}_{\mathcal{D}} \in VS_H$.
 
 אוסף ההשערות הרעות ב-$H$ מוגדר בצורה הבאה:
 
-$$B = \{h_i \in H : L(h^{(i)})>\epsilon, i=1,2,...,|H| \}$$
+$$
+B = \{h_i \in H : L(h^{(i)})>\epsilon, i=1,2,...,|H| \}
+$$
 
 הערות: 
 
@@ -184,41 +211,53 @@ $$B = \{h_i \in H : L(h^{(i)})>\epsilon, i=1,2,...,|H| \}$$
 
 בשביל ההוכחה נצטרך את חסם האיחוד (union bound) שהוא
 
-$$P(\cup_{i=1}^NA_i)\le\sum_{i=1}^N P(A_i) \le N \underset{1 \le i \ge N}{\max}P(A_i)$$
+$$
+P(\cup_{i=1}^NA_i)\le\sum_{i=1}^N P(A_i) \le N \underset{1 \le i \ge N}{\max}P(A_i)
+$$
 
 כאשר שוויון מתקיים אם המאורעות זרים.
 
-**הוכחת משפט 1**
+#### הוכחת משפט 1
 
 נתבונן בהשערה מסוימת $h_i$ כך שמתקיים
 
-$$P(h_i(x^{(i)})=y^{(i)} \quad\text{and}\quad h_i \in B) < 1-\varepsilon$$
+$$
+P(h_i(x^{(i)})=y^{(i)} \quad\text{and}\quad h_i \in B) < 1-\varepsilon
+$$
 
 נשים לב שההסתברות היא רק ביחס למשתנה האקראי $x^{(i)}$ כאשר אנו מגבילים את עצמו ל-$h_i \in B$ שכן $B$ היא קבוצה לא אקראית. 
 
 בגלל שהדגימות i.i.d מתקיים 
 
-$$P(h_i \in (VS_H \cap B)) < (1-\varepsilon)^N$$
+$$
+P(h_i \in (VS_H \cap B)) < (1-\varepsilon)^N
+$$
 
 נגדיר את $h_i \in (VS_H \cap B)$ להיות המאורע $A_i$ ונשתמש בחסם האיחוד כך שנקבל 
 
-$$P(\exist  h_i \in (VS_H \cap B) \le |B|(1-\varepsilon)^N)$$
+$$
+P(\exist  h_i \in (VS_H \cap B) \le |B|(1-\varepsilon)^N)
+$$
 
 הגודל של הקבוצה $B$ אינו ידוע ולכן נרשום
 
-$$P(\exist  h_i \in (VS_H \cap B) \le |H|(1-\varepsilon)^N) \le |H|e^{-\varepsilon N}$$
+$$
+P(\exist  h_i \in (VS_H \cap B) \le |H|(1-\varepsilon)^N) \le |H|e^{-\varepsilon N}
+$$
 
 כאשר האי שוויון האחרון נובע מתוך $1-\varepsilon \le e^{-\varepsilon}$. 
 
 וכך הוכחנו את משפט 1. 
 
-**הוכחת משפט 2** 
+#### הוכחת משפט 2 
 
 בשביל להוכיח את משפט 2, ראשית נגדיר את אי שוויון Hoeffding. 
 
 יהי $\{Z^{(i)}\}_{i=1}^N$ משתנים אקראים i.i.d המוגבלים בקטע סופי $a \le Z^{(i)} \le b$ אזי 
 
-$$P(|\frac{1}{N}\sum_{i=1}^N(Z^{(i)}-E(Z^{(i)}))|>\varepsilon) \le 2 \exp \biggl(- \frac{2N\varepsilon^2}{(b-a)^2}  \biggr)$$
+$$
+P(|\frac{1}{N}\sum_{i=1}^N(Z^{(i)}-E(Z^{(i)}))|>\varepsilon) \le 2 \exp \biggl(- \frac{2N\varepsilon^2}{(b-a)^2}  \biggr)
+$$
 
 לחסם זה יש קצב מעריכי. 
 
@@ -226,7 +265,9 @@ $$P(|\frac{1}{N}\sum_{i=1}^N(Z^{(i)}-E(Z^{(i)}))|>\varepsilon) \le 2 \exp \biggl
 
 מטרתנו בהוכחה זאת היא לחסום את $P(L(\hat{h}_{\mathcal{D}})-L^* > \varepsilon)$. לשם כך נשתמש באי השוויונות הבאים:
 
-$$L(\hat{h}_{\mathcal{D}})-L^* < 2 \underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})|$$
+$$
+L(\hat{h}_{\mathcal{D}})-L^* < 2 \underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})|
+$$
 
 לשם פשטות נניח כי קיים $h^* \in H$ כך שמתקיים $L^*=L(h^*)$ אזי 
 
@@ -239,7 +280,9 @@ $$
 
 כעת, נרצה להשתמש בחסם Hoeffding. לשם כך נשים לב כי מתקיים: 
 
-$$L_{\mathcal{D}}(\hat{h})=\frac{1}{N}\sum_{i=1}^N Z^{(i)}, \quad Z^{(i)}=I\{h(x^{(i)}) \neq y^{(i)} \}, \quad E(Z^{(i)}) = L(h) $$
+$$
+L_{\mathcal{D}}(\hat{h})=\frac{1}{N}\sum_{i=1}^N Z^{(i)}, \quad Z^{(i)}=I\{h(x^{(i)}) \neq y^{(i)} \}, \quad E(Z^{(i)}) = L(h) 
+$$
 
 כעת נציב בחסם Hoeefding עם $a=0, b=1, \frac{\varepsilon}{2}$ ונקבל 
 
@@ -258,7 +301,7 @@ $$
 
 והוכחנו את המשפט השני. 
 
-**מגבלות החסמים שפותחו:**
+### מגבלות החסמים שפותחו
 
 ראינו חסם מהצורה הבאה, $L(\hat{h}_{\mathcal{D}}) < L^* + \sqrt{\frac{2}{N}\log\frac{2|H|}{\delta}}$,  בהסתברות  $(1-\delta)$ לפחות. 
 
@@ -270,7 +313,9 @@ $$
 
 בהסתברות גדולה מ $1-\delta$ , אלגוריתם נתון (לאו בהכרח מזעור שגיאה אמפירית) הבוחר השערה $\hat{h}_{\mathcal{D}}$  מקיים 
  
-$$L(\hat{h}_{\mathcal{D}}) < L^* + \Omega(\hat{h}_{\mathcal{D}}, \mathcal{D}, H)$$
+$$
+L(\hat{h}_{\mathcal{D}}) < L^* + \Omega(\hat{h}_{\mathcal{D}}, \mathcal{D}, H)
+$$
 
 כאשר  $\Omega(\hat{h}_{\mathcal{D}}, \mathcal{D}, H)$ איבר מורכבות הדועך לאפס עבור $n \rightarrow \infty$.
 
