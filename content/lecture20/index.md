@@ -273,10 +273,10 @@ $$
 
 $$
 \begin{aligned}
-L(\hat{h}_{\mathcal{D}})-L^* &= \\
-L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}}) + L(\hat{h}_{\mathcal{D}}) - L^* &\le \\
-[L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}})] + [L(h^*) - L^*] &\le \\
-2 \underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})|
+L(\hat{h}_{\mathcal{D}})-L^* &= 
+L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}}) + L(\hat{h}_{\mathcal{D}}) - L^* \\
+&\le [L(\hat{h}_{\mathcal{D}}) - L(\hat{h}_{\mathcal{D}})] + [L(h^*) - L^*]  \\
+&\le 2 \underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})|
 \end{aligned}
 $$
 
@@ -296,10 +296,10 @@ $$
 
 $$
 \begin{aligned}
-P(|L(\hat{h}_{\mathcal{D}})-L^*|) > \varepsilon) &\le \\
-P\biggl(\underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})| > \frac{\varepsilon}{2}\biggr) &\le \\
-|H|\underset{h \in H}{\max}P\biggl(|L(h)-L(\hat{h}_{\mathcal{D}})|\frac{\varepsilon}{2}\biggr) &\le \\
-2 |H| \exp(-N\frac{\varepsilon^2}{2})
+P(|L(\hat{h}_{\mathcal{D}})-L^*|) > \varepsilon) &\le 
+P\biggl(\underset{h \in H}{\max}|L(h)-L(\hat{h}_{\mathcal{D}})| > \frac{\varepsilon}{2}\biggr) \\
+&\le |H|\underset{h \in H}{\max}P\biggl(|L(h)-L(\hat{h}_{\mathcal{D}})|\frac{\varepsilon}{2}\biggr) \\
+&\le 2 |H| \exp(-N\frac{\varepsilon^2}{2})
 \end{aligned}
 $$
 
