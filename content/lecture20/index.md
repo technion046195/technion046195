@@ -202,11 +202,11 @@ $$P(h_i \in (VS_H \cap B)) < (1-\varepsilon)^N$$
 
 נגדיר את $h_i \in (VS_H \cap B)$ להיות המאורע $A_i$ ונשתמש בחסם האיחוד כך שנקבל 
 
-$$P(\exist h_i \in (VS_H \cap B) \le |B|(1-\varepsilon)^N)$$
+$$P(\exist  h_i \in (VS_H \cap B) \le |B|(1-\varepsilon)^N)$$
 
 הגודל של הקבוצה $B$ אינו ידוע ולכן נרשום
 
-$$P(\exist h_i \in (VS_H \cap B) \le |H|(1-\varepsilon)^N) \le |H|e^{-\varepsilon N}$$
+$$P(\exist  h_i \in (VS_H \cap B) \le |H|(1-\varepsilon)^N) \le |H|e^{-\varepsilon N}$$
 
 כאשר האי שוויון האחרון נובע מתוך $1-\varepsilon \le e^{-\varepsilon}$. 
 
