@@ -21,6 +21,7 @@ print_pdf: true
 ![](./assets/course_diagram.png)
 
 </div>
+
 בפרק זה נציג מעט מהתיאוריה הכמותית הקיימת בנושא למידה והכללה. המטרה הבסיסית של תיאוריה זו היא תיאור כמותי של בעיית הלמידה, אפיון הביצועים האפשריים עבור בעיית למידה נתונה, וחקר כמותי של השפעת המרכיבים השונים של הבעיה (כגון: סיבוכיות המודל, אופן בחירת הדגימות, מספר הדגימות, וכו') על הביצועים המתקבלים. 
 
 תיאוריה זו היא בעיקרה **בעלת אופי סטטיסטי**, כלומר מסתמכת על **כלים הסתברותיים**. 
@@ -101,7 +102,11 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
 נסמן - $h^* \in \arg_{h\in H} \min \hat{L}(h)$ - ההשערה האופטימלית שאינה ניתנת לחישוב. 
 
+<div class="imgbox" style="max-width:400px">
+
 ![](./assets/pac-1.png)
+
+</div>
 
  קריטריון הביצועים המתקבל עבור  ניתן לרישום באופן הבא:
 
@@ -152,7 +157,11 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
 - לכל $\delta>0$ מתקיים בהתסברות של $(1-\delta)$ לפחות $L(\hat{h}_{\mathcal{D}}) < \frac{1}{N} \log\frac{|H|}{\delta}$
 
-  ![](./assets/pac-2.png)
+ <div class="imgbox" style="max-width:200px">
+
+![](./assets/pac-2.png)
+
+</div>
 
 #### משפט 1 - ניסוח סיבוכיות המדגם 
 
@@ -183,7 +192,11 @@ $$\hat{h}_{\mathcal{D}}\in \underset{{h\in H}}{\arg\min} \hat{L}_{\mathcal{D}}(h
 
 - ניסוח רווח סמך עבור משפט זה הוא - $L(\hat{h}_{\mathcal{D}}) < L^* + \sqrt{\frac{2}{N}\log\frac{2|H|}{\delta}}$ בהסתברות $1-\delta$ לפחות. האיבר הראשון ($L^*$) מבטא את שגיאת הקירוב, אותה אי אפשר למזער, והשני את שגיאת השערוך.
 
-  ![](./assets/pac-3.png)
+<div class="imgbox" style="max-width:200px">
+
+![](./assets/pac-3.png)
+
+</div>
 
 - מהי סיבוכיות המדגם?
 
@@ -215,7 +228,11 @@ $$
 
 אנו מעוניינים להעריך את ההסתברות שקיימת השערה רעה שהיא עקבית, כלומר, $h\in(VS_H \cap B)$. 
 
+<div class="imgbox" style="max-width:400px">
+
 ![](./assets/pac-4.png)
+
+</div>
 
 בשביל ההוכחה נצטרך את חסם האיחוד (union bound) שהוא
 
