@@ -28,6 +28,7 @@ $$
 \mathcal{D}=\{x^{(i)}, y^{(i)}\}_{i=1}^N
 $$
 
+- מרחב החזאים \ השערות $\mathcal{H}$. במרחב זה נמצאים כל החזאים האפשריים. 
 - נסמן ב $\hat{y}=h(x)$ חזאיים אפשריים של $\text{y}$ בהינתן $\text{x}$.
 - נתונה לנו **פונקציית מחיר** $C(h)$ אשר מחשבת מחיר לכל חזאי. ($C$ יכול להיות תלוי בפילוג).
 - נרצה למצוא את החזאי $h^*$ עם המחיר הנמוך ביותר.
@@ -43,7 +44,7 @@ $$
 את הבעיה של מציאת החזאי האופטימאלי ניתן לרשום כ:
 
 $$
-h^* = \underset{h}{\arg\min} C(h)
+h^* = \underset{h\in\mathcal{H}}{\arg\min} C(h)
 $$
 
 **בעיה**: לרוב, פונקציית המחיר $C$ תהיה תלויה בפילוג הלא ידוע. לשם כך נאלץ להשתמש במדגם כתחליף לפילוג הלא ידוע. במהלך הקורס נכיר כמה שיטות לעשות זאת.
@@ -95,7 +96,7 @@ $$
 בעיית האופטימיזציה תהיה במקרה זה:
 
 $$
-h^*_{\mathcal{D}} = \underset{h}{\arg\min} \frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}^{(i)}),y^{(i)})
+h^*_{\mathcal{D}} = \underset{h\in\mathcal{H}}{\arg\min} \frac{1}{N}\sum_{i=0}^Nl(h(\boldsymbol{x}^{(i)}),y^{(i)})
 $$
 
 שיטה זו מוכנה empirical risk minimization (ERM).
@@ -753,8 +754,8 @@ $$
 
 $$
 h^*_{\mathcal{D}}
-=\underset{h}{\arg\min} \hat{R}_{\mathcal{D}}(h)
-=\underset{h}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}^{(i)})-y^{(i)})^2
+=\underset{h\in\mathcal{H}}{\arg\min} \hat{R}_{\mathcal{D}}(h)
+=\underset{h\in\mathcal{H}}{\arg\min} \frac{1}{N}\sum_{i=0}^N(h(\boldsymbol{x}^{(i)})-y^{(i)})^2
 $$
 
 בתרגול הבא ננסה לשפר את הבחירה של המודל כך שהוא גם יוכל להכליל טוב יותר. כמו כן, בתרגול זה נשתמש במודל לינארי לפונקציית החיזוי:
