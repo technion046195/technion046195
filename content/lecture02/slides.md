@@ -93,7 +93,9 @@ slides_pdf: true
 
 - $\hat{y}$ - תוצאת חיזוי.
 
-- $\hat{y}=h(\boldsymbol{x})$ - פונקציית החיזוי.
+- $\mathcal{H}$ - מרחב החזאים \ השערות
+
+- $\hat{y}=h(\boldsymbol{x})$ - פונקציית החיזוי. $h\in\mathcal{H}$. 
 
 - $D$ אורך של הוקטור $\boldsymbol{x}$
 
@@ -198,7 +200,7 @@ $$
 - החזאי האופטימאלי $h^*$ הוא החזאי בעל הציון הנמוך ביותר:
 
 $$
-h^* = \underset{h}{\arg\min}C(h)
+h^* = \underset{h\in\mathcal{H}}{\arg\min}C(h)
 $$
 
 </div><div class="fragment">
@@ -383,7 +385,7 @@ $$
 
 $$
 h^*_{\mathcal{D}}
-=\underset{h}{\arg\min}\frac{1}{N}\sum_{i=1}^N\left[l(h(\boldsymbol{x}^{(i)}),y^{(i)})\right]
+=\underset{h\in\mathcal{H}}{\arg\min}\frac{1}{N}\sum_{i=1}^N\left[l(h(\boldsymbol{x}^{(i)}),y^{(i)})\right]
 $$
 
 </section><section>
@@ -392,7 +394,7 @@ $$
 
 $$
 h^*_{\mathcal{D}}
-=\underset{h}{\arg\min}\frac{1}{N}\sum_{i=1}^N\left[l(h(\boldsymbol{x}^{(i)}),y^{(i)})\right]
+=\underset{h\in\mathcal{H}}{\arg\min}\frac{1}{N}\sum_{i=1}^N\left[l(h(\boldsymbol{x}^{(i)}),y^{(i)})\right]
 $$
 
 למה $h_{\mathcal{D}}^*$ לא $h^*$?
