@@ -554,7 +554,7 @@ $$
 - וקטור התגיות:
 
   $$
-  \boldsymbol{y}=[y^{(1)},y^{(2)},\cdots,y^{(n)}]^{\top}
+  \boldsymbol{y}=[y^{(1)},y^{(2)},\cdots,y^{(N)}]^{\top}
   $$
 
 - מטריצת המדידות:
@@ -573,7 +573,7 @@ $$
 ## Linear least squares - כתיב מטריצי
 
 $$
-\boldsymbol{y}=[y^{(1)},y^{(2)},\cdots,y^{(n)}]^{\top}
+\boldsymbol{y}=[y^{(1)},y^{(2)},\cdots,y^{(N)}]^{\top}
 \qquad
 X=\begin{bmatrix}
 - & \boldsymbol{x}^{(1)} & - \\
