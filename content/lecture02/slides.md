@@ -821,19 +821,19 @@ $$
             grid-template-columns: 1fr 1fr">
 <div class="imgbox" style="width:450px" >
 
-![](../lecture01/output/drive_prediction_linear.png)
+![](../lecture01/output/linear.png)
 
 </div><div class="imgbox" style="width:450px">
 
-![](../lecture01/output/drive_prediction_poly_2.png)
+![](../lecture01/output/poly_2.png)
 
 </div><div class="imgbox" style="width:450px">
 
-![](../lecture01/output/drive_prediction_poly_4.png)
+![](../lecture01/output/poly_4.png)
 
 </div><div class="imgbox" style="width:450px">
 
-![](../lecture01/output/drive_prediction_poly_15.png)
+![](../lecture01/output/poly_15.png)
 
 </div></div>
 
