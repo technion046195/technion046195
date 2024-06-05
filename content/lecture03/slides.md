@@ -483,14 +483,13 @@ $$
 $$
 \begin{aligned}
 &\mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
+    \mathbb{E}\biggl[(h_{\mathcal{D}}(\text{x})-y)^2\right]
 \right]\\
 &\qquad=
 \mathbb{E}\left[
     \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
     +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}\\
-    &+\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
-\right]
+    &\qquad+ \underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}\biggr]
 \end{aligned}
 $$
 
@@ -505,14 +504,14 @@ $$
 $$
 \begin{aligned}
 &\mathbb{E}_{\mathcal{D}}\left[
-    \mathbb{E}\left[(h_{\mathcal{D}}(\text{x})-y)^2\right]
+    \mathbb{E}\biggl[(h_{\mathcal{D}}(\text{x})-y)^2\right]
 \right]\\
 &\qquad=
 \mathbb{E}\left[
     \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
     +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}\\
-    &+\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
-\right]
+    &\qquad+\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+\biggr]
 \end{aligned}
 $$
 
