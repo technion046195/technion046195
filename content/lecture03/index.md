@@ -140,7 +140,7 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/drive_prediction_overfitting.png)
+![](./output/poly_12.png)
 
 </div>
 
@@ -382,7 +382,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/drive_prediction_final.png)
+![](./output/poly_3.png)
 
 </div>
 
@@ -450,7 +450,7 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/drive_prediction_regularization.png)
+![](./output/poly_10.png)
 
 </div>
 
