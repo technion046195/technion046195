@@ -34,19 +34,19 @@ slides_pdf: true
             grid-template-columns: 1fr 1fr">
 <div class="imgbox" style="width:450px" >
 
-![](../lecture01/output/drive_prediction_linear.png)
+![](../lecture01/output/linear.png)
 
 </div><div class="imgbox" style="width:450px">
 
-![](../lecture01/output/drive_prediction_poly_2.png)
+![](../lecture01/output/poly_2.png)
 
 </div><div class="imgbox" style="width:450px">
 
-![](../lecture01/output/drive_prediction_poly_4.png)
+![](../lecture01/output/poly_4.png)
 
 </div><div class="imgbox" style="width:450px">
 
-![](../lecture01/output/drive_prediction_poly_15.png)
+![](../lecture01/output/poly_15.png)
 
 </div></div>
 </section><section>
@@ -370,7 +370,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/drive_prediction_final.png)
+![](../lecture01/output/poly_3.png)
 
 </div>
 
@@ -630,7 +630,7 @@ LASSO = Linear Absolute Shrinkage and Selection Operator
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/drive_prediction_regularization.png)
+![](../lecture01/output/poly_10.png)
 
 </div>
 
