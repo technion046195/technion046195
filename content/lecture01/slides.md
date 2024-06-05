@@ -308,19 +308,19 @@ $$
             grid-template-columns: 1fr 1fr">
 <div class="imgbox" style="width:450px" >
 
-![](./output/drive_prediction_linear.png)
+![](./output/linear.png)
 
 </div><div class="imgbox fragment" style="width:450px">
 
-![](./output/drive_prediction_poly_2.png)
+![](./output/poly_2.png)
 
 </div><div class="imgbox fragment" style="width:450px">
 
-![](./output/drive_prediction_poly_4.png)
+![](./output/poly_4.png)
 
 </div><div class="imgbox fragment" style="width:450px">
 
-![](./output/drive_prediction_poly_15.png)
+![](./output/poly_15.png)
 
 </div></div>
 </section><section>
