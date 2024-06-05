@@ -140,7 +140,7 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/poly_12.png)
+![](../lecture01/output/poly_12.png)
 
 </div>
 
@@ -382,7 +382,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/poly_3.png)
+![](../lecture01/output/poly_3.png)
 
 </div>
 
@@ -450,7 +450,7 @@ $$
 
 <div class="imgbox" style="max-width:600px">
 
-![](./output/poly_10.png)
+![](../lecture01/output/poly_10.png)
 
 </div>
 
