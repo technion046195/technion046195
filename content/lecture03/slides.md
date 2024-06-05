@@ -211,7 +211,7 @@ $$
 
 - $h(\boldsymbol{x};\boldsymbol{\theta}^*)$: החזאי ה**פרמטרי** האופטימאלי.
 
-- $h_{\mathcal{D}}(\boldsymbol{x};\boldsymbol{\theta}^*)$: החזאי המושערך.
+- $h_{\mathcal{D}}(\boldsymbol{x};\boldsymbol{\theta}^*)$: החזאי המשערך.
 
 </section><section>
 
@@ -239,7 +239,7 @@ $$
 </div>
 <div class="fragment">
 
-- מצד אחד אנו נרצה מודל עם יכולת ביטוי גבוה על מנת שיוכל לקרב את החזאי האידאלי.
+- מצד אחד אנו נרצה מודל עם יכולת ביטוי גבוהה על מנת שיוכל לקרב את החזאי האידאלי.
 - מצד שני יכולת יצוג גבוה תאפשר הרבה overfitting.
 
 </div>
@@ -275,7 +275,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 - אנו צריכים דרך אחרת לקבוע אותם.
 - לרוב נאלץ לקבוע אותם בעזרת ניסוי וטעיה.
 - לא נוכל להשתמש ב test set לצורך זה.
-- נצטרך לייצר מדגם נפירד חדש.
+- נצטרך לייצר מדגם נפרד חדש.
 - נפצל עוד את ה train set ל:
   - train set חדש.
   - validation set.
@@ -461,15 +461,17 @@ $$
 
 ## החזאי הממוצע
 
-לצורך הדיון התיאורטי על מרכיבי שיגאת החיזוי נגדיר את החזאי הממוצע באופן הבא:
+לצורך הדיון התיאורטי על מרכיבי שגיאת החיזוי נגדיר את החזאי הממוצע באופן הבא:
 
 <br/>
 
-החזאי אשר מחזיר את החיזוי הממוצע על פני כלל החזאיים המתאימים למדגמים השונים:
+החזאי אשר מחזיר את החיזוי הממוצע על פני כלל החזאים המתאימים למדגמים השונים:
 
 $$
 \mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]
 $$
+
+גודל זה אינו ניתן לחישוב! 
 
 </section><section>
 
@@ -486,7 +488,7 @@ $$
 &\qquad=
 \mathbb{E}\left[
     \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
-    +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}
+    +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}\\
     +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
 \right]
 \end{aligned}
@@ -508,7 +510,7 @@ $$
 &\qquad=
 \mathbb{E}\left[
     \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
-    +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}
+    +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}\\
     +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
 \right]
 \end{aligned}
