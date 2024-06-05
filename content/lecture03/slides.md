@@ -489,7 +489,7 @@ $$
 \mathbb{E}\left[
     \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
     +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}\\
-    +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+    &+\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
 \right]
 \end{aligned}
 $$
@@ -511,7 +511,7 @@ $$
 \mathbb{E}\left[
     \underbrace{\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\text{x})-\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right])^2\right]}_{\text{Variance}}
     +\underbrace{(\mathbb{E}_{\mathcal{D}}\left[h_{\mathcal{D}}(x)\right]-h^*(\text{x}))^2}_{\text{Bias}^2}\\
-    +\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
+    &+\underbrace{(h^*(\text{x})-y)^2}_{\text{Noise}}
 \right]
 \end{aligned}
 $$
