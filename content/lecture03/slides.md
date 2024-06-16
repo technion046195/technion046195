@@ -594,7 +594,7 @@ $$
 - וקטור הפרמטרים שיתקבל יכיל הרבה מאד אפסים - וקטור דליל (sparse).
 <div class="imgbox" style="max-width:600px">
 
-![](../lecture03/content/l1.PNG)
+![](./assets/l1.PNG)
 
 </div>
 
