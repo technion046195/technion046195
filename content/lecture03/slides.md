@@ -593,7 +593,7 @@ $$
 - רגולריזציית $l_1$ תגרום לפרמטרים הפחות חשובים להתאפס.
 - וקטור הפרמטרים שיתקבל יכיל הרבה מאד אפסים - וקטור דליל (sparse).
 
-<div class="imgbox" style="max-width:400px">
+<div class="imgbox" style="max-width:500px">
 
 ![](./assets/l1.PNG)
 
