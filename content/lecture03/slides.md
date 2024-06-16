@@ -528,7 +528,7 @@ $$
 - דרך אלטרנטיבית להקטין את שגיאת השיערוך / variance.
 - הרעיון: להתערב בבעית האופטימיזציה על מנת לגרום לה "להעדיף" מודלים מסויימים.
 - זוהי הגבלה "רכה" של משפחת המודלים.
-- מאפשר שימוש במודלים פרמטרים בעלי יכולת ביטוי גבוהה יותר.
+- מאפשר שימוש במודלים פרמטריים בעלי יכולת ביטוי גבוהה יותר.
 
 </section><section>
 
@@ -537,7 +537,7 @@ $$
 השיטה: נוסיף איבר אשר יתן "קנס" למודלים לא רצויים.
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\underbrace{f(\boldsymbol{\theta})}_{\text{The regular objective function}}+\lambda\underbrace{g(\boldsymbol{\theta})}_{\text{The regularization term}}
+\boldsymbol{\theta}=[\underset{\boldsymbol{\theta}}{\arg\min}\underbrace{f(\boldsymbol{\theta})}_{\text{The regular objective function}}+\lambda\underbrace{g(\boldsymbol{\theta})}_{\text{The regularization term}}]
 $$
 
 הפרמטר $\lambda$ קובע את עוצמת (או משקל) הרגולריזציה.
@@ -571,7 +571,7 @@ $$
 ## $l_1$ ו $l_2$ הדומה
 
 - מנסות לשמור את הפרמטרים כמה שיותר קטנים.
-- מוטיבציה: מודל בעל פרמטרים קטנים יותר יהיה לרוב בעל נגזרות קטונות יותר, ולכן הוא יהיה יותר "חלק".
+- מוטיבציה: מודל בעל פרמטרים קטנים יותר יהיה לרוב בעל נגזרות קטנות יותר, ולכן הוא יהיה יותר "חלק".
 
 </section><section>
 
@@ -598,7 +598,7 @@ $$
 ## Ridge regression: LLS + $l2$ regularization
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_2^2
+\boldsymbol{\theta}=\biggl[\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_2^2\biggr]
 $$
 
 גם לבעיה זו יש פתרון סגור והוא נתון על ידי:
@@ -614,7 +614,7 @@ $$
 ## LASSO: LLS + $l1$ regularization
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_1
+\boldsymbol{\theta}=\biggl[\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_1\biggr]
 $$
 
 לבעיה זו אין פתרון סגור ויש צורך להשתמש באלגוריתמים איטרטיביים אשר מבוססים על gradient descent.
