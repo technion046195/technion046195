@@ -400,7 +400,7 @@ Hyper parameters הינו שם כולל לכל הפרמטרים שמופיעים
 על מנת להוסיף רגולריזציה לבעיית האופטימיזציה עלינו לבחור פונקציה אשר מקבלת את הפרמטרים $\boldsymbol{\theta}$ של מודל מסויים ומחזירה את הקנס שאותו יש לתת למודל זה. את איבר הרגולריזציה אנו נוסיף לרוב לבעיית האופטימיזציה יחד עם קבוע כפלי $\lambda$ אשר יקבע את עוצמת (או משקל) הרגולריזציה באופן הבא:
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\underbrace{f(\boldsymbol{\theta})}_{\text{The regular objective function}}+\lambda\underbrace{g(\boldsymbol{\theta})}_{\text{The regularization term}}
+\boldsymbol{\theta}=[\underset{\boldsymbol{\theta}}{\arg\min}\underbrace{f(\boldsymbol{\theta})}_{\text{The regular objective function}}+\lambda\underbrace{g(\boldsymbol{\theta})}_{\text{The regularization term}}]
 $$
 
 המשקל אותו אנו נותנים לרגולריזציה $\lambda$ הוא hyper-parameter של האלגוריתם שאותו יש לקבוע בעזרת ה validation set.
@@ -410,7 +410,7 @@ $$
 - $l_1$ - אשר מוסיפה איבר רגולריזציה של $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_1$.
 - $l_2$ - אשר מוסיפה איבר רגולריזציה של $g(\boldsymbol{\theta})=\lVert\boldsymbol{\theta}\rVert_2^2$. (רגולריזציה זו מכונה לעיתים Tikhonov regularizaion)
 
-רגולריזציות אלו מנסות לשמור את הפרמטריים כמה שיותר קטנים. המוטיבציה מאחורי הרצון לשמור את הפרמטרים קטנים הינה העובדה שבמרבית המודלים ככל שהפרמטרים קטנים יותר המודל הנלמד יהיה בעל נגזרות קטונות יותר, ולכן הוא ישתנה לאט יותר ופחות "ישתולל".
+רגולריזציות אלו מנסות לשמור את הפרמטריים כמה שיותר קטנים. המוטיבציה מאחורי הרצון לשמור את הפרמטרים קטנים הינה העובדה שבמרבית המודלים ככל שהפרמטרים קטנים יותר המודל הנלמד יהיה בעל נגזרות קטנות יותר, ולכן הוא ישתנה לאט יותר ופחות "ישתולל".
 
 ### ההבדל בין $l_1$ ו $l_2$
 
@@ -425,7 +425,7 @@ $$
 #### Ridge regression: LLS + $l2$ regularization
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_2^2
+\boldsymbol{\theta}=\biggl[\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_2^2\biggr]
 $$
 
 גם לבעיה זו יש פתרון סגור והוא נתון על ידי:
@@ -441,7 +441,7 @@ $$
 (LASSO = Linear Absolute Shrinkage and Selection Opperator)
 
 $$
-\boldsymbol{\theta}=\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_1
+\boldsymbol{\theta}=\biggl[\underset{\boldsymbol{\theta}}{\arg\min}\frac{1}{N}\sum_i(\boldsymbol{x}^{(i)\top}\boldsymbol{\theta}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_1\biggr]
 $$
 
 לבעיה זו אין פתרון סגור ויש צורך להשתמש באלגוריתמים איטרטיביים כגון gradient descent.
