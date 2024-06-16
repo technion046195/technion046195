@@ -593,6 +593,12 @@ $$
 - רגולריזציית $l_1$ תגרום לפרמטרים הפחות חשובים להתאפס.
 - וקטור הפרמטרים שיתקבל יכיל הרבה מאד אפסים - וקטור דליל (sparse).
 
+<div class="imgbox" style="max-width:200px">
+
+![](./assets/l1.PNG)
+
+</div>
+
 </section><section>
 
 ## Ridge regression: LLS + $l2$ regularization
