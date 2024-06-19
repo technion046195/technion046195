@@ -260,7 +260,7 @@ $$
 P(h_j \in (VS_H \cap B)) < (1-\varepsilon)^N
 $$
 
-נגדיר את $h_j \in (VS_H \cap B)$ להיות המאורע jA_i$ ונשתמש בחסם האיחוד כך שנקבל 
+נגדיר את $h_j \in (VS_H \cap B)$ להיות המאורע $A_j$ ונשתמש בחסם האיחוד כך שנקבל 
 
 $$
 P(\exist  h_j \in (VS_H \cap B) \le |B|(1-\varepsilon)^N)
