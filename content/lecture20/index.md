@@ -278,26 +278,27 @@ $$
 
 #### הוכחת משפט 2 
 
-נזכר באי שייון צ'בישב 
+ראשית נזכר באי שייון צ'בישב  
 
 $$
-P(|X-E[X]|>\varepsilon) \le \frac{Var[X]}{\varpesilon^2}
+P(|X-E[X]|>\varepsilon) \le \frac{Var[X]}{\varepsilon^2}
 $$
 
 אנו מעוניינים במקרה שבו $X=\frac{1}{N}\sum_{i=1}^NZ^{i}$ ו-$\{Z^{(i)}\}_{i=1}^N$ משתנים i.i.d. במקרה זה חסם צ'בישב הוא 
 
 
 $$
-P\biggl(|\frac{1}{N}\sum_{i=1}^{N}(Z^{(i)}-E[Z^{(i)}])|> \varepsilon \biggr) \le \frac{Var\biggl[\frac{1}{N}\sum_{i=1}^{N}Z^{(i)}\biggr]}{N^2\varpesilon^2} = \frac{Var[Z^{(1)}]}{N^2\varpesilon^2}
+P\biggl(|\frac{1}{N}\sum_{i=1}^{N}(Z^{(i)}-E[Z^{(i)}])|> \varepsilon \biggr) \le \frac{Var\biggl[\frac{1}{N}\sum_{i=1}^{N}Z^{(i)}\biggr]}{N^2\varepsilon^2} = \frac{Var[Z^{(1)}]}{N^2\varpesilon^2}
 $$
 
-נשים לב שהוא חסם איטי, נרצה חסם יותר טוב. 
-לשם כך נציג ראשית את אי שוויון Hoeffding. 
+נשים לב לכך שחסם צ'בישב דועך בצורה איטית. 
 
-יהי $\{Z^{(i)}\}_{i=1}^N$ משתנים אקראים i.i.d המוגבלים בקטע סופי $a \le Z^{(i)} \le b$ אזי 
+היינו רוצים להשיג חסם טוב יותר, כלומר חסם שדועך בצורה יותר מהירה. לשם כך נציג את אי שוויון Hoeffding. 
+
+*אי שוויון Hoeffding:* יהי $\{Z^{(i)}\}_{i=1}^N$ משתנים אקראים i.i.d המוגבלים בקטע סופי $a \le Z^{(i)} \le b$ אזי 
 
 $$
-P(|\frac{1}{N}\sum_{i=1}^N(Z^{(i)}-E(Z^{(i)}))|>\varepsilon) \le 2 \exp \biggl(- \frac{2N\varepsilon^2}{(b-a)^2}  \biggr)
+P\biggl(|\frac{1}{N}\sum_{i=1}^N(Z^{(i)}-E(Z^{(i)}))|>\varepsilon\biggr) \le 2 \exp \biggl(- \frac{2N\varepsilon^2}{(b-a)^2}  \biggr)
 $$
 
 לחסם זה יש קצב מעריכי. 
