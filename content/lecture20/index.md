@@ -284,11 +284,11 @@ $$
 P(|X-E[X]|>\varepsilon) \le \frac{Var[X]}{\varepsilon^2}
 $$
 
-אנו מעוניינים במקרה שבו $X=\frac{1}{N}\sum_{i=1}^NZ^{i}$ ו-$\{Z^{(i)}\}_{i=1}^N$ משתנים i.i.d. במקרה זה חסם צ'בישב הוא 
+אנו מעוניינים במקרה שבו $X=\frac{1}{N}\sum_{i=1}^NZ^{(i)}$ ו-$\{Z^{(i)}\}_{i=1}^N$ משתנים i.i.d. במקרה זה חסם צ'בישב הוא 
 
 
 $$
-P\biggl(|\frac{1}{N}\sum_{i=1}^{N}(Z^{(i)}-E[Z^{(i)}])|> \varepsilon \biggr) \le \frac{Var\biggl[\frac{1}{N}\sum_{i=1}^{N}Z^{(i)}\biggr]}{N^2\varepsilon^2} = \frac{Var[Z^{(1)}]}{N^2\varpesilon^2}
+P\biggl(|\frac{1}{N}\sum_{i=1}^{N}(Z^{(i)}-E[Z^{(i)}])|> \varepsilon \biggr) \le \frac{Var\biggl[\frac{1}{N}\sum_{i=1}^{N}Z^{(i)}\biggr]}{N^2\varepsilon^2} = \frac{Var[Z^{(1)}]}{N^2\varepsilon^2}
 $$
 
 נשים לב לכך שחסם צ'בישב דועך בצורה איטית. 
