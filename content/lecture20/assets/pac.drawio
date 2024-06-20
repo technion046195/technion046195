@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-27T09:14:49.648Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0" etag="p8WP02qhENM21nXJbBuJ" version="24.4.8" type="device" pages="4">
+<mxfile host="app.diagrams.net" modified="2024-06-20T06:38:50.863Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0" etag="7oBNM0kpHcFfQqnkMy9a" version="24.4.9" type="device" pages="4">
   <diagram name="Page-1" id="84o5D9Y87z7NnPdPSfDZ">
     <mxGraphModel dx="792" dy="429" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
       <root>
@@ -19,7 +19,7 @@
         <mxCell id="cwuDE0Hbu6p_amgVlqmO-5" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;$$H$$&amp;nbsp;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="375" y="70" width="70" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="cwuDE0Hbu6p_amgVlqmO-7" value="$$\hat{h}_{\mathcal{D}}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+        <mxCell id="cwuDE0Hbu6p_amgVlqmO-7" value="$$h^{*}_{\mathcal{D}}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="300" y="150" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="cwuDE0Hbu6p_amgVlqmO-9" value="$$h^*$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
@@ -28,7 +28,7 @@
         <mxCell id="cwuDE0Hbu6p_amgVlqmO-10" value="$$h_0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="520" y="74" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="z6RmF6gFSm4zqugUSQey-1" value="&lt;font face=&quot;-apple-system, BlinkMacSystemFont, Segoe UI Adjusted, Segoe UI, Liberation Sans, sans-serif&quot; color=&quot;#0c0d0e&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;Hypothesis space&lt;/span&gt;&lt;/font&gt;" style="text;html=1;align=center;labelBackgroundColor=none;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="z6RmF6gFSm4zqugUSQey-1" value="&lt;font face=&quot;-apple-system, BlinkMacSystemFont, Segoe UI Adjusted, Segoe UI, Liberation Sans, sans-serif&quot; color=&quot;#0c0d0e&quot;&gt;&lt;span style=&quot;font-size: 15px;&quot;&gt;Hypothesis space&lt;/span&gt;&lt;/font&gt;" style="text;html=1;align=center;labelBackgroundColor=none;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="340" y="80" width="140" height="40" as="geometry" />
         </mxCell>
       </root>
