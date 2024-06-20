@@ -83,9 +83,9 @@ $$
 לדוגמה: 
  
  - עבור בעיית רגרסיה עם פונקציית הפסד מסוג $\mathcal{l}_2$ נקבל את פונקציית הסיכון הבאה:
-   $$
-   \hat{R}_{\mathcal{D}}(h) = \frac{1}{N}\sum_{i=1}^{N}(h(\boldsymbol{x}^{(i)})-h_0(\boldsymbol{x}^{(i)}))^2
-   $$
+ $$
+ \hat{R}_{\mathcal{D}}(h) = \frac{1}{N}\sum_{i=1}^{N}(h(\boldsymbol{x}^{(i)})-h_0(\boldsymbol{x}^{(i)}))^2
+ $$
 
 - עבור בעיות סיווג נקבל:
  $$
@@ -345,7 +345,7 @@ $$
 $$
 \begin{aligned}
 P(|R(h^{*}_{\mathcal{D}})-R^*|) > \varepsilon) &\le 
-P\biggl(\underset{h \in H}{\max}|L(h)-\hat{L}_{\mathcal{D}}(h)| > \frac{\varepsilon}{2}\biggr) \\
+P\biggl(\underset{h \in H}{\max}|R(h)-\hat{R}_{\mathcal{D}}(h)| > \frac{\varepsilon}{2}\biggr) \\
 &\le |H|\underset{h \in H}{\max}P\biggl(|R(h)-\hat{R}_{\mathcal{D}}(h)|\frac{\varepsilon}{2}\biggr) \\
 &\le 2 |H| \exp(-N\frac{\varepsilon^2}{2})
 \end{aligned}
