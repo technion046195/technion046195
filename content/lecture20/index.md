@@ -173,30 +173,30 @@ $$
 
 ##### משפט 1 - ניסוח סיבוכיות המדגם 
 
-החסם שקיבלנו מאפשר לנו לבחור את גודל המדגם $N$ המבטיח שגיאה קטנה כרצוננו, ובהתסברות גבוהה כרצוננו, אם $N>\frac{1}{\varepsilon} \log\frac{|H|}{\delta}$, נקבל כי $L(h^{*}_{\mathcal{D}})$ בהסתברות $1-\delta$ לפחות. 
+החסם שקיבלנו מאפשר לנו לבחור את גודל המדגם $N$ המבטיח שגיאה קטנה כרצוננו, ובהתסברות גבוהה כרצוננו, אם $N>\frac{1}{\varepsilon} \log\frac{|H|}{\delta}$, נקבל כי $R(h^{*}_{\mathcal{D}})$ בהסתברות $1-\delta$ לפחות. 
 
 
 #### מספר מונחים בסיסיים בלמידה חישובית:
 
- אלגוריתם כלשהו לבחירת $h^{*}_{\mathcal{D}} \in H$  שעבורו  $P(L(h^{*}_{\mathcal{D}})>\varepsilon) \rightarrow 0$ כאשר  $N \rightarrow \infty$ (לכל $ h_0 \in H $) נקרא אלגוריתם Probably Approximately Correct או בקיצור PAC. קבוצת השערות $H$ שעבורה קיים אלגוריתם PAC נקראת ברת-למידה (Learnable). 
+ אלגוריתם כלשהו לבחירת $h^{*}_{\mathcal{D}} \in H$  שעבורו  $P(R(h^{*}_{\mathcal{D}})>\varepsilon) \rightarrow 0$ כאשר  $N \rightarrow \infty$ (לכל $ h_0 \in H $) נקרא אלגוריתם Probably Approximately Correct או בקיצור PAC. קבוצת השערות $H$ שעבורה קיים אלגוריתם PAC נקראת ברת-למידה (Learnable). 
 
 משפט 1 מראה כי האלגוריתם הממזער את השגיאה האמפירית הוא אלגוריתם PAC עבור כל קבוצת השערות סופית (ולפיכך כל קבוצת השערות סופית היא ברת למידה). 
 
-נעבור כעת למקרה הכללי יותר שבו פונקצית המטרה $h_0$ אינה כלולה בהכרח בקבוצת ההשערות $H$, ולמעשה איננו מניחים הנחה כלשהי לגביה. במקרה זה $L^* \neq 0$.   
+נעבור כעת למקרה הכללי יותר שבו פונקצית המטרה $h_0$ אינה כלולה בהכרח בקבוצת ההשערות $H$, ולמעשה איננו מניחים הנחה כלשהי לגביה. במקרה זה $R^* \neq 0$.   
 
 ### משפט 2
 
-נניח כי $|H| < \infty$ ונסמן שוב $L^*=\underset{h \in H}{\min}L(h)$. אזי, לכל $\varepsilon > 0$ 
+נניח כי $|H| < \infty$ ונסמן שוב $R^*=\underset{h \in H}{\min}R(h)$. אזי, לכל $\varepsilon > 0$ 
 
  $$
- P(L(h^{*}_{\mathcal{D}})>L^* + \varepsilon) < 2|H|e^{-\frac{1}{2}\varepsilon^2 n}
+ P(R(h^{*}_{\mathcal{D}})>R^* + \varepsilon) < 2|H|e^{-\frac{1}{2}\varepsilon^2 n}
  $$
 
 הערות:
 
 - ניתן לראות כי חסם זה חלש מהקודם, כיוון שקצה הדעיכה המעריכי של הסתברות הטעות הינו $\varepsilon^2$
 
-- ניסוח רווח סמך עבור משפט זה הוא - $L(h^{*}_{\mathcal{D}}) < L^* + \sqrt{\frac{2}{N}\log\frac{2|H|}{\delta}}$ בהסתברות $1-\delta$ לפחות. האיבר הראשון ($L^*$) מבטא את שגיאת הקירוב, אותה אי אפשר למזער, והשני את שגיאת השערוך.
+- ניסוח רווח סמך עבור משפט זה הוא - $R(h^{*}_{\mathcal{D}}) < R^* + \sqrt{\frac{2}{N}\log\frac{2|H|}{\delta}}$ בהסתברות $1-\delta$ לפחות. האיבר הראשון ($R^*$) מבטא את שגיאת הקירוב, אותה אי אפשר למזער, והשני את שגיאת השערוך.
 
 <div class="imgbox" style="max-width:200px">
 
@@ -213,7 +213,7 @@ $$
 אוסף ההשערות ב-$H$ העקביות עם הנתונים מוגדר להיות ה-**version space**. אוסף השערות זה מוגדר בצורה הבאה
 
 $$
-VS_{H} = \{h_i \in H : \hat{L}_{\mathcal{D}}(h^{(i)})=0, i=1,2,...,|H| \}
+VS_{H} = \{h_j \in H : \hat{R}_{\mathcal{D}}(h^{(j)})=0, j=1,2,...,|H| \}
 $$
 
 עבור אלגוריתם ההמזער את השגיאה האמפירית ידוע כי מתקיים $h^{*}_{\mathcal{D}} \in VS_H$.
@@ -221,7 +221,7 @@ $$
 אוסף ההשערות הרעות ב-$H$ מוגדר בצורה הבאה:
 
 $$
-B = \{h_i \in H : L(h^{(i)})>\epsilon, i=1,2,...,|H| \}
+B = \{h_j \in H : R(h^{(j)})>\epsilon, j=1,2,...,|H| \}
 $$
 
 הערות: 
@@ -253,10 +253,10 @@ $$
 נתבונן בהשערה מסוימת $h_j$ כך שמתקיים
 
 $$
-P(h_j(x^{(j)})=y^{(j)}\quad\text{and}\quad h_j \in B) < 1-\varepsilon
+P(h_j(x^{(i)})=y^{(i)}\quad\text{and}\quad h_j \in B) < 1-\varepsilon
 $$
 
-נשים לב שההסתברות היא רק ביחס למשתנה האקראי $x^{(j)}$ כאשר אנו מגבילים את עצמנו ל-$h_j \in B$ שכן $B$ היא קבוצה לא אקראית. 
+נשים לב שההסתברות היא רק ביחס למשתנה האקראי $x^{(i)}$ כאשר אנו מגבילים את עצמנו ל-$h_j \in B$ שכן $B$ היא קבוצה לא אקראית. 
 
 בגלל שהדגימות i.i.d מתקיים 
 
@@ -299,7 +299,7 @@ $$
 
 היינו רוצים להשיג חסם טוב יותר, כלומר חסם שדועך בצורה יותר מהירה. לשם כך נציג את אי שוויון Hoeffding. 
 
-*אי שוויון Hoeffding:* יהי $\{Z^{(i)}\}_{i=1}^N$ משתנים אקראים i.i.d המוגבלים בקטע סופי $a \le Z^{(i)} \le b$ אזי 
+**אי שוויון Hoeffding:** יהי $\{Z^{(i)}\}_{i=1}^N$ משתנים אקראים i.i.d המוגבלים בקטע סופי $a \le Z^{(i)} \le b$ אזי 
 
 $$
 P\biggl(|\frac{1}{N}\sum_{i=1}^N(Z^{(i)}-E(Z^{(i)}))|>\varepsilon\biggr) \le 2 \exp \biggl(- \frac{2N\varepsilon^2}{(b-a)^2}  \biggr)
@@ -309,44 +309,44 @@ $$
 
 שימו לב שחסם זה מתעלם משונות המשתנה האקראי. ניתן לקחת אותה בחשבון לצורך שיפור החסם. 
 
-מטרתנו בהוכחה זאת היא לחסום את $P(L(h^{*}_{\mathcal{D}})-L^* > \varepsilon)$. 
+מטרתנו בהוכחה זאת היא לחסום את $P(R(h^{*}_{\mathcal{D}})-R^* > \varepsilon)$. 
 
 לשם כך נוכיח את אי השוויונות הבאים:
 
 $$
-L(h^{*}_{\mathcal{D}})-L^* < 2 \underset{h \in H}{\max}|L(h)-L(h^{*}_{\mathcal{D}})|
+R(h^{*}_{\mathcal{D}})-R^* < 2 \underset{h \in H}{\max}|R(h)-R(h^{*}_{\mathcal{D}})|
 $$
 
-לשם פשטות נניח כי קיים $h^* \in H$ כך שמתקיים $L^*=L(h^*)$ אזי 
+לשם פשטות נניח כי קיים $h^* \in H$ כך שמתקיים $R^*=R(h^*)$ אזי 
 
 $$
 \begin{aligned}
-L(h^{*}_{\mathcal{D}})-L^* &= 
-L(h^{*}_{\mathcal{D}}) - \hat{L}_{\mathcal{D}}(h^{*}_{\mathcal{D}}) + \hat{L}_{\mathcal{D}}(h^{*}_{\mathcal{D}}) - L^* \\
-&\le [L(h^{*}_{\mathcal{D}}) - \hat{L}_{\mathcal{D}}(h^{*}_{\mathcal{D}})] + [\hat{L}_{\mathcal{D}}(h^*) - L^*]  \\
-&\le 2 \underset{h \in H}{\max}|L(h)-L_{\mathcal{D}}(h)|
+R(h^{*}_{\mathcal{D}})-R^* &= 
+R(h^{*}_{\mathcal{D}}) - \hat{R}_{\mathcal{D}}(h^{*}_{\mathcal{D}}) + \hat{R}_{\mathcal{D}}(h^{*}_{\mathcal{D}}) - R^* \\
+&\le [R(h^{*}_{\mathcal{D}}) - \hat{R}_{\mathcal{D}}(h^{*}_{\mathcal{D}})] + [\hat{R}_{\mathcal{D}}(h^*) - R^*]  \\
+&\le 2 \underset{h \in H}{\max}|R(h)-R_{\mathcal{D}}(h)|
 \end{aligned}
 $$
 
 כעת, נרצה להשתמש בחסם Hoeffding. לשם כך נשים לב כי מתקיים: 
 
 $$
-\hat{L}_{\mathcal{D}}(h)=\frac{1}{N}\sum_{i=1}^N Z^{(i)}, \quad Z^{(i)}=I\{h(x^{(i)}) \neq y^{(i)} \}, \quad E(Z^{(i)}) = L(h) 
+\hat{R}_{\mathcal{D}}(h)=\frac{1}{N}\sum_{i=1}^N Z^{(i)}, \quad Z^{(i)}=I\{h(x^{(i)}) \neq y^{(i)} \}, \quad E(Z^{(i)}) = L(h) 
 $$
 
 כעת נציב בחסם Hoeefding עם $a=0, b=1, \frac{\varepsilon}{2}$ ונקבל 
 
 $$
-P(|L(h)-\hat{L}_{\mathcal{D}}(h)|) > \frac{\varepsilon}{2}) \le 2 \exp \biggl(-N \frac{\varepsilon^2}{2}  \biggr)
+P(|R(h)-\hat{R}_{\mathcal{D}}(h)|) > \frac{\varepsilon}{2}) \le 2 \exp \biggl(-N \frac{\varepsilon^2}{2}  \biggr)
 $$
 
 סה"כ, נוכל להשתמש באי השוויונות שהוכחנו ובחסם האיחוד כך שנקבל
 
 $$
 \begin{aligned}
-P(|L(h^{*}_{\mathcal{D}})-L^*|) > \varepsilon) &\le 
+P(|R(h^{*}_{\mathcal{D}})-R^*|) > \varepsilon) &\le 
 P\biggl(\underset{h \in H}{\max}|L(h)-\hat{L}_{\mathcal{D}}(h)| > \frac{\varepsilon}{2}\biggr) \\
-&\le |H|\underset{h \in H}{\max}P\biggl(|L(h)-\hat{L}_{\mathcal{D}}(h)|\frac{\varepsilon}{2}\biggr) \\
+&\le |H|\underset{h \in H}{\max}P\biggl(|R(h)-\hat{R}_{\mathcal{D}}(h)|\frac{\varepsilon}{2}\biggr) \\
 &\le 2 |H| \exp(-N\frac{\varepsilon^2}{2})
 \end{aligned}
 $$
@@ -357,7 +357,7 @@ $$
 
 ### מגבלות החסמים שפותחו
 
-ראינו חסם מהצורה הבאה, $L(h^{*}_{\mathcal{D}}) < L^* + \sqrt{\frac{2}{N}\log\frac{2|H|}{\delta}}$,  בהסתברות  $(1-\delta)$ לפחות. 
+ראינו חסם מהצורה הבאה, $R(h^{*}_{\mathcal{D}}) < R^* + \sqrt{\frac{2}{N}\log\frac{2|H|}{\delta}}$,  בהסתברות  $(1-\delta)$ לפחות. 
 
 אנו יכולים לפרש את האיבר השני כאיבר המודד את מורכבות מחלקת ההשערות – במקרה זה מורכבות נמדדת ע"ס גודל הקבוצה. 
 
@@ -368,7 +368,7 @@ $$
 בהסתברות גדולה מ $1-\delta$ , אלגוריתם נתון (לא בהכרח מזעור שגיאה אמפירית) הבוחר השערה $h^{*}_{\mathcal{D}}$  מקיים 
  
 $$
-L(h^{*}_{\mathcal{D}}) < L^* + \Omega(h^{*}_{\mathcal{D}}, \mathcal{D}, H)
+R(h^{*}_{\mathcal{D}}) < R^* + \Omega(h^{*}_{\mathcal{D}}, \mathcal{D}, H)
 $$
 
 כאשר  $\Omega(h^{*}_{\mathcal{D}}, \mathcal{D}, H)$ איבר מורכבות הדועך לאפס עבור $n \rightarrow \infty$.
