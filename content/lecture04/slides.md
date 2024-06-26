@@ -798,7 +798,9 @@ $$
 
 </div> 
 
+
 האיור נלקח מהספר, The Elements of Statistical Learning, שנכתב ע"י T. Hastie, R. Tibshirani and J. Friedman
+
 קישור לספר - https://hastie.su.domains/Papers/ESLII.pdf 
 
 </section>
