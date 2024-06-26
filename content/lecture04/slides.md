@@ -786,16 +786,18 @@ $$
 
 1. תוצאת החיזוי בעלה מסויים תהיה הערך הממוצע של התוויות באותו עלה. (במקום הערך השכיח)
 2. את מדד החוסר ההומוגניות נחליף בשגיאה הריבועית של החיזוי של העץ.
+## Regression Tree
 
+דוגמה למישור ההחלטה המתקבל מעצי רגרסיה ניתן לראות באיור. 
+
+האיור נלקח מהספר, The Elements of Statistical Learning שנכתב ע"י T. Hastie, R. Tibshirani and J. Friedman
 <div class="imgbox" style="max-width:450px;background-color:white">
 
 ![](./assets/reg_tree.png)
 
 </div> 
 
-Taken from *The Elements of Statistical Learning*, T. Hastie, R. Tibshirani and J. Friedman 
-
-link - https://hastie.su.domains/Papers/ESLII.pdf 
+https://hastie.su.domains/Papers/ESLII.pdf 
 
 </section>
 </div>
