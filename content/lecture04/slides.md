@@ -792,14 +792,14 @@ $$
 
 דוגמה למישור ההחלטה המתקבל מעצי רגרסיה ניתן לראות באיור. 
 
-האיור נלקח מהספר, The Elements of Statistical Learning שנכתב ע"י T. Hastie, R. Tibshirani and J. Friedman
-<div class="imgbox" style="max-width:450px;background-color:white">
+<div class="imgbox" style="max-width:400px;background-color:white">
 
 ![](./assets/reg_tree.png)
 
 </div> 
 
-https://hastie.su.domains/Papers/ESLII.pdf 
+האיור נלקח מהספר, The Elements of Statistical Learning, שנכתב ע"י T. Hastie, R. Tibshirani and J. Friedman
+קישור לספר - https://hastie.su.domains/Papers/ESLII.pdf 
 
 </section>
 </div>
