@@ -793,5 +793,9 @@ $$
 
 </div> 
 
+Taken from *The Elements of Statistical Learning*, T. Hastie, R. Tibshirani and J. Friedman 
+
+link - https://hastie.su.domains/Papers/ESLII.pdf 
+
 </section>
 </div>
