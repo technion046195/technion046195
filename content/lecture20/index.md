@@ -392,7 +392,7 @@ $$
 מתקיים 
 $$
 \begin{aligned}
-E[Z^2] = \int_0^{\infty} P(Z^2 > t) dt \\
+E[Z^2] &= \int_0^{\infty} P(Z^2 > t) dt \\
 &= \int_0^{u} P(Z^2 > t) dt + \int_u^{\infty} P(Z^2 > t) dt \\
 &\le u + \int_u^{\infty} P(Z^2 > t) dt \\
 &\le u + c \int_u^{\infty} e^{-2Nt} dt \\
@@ -421,9 +421,7 @@ $$
  E[R(h^{*}_{\mathcal{D}})] - R^* = \mathcal{O}\biggl(\frac{\log |H|}{N}\biggr)
  $$
 
-
-
-
+ובכך מסתכמת הוכחת החסם על התוחלת. 
 
 ### מגבלות החסמים שפותחו
 
