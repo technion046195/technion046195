@@ -799,7 +799,7 @@ $$
 </div> 
 
 
-האיור נלקח מהספר, The Elements of Statistical Learning, שנכתב ע"י T. Hastie, R. Tibshirani and J. Friedman
+האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
 
 קישור לספר - https://hastie.su.domains/Papers/ESLII.pdf 
 
@@ -836,7 +836,7 @@ $$
 </div> 
 
 
-האיור נלקח מהספר, The Elements of Statistical Learning, שנכתב ע"י T. Hastie, R. Tibshirani and J. Friedman
+האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
 
 קישור לספר - https://hastie.su.domains/Papers/ESLII.pdf 
 
