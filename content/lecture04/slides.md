@@ -804,8 +804,10 @@ $$
 קישור לספר - https://hastie.su.domains/Papers/ESLII.pdf 
 
 </section><section>
+
   
 ## עצי החלטה מבוססי סיפים חד-ממדיים
+
   
 #### יתרונות 
 
