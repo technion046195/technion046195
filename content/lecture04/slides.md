@@ -790,7 +790,7 @@ $$
   
 ## Regression Tree
 
-דוגמה למישור ההחלטה המתקבל מעצי רגרסיה ניתן לראות באיור. 
+דוגמה לפונקציה קבועה למקוטעין המתקבלת מעצי רגרסיה. 
 
 <div class="imgbox" style="max-width:400px;background-color:white">
 
@@ -799,19 +799,15 @@ $$
 </div> 
 
 
-האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
-
-קישור לספר - https://hastie.su.domains/Papers/ESLII.pdf 
+<p style="font-size: 10px;">האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
+</p>
 
 </section><section>
 
   
-## עצי החלטה מבוססי סיפים חד-ממדיים
+## יתרונות 
 
-  
-#### יתרונות 
-
-1. פשטות בהבנת הסיווג (interpetability) - ייצוג גרפי נח
+1. פשטות בהבנת הסיווג (interpetability) - ייצוג גרפי נוח
 2. בניית עץ מהירה וסיווג מהיר של נקודות חדשות
 3. אין הנחות על טבע הבעיה (למשל סיווג לינארי)
 4. גמישות - נתונים מספריים וקטגוריים
@@ -820,13 +816,11 @@ $$
 
 </section><section>
 
-## עצי החלטה מבוססי סיפים חד-ממדיים
-
-#### חסרונות 
+## חסרונות 
 
 1. חלוקה מקבילה לצירים מוגבלת ומתעלמת מקשרים בין משתנים
 2. רגישות גבוהה לשינויים בנתונים (מופחתת עקב גיזום)
-3. דרושים מספר רב של נתונים לקבלת תוצאות סבירות
+3. דרוש מספר רב של נתונים לקבלת תוצאות סבירות
 
 #### הרחבות 
 1. העשרת מבנה ההחלטות בצמתים (למשל, מסווג לינארי)
@@ -843,10 +837,9 @@ $$
 
 </div> 
 
+<p style="font-size: 10px;">האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
+</p>
 
-האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
-
-קישור לספר - https://hastie.su.domains/Papers/ESLII.pdf 
 
   
 </section>
