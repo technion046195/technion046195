@@ -798,8 +798,8 @@ $$
 
 </div> 
 
-
-<p style="font-size: 10px;">האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
+<br>
+<p style="font-size: 16px;">האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
 </p>
 
 </section><section>
@@ -837,7 +837,8 @@ $$
 
 </div> 
 
-<p style="font-size: 10px;">האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
+<br>
+<p style="font-size: 16px;">האיור מתוך, James, Witten, Hastie, Tibshirani, Taylor, An Introduction to Statistical Learning, Springer 2023
 </p>
 
 
