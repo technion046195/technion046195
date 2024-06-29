@@ -43,7 +43,7 @@ slides_pdf: true
 
 </section><section>
 
-## תזכורת הטיה ושנות
+## תזכורת הטיה ושונות
 <div class="imgbox" style="max-width:600px">
 
 ![](../lecture05/assets/models_bias_variance.png)
@@ -53,7 +53,7 @@ slides_pdf: true
 - החיזוי הממוצע: $\bar{h}(\boldsymbol{x})=\mathbb{E}_{\mathcal{D}}\left[h(\boldsymbol{x})\right]$ 
 - החיזוי האופטימלי $h^*(\boldsymbol{x})$.
 - ההטיה היא ההפרש בין החיזוי הממוצע לחיזוי האופטימלי.
-- השונות היא ה $\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\boldsymbol{x})-\bar{h}(\boldsymbol{x}))^2\right] $
+- השונות היא $\mathbb{E}_{\mathcal{D}}\left[(h_{\mathcal{D}}(\boldsymbol{x})-\bar{h}(\boldsymbol{x}))^2\right] $
 
 </section><section>
 
@@ -218,6 +218,8 @@ $$
 - מהו **לומד חלש**?
 - האם כל לומד  הוא בעצם גם לומד חזק?
 
+ הרחבה ברשימות
+
 </section><section>
 
 ## AdaBoost (adaptive-boosting)
@@ -379,6 +381,8 @@ $$
 $$
 \varepsilon_M=\varepsilon(\tilde{h}_M,\{w_i^{(M-1)}\})
 $$
+
+הוכחה ברשימות. 
 
 </section><section>
 
@@ -565,7 +569,7 @@ $$
 
 ### הרחבות
 - רבות ומגוונות. בחלקו משלבות רגלוריזציה, אפשרות לעיבוד מקבילי, שילוב עם bagging ועוד
-- 
+
 
 </section>
 </div>
