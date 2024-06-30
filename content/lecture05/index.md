@@ -96,8 +96,15 @@ Bootstraping הינה אופציה חלופית לייצר מספר מדגמים
 
 לאחר הבניה של $M$ החזאים אנו נקבץ את כולם על מנת לקבל את החזאי הכולל בו נשתמש לחיזוי.
 
-- **עבור בעיות רגרסיה**: אנו נמצע את תוצאת החיזוי של כל החזאים: $h(\boldsymbol{x})=\frac{1}{M}\sum_{m=1}^M \tilde{h}_m(\boldsymbol{x})$
-- **עבור בעיות סיווג**: נבצע majority voting: $h(\boldsymbol{x})=\text{majority}(\{\tilde{h}_1(\boldsymbol{x}),\tilde{h}_2(\boldsymbol{x}),\dots,\tilde{h}_M(\boldsymbol{x})\})$
+- **עבור בעיות רגרסיה**: אנו נמצע את תוצאת החיזוי של כל החזאים:
+$$
+h(\boldsymbol{x})=\frac{1}{M}\sum_{m=1}^M \tilde{h}_m(\boldsymbol{x})
+$$
+
+- **עבור בעיות סיווג**: נבצע majority voting:
+$$
+h(\boldsymbol{x})=\text{majority}(\{\tilde{h}_1(\boldsymbol{x}),\tilde{h}_2(\boldsymbol{x}),\dots,\tilde{h}_M(\boldsymbol{x})\})
+$$
 
 <div class="imgbox" style="max-width:700px">
 
