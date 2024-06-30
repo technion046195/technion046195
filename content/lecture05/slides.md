@@ -382,7 +382,7 @@ $$
 \varepsilon_M=\varepsilon(\tilde{h}_M,\{w_i^{(M-1)}\})
 $$
 
-הוכחה ברשימות. 
+כאשר $\tilde{h}_M$ הינו מסווג טוב לדגימות קשות. הוכחה מלאה ברשימות. 
 
 </section><section>
 
