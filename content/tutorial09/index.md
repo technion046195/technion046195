@@ -175,6 +175,8 @@ $$
 \langle x,y \rangle \le \lVert x \rVert \cdot \lVert y \rVert
 $$
 
+כאשר שוויון מתקיים כאשר שני הווקטורים באותו הכיוון. 
+
 ### פתרון 9.1 
 
 כדי לענות על שאלה זאת נרצה שהביטוי $\alpha d^\top(-\nabla f(x))$ יהיה גדול ככל האפשר. 
@@ -182,7 +184,7 @@ $$
 נשים לב כי מדובר במכפלה פנימית ולכן נשתמש באי שוויון קושי שוורץ 
 
 $$
-\alpha d^\top(-\nabla f(x)) = \langle \alpha d, -\nabla f(x) \rangle \le \lVert \alpha d \rVert \cdot \lVert -\nabla f(x) \rVert = - \alpha \lVert \nabla f(x) \rVert
+\alpha d^\top(-\nabla f(x)) = \langle \alpha d, -\nabla f(x) \rangle \le \lVert \alpha d \rVert \cdot \lVert -\nabla f(x) \rVert = \alpha \lVert \nabla f(x) \rVert
 $$
 
 לכן הכיוון $d$ עבורו נקבל את הירידה הכי גדולה בערך של $f(x)$ הוא 
@@ -193,7 +195,7 @@ $$
 
 **מסקנה** 
 
- הכיוון השלילי של הגרדיאנט, $d \propto \nabla f(x)$, הוא הכיוון שמוביל לירידה המקסימלית בערך הפונקציה בסביבה מקומית של $x$. 
+ הכיוון השלילי של הגרדיאנט, $d \propto - \nabla f(x)$, הוא הכיוון שמוביל לירידה המקסימלית בערך הפונקציה בסביבה מקומית של $x$. 
 
  **הבחנה** 
 
