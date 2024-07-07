@@ -53,7 +53,7 @@ slides_pdf: true
 
 - הרחבה של מושג המישור למימדים שונים מ2.
 - במרחב ממימד $D$, על-המישור יהיה ממימד $D-1$.
-- בקורס זה נשתמש בשם מישור גם בשביל להתייחס לעל-מישורים.
+- בקורס זה נשתמש בשם מישור גם כדי להתייחס לעל-מישורים.
 
 <br/>
 
@@ -91,7 +91,7 @@ slides_pdf: true
 
 ## תזכורת - גאומטריה של המישור
 
-נסתכל על הפונקציה $f(\boldsymbol{x})=\hat{\boldsymbol{w}}^{\top}\boldsymbol{x}$. משוואה זו מטילה נקודות במרחב על הקו המוגדר על ידי $\hat{\boldsymbol{w}}$ (וקטור יחידה בכיוון של $\boldsymbol{w}$), ומודדת את האורך של הטלה זו.
+נסתכל על הפונקציה $f(\boldsymbol{x})=\hat{\boldsymbol{w}}^{\top}\boldsymbol{x}$. משוואה זו מטילה נקודות במרחב על המישור המוגדר על ידי $\hat{\boldsymbol{w}}$ (וקטור יחידה בכיוון של $\boldsymbol{w}$), ומודדת את האורך של הטלה זו.
 
 <br/>
 <div class="imgbox" style="max-width:600px">
@@ -117,7 +117,7 @@ slides_pdf: true
 
 ## תזכורת - גאומטריה של המישור
 
-נחליף את הוקטור $\hat{\boldsymbol{w}}$ בוקטור $\boldsymbol{w}$. נקבל הפונקציה זהה המוכפלת ב $\lVert\boldsymbol{w}\rVert_2$.
+נחליף את הוקטור $\hat{\boldsymbol{w}}$ בוקטור $\boldsymbol{w}$. נקבל פונקציה זהה המוכפלת ב $\lVert\boldsymbol{w}\rVert_2$.
 
 <div class="imgbox" style="max-width:500px">
 
@@ -191,11 +191,13 @@ $$
 - Hard SVM מנסה למצוא מישור הפרדה אשר יהיה רחוק ככל האפשר מהנקודות שבמדגם.
 - או: נרצה שהמרחק מהמישור לנקודה הקרובה אליו ביותר יהיה מקסימאלי.
 
+**שאלה:** למה זה רעיון טוב אינטואיטיבית? 
+
 </section><section>
 
 ## Hard SVM
 
-נסתכל על המכפלה בין ה signed distance של הנקודות לתוויות שלהם $\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}$.
+נסתכל על המכפלה בין המרחקים המסומנים של הנקודות לתוויות שלהם $\frac{1}{\lVert\boldsymbol{w}\rVert}(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}$.
 
 - בכדי לקבל סיווג מושלם נרצה שכל המכפלות יהיו חיוביות.
 - בנוסף ננסה למקסם את המינימום של מכפלות אלו.
@@ -262,7 +264,7 @@ $$
 (\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
 $$
 
-מובטח שלפחות בעבור אחת מהנקודות האילוץ יתקיים בשיוויון: אם זה לא המצב, תמיד נוכל לכפול את $\boldsymbol{w}$ ו-$b$  בקבוע חיובי קטן מספיק כך שהשיוויון יתקיים, וגם נשתפר בפתרון בעיית האופטימיזציה (שמנסה להקטין את $||\boldsymbol{w}||$).
+מובטח שלפחות עבור אחת מהנקודות האילוץ יתקיים בשיוויון: אם זה לא המצב, תמיד נוכל לכפול את $\boldsymbol{w}$ ו-$b$  בקבוע חיובי קטן מספיק כך שהשיוויון יתקיים, וגם נשתפר בפתרון בעיית האופטימיזציה (שמנסה להקטין את $||\boldsymbol{w}||$).
 <br/>
 
 קיבלנו את בעיית האופטימיזציה השקולה הבאה, היא **הבעיה הפרימאלית**:
@@ -274,6 +276,8 @@ $$
 \text{s.t.}\quad&(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b)y^{(i)}\geq1\quad\forall i
 \end{aligned}
 $$
+
+**שימו לב!** למספר הגדול של האילוצים. 
 
 </section><section>
 
@@ -316,7 +320,7 @@ $$
 
 </div>
 
-- ה **support vectors** הם הנקודות שיושבות על ה margin והם מקיימות אלו מקיימות $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$.
+- ה **support vectors** הן הנקודות שיושבות על ה-margin והן מקיימות $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1$.
 - רק נקודות אלו ישפיעו על הפתרון של בעיית האופטימיזציה.
 
 </section><section>
@@ -334,7 +338,7 @@ $$
 $$
 \begin{aligned}
 \left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\biggl[\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)}\biggr] \\
 \text{s.t.}\quad
     &\alpha_i\geq0\quad\forall i\\
     &\sum_i\alpha_iy^{(i)}=0
@@ -342,6 +346,8 @@ $$
 $$
 
 <br/>
+
+**שימו לב!** יש מספר גדול של משתנים, אך מעט אילוצים. 
 
 באתר המודל של הקורס ניתן למצוא נספח עם הסבר מפורט לפיתוח ועל אופטימיזציה קמורה בהקשר של SVM.
 
@@ -352,18 +358,25 @@ $$
 $$
 \begin{aligned}
 \left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\biggl[\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)}\biggr] \\
 \text{s.t.}\quad
     &\alpha_i\geq0\quad\forall i\\
     &\sum_i\alpha_iy^{(i)}=0
 \end{aligned}
 $$
 
+שימו לב שהתלות במאפיינים רק דרך מכפלות פנימיות. 
+
 מתוך המשתנים $\{\alpha_i\}_{i=1}^N$ ניתן לשחזר את $\boldsymbol{w}$ אופן הבא:
 
 $$
 \boldsymbol{w}=\sum_i\alpha_iy^{(i)}\boldsymbol{x}^{(i)}
 $$
+
+שימו לב כי רק נקודות המדגם שעבורן אלפא חיובי תורמות לסכום. 
+
+**הערה (הרחבה למתעניינים)**: המשתנים אלפא הם כופלי לגרנז' מהבעיה הפרימאלית. 
+
 
 </section><section>
 
@@ -385,8 +398,8 @@ $$
 
 ## חישוב $b$
 
-- נבחר נקודה מסויימת שבעבורה $\alpha_i>0$.
-- נקודה כזו בהכרח תהיה support vectors ותקיים $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$.
+- נבחר נקודה מסויימת שעבורה $\alpha_i>0$.
+- נקודה כזו בהכרח תהיה support vector ותקיים $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$.
 - מתוך משוואה זו ניתן לחלץ את $b$.
 
 </section><section>
@@ -400,8 +413,8 @@ $$
 </div>
 
 - מתייחס למקרה שבו המדגם אינו פריד לינארית.
-- מאפשרים למשתנים להיכנס לתוך ה margin ואף לחצות אותו.
-- על כל חריגה כזו משלמים קנס ב objective.
+- מאפשרים לנקודות המדגם להיכנס לתוך השוליים ואף לחצות אותם.
+- על כל חריגה כזו משלמים קנס בפונקציית המטרה.
 
 </section><section>
 
@@ -420,14 +433,14 @@ $$
 
 ## Soft SVM
 
-ובעיית האופטימיזציה הפרימאלית תהיה:
+ובעיית האופטימיזציה הפרימאלית תהיה
 
 <br/>
 
 $$
 \begin{aligned}
 \boldsymbol{w}^*,b^*,\{\xi_i\}^*=
-\underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i \\
+\underset{\boldsymbol{w},b,\{\xi_i\}}{\arg\min}\quad&\biggl[\frac{1}{2}\left\lVert\boldsymbol{w}\right\rVert^2+C\sum_{i=1}^N\xi_i\biggr] \\
 \text{s.t.}\quad
     &y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)\geq1-\xi_i\quad\forall i\\
     &\xi_i\geq0\quad\forall i
@@ -436,20 +449,24 @@ $$
 
 <br/>
 
-כאשר $C$ הוא hyper-parameter אשר קובע את גודל הקנס שאותו ה objective נותן על כל חריגה.
+כאשר $C$ הוא היפר-פרמטר אשר קובע את גודל הקנס בפונקציית המחיר על כל חריגה.
+
+**שאלה:** מה ההשפעה של ערכים שונים של המשתנים $\xi_i$? 
+
+שימו לב כי בבעיה הפרימאלית לא היה היפר-פרמטר. 
 
 </section><section>
 
 ## Soft SVM
 
-הבעיה הדואלית הינה:
+הבעיה הדואלית הינה
 
 <br/>
 
 $$
 \begin{aligned}
 \left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)} \\
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\biggl[\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\boldsymbol{x}^{(i)\top}\boldsymbol{x}^{(j)}\biggr] \\
 \text{s.t.}\quad
     &0\leq\alpha_i\leq C\quad\forall i\\
     &\sum_i\alpha_iy^{(i)}=0
@@ -466,7 +483,7 @@ $$
 
 </div>
 
-בעבור ה support vectors מתקיים: $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
+עבור ה support vectors מתקיים: $y^{(i)}\left(\boldsymbol{w}^{\top}\boldsymbol{x}^{(i)}+b\right)=1-\xi_i$
 
 <br>
 
@@ -478,9 +495,13 @@ $$
 | נקודות על ה margin (שהם support vectors)    | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1$       | $0\leq\alpha_i\leq C$ |
 | נקודות שחורגות מה margin (גם support vectors) | $y^{(i)}\left(\boldsymbol{w}^{\top}x^{(i)}+b\right)=1-\xi_i$ | $\alpha_i=C$          |
 
+כאשר המקרה האחרון כולל נקודות המסווגות נכון ולא נכון. 
+
 </section><section>
 
 ## מאפיינים: תזכורת
+
+סיווג לינארי מוגבל, ולכן נרצה להרחיב לסיווג לא לינארי. 
 
 - נוכל תמיד לחליף את וקטור המשתנים $\boldsymbol{x}$ בוקטור חדש:
 
@@ -489,14 +510,42 @@ $$
     $$
 
 - $\Phi$ היא פונקציה אשר נבחרה מראש ונקראת פונקציית המאפיינים.
+- אם הממד של $\Phi$ מספיק גבוה, ניתן תמיד להגיע להפרדה לינארית במרחב הרב-ממדי (דורש הוכחה). 
 
+</section><section>
+
+## מאפיינים: דוגמה 
+
+<div class="imgbox" style="max-width:300px">
+
+![](../lecture06/assets/features.png)
+
+</div>
+
+
+
+נשים לב שהמסווג האופטימלי הוא ריבועי במרחב המקורי. 
+
+נשתמש בפונקציית המאפיינים 
+
+$$
+\Phi(x) = (x_1,x_2,x_1x_2,x_1^2,x_2^2,1)
+$$
+
+ונקבל $w^\top\Phi(x)$ שהוא לינארי ב-$w$. 
+
+<br>
+<p style="font-size: 16px;">האיור מתוך, Mohri et-al, Foundation of Machine Learning
+</p>
+
+    
 </section><section>
 
 ## פונקציות גרעין
 
 - במקרים רבים החישוב של $\Phi(\boldsymbol{x})$ יכול להיות מסובך אך קיימת דרך לחשב בצורה יעילה את הפונקציה $K(\boldsymbol{x}_1,\boldsymbol{x}_2)=\Phi(\boldsymbol{x}_1)^{\top}\Phi(\boldsymbol{x}_2)$.
 - הפונקציה $K$ נקראת פונקציית גרעין.
-- יתרה מזאת, יתכנו מצבים שבהם הוקטור המאפיינים הוא אין סופי אך פונקציית הגרעין היא פשוטה לחישוב.
+- יתרה מזאת, ייתכנו מצבים שבהם וקטור המאפיינים הוא אינסופי אך פונקציית הגרעין היא פשוטה לחישוב.
 
 נציג שתי פונקציות גרעין נפוצות:
 
@@ -511,17 +560,19 @@ $$
 
 <br/>
 
-בעבור פונקציית מאפיינים $\Phi$ עם פונקציית גרעין $K$ הבעיה הדואלית של SVM הינה:
+עבור פונקציית מאפיינים $\Phi$ עם פונקציית גרעין $K$ הבעיה הדואלית של SVM הינה:
 
 $$
 \begin{aligned}
 \left\lbrace\alpha_i\right\rbrace^*
-=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_jK(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)}) \\
+=\underset{\left\lbrace\alpha_i\right\rbrace}{\arg\max}\quad&\sum_i\alpha_i-\frac{1}{2}\sum_{i,j}y^{(i)}y^{(j)}\alpha_i\alpha_j\textcolor{blue}{K(\boldsymbol{x}^{(i)},\boldsymbol{x}^{(j)})} \\
 \text{s.t.}\quad
     &\alpha_i\geq0\quad\forall i\\
     &\sum_i\alpha_iy^{(i)}=0
 \end{aligned}
 $$
+
+**שאלה:** מה הקשר לבעיה הדואלית בשקף 23? 
 
 בעיית אופטימיזציה זו מגדירה את המשתנים $\{\alpha_i\}$ בלי צורך לחשב את $\Phi$ באופן מפורש בשום שלב.
 
@@ -547,6 +598,20 @@ h(\boldsymbol{x})
 $$
 
 בדרך זו אנו יכולים לאמן להשתמש בחזאי אשר אומן בעבור וקטור מאפיינים $\Phi$ מבלי לחשב בשום שלב את $\Phi$ באופן מפורש.
+
+</section><section>
+
+## סיכום: תכונות מסווג SVM 
+
+במקרה הפריד לינארית: 
+- איטואיטיבי וקל להבנה - ייצוג פשוט של הפתרון
+- מבטיח ביצועי הכללה טובים בזכות השוליים הרחבים (לא הראינו) - סוג של רגולריזציה
+- יעיל חישובית
+
+  במקרה הלא פריד לינארית:
+  - מתווסף היפר-פרמטר שיש לכוון
+  - הבנה אינטואיטיבית פחותה
+  - מעב פשוט ונוח למסווגים לא לינאריים ע"י שיטות גרעין 
 
 </section>
 </div>
