@@ -385,6 +385,8 @@ $$
 
 </section><section>
 
+### Kernel Trick in SVM
+
 * הפרמטר $\boldsymbol{w}$ נתון על ידי:
 
 $$
@@ -392,8 +394,16 @@ $$
 $$
 
 * כדי לחשב את $\boldsymbol{w}$ באופן מפורש יש לחשב את $\Phi$.
-* עם זאת, ניתן להמנע מכך 
+* עם זאת, ניתן להמנע מכך
+
+</section><section>
+
+
+ ### Kernel Trick in SVM
+
+ 
 * נציב את הנוסחא של $\boldsymbol{w}$ ישירות למסווג ובכך נוכל להינמע מלחשב את $\Phi$:
+  
 
 $$
 \begin{aligned}
