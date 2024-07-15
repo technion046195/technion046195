@@ -759,7 +759,7 @@ $$
 
 </section><section>
 
-* נסתכל ראשית על תת המדגם {3,4,5}. 
+* נסתכל ראשית על תת המדגם $\{3,4,5\}$. 
 
 <div class="imgbox" style="max-width:350px">
 
