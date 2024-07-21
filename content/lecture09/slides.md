@@ -758,7 +758,7 @@ $$
 
 ## דוגמא: Linear Logistic Regression
 
-נקבל misclassification rate של 0.02 על ה test set.
+נקבל misclassification rate של 0.02 על ה test set:
 
 <div class="imgbox" style="max-width:500px">
 
@@ -785,7 +785,7 @@ $$
 
 ## שימוש במודל מסדר גבוה יותר
 
-נקבל misclassification rate של 0 על ה test set.
+נקבל misclassification rate של 0 על ה test set:
 
 
 <div class="imgbox" style="max-width:500px">
