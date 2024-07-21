@@ -754,7 +754,17 @@ $$
 
 </div>
 
-עם misclassification rate של 0.02 על ה test set.
+</section><section>
+
+## דוגמא: Linear Logistic Regression
+
+נקבל misclassification rate של 0.02 על ה test set.
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_single_linear_logistic_test.png)
+
+</div>
 
 </section><section>
 
@@ -770,7 +780,19 @@ $$
 
 </div>
 
-עם misclassification rate של 0 על ה test set.
+</section><section>
+
+
+## שימוש במודל מסדר גבוה יותר
+
+נקבל misclassification rate של 0 על ה test set.
+
+
+<div class="imgbox" style="max-width:500px">
+
+![](./output/transactions_single_quadric_logistic.png)
+
+</div>
 
 </section>
 </div>
