@@ -555,7 +555,7 @@ $$
 
 <br/>
 
-<div class="imgbox" style="max-width:400px">
+<div class="imgbox" style="max-width:800px">
 
 ![](./assets/convex_non_convex.png)
 
