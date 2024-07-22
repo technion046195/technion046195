@@ -90,8 +90,6 @@ $$
 \mathcal{L}(\boldsymbol{\theta};\mathcal{D})\triangleq p_{\mathcal{D}}(D;\boldsymbol{\theta})
 $$
 
-</div>
-
 </section><section>
 
 * משערך ה MLE של $\boldsymbol{\theta}$ הוא הערך שממקסם את ה- likelihood:
