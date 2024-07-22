@@ -115,7 +115,7 @@ $$
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\prod_i p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})
 $$
 
-</div><div class="fragment">
+</section><section>
 
 * נוכל להחליף את המכפלה על כל הדגימות בסכום (Maximum Log-Likelihood Estimator):
 
@@ -125,8 +125,6 @@ $$
 =\underset{\boldsymbol{\theta}}{\arg\min}\ -\sum_i \log\left(p_{\mathbf{x}}(\boldsymbol{x}^{(i)};\boldsymbol{\theta})\right)
 $$
 
-
-</div>
 
 </section><section>
 
