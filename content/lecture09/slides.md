@@ -790,7 +790,7 @@ $$
 
 <div class="imgbox" style="max-width:500px">
 
-![](./output/transactions_single_quadric_logistic.png)
+![](./output/transactions_single_quadric_logistic_test.png)
 
 </div>
 
