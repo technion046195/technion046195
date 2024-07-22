@@ -930,8 +930,8 @@ $$
 $$
 \begin{aligned}
 l_\text{rayleigh}\left(\theta\right)
-& = \sum_i\log\left(p_\text{rayleigh}\left(x_i;\theta\right)\right) \\
-& = \sum_i\log\left(x_i\right)-2N\log\left(\theta\right)-\frac{1}{2\theta^2}\sum_ix_i^2
+& = \sum_i\log\left(p_\text{rayleigh}\left(x^{(i)};\theta\right)\right) \\
+& = \sum_i\log\left(x^{(i)}\right)-2N\log\left(\theta\right)-\frac{1}{2\theta^2}\sum_i(x^{(i)})^2
 \end{aligned}
 $$
 
@@ -944,7 +944,7 @@ $$
 בעיית האופטימיזציה הינה:
 
 $$
-\hat{\boldsymbol{\theta}}=\underset{\boldsymbol{\theta}}{\arg\min}\quad-\sum_i\log\left(x_i\right)+2N\log\left(\theta\right)+\frac{1}{2\theta^2}\sum_ix_i^2
+\hat{\boldsymbol{\theta}}=\underset{\boldsymbol{\theta}}{\arg\min}\quad-\sum_i\log\left(x^{(i)}\right)+2N\log\left(\theta\right)+\frac{1}{2\theta^2}\sum_i(x^{(i)})^2
 $$
 
 <div class="fragment">
@@ -954,8 +954,8 @@ $$
 $$
 \begin{aligned}
 & \frac{\partial l_\text{rayleigh}\left(\theta\right)}{\partial\theta}=0 \\
-\Leftrightarrow & -\frac{2N}{\theta}+\frac{\sum_ix^2}{\theta^3}=0 \\
-\Leftrightarrow & \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i x^2}
+\Leftrightarrow & -\frac{2N}{\theta}+\frac{\sum_i(x^{(i)})^2}{\theta^3}=0 \\
+\Leftrightarrow & \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i (x^{(i)})^2}
 \end{aligned}
 $$
 
