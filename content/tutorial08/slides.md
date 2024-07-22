@@ -82,15 +82,12 @@ $$
 
 </section><section>
 
-</div><div class="fragment">
-
 * כדי להדגיש שהמדגם הוא ״גודל״ ידוע ואילו הגודל הלא ידוע שאותו נרצה לבדוק הינו $\boldsymbol{\theta}$, מקובל לסמן את פונקציית ה likelihood באופן הבא:
 
 $$
 \mathcal{L}(\boldsymbol{\theta};\mathcal{D})\triangleq p_{\mathcal{D}}(D;\boldsymbol{\theta})
 $$
 
-</div>
 
 </section><section>
 
