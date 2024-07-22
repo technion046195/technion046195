@@ -82,6 +82,8 @@ $$
 
 </div><div class="fragment">
 
+</section><section>
+
 * כדי להדגיש שהמדגם הוא ״גודל״ ידוע ואילו הגודל הלא ידוע שאותו נרצה לבדוק הינו $\boldsymbol{\theta}$, מקובל לסמן את פונקציית ה likelihood באופן הבא:
 
 $$
@@ -117,6 +119,8 @@ $$
 $$
 
 </div><div class="fragment">
+
+</section><section>
 
 * נוכל להחליף את המכפלה על כל הדגימות בסכום (Maximum Log-Likelihood Estimator):
 
@@ -213,8 +217,6 @@ $$
 $$
 
 </div><div class="fragment">
-
-</div>
 
 </section><section>
 
@@ -576,7 +578,7 @@ $$
 
   </section><section>
 
- ## תרגיל 8.3 - LDA
+ ##
 
 * הפילוג של זני הפילים על פני הסוואנה אינו ידוע אך נתונות לנו התצפית הבאה של הקואורדינטות בהן נצפו הפילים:
 
@@ -827,7 +829,7 @@ $$
 - $N$ - מספר הדגמים במדגם.
 
 - $\boldsymbol{\theta}=\left[\mu,\sigma\right]^T$ - וקטור הפרמטרים של המודל
-- $p_\text{normal}\left(x_i;\boldsymbol{\theta}\right)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{\left(x_i-\mu\right)^2}{2\sigma^2}\right), i=1,...,N$ - המודל
+- $p_\text{normal}\left(x^{(i)};\boldsymbol{\theta}\right)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{\left(x^{(i)}-\mu\right)^2}{2\sigma^2}\right), i=1,...,N$ - המודל
 
 </section><section>
 
@@ -835,8 +837,8 @@ $$
 
 $$
 \begin{aligned}
-\mu=\displaystyle{\frac{1}{N}\sum_i x_i} \\
-\sigma=\sqrt{\displaystyle{\frac{1}{N}\sum_i\left(x_i-\mu\right)^2}}
+\mu=\displaystyle{\frac{1}{N}\sum_i x^{(i)}} \\
+\sigma=\sqrt{\displaystyle{\frac{1}{N}\sum_i\left(x^{(i)}-\mu\right)^2}}
 \end{aligned}
 $$
 
@@ -920,7 +922,7 @@ $$
 במקרה זה המודל נתון על ידי:
 
 $$
-p_\text{rayleigh}\left(\boldsymbol{x};\theta\right)=\prod_{i=1}^{N}\frac{x_i}{\theta^2}\exp\left(-\frac{x_i^2}{2\theta^2}\right)
+p_\text{rayleigh}\left(\boldsymbol{x};\theta\right)=\prod_{i=1}^{N}\frac{x^{(i)}}{\theta^2}\exp\left(-\frac{(x^{(i)})^2}{2\theta^2}\right)
 $$
 
 <div class="fragment">
@@ -930,8 +932,8 @@ $$
 $$
 \begin{aligned}
 l_\text{rayleigh}\left(\theta\right)
-& = \sum_i\log\left(p_\text{rayleigh}\left(x_i;\theta\right)\right) \\
-& = \sum_i\log\left(x_i\right)-2N\log\left(\theta\right)-\frac{1}{2\theta^2}\sum_ix_i^2
+& = \sum_i\log\left(p_\text{rayleigh}\left(x^{(i)};\theta\right)\right) \\
+& = \sum_i\log\left(x^{(i)}\right)-2N\log\left(\theta\right)-\frac{1}{2\theta^2}\sum_i(x^{(i)})^2
 \end{aligned}
 $$
 
@@ -944,7 +946,7 @@ $$
 בעיית האופטימיזציה הינה:
 
 $$
-\hat{\boldsymbol{\theta}}=\underset{\boldsymbol{\theta}}{\arg\min}\quad-\sum_i\log\left(x_i\right)+2N\log\left(\theta\right)+\frac{1}{2\theta^2}\sum_ix_i^2
+\hat{\boldsymbol{\theta}}=\underset{\boldsymbol{\theta}}{\arg\min}\quad-\sum_i\log\left(x^{(i)}\right)+2N\log\left(\theta\right)+\frac{1}{2\theta^2}\sum_i(x^{(i)})^2
 $$
 
 <div class="fragment">
@@ -954,8 +956,8 @@ $$
 $$
 \begin{aligned}
 & \frac{\partial l_\text{rayleigh}\left(\theta\right)}{\partial\theta}=0 \\
-\Leftrightarrow & -\frac{2N}{\theta}+\frac{\sum_ix^2}{\theta^3}=0 \\
-\Leftrightarrow & \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i x^2}
+\Leftrightarrow & -\frac{2N}{\theta}+\frac{\sum_i(x^{(i)})^2}{\theta^3}=0 \\
+\Leftrightarrow & \hat{\sigma} = \theta=\sqrt{\frac{1}{2N}\sum_i (x^{(i)})^2}
 \end{aligned}
 $$
 
@@ -1003,7 +1005,7 @@ $$
 
 * למודל זה 3 פרמטרים: $\boldsymbol{\theta}=\left[\sigma, a, c\right]^T$.
 
-* בעבור $c=2$ ו $a=1$ נקבל את פילוג Rayleight כאשר $\sigma_{gamma}=2\sigma_{rayleigh}$ .
+* בעבור $c=2$ ו $a=1$ נקבל את פילוג Rayleigh כאשר $\sigma_{gamma}=2\sigma_{rayleigh}$ .
 
 </section><section>
 
