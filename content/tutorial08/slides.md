@@ -80,6 +80,8 @@ $$
 
 * גודל זה מכונה ה**סבירות** (**likelihood**) של המדגם כפונקציה של $\boldsymbol{\theta}$. 
 
+</section><section>
+
 </div><div class="fragment">
 
 * כדי להדגיש שהמדגם הוא ״גודל״ ידוע ואילו הגודל הלא ידוע שאותו נרצה לבדוק הינו $\boldsymbol{\theta}$, מקובל לסמן את פונקציית ה likelihood באופן הבא:
