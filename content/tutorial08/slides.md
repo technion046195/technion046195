@@ -576,7 +576,7 @@ $$
 
   </section><section>
 
- ## תרגיל 8.3 - LDA
+ ## 
 
 * הפילוג של זני הפילים על פני הסוואנה אינו ידוע אך נתונות לנו התצפית הבאה של הקואורדינטות בהן נצפו הפילים:
 
@@ -827,7 +827,7 @@ $$
 - $N$ - מספר הדגמים במדגם.
 
 - $\boldsymbol{\theta}=\left[\mu,\sigma\right]^T$ - וקטור הפרמטרים של המודל
-- $p_\text{normal}\left(x_i;\boldsymbol{\theta}\right)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{\left(x_i-\mu\right)^2}{2\sigma^2}\right), i=1,...,N$ - המודל
+- $p_\text{normal}\left(x^{(i)};\boldsymbol{\theta}\right)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{\left(x^{(i)}-\mu\right)^2}{2\sigma^2}\right), i=1,...,N$ - המודל
 
 </section><section>
 
@@ -835,8 +835,8 @@ $$
 
 $$
 \begin{aligned}
-\mu=\displaystyle{\frac{1}{N}\sum_i x_i} \\
-\sigma=\sqrt{\displaystyle{\frac{1}{N}\sum_i\left(x_i-\mu\right)^2}}
+\mu=\displaystyle{\frac{1}{N}\sum_i x^{(i)}} \\
+\sigma=\sqrt{\displaystyle{\frac{1}{N}\sum_i\left(x^{(i)}-\mu\right)^2}}
 \end{aligned}
 $$
 
@@ -920,7 +920,7 @@ $$
 במקרה זה המודל נתון על ידי:
 
 $$
-p_\text{rayleigh}\left(\boldsymbol{x};\theta\right)=\prod_{i=1}^{N}\frac{x_i}{\theta^2}\exp\left(-\frac{x_i^2}{2\theta^2}\right)
+p_\text{rayleigh}\left(\boldsymbol{x};\theta\right)=\prod_{i=1}^{N}\frac{x^{(i)}}{\theta^2}\exp\left(-\frac{(x^{(i)})^2}{2\theta^2}\right)
 $$
 
 <div class="fragment">
@@ -1003,7 +1003,7 @@ $$
 
 * למודל זה 3 פרמטרים: $\boldsymbol{\theta}=\left[\sigma, a, c\right]^T$.
 
-* בעבור $c=2$ ו $a=1$ נקבל את פילוג Rayleight כאשר $\sigma_{gamma}=2\sigma_{rayleigh}$ .
+* בעבור $c=2$ ו $a=1$ נקבל את פילוג Rayleigh כאשר $\sigma_{gamma}=2\sigma_{rayleigh}$ .
 
 </section><section>
 
