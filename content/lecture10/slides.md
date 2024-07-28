@@ -460,7 +460,7 @@ $$
 
 <div class="imgbox" style="max-width:400px">
 
-![](./assets/back_prop_mlp.png)
+![](./assets/back_prop_mlp_w_eqs.png)
 
 </div>
 
