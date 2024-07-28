@@ -149,6 +149,25 @@ $$
 
 בדומה למקרה של logistic regression גם כאן לרוב לא נוכל לפתור את בעיית האופטימיזציה על ידי גזירה והשוואה ל-0 ובמקום זה נחפש פתרון על ידי שימוש ב gradient descent. בשביל לחשב את הגרדיאנט לפי הפרמטרים אנו נעזר בשיטה שנקראת back-propagation, אותה נציג בהמשך ההרצאה הזו.
 
+
+עבור רשת את מואצה נסמן בתור $f(x;W)\in\mathbb{R}$. 
+
+**רגרסיה:** לדוגמה, פונקציית ההפסד של least squares היא 
+$$
+\mathcal{L}(W)=\sum_{i=1}^{n}\left(y^{(i)}-f\left(x^{(i)};W\right)\right)^{2}
+$$
+
+**סיווג בינארי:** במקרה של רגרסיה לוגיסטית ניתן להשתמש בפונקציה מהרצאה 9: 
+
+$$
+\mathcal{L}(W)=-\sum_{i=1}^{N}\left[y^{(i)}\log\left(\sigma\left(f\left(x^{(i)};W\right)\right)\right)+\left(1-y^{(i)}\right)\log\left(1-\sigma\left(f\left(x^{(i)};W\right)\right)\right)\right]
+$$
+
+עם פונקציית הסיגמואיד $\sigma(z)=1/\left(1+\exp(-z)\right)$. 
+
+במקרה של סיווג רב מחלקתי $f(x;W)=\left(f_{1}(x;W),\ldots,f_{c}(x;W)\right)\in\mathbb{R}^{C}$, ניתן להשתמש בפונקציית softmax ופונקציית ההפסד מהרצאה 9. 
+
+
 ## MultiLayer Perceptron (MLP)
 
 נתמקד כעת בארכיטקטורה מאד נפוצה אשר נקראת MultiLayer Perceptron (MLP). בארכיטקטורה זו הנוירונים מסודרים בשתי שכבות  (layers) או יותר, המכונות **Fully Connected (FC) layers**. בהן כל נוירון מוזן מ**כל** הנוירונים שבשכבה שלפניו. לדוגמא:
@@ -194,6 +213,52 @@ $$
 
 כאשר פונקציית ההפעלה $\varphi$ פועלת על וקטור איבר-איבר.
 
+עבור MLP כללי עם $L$ שכבות ניתן לכתוב 
+$$
+z_{L}=\varphi_{L}\left(W_{L}z_{L-1}+b_{L}\right)=\varphi_{L}\left(W_{L}\varphi_{L-1}\left(W_{L-1}z_{L-2}+b_{L-1}\right)\right)=h_{L}\circ h_{L-1}\circ\cdots\circ h_{1}(x)
+$$
+
+כאשר 
+
+$$
+h_{\ell}\left(z_{\ell-1}\right)=\varphi_{\ell}\left(W_{\ell}z_{\ell-1}+b_{\ell}\right)
+$$
+
+שימו לב, $\varphi_{\ell}$ יכולה להיות תלויה בשכבה. 
+
+*ניתן לכתוב זאת בצורה רקורסיבית* 
+
+$$
+\begin{aligned}\mathbf{z}_{0} & =\mathbf{x}\\
+\mathbf{u}_{\ell} & =W_{\ell}\mathbf{z}_{l-1}+\mathbf{b}_{\ell}\quad\text{for }l=1\text{ to }L\\
+\mathbf{z}_{\ell} & =\varphi_{\ell}(\mathbf{u}_{\ell})\quad\text{for }l=1\text{ to }L
+\end{aligned}
+$$
+
+כאשר פעולת האקטיבציה $\varphi_{\ell}$ מתבצעת איבר-איבר ו-$\mathbf{y}_{L}=\mathbf{z}_{L}$. 
+
+### הערה לגבי נגזרות וקטוריות 
+
+זכרו כי עבור פונקציה סקלרית $f(\boldsymbol{\theta}),\boldsymbol{\theta}\in\mathbb{R}^{n}$
+
+$$
+\nabla f(\theta)=\frac{\partial f(\theta)}{\partial\theta}=\left[\frac{\partial f(\theta)}{\partial\theta_{1}},\ldots,\frac{\partial f(\theta)}{\partial\theta_{n}}\right]\in\mathbb{R}^{1\times n}
+$$
+
+תהי $\boldsymbol{g}(\boldsymbol{\theta})$ פונקציה וקטורית של וקטור $\mathbf{\boldsymbol{\theta}}$, $\mathbf{g}:\mathbf{\theta}\mapsto\mathbb{R}^{m}$, $\mathbf{g}(\mathbf{\boldsymbol{\theta}})=\left(g_{1}(\mathbf{\mathbf{\boldsymbol{\theta}}}),\ldots,g_{m}(\mathbf{\boldsymbol{\theta}})\right)$. 
+
+אזי 
+
+$$
+\frac{\partial\mathbf{g}(\boldsymbol{\theta})}{\partial\boldsymbol{\theta}}=\left[\frac{\partial g_{i}(\boldsymbol{\theta})}{\partial\theta_{j}}\right]_{ij}\in\mathbb{R}^{m\times n}
+$$
+
+ובמקרה הפשוט בו $\mathbf{g}(\boldsymbol{\theta})=\left(g_{1}(\theta_{1}),\ldots,g_{m}(\theta_{m})\right)$ מתקיים כי 
+
+$$
+\frac{\partial\mathrm{\mathbf{g}}(\boldsymbol{\theta})}{\partial\boldsymbol{\theta}}=\mathrm{diag}\left(g'_{1}(\theta_{1}),\ldots,g'_{m}(\theta_{m})\right)=\mathrm{diag}\left(g'\left(\boldsymbol{\theta}\right)\right)
+$$
+
 ### מקור השם
 
 השם Perceprton מתייחס לאלגוריתם / שיטה ישנה אשר אינה נלמדת בקורס זה. ה Perceptron היה אחד הנסיונות הראשונים למדל נוירון ולהשתמש בו לפתרון בעיות במערכות לומדות אך ההצלחה שלו הייתה מאד מוגבלת. למרות שהשם MLP  עשוי לרמוז אחרת, אין באמת קשר בין אלגוריתם / מודל ה Perceptron לארכיטקטורת ה MLP שתיארנו כאן. (אם אתם רוצים להשתכנע תוכלו לשמוע [פה](https://youtu.be/Q0mTl9dQ4_I?t=57) את Geoffrey Hinton, שנתן לארכיטקטורה זו את שמה, אומר זאת בעצמו).
@@ -227,6 +292,24 @@ $$
 
 ## Back-Propagation
 
+באופן כללי אנו צריכים לחשב את הנגזרות של פונקציית ההפסד ביחס לכל פרמטרי הרשת (משקולות ואיברי הטיה), כלומר
+
+$$
+\frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}
+$$
+
+כאשר  $W_{\ell}$ הם המשקולות של השכבה ה-$\ell$. שימו לב כי 
+
+$$
+\begin{alifned}
+\frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial u_{\ell}}\frac{\partial u_{\ell}}{\partial W_{\ell}} \\
+\frac{\partial\mathbf{u}_{\ell}}{\partial W_{\ell}} & =\mathbf{z}_{\ell-1}\\
+\frac{\partial\mathbf{z}_{\ell}}{\partial\mathbf{u}_{\ell}} & =\mathrm{diag}\left(\varphi'_{\ell}\left(\mathbf{u}_{\ell}\right)\right)
+\end{aligned}
+$$
+
+כאשר הנגזרת המאתגרת היחידה לחישוב היא הראשונה. 
+
 כפי שציינו קודם, לרוב אנו נמצא את הפרמטרים של המודל בעזרת gradient descent. כדי להקל על החישוב של הנגזרות של ה objective לפי הפרמטרים אנו נשתמש בשיטה הנקראת back-propagation אשר מחשבת את הגרדיאנטים על ידי שימוש בכלל השרשרת.
 
 כלל השרשרת מפרק את הנגזרת של הרכבה של פונקציות למכפלה של הנזגרות של הפונקציות. במקרה של משתנה יחיד היא נראית כך:
@@ -254,6 +337,14 @@ $$
 על מנת להסביר את השיטה נסתכל על 2 דוגמאות.
 
 ### דוגמא פשוטה
+
+נרצה לחשב את $\partial\mathcal{L}/\partial\theta_{i}$ עבור פרמטר $\theta_{i}$ כלשהו. למשל, עבור פונקציית ההפסד הריבועית $L=(y-t)^{2},$ כאשר $t$ הוא הערך האמיתי 
+
+$$
+\frac{\partial L}{\partial\theta_{i}}=2\left(y-t\right)\frac{\partial y}{\partial\theta_{i}}
+$$
+
+ובאופן דומה עובר שאר פונקציות ההפסד. כך, עלינו להתמקד בנגזרת זאת.
 
 נתחיל ראשית במקרה סקלרי פשוט שבו יש 4 פונקציות פרמטריות שמורכבות אחת אחרי השניה:
 
