@@ -449,7 +449,7 @@ $$
 משוואות ה forward-pass:
 
 $$
-\boldsymbol{z}_1=\varphi(\underbrace{W_1\boldsymbol{x}+\boldsymbol{b}_1}_{\boldsymbol{u}_1}), \qquad W_1 \sim d_1 \times d_in \\
+\boldsymbol{z}_1=\varphi(\underbrace{W_1\boldsymbol{x}+\boldsymbol{b}_1}_{\boldsymbol{u}_1}), \qquad W_1 \sim d_1 \times d_{in} \\
 \boldsymbol{z}_2=\varphi(\underbrace{W_2\boldsymbol{z}_1+\boldsymbol{b}_2}_{\boldsymbol{u}_2}), \qquad W_2 \sim d_2 \times d_1 \\
 y=\boldsymbol{w}_3^T\boldsymbol{z}_2+\boldsymbol{b}_3, \qquad w_3 \sim d_2 \times 1 \\
 $$
