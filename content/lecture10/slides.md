@@ -243,6 +243,8 @@ $$
 
 במקרה של סיווג רב מחלקתי $f(x;W)=\left(f_{1}(x;W),\ldots,f_{c}(x;W)\right)\in\mathbb{R}^{C}$, ניתן להשתמש בפונקציית softmax ופונקציית ההפסד משקף 28 בהצראה 9. 
 
+</section><section>
+
 ## MultiLayer Perceptron (MLP)
 
 <div class="imgbox" style="max-width:700px">
@@ -379,9 +381,9 @@ $$
 כאשר  $W_{\ell}$ הם המשקולות של השכבה ה-$\ell$. שימו לב כי 
 
 $$
-\begin{alifned}
+\begin{aligned}
 \frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial u_{\ell}}\frac{\partial u_{\ell}}{\partial W_{\ell}} \\
-\frac{\partial\mathbf{u}_{\ell}}{\partial W_{\ell}} & =\mathbf{z}_{\ell-1}\\
+\frac{\partial\mathbf{u}_{\ell}}{\partial W_{\ell}} & =\mathbf{z}_{\ell-1} \\
 \frac{\partial\mathbf{z}_{\ell}}{\partial\mathbf{u}_{\ell}} & =\mathrm{diag}\left(\varphi'_{\ell}\left(\mathbf{u}_{\ell}\right)\right)
 \end{aligned}
 $$
