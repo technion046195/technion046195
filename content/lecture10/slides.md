@@ -216,11 +216,32 @@ $$
 בעיית האופטימיזציה:
 
 - ב ERM אנו ננסה למזער את ה risk האמפירי.
-- בגישה הדיסקרימינטיבית ההסתברותית נשתמש ב MLE או MAP.
+
+- בגישה הדיסקרימינטיבית ההסתברותית נשתמש ב MLE או MAP. במקרה של רגרסיה לוגיסטית נוכל להשתמש בפונקציה מהרצאה 9
 
 כדי לפתור את בעיית האופטימיזציה נשתמש ב gradient descent.
 
 </section><section>
+
+
+## מציאת הפרמטרים של המודל 
+
+נסמן את מוצא הרשת $f(x;W)\in\mathbb{R}$. 
+
+**רגרסיה:** לדוגמה, פונקציית ההפסד של least squares היא 
+$$
+\mathcal{L}(W)=\sum_{i=1}^{n}\left(y^{(i)}-f\left(x^{(i)};W\right)\right)^{2}
+$$
+
+**סיווג בינארי:** במקרה של רגרסיה לוגיסטית ניתן להשתמש בפונקציה מהרצאה 9: 
+
+$$
+\mathcal{L}(W)=-\sum_{i=1}^{N}\left[y^{(i)}\log\left(\sigma\left(f\left(x^{(i)};W\right)\right)\right)+\left(1-y^{(i)}\right)\log\left(1-\sigma\left(f\left(x^{(i)};W\right)\right)\right)\right]
+$$
+
+עם פונקציית הסיגמואיד $\sigma(z)=1/\left(1+\exp(-z)\right)$. 
+
+במקרה של סיווג רב מחלקתי $f(x;W)=\left(f_{1}(x;W),\ldots,f_{c}(x;W)\right)\in\mathbb{R}^{C}$, ניתן להשתמש בפונקציית softmax ופונקציית ההפסד משקף 28 בהצראה 9. 
 
 ## MultiLayer Perceptron (MLP)
 
@@ -273,6 +294,57 @@ $$
 
 </section><section>
 
+## רישום מטריצי 
+
+עבור MLP כללי עם $L$ שכבות ניתן לכתוב 
+$$
+z_{L}=\varphi_{L}\left(W_{L}z_{L-1}+b_{L}\right)=\varphi_{L}\left(W_{L}\varphi_{L-1}\left(W_{L-1}z_{L-2}+b_{L-1}\right)\right)=h_{L}\circ h_{L-1}\circ\cdots\circ h_{1}(x)
+$$
+
+כאשר 
+
+$$
+h_{\ell}\left(z_{\ell-1}\right)=\varphi_{\ell}\left(W_{\ell}z_{\ell-1}+b_{\ell}\right)
+$$
+
+שימו לב, $\varphi_{\ell}$ יכולה להיות תלויה בשכבה. 
+
+*ניתן לכתוב זאת בצורה רקורסיבית* 
+
+$$
+\begin{aligned}\mathbf{z}_{0} & =\mathbf{x}\\
+\mathbf{u}_{\ell} & =W_{\ell}\mathbf{z}_{l-1}+\mathbf{b}_{\ell}\quad\text{for }l=1\text{ to }L\\
+\mathbf{z}_{\ell} & =\varphi_{\ell}(\mathbf{u}_{\ell})\quad\text{for }l=1\text{ to }L
+\end{aligned}
+$$
+
+כאשר פעולת האקטיבציה $\varphi_{\ell}$ מתבצעת איבר-איבר ו-$\mathbf{y}_{L}=\mathbf{z}_{L}$. 
+</section><section>
+
+## הערה לגבי נגזרות וקטוריות 
+
+זכרו כי עבור פונקציה סקלרית $f(\boldsymbol{\theta}),\boldsymbol{\theta}\in\mathbb{R}^{n}$
+
+$$
+\nabla f(\theta)=\frac{\partial f(\theta)}{\partial\theta}=\left[\frac{\partial f(\theta)}{\partial\theta_{1}},\ldots,\frac{\partial f(\theta)}{\partial\theta_{n}}\right]\in\mathbb{R}^{1\times n}
+$$
+
+תהי $\boldsymbol{g}(\boldsymbol{\theta})$ פונקציה וקטורית של וקטור $\mathbf{\boldsymbol{\theta}}$, $\mathbf{g}:\mathbf{\theta}\mapsto\mathbb{R}^{m}$, $\mathbf{g}(\mathbf{\boldsymbol{\theta}})=\left(g_{1}(\mathbf{\mathbf{\boldsymbol{\theta}}}),\ldots,g_{m}(\mathbf{\boldsymbol{\theta}})\right)$. 
+
+אזי 
+
+$$
+\frac{\partial\mathbf{g}(\boldsymbol{\theta})}{\partial\boldsymbol{\theta}}=\left[\frac{\partial g_{i}(\boldsymbol{\theta})}{\partial\theta_{j}}\right]_{ij}\in\mathbb{R}^{m\times n}
+$$
+
+ובמקרה הפשוט בו $\mathbf{g}(\boldsymbol{\theta})=\left(g_{1}(\theta_{1}),\ldots,g_{m}(\theta_{m})\right)$ מתקיים כי 
+
+$$
+\frac{\partial\mathrm{\mathbf{g}}(\boldsymbol{\theta})}{\partial\boldsymbol{\theta}}=\mathrm{diag}\left(g'_{1}(\theta_{1}),\ldots,g'_{m}(\theta_{m})\right)=\mathrm{diag}\left(g'\left(\boldsymbol{\theta}\right)\right)
+$$
+
+</section><section>
+
 ## "משפט הקירוב האוניברסלי"
 
 בהינתן:
@@ -295,6 +367,29 @@ f(\boldsymbol{x})-f_{\varepsilon}(\boldsymbol{x})
 $$
 
 </section><section>
+
+## Back-Propagation
+
+באופן כללי אנו צריכים לחשב את הנגזרות של פונקציית ההפסד ביחס לכל פרמטרי הרשת (משקולות ואיברי הטיה), כלומר
+
+$$
+\frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}
+$$
+
+כאשר  $W_{\ell}$ הם המשקולות של השכבה ה-$\ell$. שימו לב כי 
+
+$$
+\begin{alifned}
+\frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial u_{\ell}}\frac{\partial u_{\ell}}{\partial W_{\ell}} \\
+\frac{\partial\mathbf{u}_{\ell}}{\partial W_{\ell}} & =\mathbf{z}_{\ell-1}\\
+\frac{\partial\mathbf{z}_{\ell}}{\partial\mathbf{u}_{\ell}} & =\mathrm{diag}\left(\varphi'_{\ell}\left(\mathbf{u}_{\ell}\right)\right)
+\end{aligned}
+$$
+
+כאשר הנגזרת המאתגרת היחידה לחישוב היא הראשונה. 
+
+</section><section>
+
 
 ## Back-Propagation
 
@@ -327,6 +422,26 @@ $$
 
 - **Forward pass**: העברה של הדגימות דרך הרשת ושמירה של כל ערכי הביניים.
 - **Backward pass**: חישוב של הנגזרות של הנוירונים מהמוצא של הרשת לכיוון הכניסה.
+
+</section><section>
+
+## Back-Propagation :דוגמא פשוטה
+
+<div class="imgbox" style="max-width:700px">
+
+![](./assets/back_prop_simple.png)
+
+</div>
+
+<br/>
+
+נרצה לחשב את $\partial\mathcal{L}/\partial\theta_{i}$ עבור פרמטר $\theta_{i}$ כלשהו. למשל, עבור פונקציית ההפסד הריבועית $L=(y-t)^{2},$ כאשר $t$ הוא הערך האמיתי 
+
+$$
+\frac{\partial L}{\partial\theta_{i}}=2\left(y-t\right)\frac{\partial y}{\partial\theta_{i}}
+$$
+
+ובאופן דומה עובר שאר פונקציות ההפסד. כך, עלינו להתמקד בנגזרת זאת.
 
 </section><section>
 
@@ -512,7 +627,43 @@ $$
 =\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3\boldsymbol{z}_1^T
 $$
 
+</section><section>
 
+##  Back-Propagation and MLPs
+
+**Forward pass**
+
+$$
+\begin{aligned}\mathbf{z}_{0} & =\mathbf{x}\\
+\mathbf{u}_{\ell} & =W_{\ell}\mathbf{z}_{l-1}+\mathbf{b}_{\ell}\quad\text{for }l=1\text{ to }L\\
+\mathbf{z}_{\ell} & =\varphi_{\ell}(\mathbf{u}_{\ell})\quad\text{for }l=1\text{ to }L
+\end{aligned}
+$$
+
+**Backward pass**
+
+$$
+\begin{aligned}\delta_{L} & =\frac{\mathcal{\partial L}}{\partial z_{L}}\odot\frac{d\varphi_{L}\left(u_{L}\right)}{\partial u_{L}}=\frac{\mathcal{\partial L}}{\partial z_{L}}\mathrm{diag}\left(\varphi'_{L}(u_{L})\right)\\
+\delta_{\ell} & =W_{\ell+1}^{\top}\delta_{\ell+1}\odot\frac{d\varphi_{\ell}\left(u_{\ell}\right)}{\partial u_{\ell}}=W_{\ell+1}^{\top}\mathrm{diag}\left(\varphi'_{\ell}(u_{\ell})\right)\delta_{\ell+1}\quad\text{for }l=L-1\text{ to }1
+\end{aligned}
+$$
+
+</section><section>
+
+##  Back-Propagation and MLPs
+
+
+חישוב הגרדיאנט יתבצע באמצעות 
+
+$$
+\nabla_{W_{\ell}}\mathcal{L}=\delta_{\ell}z_{\ell-1}^{\top}\quad;\quad\nabla_{b_{\ell}}\mathcal{L}=\delta_{\ell}
+$$
+
+ואלגוריתם הגדריאנט יהיה 
+
+$$
+W_{\ell}^{(t+1)}=W_{\ell}^{(t)}-\eta\delta_{\ell}^{(t)}z_{\ell-1}^{(t)\top}\quad;\quad b_{\ell}^{(t+1)}=b_{\ell}^{(t)}-\eta\delta_{\ell}^{(t)}
+$$
 
 </section>
 </div>
