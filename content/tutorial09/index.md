@@ -190,7 +190,7 @@ $$
 לכן הכיוון $d$ עבורו נקבל את הירידה הכי גדולה בערך של $f(x)$ הוא 
 
 $$
-d = - \frac{\nabla f(x)}{\lVert f(x) \rVert}
+d = - \frac{\nabla f(x)}{\lVert \nabla f(x) \rVert}
 $$
 
 **מסקנה** 
