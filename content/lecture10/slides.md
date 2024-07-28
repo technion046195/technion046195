@@ -224,7 +224,7 @@ $$
 
 ## MultiLayer Perceptron (MLP)
 
-<div class="imgbox" style="max-width:800px">
+<div class="imgbox" style="max-width:700px">
 
 ![](./assets/mlp.png)
 
@@ -263,7 +263,7 @@ $$
 \end{bmatrix}$
 - $\boldsymbol{b}_i=[b_{i,1},b_{i,2},\dots]^{\top}$
 
-כאשר $$W_i, b_i הם סט המשקלים וההסטים המתאימים לשכבה $i$. 
+כאשר $W_i, b_i$ הם סט המשקלים וההסטים המתאימים לשכבה $i$. 
 
 הפונקציה אותה מממשת השכבה כולה הינה:
 
