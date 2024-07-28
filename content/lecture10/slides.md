@@ -458,7 +458,7 @@ $$
 
 ## Back-Propagation - MLP
 
-<div class="imgbox" style="max-width:700px">
+<div class="imgbox" style="max-width:800px">
 
 ![](./assets/back_prop_mlp_w_eqs.png)
 
