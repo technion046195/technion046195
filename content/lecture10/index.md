@@ -302,7 +302,7 @@ $$
 
 $$
 \begin{aligned}
-\frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial u_{\ell}}\frac{\partial u_{\ell}}{\partial W_{\ell}} \\
+\frac{\mathcal{\partial L}(W)}{\partial W_{\ell}} &=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial W_{\ell}}=\frac{\mathcal{\partial L}(W)}{\partial z_{\ell}}\frac{\partial z_{\ell}}{\partial u_{\ell}}\frac{\partial u_{\ell}}{\partial W_{\ell}} \\
 \frac{\partial\mathbf{u}_{\ell}}{\partial W_{\ell}} & =\mathbf{z}_{\ell-1}\\
 \frac{\partial\mathbf{z}_{\ell}}{\partial\mathbf{u}_{\ell}} & =\mathrm{diag}\left(\varphi'_{\ell}\left(\mathbf{u}_{\ell}\right)\right)
 \end{aligned}
