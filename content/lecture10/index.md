@@ -357,19 +357,19 @@ $$
 נרשום את הנגזרת של $y$ לפי $\theta_2$. על פי כלל השרשרת נוכל לרשום את הנגזרת באופן הבא:
 
 $$
-\frac{dy}{d\theta_2}=\frac{dy}{dz_2}\frac{dz_2}{d\theta_2}=\frac{dy}{dz_2}\frac{d}{d\theta_2}h_2(z_1;\theta_2)
+\frac{\partial y}{\partial\theta_2}=\frac{\partial y}{\partial z_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial y}{\partial z_2}\frac{\partial}{\partial \theta_2}h_2(z_1;\theta_2)
 $$
 
 נוכל לפרק גם את הנגזרת של $\frac{dy}{dz_2}$ לפי כלל השרשרת:
 
 $$
-\frac{dy}{dz_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)
+\frac{\partial y}{\partial z_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{\partial z_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)
 $$
 
 לכן:
 
 $$
-\frac{dy}{d\theta_2}=\frac{dy}{dz_3}\frac{dz_3}{dz_2}=\frac{d}{dz_3}h_4(z_3;\theta_4)\frac{d}{dz_2}h_3(z_2;\theta_3)\frac{d}{d\theta_2}h_2(z_1;\theta_2)
+\frac{\partial y}{\partial \theta_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{\partial z_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)\frac{\partial}{\partial \theta_2}h_2(z_1;\theta_2)
 $$
 
 כדי לחשב את הביטוי שקיבלנו עלינו לבצע את שני השלבים הבאים:
@@ -389,12 +389,12 @@ $$
 
 נחשב לדוגמא את הנגזרת של $y_1$ לפי $\theta_3$.
 
-נפרק על פי כלל השרשרת את הנגזרת של $\frac{dy_1}{d\theta_3}$ בדומה למה שחישבנו קודם:
+נפרק על פי כלל השרשרת את הנגזרת של $\frac{\partial y_1}{\partial \theta_3}$ בדומה למה שחישבנו קודם:
 
 $$
-\frac{dy_1}{d\theta_3}
-=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}\frac{dz_6}{dz_3}\frac{dz_3}{d\theta_3}
-=\frac{d}{dz_7}h_8(z_7;\theta_8)\frac{d}{dz_6}h_7(z_6;\theta_7)\frac{d}{dz_3}h_6(z_5;\theta_6)\frac{d}{d\theta_3}h_3(z_2;\theta_3)
+\frac{\partial y_1}{\partial \theta_3}
+=\frac{\partial y_1}{\partial z_7}\frac{\partial z_7}{\partial z_6}\frac{\partial z_6}{\partial z_3}\frac{\partial z_3}{\partial \theta_3}
+=\frac{\partial}{\partial z_7}h_8(z_7;\theta_8)\frac{\partial}{\partial z_6}h_7(z_6;\theta_7)\frac{\partial}{\partial z_3}h_6(z_5;\theta_6)\frac{\partial}{\partial \theta_3}h_3(z_2;\theta_3)
 $$
 
 - נריץ את ה forward-pass בשביל לחשב את ערכי ה $z_i$.
