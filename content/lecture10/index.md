@@ -323,9 +323,9 @@ $$
 $$
 \begin{aligned}
 \frac{d}{dx} f(z_1(x),z_2(x),z_3(x))
-=& &\left(\frac{d}{dz_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
- &+&\left(\frac{d}{dz_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
- &+&\left(\frac{d}{dz_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
+=& &\left(\frac{\partial}{\partial z_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
+ &+&\left(\frac{\partial}{\partial z_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
+ &+&\left(\frac{\partial}{\partial z_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
 \end{aligned}
 $$
 
@@ -360,7 +360,7 @@ $$
 \frac{\partial y}{\partial\theta_2}=\frac{\partial y}{\partial z_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial y}{\partial z_2}\frac{\partial}{\partial \theta_2}h_2(z_1;\theta_2)
 $$
 
-נוכל לפרק גם את הנגזרת של $\frac{dy}{dz_2}$ לפי כלל השרשרת:
+נוכל לפרק גם את הנגזרת של $\frac{\partial y}{\partial z_2}$ לפי כלל השרשרת:
 
 $$
 \frac{\partial y}{\partial z_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{\partial z_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)
