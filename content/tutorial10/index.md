@@ -64,9 +64,9 @@ Back-propogation עושה שימוש בכלל השרשרת של הנגזרת ע�
 $$
 \begin{aligned}
 \frac{d}{dx} f(z_1(x),z_2(x),z_3(x))
-=& &\left(\frac{d}{dz_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
- &+&\left(\frac{d}{dz_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
- &+&\left(\frac{d}{dz_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
+=& &\left(\frac{\partial}{\partial z_1} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_1(x)\\
+ &+&\left(\frac{\partial}{\partial z_2} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_2(x)\\
+ &+&\left(\frac{\partial}{\partial z_3} f(z_1(x),z_2(x),z_3(x))\right)\frac{d}{dx}z_3(x)\\
 \end{aligned}
 $$
 
@@ -84,43 +84,43 @@ $$
 
 נסתכל לדוגמא על הנגזרת של $y_1$ לפי $\theta_3$. לשם הנוחות נסמן ב $z_i$ את המוצא של הניורון $h_i$.
 
-נוכל לפרק את $\frac{dy}{d\theta_3}$ על פי כלל השרשת:
+נוכל לפרק את $\frac{\partial y}{\partial\theta_3}$ על פי כלל השרשת:
 
 $$
-\frac{dy_1}{d\theta_3}
-=\frac{dy_1}{dz_3}\frac{dz_3}{d\theta_3}
-=\frac{dy_1}{dz_3}\frac{dh_3}{d\theta_3}
+\frac{\partial y_1}{\partial\theta_3}
+=\frac{\partial y_1}{\partial z_3}\frac{\partial z_3}{\partial \theta_3}
+=\frac{\partial y_1}{\partial z_3}\frac{\partial h_3}{\partial \theta_3}
 $$
 
-נוכל לפרק גם את $\frac{dy_1}{dz_3}$ על פי כלל השרשרת:
+נוכל לפרק גם את $\frac{\partial y_1}{\partial z_3}$ על פי כלל השרשרת:
 
 $$
-\frac{dy_1}{dz_3}
-=\frac{dy_1}{dz_6}\frac{dz_6}{dz_3}
-=\frac{dy_1}{dz_6}\frac{dh_6}{dz_3}
+\frac{\partial y_1}{\partial z_3}
+=\frac{\partial y_1}{\partial z_6}\frac{\partial z_6}{\partial z_3}
+=\frac{\partial y_1}{\partial z_6}\frac{\partial h_6}{\partial z_3}
 $$
 
 ונוכל להמשיך ולפרק את $\frac{dy_1}{dz_6}$:
 
 $$
-\frac{dy_1}{dz_6}
-=\frac{dy_1}{dz_7}\frac{dz_7}{dz_6}
-=\frac{dh_8}{dz_7}\frac{dh_7}{dz_6}
+\frac{\partial y_1}{\partial z_6}
+=\frac{\partial y_1}{\partial z_7}\frac{\partial z_7}{\partial z_6}
+=\frac{\partial h_8}{\partial z_7}\frac{\partial h_7}{\partial z_6}
 $$
 
-זאת אומרת שאם נדע לחשב את הנגזרות של $\frac{dh_i}{dz_i}$ ו $\frac{dh_i}{d\theta_i}$ נוכל לחשב את הנגזרות לפי כל הפרמטרים. נסתכל לדוגמא על הנגזרת:
+זאת אומרת שאם נדע לחשב את הנגזרות של $\frac{\partial h_i}{\partial z_i}$ ו $\frac{\partial h_i}{\partial \theta_i}$ נוכל לחשב את הנגזרות לפי כל הפרמטרים. נסתכל לדוגמא על הנגזרת:
 
 $$
-\frac{d}{d\theta_6}h_6(z_3,z_4;\theta_6)
+\frac{\partial}{\partial \theta_6}h_6(z_3,z_4;\theta_6)
 $$
 
 עלינו ראשית לגזור את הפונקציה $h_6$ ואז להציב את הערכים של $z_3$, $z_4$ ו $\theta_6$. בכדי לחשב את הערכים של $z_i$ עלינו להעביר את $\boldsymbol{x}$ דרך הרשת ולשמור את כל ערכי הביניים $z_i$. חישוב זה של ערכי הביניים נקרא ה **forward pass**.
 
 לאחר שחישבנו את ערכי הביניים $z_i$, נוכל להתחיל לחשב את כל הנגזרות של הרשת מהמוצא לכיוון הכניסה. זאת אומרת:
 
-1. נחשב את: $\frac{dy_1}{d\theta_8}$, $\frac{dy_1}{dz_7}$.
-2. נשתמש ב $\frac{dy_1}{dz_7}$ בכדי לחשב את $\frac{dy_1}{d\theta_7}$, $\frac{dy}{dz_5}$, $\frac{dy}{dz_6}$.
-3. נשתמש ב $\frac{dy_1}{dz_6}$ בכדי לחשב את $\frac{dy_1}{d\theta_6}$, $\frac{dy}{dz_3}$, $\frac{dy}{dz_4}$.
+1. נחשב את: $\frac{\partial y_1}{\partial\theta_8}$, $\frac{\partial y_1}{\partial z_7}$.
+2. נשתמש ב $\frac{\partial y_1}{\partial z_7}$ בכדי לחשב את $\frac{\partial y_1}{\partial\theta_7}$, $\frac{\partial y}{\partial z_5}$, $\frac{\partial y}{\partial z_6}$.
+3. נשתמש ב $\frac{\partial y_1}{\partial z_6}$ בכדי לחשב את $\frac{\partial y_1}{\partial\theta_6}$, $\frac{\partial y}{\partial z_3}$, $\frac{\partial y}{\partial z_4}$.
 
 וכן הלאה. מכיוון שבשלב זה אנו מחשבים את הנזגרות מהמוצא לכיוון הכניסה שלב זה נקרא ה **backward pass** ומכאן גם מקבלת השיטה את שמה.
 
