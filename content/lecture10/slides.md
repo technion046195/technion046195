@@ -472,7 +472,7 @@ $$
 לכן:
 
 $$
-\frac{\partial y}{\partial\theta_2}=\frac{\partialy}{\partial z_3}\frac{\partial z_3}{dz_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)\frac{\partial}{\partial \theta_2}h_2(z_1;\theta_2)
+\frac{\partial y}{\partial\theta_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{dz_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)\frac{\partial}{\partial \theta_2}h_2(z_1;\theta_2)
 $$
 
 </section><section>
@@ -486,7 +486,7 @@ $$
 </div>
 
 $$
-\frac{\partial y}{\partial\theta_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{\partial z_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partialz_2}h_3(z_2;\theta_3)\frac{\partial}{\partial\theta_2}h_2(z_1;\theta_2)
+\frac{\partial y}{\partial\theta_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{\partial z_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)\frac{\partial}{\partial\theta_2}h_2(z_1;\theta_2)
 $$
 
 <br/>
@@ -536,7 +536,7 @@ $$
 
 ## Back-Propagation :דוגמא מעט יותר מורכבת
 
-<div class="imgbox" style="max-width:600px">
+<div class="imgbox" style="max-width:500px">
 
 ![](./assets/back_prop.png)
 
