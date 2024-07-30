@@ -42,6 +42,30 @@ slides_pdf: true
 
 </section><section>
 
+## רשתות עצביות ביולגיות 
+
+<div class="imgbox" style="max-width:800px">
+
+![](./assets/biological_nn.png)
+
+</div>
+
+תקשורת בין תאי עצב
+
+</section><section>
+
+## רשתות עצביות ביולגיות 
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/biological_obj_detecion.png)
+
+</div>
+
+מפוטונים לזיהוי אובייקטים במרחב
+
+</section><section>
+
 ## נוירון ביולוגי
 
 <br/>
