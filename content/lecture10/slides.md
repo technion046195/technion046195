@@ -43,13 +43,13 @@ slides_pdf: true
 </section><section>
 
 ## רשתות עצביות ביולגיות 
-
+<br/>
+<br/>
 <div class="imgbox" style="max-width:800px">
 
 ![](./assets/biological_nn.png)
 
 </div>
-<br/>
 <br/>
 
 תקשורת בין תאי עצב
@@ -58,12 +58,13 @@ slides_pdf: true
 
 ## רשתות עצביות ביולגיות 
 
+<br/>
+<br/>
 <div class="imgbox" style="max-width:500px">
 
-![](./assets/biological_obj_detection.png)
+![](./assets/biological_obj_detection.jpg)
 
 </div>
-<br/>
 <br/>
 
 מפוטונים לזיהוי אובייקטים במרחב
