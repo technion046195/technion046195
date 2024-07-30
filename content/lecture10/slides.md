@@ -44,7 +44,6 @@ slides_pdf: true
 
 ## רשתות עצביות ביולגיות 
 <br/>
-<br/>
 <div class="imgbox" style="max-width:800px">
 
 ![](./assets/biological_nn.png)
@@ -58,7 +57,6 @@ slides_pdf: true
 
 ## רשתות עצביות ביולגיות 
 
-<br/>
 <br/>
 <div class="imgbox" style="max-width:500px">
 
