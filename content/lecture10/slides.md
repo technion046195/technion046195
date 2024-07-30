@@ -350,6 +350,30 @@ $$
 כאשר פעולת האקטיבציה $\varphi_{\ell}$ מתבצעת איבר-איבר ו-$\mathbf{y}_{L}=\mathbf{z}_{L}$. 
 </section><section>
 
+## "משפט הקירוב האוניברסלי"
+
+בהינתן:
+
+- פונקציית הפעלה רציפה כלשהיא $\varphi$ ש**אינה פולינומיאלית**.
+- ופונקציה רציפה כלשהיא על קוביית היחידה $f:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$.
+
+אזי ניתן למצוא פונקציה $f_{\varepsilon}:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$ מהצורה:
+
+$$
+f_{\varepsilon}(\boldsymbol{x})=W_2\varphi(W_1\boldsymbol{x}+\boldsymbol{b}_1)+\boldsymbol{b}_2
+$$
+
+כך ש:
+
+$$
+\underset{x\in[0,1]^{D_{\text{in}}}}{\text{sup}}\lVert
+f(\boldsymbol{x})-f_{\varepsilon}(\boldsymbol{x})
+\rVert<\varepsilon
+$$
+
+</section><section>
+
+
 ## הערה לגבי נגזרות וקטוריות 
 
 זכרו כי עבור פונקציה סקלרית $f(\boldsymbol{\theta}),\boldsymbol{\theta}\in\mathbb{R}^{n}$
@@ -374,32 +398,9 @@ $$
 
 </section><section>
 
-## "משפט הקירוב האוניברסלי"
-
-בהינתן:
-
-- פונקציית הפעלה רציפה כלשהיא $\varphi$ ש**אינה פולינומיאלית**.
-- ופונקציה רציפה כלשהיא על קוביית היחידה $f:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$.
-
-אזי ניתן למצוא פונקציה $f_{\varepsilon}:[0,1]^{D_{\text{in}}}\rightarrow[0,1]^{D_{\text{out}}}$ מהצורה:
-
-$$
-f_{\varepsilon}(\boldsymbol{x})=W_2\varphi(W_1\boldsymbol{x}+\boldsymbol{b}_1)+\boldsymbol{b}_2
-$$
-
-כך ש:
-
-$$
-\underset{x\in[0,1]^{D_{\text{in}}}}{\text{sup}}\lVert
-f(\boldsymbol{x})-f_{\varepsilon}(\boldsymbol{x})
-\rVert<\varepsilon
-$$
-
-</section><section>
-
 ## Back-Propagation
 
-באופן כללי אנו צריכים לחשב את הנגזרות של פונקציית ההפסד ביחס לכל פרמטרי הרשת (משקולות ואיברי הטיה), כלומר
+כדי להשתמש בשיטות גרדיאנט נרצה לחשב נגזרות לפי פרמטרי הרשת. באופן כללי אנו צריכים לחשב את הנגזרות של פונקציית ההפסד ביחס לכל פרמטרי הרשת (משקולות ואיברי הטיה), כלומר
 
 $$
 \frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}
