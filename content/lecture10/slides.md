@@ -42,7 +42,7 @@ slides_pdf: true
 
 </section><section>
 
-## רשתות עצביות ביולגיות 
+## רשתות עצביות ביולוגיות 
 <br/>
 <div class="imgbox" style="max-width:800px">
 
@@ -55,7 +55,7 @@ slides_pdf: true
 
 </section><section>
 
-## רשתות עצביות ביולגיות 
+## רשתות עצביות ביולוגיות 
 
 <br/>
 <div class="imgbox" style="max-width:500px">
