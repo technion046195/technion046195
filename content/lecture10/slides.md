@@ -49,6 +49,8 @@ slides_pdf: true
 ![](./assets/biological_nn.png)
 
 </div>
+<br/>
+<br/>
 
 תקשורת בין תאי עצב
 
@@ -58,9 +60,11 @@ slides_pdf: true
 
 <div class="imgbox" style="max-width:500px">
 
-![](./assets/biological_obj_detecion.png)
+![](./assets/biological_obj_detection.png)
 
 </div>
+<br/>
+<br/>
 
 מפוטונים לזיהוי אובייקטים במרחב
 
