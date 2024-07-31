@@ -27,7 +27,7 @@ slides_pdf: true
 
 ## רשת נוירונים מלאכותית כמודל פרמטרי
 
-- נתקלנו במספר מקרים בהם ניסינו למצוא פונקציה שתבצע פעולה או תתאר תופעה כל שהיא (מציאת חזאי או פונקציית פילוג).
+- נתקלנו במספר מקרים בהם ניסינו למצוא פונקציה שתבצע פעולה או תתאר תופעה כלשהי (מציאת חזאי או פונקציית פילוג).
 - דרך נוחה לעשות זאת היא בעזרת מודל פרמטרי ומציאת הפרמטרים האופטימאלים.
 - עד כה עבדנו עם מודלים לינאריים בפרמטרים.
 - ניתן לקרב הרבה מאד פונקציות בעזרת פולינום מסדר מספיק גבוה.
@@ -234,7 +234,7 @@ $$
 
 ### סיווג לא בינארי דיסקרימינטיבי הסתברותי
 
-- הרשת תמדל את כל ההסתברותיות $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$.
+- הרשת תמדל את כל ההסתברויות $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$.
 - נרצה שהרשת תוציא וקטור באורך $C$ שעליו נפעיל את פונקציית ה softmax.
 
 </section><section>
@@ -300,12 +300,6 @@ $$
 
 ## רישום מטריצי
 
-<div class="imgbox" style="max-width:300px">
-
-![](./assets/mlp.png)
-
-</div>
-
 - $W_i=
 \begin{bmatrix}
 -&\boldsymbol{w}_{i,1}&-\\
@@ -314,7 +308,7 @@ $$
 \end{bmatrix}$
 - $\boldsymbol{b}_i=[b_{i,1},b_{i,2},\dots]^{\top}$
 
-כאשר $W_i, b_i$ הם סט המשקלים וההסטים המתאימים לשכבה $i$. 
+כאשר $W_i, b_i$ הם סט המשקלים וההסטים המתאימים לשכבה $i$. בשכבה ה-$i$ ישנם $d_i$ נוירונים וכן $d_{in}$, $d_{out}$ הם ממדי המטריצות בהתאם. 
 
 הפונקציה אותה מממשת השכבה כולה הינה:
 
@@ -394,14 +388,13 @@ $$
 ובמקרה הפשוט בו $\mathbf{g}(\boldsymbol{\theta})=\left(g_{1}(\theta_{1}),\ldots,g_{m}(\theta_{m})\right)$ מתקיים כי 
 
 $$
-\frac{\partial\mathrm{\mathbf{g}}(\boldsymbol{\theta})}{\partial\boldsymbol{\theta}}=\mathrm{diag}\left(g'_{1}(\theta_{1}),\ldots,g'_{m}(\theta_{m})\right)=\mathrm{diag}\left(g'\left(\boldsymbol{\theta}\right)\right)
+\frac{\partial\mathrm{\mathbf{g}}(\boldsymbol{\theta})}{\partial\boldsymbol{\theta}}=\mathrm{diag}\left(g'_{1}(\theta_{1}),\ldots,g'_{m}(\theta_{m})\right)=\mathrm{diag}\left(\mathbf{g}'\left(\boldsymbol{\theta}\right)\right)
 $$
 
 </section><section>
 
 ## Back-Propagation
 
-כדי להשתמש בשיטות גרדיאנט נרצה לחשב נגזרות לפי פרמטרי הרשת. באופן כללי אנו צריכים לחשב את הנגזרות של פונקציית ההפסד ביחס לכל פרמטרי הרשת (משקולות ואיברי הטיה), כלומר
 
 $$
 \frac{\mathcal{\partial L}(W)}{\partial W_{\ell}}
@@ -472,7 +465,7 @@ $$
 \frac{\partial L}{\partial\theta_{i}}=2\left(y-t\right)\frac{\partial y}{\partial\theta_{i}}
 $$
 
-ובאופן דומה עובר שאר פונקציות ההפסד. כך, עלינו להתמקד בנגזרת של המוצא ביחס לפרמטר.
+ובאופן דומה עבור שאר פונקציות ההפסד. כך, עלינו להתמקד בנגזרת של המוצא ביחס לפרמטר.
 
 </section><section>
 
@@ -501,7 +494,7 @@ $$
 לכן:
 
 $$
-\frac{\partial y}{\partial\theta_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{dz_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)\frac{\partial}{\partial \theta_2}h_2(z_1;\theta_2)
+\frac{\partial y}{\partial\theta_2}=\frac{\partial y}{\partial z_3}\frac{\partial z_3}{\partial z_2}\frac{\partial z_2}{\partial\theta_2}=\frac{\partial}{\partial z_3}h_4(z_3;\theta_4)\frac{\partial}{\partial z_2}h_3(z_2;\theta_3)\frac{\partial}{\partial \theta_2}h_2(z_1;\theta_2)
 $$
 
 </section><section>
