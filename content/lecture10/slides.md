@@ -4,6 +4,7 @@ index: 10
 template: slides
 slides_pdf: true
 ---
+
 <div class="slides site-style" style="direction:rtl">
 <section class="center">
 
@@ -268,7 +269,7 @@ $$
 
 עם פונקציית הסיגמואיד $\sigma(z)=1/\left(1+\exp(-z)\right)$. 
 
-במקרה של סיווג רב מחלקתי $f(x;W)=\left(f_{1}(x;W),\ldots,f_{c}(x;W)\right)\in\mathbb{R}^{C}$, ניתן להשתמש בפונקציית softmax ופונקציית ההפסד משקף 28 בהצראה 9. 
+במקרה של סיווג רב מחלקתי $f(x;W)=\left(f_{1}(x;W),\ldots,f_{c}(x;W)\right)\in\mathbb{R}^{C}$, ניתן להשתמש בפונקציית softmax ופונקציית ההפסד משקף 28 בהרצאה 9. 
 
 </section><section>
 
