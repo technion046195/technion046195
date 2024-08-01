@@ -596,64 +596,6 @@ $$
 
 </section><section>
 
-## Back-Propagation - MLP
-
-<div class="imgbox" style="max-width:800px">
-
-![](./assets/back_prop_mlp_w_eqs.png)
-
-</div>
-
-משוואות ה backward-pass:
-
-$$
-\frac{\partial y}{\partial\boldsymbol{z}_2}=\boldsymbol{w}_3
-$$
-
-$$
-\frac{\partial y}{\partial\boldsymbol{u}_2}
-=\frac{\partial y}{\partial\boldsymbol{z}_2}
-\frac{\partial\boldsymbol{z}_2}{\partial\boldsymbol{u}_2}
-=\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3
-$$
-
-$$
-\frac{\partial y}{\partial\boldsymbol{z}_1}
-=\frac{\partial y}{\partial\boldsymbol{u}_2}
-\frac{\partial\boldsymbol{u}_2}{\partial\boldsymbol{z}_1}
-=W_2^T\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3
-$$
-
-$$
-\dots
-$$
-
-</section><section>
-
-## Back-Propagation - MLP
-
-<div class="imgbox" style="max-width:400px">
-
-![](./assets/back_prop_mlp.png)
-
-</div>
-
-משוואות ה backward-pass:
-
-$$
-\frac{\partial y}{\partial\boldsymbol{u}_2}
-=\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3
-$$
-
-$$
-\frac{\partial y}{\partial W_2}
-=\frac{\partial y}{\partial\boldsymbol{u}_2}
-\frac{\partial\boldsymbol{u}_2}{\partial W_2}
-=\mathrm{Diag}(\varphi'(\boldsymbol{u}_2))\boldsymbol{w}_3\boldsymbol{z}_1^T
-$$
-
-</section><section>
-
 ##  Back-Propagation and MLPs
 
 **Forward pass**
@@ -669,7 +611,7 @@ $$
 
 $$
 \begin{aligned}
-\delta_{L} &=\frac{\mathcal{\partial L}}{\partial z_{L}}\mathrm{diag}\left(\varphi'_{L}(u_{L})\right)\\
+\delta_{L} &=\mathrm{diag}\left(\varphi'_{L}(u_{L})\right) \frac{\mathcal{\partial L}}{\partial z_{L}} \\
 \delta_{\ell} &= \mathrm{diag}\left(\varphi'_{\ell}(u_{\ell})\right) W_{\ell+1}^{\top}\delta_{\ell+1}\quad\text{for }l=L-1\text{ to }1
 \end{aligned}
 $$
