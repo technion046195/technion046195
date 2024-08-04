@@ -75,7 +75,7 @@ $$
 1. מחיר איטרציה לא תלוי במדגם
 2. חיסכון בזיכרון
 
-<div class="imgbox" style="max-width:600px">
+<div class="imgbox" style="max-width:400px">
 
 ![](./assets/optim.png)
 
