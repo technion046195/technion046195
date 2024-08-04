@@ -81,7 +81,8 @@ $$
 
 </div>
 
-From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
+<p style="font-size: 20px;">From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
+</p>
 
 
 
@@ -381,7 +382,9 @@ $$
 
 </div>
 
-From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
+<p style="font-size: 20px;">From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
+</p>
+
 
 </section><section>
 
