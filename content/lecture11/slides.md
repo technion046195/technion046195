@@ -75,13 +75,16 @@ $$
 1. מחיר איטרציה לא תלוי במדגם
 2. חיסכון בזיכרון
 
-<div class="imgbox" style="max-width:300px">
+<div class="imgbox" style="max-width:330px">
 
 ![](./assets/optim.png)
 
 </div>
 
-<p style="font-size: 20px;">From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
+<br/>
+
+<p style="font-size: 20px;">
+From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
 </p>
 
 
@@ -376,13 +379,15 @@ $$
 
 ## מבנה רשת CNN
 
-<div class="imgbox" style="max-width:750px">
+<div class="imgbox" style="max-width:900px">
 
 ![](./assets/conv_lenet.png)
 
 </div>
 
-<p style="font-size: 20px;">From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
+<br/>
+<p style="font-size: 20px;">
+From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
 </p>
 
 
