@@ -75,13 +75,13 @@ $$
 1. מחיר איטרציה לא תלוי במדגם
 2. חיסכון בזיכרון
 
-<div class="imgbox" style="max-width:400px">
+<div class="imgbox" style="max-width:300px">
 
 ![](./assets/optim.png)
 
 </div>
 
-From: https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
+From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
 
 
 
@@ -145,6 +145,7 @@ From: https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
 - זיהוי אוביקטים אינווריאנטי למיקום
 - אוביקטים מובחנים בתמונה ע"י קווים בכיוונים שונים
 - שינויי הארה קטנים ורעש לא אמורים להשפיע על זיהוי
+  
 **שאלה:** האם ניתן להטמיע אלמנטים אלה ברשת עצבית?
 
   </section><section>
@@ -232,6 +233,8 @@ $$
 ![](../lecture11/assets/conv_formula.png)
 
 </div>
+
+</section><section>
 
 
 ## קלט רב-ערוצי
@@ -378,8 +381,9 @@ $$
 
 </div>
 
-From: https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
+From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
 
+</section><section>
 
 ## מבנה רשת CNN
 
