@@ -229,7 +229,7 @@ $$
 
 ## שכבת קונבולוציה 
 
-<div class="imgbox" style="max-width:500px">
+<div class="imgbox" style="max-width:800px">
 
 ![](../lecture11/assets/conv_formula.png)
 
