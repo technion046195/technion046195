@@ -502,7 +502,7 @@ From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
 
 ## סיכום 
 
-<div class="imgbox" style="max-width:500px">
+<div class="imgbox" style="max-width:800px">
 
 ![](./assets/conv_v_cross.png)
 
@@ -583,9 +583,7 @@ $$
 
 </section><section>
 
-## סיכום 
-
-**יתרונות גישת ה CNN**
+## סיכום - יתרונות גישת ה CNN
 
 - עובד ישירות על הקלט המקורי - תמונה 
 - היסטורית - הצלחה משמעותית ראשונה בשיפור ביצועים משמעותי (2012)
