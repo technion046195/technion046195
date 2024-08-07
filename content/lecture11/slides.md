@@ -133,6 +133,8 @@ From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
   </section><section>
 
 ## Convolutional Neural Networks (CNN)
+עד עכשיו הנחנו שהמאפיינים נתונים לנו. מה קורה כאשר הקלט הוא אות טבעי - תמונה, אודיו וכו'? 
+
 <div class="imgbox" style="max-width:600px">
 
 ![](./assets/sidewalk.jpg)
@@ -144,7 +146,7 @@ From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
 ## Convolutional Neural Networks (CNN)
 
 **מוטיבציה להכנסת מבנה לרשתות עצביות העוסקות בתמונות**
-- בתמונות טבעיות יש קורלציה גבוהה בין פיקלים קרובים שדועכת עם המרחק
+- בתמונות טבעיות יש קורלציה גבוהה בין פיקסלים קרובים שדועכת עם המרחק
 - לתמונות יש מבנה היררכי של מאפיינים מקומיים (קצוות, צורות, אוביקטים)
 - זיהוי אוביקטים אינווריאנטי למיקום
 - אוביקטים מובחנים בתמונה ע"י קווים בכיוונים שונים
@@ -159,7 +161,9 @@ From https://www.stat.cmu.edu/~ryantibs/convexopt/lectures/stochastic-gd.pdf
 
 ## שכבת קונבולוציה
 
-<div class="imgbox" style="max-width:400px">
+נדגים זאת עבור קלט חד-ממדי 
+
+<div class="imgbox" style="max-width:300px">
 
 ![](../lecture11/assets/conv.png)
 
@@ -377,7 +381,11 @@ $$
   
 </section><section>
 
+
+
 ## מבנה רשת CNN
+
+מבנה רשת CNN הראשונה שהוצגה בשנת 1989. 
 
 <div class="imgbox" style="max-width:900px">
 
@@ -400,6 +408,17 @@ From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
 ![](./assets/vgg16.png)
 
 </div>
+
+</section><section>
+
+## CNN 
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/imagenet.png)
+
+</div>
+
 
 </section><section>
 
@@ -450,7 +469,7 @@ From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
 </div>
 <br/>
 
-גרעיני הקונובולוציה של השכבות הראשונות יעברו על התמונה ויחפשו תופעות בסיסיות כמו פסים אנכיים, פסים אופקיים, פינות, נקודות קטנות וכו'.
+גרעיני הקונבולוציה של השכבות הראשונות יעברו על התמונה ויחפשו תופעות בסיסיות כמו פסים אנכיים, פסים אופקיים, פינות, נקודות קטנות וכו'.
 
 </section><section>
 
@@ -465,7 +484,7 @@ From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
 </div>
 
 - השכבות הבאות ברשת יחפשו אובייקטים אשר מורכבים מהתופעות שמצאו השכבות הראשונות.
-- לדוגמא נחפש איזוורים שמכילים הרבה פסים אנכיים בכדי לזהות שיער, או שני פסים אופקיים סמוכים שעשויים להכיל שפתיים.
+- לדוגמא נחפש איזורים שמכילים הרבה פסים אנכיים בכדי לזהות שיער, או שני פסים אופקיים סמוכים שעשויים להכיל שפתיים. סוג זה של עיבוד מידע דומה למה שמבצעים במערכת הראייה של יונקים. 
 
 </section><section>
 
@@ -478,6 +497,16 @@ From https://d2l.ai/chapter_convolutional-neural-networks/lenet.html
 1. הסיווג של התמונה לא אמור להיות מושפע אם מזיזים את האובייקט בתמונה מעט לצדדים.
 
 2. הפעולות שהשכבות הראשונות מבצעות, כגון חיפוש קווים אופקיים ואנכיים משותף לכל האיזורים בתמונה.
+
+</section><section>
+
+## סיכום 
+
+<div class="imgbox" style="max-width:500px">
+
+![](./assets/conv_v_cross.png)
+
+</div>
 
 </section><section>
 
