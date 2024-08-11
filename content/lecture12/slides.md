@@ -122,7 +122,7 @@ $$
 
 כאשר $\boldsymbol{\mu}=\frac{1}{N}\sum_{i=1}^N\boldsymbol{x}^{(i)}$.
 
-**הערה:** שימו לב ש-$T\in\mathbb{R}^{D\times K}$ כך שמתקיים כי $T^\top T \in \mathbb{R}^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \mathbb{R}^{D\times D}=I_K$ והיא לא שווה בהכרח ל-$I_D$. 
+**הערה:** שימו לב ש-$T\in\mathbb{R}^{D\times K}$ כך שמתקיים כי $T^\top T \in \mathbb{R}^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \mathbb{R}^{D\times D}$ והיא לא שווה בהכרח ל-$I_D$. 
 
 </section><section>
 
@@ -131,19 +131,19 @@ $$
 לדוגמה, עבור המיפוי הבא 
 
 $$
-z=T_{1}x+b_{1}\quad\tilde{x}=T_{2}z+b_{2}\quad T_{1}\in\mathbb{R}^{K\times D},\,T_{2}\in\mathbb{R}^{D\times K}
+\boldsymbol{z}=T_{1}\boldsymbol{x}+\boldsymbol{b}_{1}\quad\tilde{\boldsymbol{x}}=T_{2}z+\boldsymbol{b}_{2}\quad T_{1}\in\mathbb{R}^{K\times D},\,T_{2}\in\mathbb{R}^{D\times K}
 $$
 
-איברי ההטיה $b_1$ ו-$b_2$ יכולים להיקבע ע"י הדרישות 
+איברי ההטיה $\boldsymbol{b}_1$ ו-$\boldsymbol{b}_2$ יכולים להיקבע ע"י הדרישות 
 
 $$
-E[z]=0\quad\Rightarrow\quad b_{1}=-T_{1}\mu
+E[\boldsymbol{z}]=0\quad\Rightarrow\quad b_{1}=-T_{1}\boldsymbol{\mu}
 $$
 
 ו-
 
 $$
-E\left[\tilde{x}\right]=E\left[x\right]\quad\Rightarrow\quad b_{2}=E\left[x\right]=\mu
+E\left[\tilde{\boldsymbol{x}}\right]=E\left[\boldsymbol{x}\right]\quad\Rightarrow\quad b_{2}=E\left[x\right]=\boldsymbol{\mu}
 $$
 
 </section><section>
@@ -268,20 +268,21 @@ $$
 =\lVert\boldsymbol{x}\rVert_2^2-\lVert\boldsymbol{z}\rVert_2^2
 $$
 
-שכן, עבור $T^{\top}T=I$ מתקיים כי $\left(I-TT^{\top}\right)^{2}=\left(I-TT^{\top}\right).$ לכן, 
+שכן, עבור $T^{\top}T=I$ מתקיים כי $\left(I-TT^{\top}\right)^{2}=\left(I-TT^{\top}\right)$ לכן, 
 
 $$
-\begin{aligned}\left\Vert x-\tilde{x}\right\Vert _{2}^{2} & =\left\Vert x-TT^{\top}x\right\Vert _{2}^{2}\\
+\begin{aligned}
+\left\Vert \boldsymbol{x}-\tilde{\boldsymbol{x}}\right\Vert _{2}^{2} & =\left\Vert \boldsymbol{x}-TT^{\top}x\right\Vert _{2}^{2}\\
  & =\left\Vert \left(I-TT^{\top}\right)x\right\Vert _{2}^{2}\\
- & =x^{\top}\left(I-TT^{\top}\right)x\\
- & =\left\Vert x\right\Vert _{2}^{2}-\left\Vert z\right\Vert _{2}^{2}
+ & =\boldsymbol{x}^{\top}\left(I-TT^{\top}\right)\boldsymbol{x}\\
+ & =\left\Vert \boldsymbol{x}\right\Vert _{2}^{2}-\left\Vert \boldsymbol{z}\right\Vert _{2}^{2}
 \end{aligned}
 $$
 
 ובנוסף 
 
 $$
-\left\Vert \tilde{x}\right\Vert _{2}^{2}=\left\Vert Tz\right\Vert _{2}^{2}=z^{\top}T^{\top}Tz=\left\Vert z\right\Vert _{2}^{2}
+\left\Vert \tilde{\boldsymbol{x}}\right\Vert _{2}^{2}=\left\Vert T\boldsymbol{z}\right\Vert _{2}^{2}=\boldsymbol{z}^{\top}T^{\top}T\boldsymbol{z}=\left\Vert \boldsymbol{z}\right\Vert _{2}^{2}
 $$
 
 </section><section>
@@ -432,6 +433,21 @@ $$
 ![](./assets/faces_pca_reconstruction.png)
 
 </div>
+
+</section><section>
+
+## הרחבות לא לינאריות 
+
+קיימות הרחבות לא לינאריות רבות ל-PCA. נידונות בקורס עיבוד וניתוח מידע (ענ"ם). 
+<div class="imgbox" style="max-width:800px">
+
+![](./assets/tsne.png)
+
+</div>
+
+הפעלת אלגוריתם tSNE על MNIST. 
+
+
 
 </section><section>
 
