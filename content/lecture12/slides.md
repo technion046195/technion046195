@@ -122,7 +122,7 @@ $$
 
 כאשר $\boldsymbol{\mu}=\frac{1}{N}\sum_{i=1}^N\boldsymbol{x}^{(i)}$.
 
-**הערה:** שימו לב ש-$T\in\doubleR^{D\times K}$ כך שמתקיים כי $T^\top T \in \doubleR^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \doubleR^{D\times D}=I_K$ והיא לא שווה בהכרח ל-$I_D$. 
+**הערה:** שימו לב ש-$T\in\mathbb{R}^{D\times K}$ כך שמתקיים כי $T^\top T \in \mathbb{R}^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \mathbb{R}^{D\times D}=I_K$ והיא לא שווה בהכרח ל-$I_D$. 
 
 </section><section>
 
@@ -248,7 +248,7 @@ $$
 \lVert\tilde{\boldsymbol{x}}-\boldsymbol{x}\rVert_2^2
 $$
 
-<div class="imgbox" style="max-width:500px">
+<div class="imgbox" style="max-width:400px">
 
 ![](./assets/pca_recon_error.png)
 
