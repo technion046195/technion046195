@@ -106,7 +106,7 @@ $$
 
 #### הפשטת הבעיה תוך ביטול היתירות
 
-מסתבר שלבעיה זו ישנם מספר רב של פתרונות. בתהליך פיתוח הפתרון ניתן להראות שניתן לבחור את הפרמטרים כך שיקיימו את האילוצים הבאים מבלי לפגוע באופטימאליות של הפתרון:
+מסתבר שלבעיה זו יש מספר רב של פתרונות. בתהליך פיתוח הפתרון ניתן להראות שניתן לבחור את הפרמטרים כך שיקיימו את האילוצים הבאים מבלי לפגוע באופטימאליות של הפתרון:
 
 $$
 \begin{aligned}
@@ -115,6 +115,25 @@ $$
 T_1&=T_2^{\top}=T^{\top}\\
 T^{\top}T&=I
 \end{aligned}
+$$
+
+
+לדוגמה, עבור המיפוי הבא 
+
+$$
+z=T_{1}x+b_{1}\quad\tilde{x}=T_{2}z+b_{2}\quad T_{1}\in\mathbb{R}^{K\times D},\,T_{2}\in\mathbb{R}^{D\times K}
+$$
+
+איברי ההטיה $b_1$ ו-$b_2$ יכולים להיקבע ע"י הדרישות 
+
+$$
+E[z]=0\quad\Rightarrow\quad b_{1}=-T_{1}\mu
+$$
+
+ו-
+
+$$
+E\left[\tilde{x}\right]=E\left[x\right]\quad\Rightarrow\quad b_{2}=E\left[x\right]=\mu
 $$
 
 כאשר $\boldsymbol{\mu}=\frac{1}{N}\sum_{i=1}^N\boldsymbol{x}^{(i)}$. הטרנספורמציות במקרה זה הופכות להיות:
@@ -137,11 +156,13 @@ T^*=\underset{T}{\arg\min}\quad&\frac{1}{N}\sum_{i=1}^N\lVert(TT^{\top}-I)(\bold
 \end{aligned}
 $$
 
+**שימו לב:** $T\in\doubleR^{D\times K}$ כך שמתקיים כי $T^\top T \in \doubleR^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \doubleR^{D\times D}=I_K$ והיא לא שווה בהכרח ל-$I_D$.
+
 #### פרשנות גיאומטרית
 
-ראשית נשים לב שה encoder מתחיל בלחסר את הממוצע של $\boldsymbol{x}$ וה decoder מסיים בלהוסיף אותו בחזרה. לשם הנוחות נסתכל על הגרסא של $\boldsymbol{x}$ מחוסרת הממוצע: $\boldsymbol{x}'=\boldsymbol{x}-\boldsymbol{\mu}$.
+ראשית נשים לב שה encoder מתחיל בלחסר את הממוצע של $\boldsymbol{x}$ וה decoder מסיים בלהוסיף אותו בחזרה. נניח מעתה שהנתונים ממורכזים סביב האפס. 
 
-נדגים זאת בעבור המקרה של $D=2$ ו $K=1$:
+נדגים זאת עבור המקרה של $D=2$ ו $K=1$:
 
 <div class="imgbox" style="max-width:700px">
 
@@ -153,8 +174,8 @@ $$
 
 $$
 \begin{aligned}
-\boldsymbol{z}&=T^{\top}\boldsymbol{x}'\\
-\tilde{\boldsymbol{x}}'&=T\boldsymbol{z}=TT^{\top}\boldsymbol{x}'
+\boldsymbol{z}&=T^{\top}\boldsymbol{x}\\
+\tilde{\boldsymbol{x}}&=T\boldsymbol{z}=TT^{\top}\boldsymbol{x}
 \end{aligned}
 $$
 
@@ -168,7 +189,7 @@ T=\begin{pmatrix}
 \end{pmatrix}
 $$
 
-הפעולה של $\tilde{\boldsymbol{x}}'=TT^{\top}\boldsymbol{x}'$ מטילה את הוקטור $\boldsymbol{x}'$ על התת-מרחב הלינארי הנפרס על ידי הוקטורים $\boldsymbol{u}_j$. נדגים זאת על המקרה הקודם:
+הפעולה של $\tilde{\boldsymbol{x}}=TT^{\top}\boldsymbol{x}'$ מטילה את הוקטור $\boldsymbol{x}$ על תת-המרחב הלינארי הנפרס על ידי הוקטורים $\boldsymbol{u}_j$. נדגים זאת על המקרה הקודם:
 
 <div class="imgbox" style="max-width:700px">
 
@@ -176,7 +197,7 @@ $$
 
 </div>
 
-הפעולה של $\boldsymbol{z}=T^{\top}\boldsymbol{x}'$ למעשה גם כן מטילה את $\boldsymbol{x}'$ על אותו תת-מרחב, היא רק משאירה אותו במערכת הצירים אשר מוגדרת על ידי הוקטורים $\boldsymbol{u}_j$:
+הפעולה של $\boldsymbol{z}=T^{\top}\boldsymbol{x}$ למעשה גם כן מטילה את $\boldsymbol{x}$ על אותו תת-מרחב, היא רק משאירה אותו במערכת הצירים אשר מוגדרת על ידי הוקטורים $\boldsymbol{u}_j$:
 
 <div class="imgbox" style="max-width:700px">
 
@@ -204,7 +225,24 @@ $$
 =\lVert\boldsymbol{x}\rVert_2^2-\lVert\boldsymbol{z}\rVert_2^2
 $$
 
-מכאן שנוכל לרשום את בעיית האופטימיזציה באופן הבא:
+שכן, עבור $T^{\top}T=I$ מתקיים כי $\left(I-TT^{\top}\right)^{2}=\left(I-TT^{\top}\right).$ לכן, 
+
+$$
+\begin{aligned}\left\Vert x-\tilde{x}\right\Vert _{2}^{2} & =\left\Vert x-TT^{\top}x\right\Vert _{2}^{2}\\
+ & =\left\Vert \left(I-TT^{\top}\right)x\right\Vert _{2}^{2}\\
+ & =x^{\top}\left(I-TT^{\top}\right)x\\
+ & =\left\Vert x\right\Vert _{2}^{2}-\left\Vert z\right\Vert _{2}^{2}
+\end{aligned}
+$$
+
+ובנוסף 
+
+$$
+\left\Vert \tilde{x}\right\Vert _{2}^{2}=\left\Vert Tz\right\Vert _{2}^{2}=z^{\top}T^{\top}Tz=\left\Vert z\right\Vert _{2}^{2}
+$$
+
+
+כעת נוכל לרשום את בעיית האופטימיזציה באופן הבא:
 
 $$
 \begin{aligned}
