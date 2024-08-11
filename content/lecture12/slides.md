@@ -74,6 +74,7 @@ $\tilde{\boldsymbol{x}}$ נקרא השחזור של $\boldsymbol{x}$. בחלק �
 ## Principle Component Analysis (PCA)
 
 $D$ האורך של $\boldsymbol{x}$ ו $K$ האורך של הוקטור $\boldsymbol{z}$
+כאשר מתקיים כי $K \le D$. 
 
 נרצה למצוא encoder:
 
@@ -108,7 +109,7 @@ $$
 
 ## הפתרון לבעיית האופטימיזציה
 
-ישנם מספר רב של פתרונות. ניתן לבחור את הפרמטרים כך שיקיימו את האילוצים:
+מסתבר שיש מספר רב של פתרונות. ניתן לבחור את הפרמטרים כך שיקיימו את האילוצים:
 
 $$
 \begin{aligned}
@@ -120,6 +121,30 @@ T^{\top}T&=I
 $$
 
 כאשר $\boldsymbol{\mu}=\frac{1}{N}\sum_{i=1}^N\boldsymbol{x}^{(i)}$.
+
+**הערה:** שימו לב ש-$T\in\doubleR^{D\times K}$ כך שמתקיים כי $T^\top T \in \doubleR^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \doubleR^{D\times D}=I_K$ והיא לא שווה בהכרח ל-$I_D$. 
+
+</section><section>
+
+## הפתרון לבעיית האופטימיזציה
+
+לדוגמה, עבור המיפוי הבא 
+
+$$
+z=T_{1}x+b_{1}\quad\tilde{x}=T_{2}z+b_{2}\quad T_{1}\in\mathbb{R}^{K\times D},\,T_{2}\in\mathbb{R}^{D\times K}
+$$
+
+איברי ההטיה $b_1$ ו-$b_2$ יכולים להיקבע ע"י הדרישות 
+
+$$
+E[z]=0\quad\Rightarrow\quad b_{1}=-T_{1}\mu
+$$
+
+ו-
+
+$$
+E\left[\tilde{x}\right]=E\left[x\right]\quad\Rightarrow\quad b_{2}=E\left[x\right]=\mu
+$$
 
 </section><section>
 
@@ -151,7 +176,7 @@ $$
 
 - ה encoder מחסר את הממוצע של $\boldsymbol{x}$ וה decoder מוסיף אותו בחזרה.
 
-- נסמן $\boldsymbol{x}'=\boldsymbol{x}-\boldsymbol{\mu}$.
+- נניח מעתה שהנתונים ממורכזים סביב האפס. 
 
 <div class="imgbox" style="max-width:700px">
 
@@ -167,8 +192,8 @@ $$
 
 $$
 \begin{aligned}
-\boldsymbol{z}&=T^{\top}\boldsymbol{x}'\\
-\tilde{\boldsymbol{x}}'&=T\boldsymbol{z}=TT^{\top}\boldsymbol{x}'
+\boldsymbol{z}&=T^{\top}\boldsymbol{x}\\
+\tilde{\boldsymbol{x}}&=T\boldsymbol{z}=TT^{\top}\boldsymbol{x}
 \end{aligned}
 $$
 
@@ -190,7 +215,7 @@ $$
 
 ## פרשנות גיאומטרית
 
-הפעולה של $\tilde{\boldsymbol{x}}'=TT^{\top}\boldsymbol{x}'$ מטילה את הוקטור $\boldsymbol{x}'$ על התת-מרחב הלינארי הנפרס על ידי הוקטורים $\boldsymbol{u}_j$.
+הפעולה של $\tilde{\boldsymbol{x}}=TT^{\top}\boldsymbol{x}$ מטילה את הוקטור $\boldsymbol{x}$ על תת-המרחב הלינארי הנפרס על ידי הוקטורים $\boldsymbol{u}_j$.
 
 <br/>
 <div class="imgbox" style="max-width:700px">
@@ -203,7 +228,7 @@ $$
 
 ## פרשנות גיאומטרית
 
-הפעולה של $\boldsymbol{z}=T^{\top}\boldsymbol{x}'$ גם מטילה את $\boldsymbol{x}'$ על אותו תת-מרחב, היא רק משאירה אותו במערכת הצירים של $\boldsymbol{u}_j$:
+הפעולה של $\boldsymbol{z}=T^{\top}\boldsymbol{x}$ גם מטילה את $\boldsymbol{x}$ על אותו תת-מרחב, היא רק משאירה אותו במערכת הצירים של $\boldsymbol{u}_j$:
 
 <br/>
 
@@ -243,6 +268,26 @@ $$
 =\lVert\boldsymbol{x}\rVert_2^2-\lVert\boldsymbol{z}\rVert_2^2
 $$
 
+שכן, עבור $T^{\top}T=I$ מתקיים כי $\left(I-TT^{\top}\right)^{2}=\left(I-TT^{\top}\right).$ לכן, 
+
+$$
+\begin{aligned}\left\Vert x-\tilde{x}\right\Vert _{2}^{2} & =\left\Vert x-TT^{\top}x\right\Vert _{2}^{2}\\
+ & =\left\Vert \left(I-TT^{\top}\right)x\right\Vert _{2}^{2}\\
+ & =x^{\top}\left(I-TT^{\top}\right)x\\
+ & =\left\Vert x\right\Vert _{2}^{2}-\left\Vert z\right\Vert _{2}^{2}
+\end{aligned}
+$$
+
+ובנוסף 
+
+$$
+\left\Vert \tilde{x}\right\Vert _{2}^{2}=\left\Vert Tz\right\Vert _{2}^{2}=z^{\top}T^{\top}Tz=\left\Vert z\right\Vert _{2}^{2}
+$$
+
+</section><section>
+
+## הבעיה השקולה 
+
 מכאן שנוכל לרשום את בעיית האופטימיזציה באופן הבא:
 
 $$
@@ -254,7 +299,7 @@ T^*=\underset{T}{\arg\min}\quad&\frac{1}{N}\sum_{i=1}^N\left( \lVert\boldsymbol{
 \end{aligned}
 $$
 
-נזכור ש $\lVert\boldsymbol{x}\rVert_2^2$ והוא תוכונה של הוקטורים במדגם והם אינם תלויים ב $T$ ולכן:
+נזכור ש $\lVert\boldsymbol{x}\rVert_2^2$ והוא תכונה של הוקטורים במדגם והם אינם תלויים ב $T$ ולכן:
 
 $$
 \begin{aligned}
@@ -379,7 +424,7 @@ $$
 
 ## דוגמא
 
-תמונה המשוחזרת בעבור ערכים שונים של $K$:
+תמונה המשוחזרת עבור ערכים שונים של $K$:
 
 <br/>
 <div class="imgbox" style="max-width:900px">
