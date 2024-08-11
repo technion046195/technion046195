@@ -156,7 +156,7 @@ T^*=\underset{T}{\arg\min}\quad&\frac{1}{N}\sum_{i=1}^N\lVert(TT^{\top}-I)(\bold
 \end{aligned}
 $$
 
-**שימו לב:** $T\in\doubleR^{D\times K}$ כך שמתקיים כי $T^\top T \in \doubleR^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \doubleR^{D\times D}=I_K$ והיא לא שווה בהכרח ל-$I_D$.
+**שימו לב:** $T\in\mathbb{R}^{D\times K}$ כך שמתקיים כי $T^\top T \in \mathbb{R}^{K\times K}=I_K$ כאשר $I_K$ היא מטריצת היחידה. בנוסף, מתקיים $T T^\top \in \mathbb{R}^{D\times D}=I_K$ והיא לא שווה בהכרח ל-$I_D$.
 
 #### פרשנות גיאומטרית
 
