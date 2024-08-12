@@ -453,7 +453,7 @@ $$
 
 ## אשכול
 
-באלגוריתמי אשכול ננסה לחלק אוסף של פרטים לקבוצות המכונים אשכולות (clusters), כאשר לכל קבוצה איזשהן תכונות דומות.
+באלגוריתמי אשכול ננסה לחלק אוסף של פרטים לקבוצות המכונים אשכולות (clusters), כאשר לכל קבוצה איזשהן תכונות דומות. כמובן, בממדים גבוהים לא רואים זאת בעין. 
 
 <br/>
 <div class="imgbox" style="max-width:100%">
@@ -483,17 +483,6 @@ $$
 
 </section><section>
 
-## אלגוריתמי אשכול שונים
-
-<div class="imgbox" style="max-width:900px">
-
-![](./assets/sphx_glr_plot_cluster_comparison_0011.png)
-
-</div>
-
-לרוב לא נוכל לצייר את האשכולות.
-
-</section><section>
 
 ## K-Means
 
@@ -505,7 +494,7 @@ K-Means הוא אלגוריתם אשכול אשר מנסה לחלק את הדג�
 - $\mathcal{I}_k$ - אוסף האינדקסים של האשכול ה-$k$.<br/>
   לדוגמא: $\mathcal{I}_5=\left\lbrace3, 6, 9, 13\right\rbrace$
 - $|\mathcal{I}_k|$ - גודל האשכול ה-$k$ (מספר הפרטים בקבוצה)
-- $\{\mathcal{I}_k\}_{k=1}^K$ - חלוקה מסויימת לאשכולות
+- $\{\mathcal{I}_k\}_{k=1}^K$ - חלוקה מסוימת לאשכולות
 
 </section><section>
 
@@ -516,6 +505,8 @@ K-Means מנסה למצוא את החלוקה לאשכולות אשר תמזער
 $$
 \underset{\{\mathcal{I}_j\}_{k=1}^K}{\arg\min}\frac{1}{N}\sum_{k=1}^K\frac{1}{2|\mathcal{I}_k|}\sum_{i,j\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(j)}-\boldsymbol{x}^{(i)}\rVert_2^2
 $$
+
+**שאלה:** האם פונקציית מרחק ריבועית תמיד מתאימה? 
 
 </section><section>
 
@@ -535,6 +526,23 @@ $$
 
 </section><section>
 
+## הבעיה השקולה 
+
+$$
+\begin{aligned}
+\sum_{i,j\in\mathcal{I}_{k}}^{K} & \left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{x}^{(j)}\right\Vert _{2}^{2}=\sum_{i,j\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}+\boldsymbol{\mu}_{k}-\boldsymbol{x}^{(j)}\right\Vert _{2}^{2}\\
+= & \sum_{i,j\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}+\sum_{i,j\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(j)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}-2\sum_{i,j\in\mathcal{I}_{k}}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right)^{\top}\left(\boldsymbol{x}^{(j)}-\boldsymbol{\mu}_{k}\right)\\
+= & 2\left|\mathcal{I}_{k}\right|\sum_{i\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}-2\sum_{i\in\mathcal{I}_{k}}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right)^{\top}\sum_{j\in\mathcal{I}_{k}}\left(\boldsymbol{x}^{(j)}-\boldsymbol{\mu}_{k}\right)\\
+= & 2\left|\mathcal{I}_{k}\right|\sum_{i\in I_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}
+\end{aligned}
+$$
+
+שכן: 
+
+$$
+\sum_{i\in I_{k}}\left( \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right) = \left|\mathcal{I}_{k}\right| \cdot \frac{1}{\left|\mathcal{I}_{k}\right|}\sum_{i\in I_{k}}\boldsymbol{x}^{(i)}-\left|\mathcal{I}_{k}\right|\boldsymbol{\mu}_{k} = 0
+$$
+
 ## האלגוריתם
 
 - אלגוריתם חמדן.
@@ -542,7 +550,7 @@ $$
 
 בכל צעד $t$ מבצעים את שתי הפעולות הבאות:
 
-1. עדכון מחדש את החלוקה לאשכולות $\{\mathcal{I}_k\}_{k=1}^K$. כל דגימה משוייכת למרכז המסה הקרוב עליה.
+1. עדכון מחדש של החלוקה לאשכולות $\{\mathcal{I}_k\}_{k=1}^K$. כל דגימה משוייכת למרכז המסה הקרוב עליה.
 2. עדכון של מרכזי המסה המסה על פי:
 
     $$
@@ -643,6 +651,21 @@ $$
 
 </div>
 </div>
+
+</section><section>
+
+
+## אלגוריתמי אשכול שונים
+
+<div class="imgbox" style="max-width:900px">
+
+![](./assets/sphx_glr_plot_cluster_comparison_0011.png)
+
+</div>
+
+לרוב לא נוכל לצייר את האשכולות בשני ממדים.
+
+</section>
 
 </section>
 </div>
