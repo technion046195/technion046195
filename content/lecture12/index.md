@@ -508,6 +508,23 @@ $$
 \underset{\{\mathcal{I}_j\}_{k=1}^K}{\arg\min}\frac{1}{N}\sum_{k=1}^K\sum_{i\in\mathcal{I}_k}\lVert\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_k\rVert_2^2
 $$
 
+כלומר, 
+
+$$
+\begin{aligned}
+\sum_{i,j\in\mathcal{I}_{k}}^{K} & \left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{x}^{(j)}\right\Vert _{2}^{2}=\sum_{i,j\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}+\boldsymbol{\mu}_{k}-\boldsymbol{x}^{(j)}\right\Vert _{2}^{2}\\
+= & \sum_{i,j\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}+\sum_{i,j\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(j)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}-2\sum_{i,j\in\mathcal{I}_{k}}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right)^{\top}\left(\boldsymbol{x}^{(j)}-\boldsymbol{\mu}_{k}\right)\\
+= & 2\left|\mathcal{I}_{k}\right|\sum_{i\in\mathcal{I}_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}-2\sum_{i\in\mathcal{I}_{k}}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right)^{\top}\sum_{j\in\mathcal{I}_{k}}\left(\boldsymbol{x}^{(j)}-\boldsymbol{\mu}_{k}\right)\\
+= & 2\left|\mathcal{I}_{k}\right|\sum_{i\in I_{k}}\left\Vert \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right\Vert _{2}^{2}
+\end{aligned}
+$$
+
+שכן: 
+
+$$
+\sum_{i\in I_{k}}\left( \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right) = \left|\mathcal{I}_{k}\right| \cdot \frac{1}{\left|\mathcal{I}_{k}\right|}\sum_{i\in I_{k}}\boldsymbol{x}^{(i)}-\left|\mathcal{I}_{k}\right|\boldsymbol{\mu}_{k} = 0
+$$
+
 ### האלגוריתם
 
 K-mean הוא אלגוריתם חמדן אשר בכל פעם משייך מחדש את הדגימות ומעדכן את המרכזים.
@@ -516,7 +533,7 @@ K-mean הוא אלגוריתם חמדן אשר בכל פעם משייך מחדש
 
 בכל צעד $t$ מבצעים את שתי הפעולות הבאות:
 
-1. עדכון מחדש את החלוקה לאשכולות $\{\mathcal{I}_k\}_{k=1}^K$ כך שכל דגימה משוייכת למרכז המסה הקרוב עליה ביותר. כלומר אנו נשייך את כל דגימה $\boldsymbol{x}$ לפי:
+1. עדכון מחדש של החלוקה לאשכולות $\{\mathcal{I}_k\}_{k=1}^K$ כך שכל דגימה משוייכת למרכז המסה הקרוב עליה ביותר. כלומר אנו נשייך את כל דגימה $\boldsymbol{x}$ לפי:
 
     $$
     k=\underset{k\in[1,K]}{\arg\min} \lVert\boldsymbol{x}-\boldsymbol{\mu}_k\rVert_2^2
