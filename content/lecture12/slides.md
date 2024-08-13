@@ -543,10 +543,6 @@ $$
 \sum_{i\in I_{k}}\left( \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right) = \left|\mathcal{I}_{k}\right| \cdot \frac{1}{\left|\mathcal{I}_{k}\right|}\sum_{i\in I_{k}}\boldsymbol{x}^{(i)}-\left|\mathcal{I}_{k}\right|\boldsymbol{\mu}_{k} = 0
 $$
 
-</section><section>
-
-
-
 ## האלגוריתם
 
 - אלגוריתם חמדן.
@@ -627,20 +623,15 @@ $$
 וחוזר חלילה (הסדר הוא מימין לשמאל):
 
 <div class="imgbox" style="max-width:100%">
-
 <div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step3a.png)
 
-</div>
-
-<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step3b.png)
 
-</div>
-
-<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step4a.png)
 
@@ -650,15 +641,11 @@ $$
 
 ![](./output/gaussians_step4b.png)
 
-</div>
-
-<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step5a.png)
 
-</div>
-
-<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step5b.png)
 
@@ -680,4 +667,5 @@ $$
 
 </section>
 
+</section>
 </div>
