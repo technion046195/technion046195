@@ -543,8 +543,6 @@ $$
 \sum_{i\in I_{k}}\left( \boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{k}\right) = \left|\mathcal{I}_{k}\right| \cdot \frac{1}{\left|\mathcal{I}_{k}\right|}\sum_{i\in I_{k}}\boldsymbol{x}^{(i)}-\left|\mathcal{I}_{k}\right|\boldsymbol{\mu}_{k} = 0
 $$
 
-</section><section>
-
 ## האלגוריתם
 
 - אלגוריתם חמדן.
