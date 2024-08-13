@@ -627,15 +627,20 @@ $$
 וחוזר חלילה (הסדר הוא מימין לשמאל):
 
 <div class="imgbox" style="max-width:100%">
+
 <div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step3a.png)
 
-</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div>
+
+<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step3b.png)
 
-</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div>
+
+<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step4a.png)
 
@@ -645,11 +650,15 @@ $$
 
 ![](./output/gaussians_step4b.png)
 
-</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div>
+
+<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step5a.png)
 
-</div><div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
+</div>
+
+<div class="imgbox no-shadow" style="max-width:33%;display:inline-block;margin:0">
 
 ![](./output/gaussians_step5b.png)
 
@@ -668,8 +677,6 @@ $$
 </div>
 
 לרוב לא נוכל לצייר את האשכולות בשני ממדים.
-
-</section>
 
 </section>
 </div>
