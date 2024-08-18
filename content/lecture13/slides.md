@@ -33,6 +33,8 @@ slides_pdf: true
 - **בעיות סיווג (classification)**: $\text{y}$ דיסקרטי וסופי.
 - **בעיות רגרסיה (regression)**: $\text{y}$ רציף.
 
+קיימים מקרים בהם מספר התיוגים המותרים לכל קלט גדול מאחד. דוגמה? Multi label problem. 
+
 </section><section>
 
 ## הערכת ביצועים
@@ -47,7 +49,7 @@ $$
 
 הפונקציה $l$ מוכנה **פונקציית ההפסד (loss)**
 
-- מכיוון שהפילוג של $\text{y}$ ו $\mathbf{x}$ לא באמת ידוע לנו אנו נשתמש ב **test set** ובתוחלת בכדי להאריך את הביצועים.
+- מכיוון שהפילוג של $\text{y}$ ו $\mathbf{x}$ לא באמת ידוע לנו אנו נשתמש ב **test set** ובתוחלת בכדי להעריך את הביצועים.
 
 </section><section>
 
@@ -63,6 +65,8 @@ $$
 
 </div>
 
+**שאלה:** מתי יש מוטיבציה לפונקציית הפסד שאינה 0-1 במקרה של סיווג? דוגמה? 
+
 </section><section>
 
 ## Discriminative vs. Generative
@@ -72,6 +76,8 @@ $$
 - **גישה דיסקרימינטיבית**: $\mathcal{D}$ -> $h(\boldsymbol{x})$.
 - **גישה גנרטיבית**: $\mathcal{D}$ -> $p_{\mathbf{x},\text{y}}(\boldsymbol{x},y)$ -> $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ -> $h(\boldsymbol{x})$.
 - **גישה דיסקרימינטיבית הסתברותית**: $\mathcal{D}$ -> $p_{\text{y}|\mathbf{x}}(y|\boldsymbol{x})$ -> $h(\boldsymbol{x})$.
+
+**שאלה:** מתי יש יתרונות יחסיים לגישות השונות? 
 
 </section><section>
 
@@ -85,6 +91,8 @@ $$
 
 - לרוב לא נדע לפתור את הבעיה באופן אנליטי ונשתמש בשיטות אלטרנטיביות למציאת פתרון "סביר".
 
+- בדרך כלל משתמשים בגישות מקומיות מבוססות גרדיאנט. גישות אלה מוגבלות בגלל המקומיות של החיפוש. יש דרכים לשפרן, אך אין פתרון אוניברסלי. 
+
 </section><section>
 
 ## Cross-Validation
@@ -93,7 +101,7 @@ $$
 
 <br/>
 
-הדרך לבחור **hyper-parameters** הינה על ידי שימוש ב validation set על מנת לבדוק מספר ערכים שונים ולבחור את אלו אשר נותים את הביצועים הטובים ביותר.
+הדרך הנפוצה לבחור **hyper-parameters** הינה על ידי שימוש ב validation set על מנת לבדוק מספר ערכים שונים ולבחור את אלו אשר נותים את הביצועים הטובים ביותר.
 
 </section><section>
 
@@ -114,7 +122,7 @@ $$
 
 ## מעבר על האלגוריתמים שנלמדו בקורס
 
-נעברו במהירות על האלגוריתמים שאותם ראינו בקורס ונבחן את המאפיינים שלהם.
+נעבור במהירות על האלגוריתמים שאותם ראינו בקורס ונבחן את המאפיינים שלהם.
 
 </section><section>
 
@@ -191,6 +199,7 @@ $$
   <span class="fragment" style="color:#006992">
   $\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg\min}\ \frac{1}{N}\sum_i (\boldsymbol{\theta}^{\top}\boldsymbol{x}^{(i)}-y^{(i)})^2+\lambda\lVert\boldsymbol{\theta}\rVert_2^2$
   </span>
+- Question: what is the motivation for the regularization? 
 - How to solve:
   <span class="fragment" style="color:#006992">
   $\boldsymbol{\theta}=(X^{\top}X+\lambda I)^{-1}X^{\top}\boldsymbol{y}$, or using Gradient Descent methods.
@@ -248,6 +257,9 @@ $$
   - Slow runtime.
 
   </div>
+
+- שאלה: מהו תהליך האימון בשיטה זו?
+- מה ההבדל העקרוני באימון/בדיקה בין שיטה זו לשיטות למידה פרמטריות שלמדנו? 
 
 </section><section style="direction:ltr">
 
@@ -330,7 +342,7 @@ $$
   </span>
 - Property:
   <span class="fragment" style="color:#006992">
-  Requiers the data to be linear seperable.
+  Requires the data to be linearly seperable.
   </span>
 
 </section><section style="direction:ltr">
