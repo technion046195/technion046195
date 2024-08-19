@@ -257,10 +257,14 @@ $$
   - Slow runtime.
 
   </div>
-- Questionss:
+  
+- Questions:
   <div class="fragment" style="color:#006992">
-  - What is the training process? 
-  - What is the main difference between this method and other parametric methods we have learned? 
+    
+  - What is the training process?
+  - What is the main difference between this method and other parametric methods we have learned?
+
+    
   </div>
 
 
