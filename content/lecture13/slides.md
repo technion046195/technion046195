@@ -251,13 +251,10 @@ $$
   Number of neighbors $K$.
   </span>
 - Properties:
-  <div class="fragment" style="color:#006992">
-
-  - Required amount of data that is exponential in the dimension. Good for low dimensions with a lot of data.
-  - Slow runtime.
-
-  </div>
-  
+  <span class="fragment" style="color:#006992">
+  - Required amount of data that is exponential in the dimension. Good for low dimensions with a lot of data. Slow runtime.
+   </span>
+ 
 - Questions:
   <div class="fragment" style="color:#006992">
     
