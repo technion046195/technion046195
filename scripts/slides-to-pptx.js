@@ -1878,6 +1878,7 @@ function createDrawingMathRunProperties(doc) {
 
 function wrapOfficeMathShapes(doc) {
   const shapes = elementsByLocalName(doc, "sp")
+    .concat(elementsByLocalName(doc, "graphicFrame"))
     .filter((shape) => directChildByLocalName(shape.parentNode, "spTree"))
     .filter((shape) => elementsByLocalName(shape, "m").some(isOfficeMathExtensionElement))
     .filter((shape) => !ancestorByLocalName(shape, "AlternateContent"));

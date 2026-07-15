@@ -29,12 +29,40 @@ function addAlignmentMarker(row) {
   if (row.includes("&")) {
     return row;
   }
-  const relation = /(\\Leftrightarrow|\\Rightarrow|\\Leftarrow|\\leq|\\geq|\\le|\\ge|=|<|>)/;
-  const match = row.match(relation);
-  if (!match) {
+  const relationIndex = topLevelRelationIndex(row);
+  if (relationIndex === -1) {
     return `&${row}`;
   }
-  return `${row.slice(0, match.index)}&${row.slice(match.index)}`;
+  return `${row.slice(0, relationIndex)}&${row.slice(relationIndex)}`;
+}
+
+function topLevelRelationIndex(row) {
+  const relationCommands = ["\\Leftrightarrow", "\\Rightarrow", "\\Leftarrow", "\\leq", "\\geq", "\\le", "\\ge"];
+  let braceDepth = 0;
+  for (let i = 0; i < row.length; i += 1) {
+    const char = row[i];
+    if (char === "{" && row[i - 1] !== "\\") {
+      braceDepth += 1;
+      continue;
+    }
+    if (char === "}" && row[i - 1] !== "\\") {
+      braceDepth = Math.max(0, braceDepth - 1);
+      continue;
+    }
+    if (braceDepth !== 0) {
+      continue;
+    }
+    if (char === "=" || char === "<" || char === ">") {
+      return i;
+    }
+    if (char === "\\") {
+      const command = relationCommands.find((candidate) => row.startsWith(candidate, i));
+      if (command) {
+        return i;
+      }
+    }
+  }
+  return -1;
 }
 
 module.exports = {

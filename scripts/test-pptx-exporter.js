@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const assert = require("assert");
+const { spawnSync } = require("child_process");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
@@ -10,14 +11,47 @@ const JSZip = require("jszip");
 const { parseDeckModelFromFile } = require("./pptx-exporter/model");
 const { planSlides } = require("./pptx-exporter/layout");
 const { normalizeLatexForPandoc } = require("./pptx-exporter/math");
-const { verifyZipPackage } = require("./pptx-exporter/verifier-core");
+const { verifyPptxFile: verifyPptxFileForTest, verifyZipPackage } = require("./pptx-exporter/verifier-core");
 
 async function run() {
   await testParseDeckModelCapturesBlocksMathDirectionAndFragments();
   testLayoutSplitsDenseSlidesWithoutShrinkingBelowReadableFloors();
   testBareMultilineDisplayMathIsWrappedForPandoc();
+  await testTableMathExportIsWrappedForPowerPoint();
   await testVerifierRejectsRepairTriggeringPackageAndSchemaIssues();
   console.log("pptx exporter tests passed");
+}
+
+async function testTableMathExportIsWrappedForPowerPoint() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pptx-table-math-test-"));
+  const input = path.join(dir, "slides.md");
+  const output = path.join(dir, "table-math.pptx");
+  fs.writeFileSync(input, [
+    "---",
+    "title: Table Math",
+    "---",
+    '<div class="slides site-style" style="direction:rtl">',
+    "<section>",
+    "## Table math",
+    "",
+    "| case | value |",
+    "|---|---|",
+    "| A | $$144\\frac{\\alpha n}{\\alpha+1}$$ |",
+    "</section>",
+    "</div>",
+  ].join("\n"), "utf8");
+
+  const exportResult = spawnSync(process.execPath, [
+    path.join(__dirname, "slides-to-pptx.js"),
+    "--input",
+    input,
+    "--output",
+    output,
+  ], { encoding: "utf8" });
+
+  assert.strictEqual(exportResult.status, 0, exportResult.stderr || exportResult.stdout);
+  const failures = await verifyPptxFileForTest(output, { requireOmml: true, noMathPlaceholders: true });
+  assert.deepStrictEqual(failures, []);
 }
 
 function testBareMultilineDisplayMathIsWrappedForPandoc() {
@@ -29,7 +63,9 @@ function testBareMultilineDisplayMathIsWrappedForPandoc() {
   const normalized = normalizeLatexForPandoc(latex, true);
 
   assert.ok(normalized.startsWith("\\begin{aligned}"), "bare multiline display math should be wrapped in aligned");
-  assert.ok(normalized.includes("&=n\\left"), "first equality should receive an alignment marker");
+  assert.ok(normalized.includes("&\\sum_{k=1}^K"), "first row without a top-level relation should align before the expression");
+  assert.ok(!normalized.includes("\\sum_{k&=1}"), "alignment marker must not be inserted inside subscript braces");
+  assert.ok(normalized.includes("&=n\\left"), "top-level equality should receive an alignment marker");
   assert.ok(normalized.includes("\\\\\n&=n\\cdot"), "linebreak equality should receive an alignment marker");
   assert.ok(normalized.endsWith("\\end{aligned}"), "aligned wrapper should be closed");
 }
