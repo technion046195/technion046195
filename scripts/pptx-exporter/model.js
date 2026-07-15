@@ -112,6 +112,9 @@ function blockFromNode($, node, context) {
     return text ? [{ type: "heading", level: Number(name.substring(1)), runs: inlineRuns($, node, scoped), text, dir: scoped.dir, fragment: fragmentForNode($, node) }] : [];
   }
   if (name === "p") {
+    if (containsOnlyLinkButton($, node)) {
+      return [];
+    }
     if (containsOnlyImage($, node)) {
       return imageBlocksFrom($, node, scoped);
     }
@@ -136,6 +139,9 @@ function blockFromNode($, node, context) {
     return imageBlocksFrom($, node, scoped);
   }
   if (name === "div") {
+    if (containsOnlyLinkButton($, node)) {
+      return [];
+    }
     if ($(node).hasClass("imgbox") || $(node).find("> p > img, > img").length) {
       return imageBlocksFrom($, node, scoped);
     }
@@ -199,6 +205,14 @@ function inlineRunsFromNode($, node, context) {
     return $(node).contents().toArray().flatMap((child) => inlineRunsFromNode($, child, scoped));
   }
   return text ? [{ text, dir: scoped.dir }] : [];
+}
+
+function containsOnlyLinkButton($, node) {
+  if (!$(node).find("a.link-button").length && !(node.name && node.name.toLowerCase() === "a" && $(node).hasClass("link-button"))) {
+    return false;
+  }
+  const textWithoutButtonLabels = normalizeText($(node).text()).replace(/\b(PDF|Code)\b/g, "").trim();
+  return !textWithoutButtonLabels;
 }
 
 function contextForElement($, node, context) {

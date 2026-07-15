@@ -21,6 +21,7 @@ const { DOMParser, XMLSerializer } = require("@xmldom/xmldom");
 
 const { parseDeckModelFromFile } = require("./pptx-exporter/model");
 const { planSlides } = require("./pptx-exporter/layout");
+const { normalizeLatexForPandoc } = require("./pptx-exporter/math");
 const { verifyPptxFile } = require("./pptx-exporter/verifier-core");
 
 const SLIDE_W = 9.75;
@@ -1642,7 +1643,8 @@ async function convertLatexToOmml(item, pandocBin, tmpDir) {
   const base = `math-${item.id}`;
   const mdPath = path.join(tmpDir, `${base}.md`);
   const docxPath = path.join(tmpDir, `${base}.docx`);
-  const body = item.display ? `$$\n${item.latex}\n$$\n` : `$${item.latex}$\n`;
+  const pandocLatex = normalizeLatexForPandoc(item.latex, item.display);
+  const body = item.display ? `$$\n${pandocLatex}\n$$\n` : `$${pandocLatex}$\n`;
   fs.writeFileSync(mdPath, body, "utf8");
   const result = spawnSync(pandocBin, [
     mdPath,

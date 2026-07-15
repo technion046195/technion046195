@@ -9,13 +9,29 @@ const JSZip = require("jszip");
 
 const { parseDeckModelFromFile } = require("./pptx-exporter/model");
 const { planSlides } = require("./pptx-exporter/layout");
+const { normalizeLatexForPandoc } = require("./pptx-exporter/math");
 const { verifyZipPackage } = require("./pptx-exporter/verifier-core");
 
 async function run() {
   await testParseDeckModelCapturesBlocksMathDirectionAndFragments();
   testLayoutSplitsDenseSlidesWithoutShrinkingBelowReadableFloors();
+  testBareMultilineDisplayMathIsWrappedForPandoc();
   await testVerifierRejectsRepairTriggeringPackageAndSchemaIssues();
   console.log("pptx exporter tests passed");
+}
+
+function testBareMultilineDisplayMathIsWrappedForPandoc() {
+  const latex = [
+    "\\sum_{k=1}^K\\sum_{i\\in\\mathcal{I}_k}\\lVert\\boldsymbol{x}^{(j)}-\\boldsymbol{\\mu}^{(i)}\\rVert_2^2",
+    "=n\\left(-6-6\\frac{\\alpha-1}{\\alpha+1}\\right)^2 + \\alpha n\\left(6-6\\frac{\\alpha-1}{\\alpha+1}\\right)^2 \\\\=n\\cdot \\frac{36}{\\left(\\alpha+1\\right)^2}\\left(4\\alpha^2+4\\alpha\\right)\\\\=\\frac{144\\alpha n}{\\alpha+1}",
+  ].join("\n");
+
+  const normalized = normalizeLatexForPandoc(latex, true);
+
+  assert.ok(normalized.startsWith("\\begin{aligned}"), "bare multiline display math should be wrapped in aligned");
+  assert.ok(normalized.includes("&=n\\left"), "first equality should receive an alignment marker");
+  assert.ok(normalized.includes("\\\\\n&=n\\cdot"), "linebreak equality should receive an alignment marker");
+  assert.ok(normalized.endsWith("\\end{aligned}"), "aligned wrapper should be closed");
 }
 
 async function testParseDeckModelCapturesBlocksMathDirectionAndFragments() {
@@ -28,6 +44,8 @@ async function testParseDeckModelCapturesBlocksMathDirectionAndFragments() {
     '<div class="slides site-style" style="direction:rtl">',
     "<section>",
     "## כותרת",
+    "",
+    '<div dir="ltr"><a href="/assets/example.pdf" class="link-button" target="_blank">PDF</a></div>',
     "",
     "- פריט עם $\\alpha_1$",
     '- <span dir="ltr">English island</span>',
@@ -46,6 +64,7 @@ async function testParseDeckModelCapturesBlocksMathDirectionAndFragments() {
   assert.strictEqual(model.slides.length, 1);
   assert.strictEqual(model.slides[0].dir, "rtl");
   assert.deepStrictEqual(model.slides[0].blocks.map((block) => block.type), ["heading", "list", "math", "paragraph"]);
+  assert.ok(!model.slides[0].blocks.some((block) => block.text === "PDF"), "link-button PDF navigation must not become slide content");
   assert.strictEqual(model.mathItems.length, 2);
   assert.strictEqual(model.mathItems[0].display, false);
   assert.strictEqual(model.mathItems[1].display, true);
