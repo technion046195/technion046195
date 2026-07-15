@@ -66,7 +66,7 @@ async function main() {
     const rootDir = process.cwd();
     const inputPath = path.resolve(rootDir, args.input);
     const outputPath = path.resolve(rootDir, args.output);
-    const pandocBin = args.pandoc || process.env.PANDOC_BIN || "pandoc";
+    const pandocBin = resolvePandocBin(args.pandoc);
 
     preflight(inputPath);
 
@@ -177,6 +177,20 @@ function preflightPandoc(pandocBin) {
       "You can also pass --pandoc C:\\path\\to\\pandoc.exe or set PANDOC_BIN.",
     ].join(" "));
   }
+}
+
+function resolvePandocBin(explicitPandocBin) {
+  if (explicitPandocBin) {
+    return explicitPandocBin;
+  }
+  if (process.env.PANDOC_BIN) {
+    return process.env.PANDOC_BIN;
+  }
+  const localPandoc = path.join(os.homedir(), "AppData", "Local", "Pandoc", "pandoc.exe");
+  if (process.platform === "win32" && fs.existsSync(localPandoc)) {
+    return localPandoc;
+  }
+  return "pandoc";
 }
 
 function removeDirectory(dirPath) {
